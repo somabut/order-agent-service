@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
-class MenuAgentTest @Autowired constructor(
-    private val menuAgent: MenuAgent
+class ActionAgentTest @Autowired constructor(
+    private val actionAgent: ActionAgent
 ) {
     @Test
     fun `스텝에 대한 적절한 액션을 반환한다`() {
@@ -63,8 +63,8 @@ class MenuAgentTest @Autowired constructor(
         )
 
         //when: llm에게 질의 한다
-        val response1 = menuAgent.determineAction(menuDto1, uiList)
-        val response2 = menuAgent.determineAction(menuDto2, uiList)
+        val response1 = actionAgent.determineAction(menuDto1, uiList)
+        val response2 = actionAgent.determineAction(menuDto2, uiList)
 
         //then: 올바른 액션을 반환한다.
         assertThat(response1.title).isEqualTo("BBQ 통모짜와퍼 8700원")

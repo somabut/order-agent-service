@@ -1,7 +1,7 @@
 package com.orderagentservice.order
 
-import com.orderagentservice.agent.MenuAgent
-import com.orderagentservice.agent.model.dto.UiActionDto
+import com.orderagentservice.agent.ActionAgent
+import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.global.model.dto.RatioCoordinate
 import com.orderagentservice.order.model.NodeRelation
 import com.orderagentservice.order.model.dto.*
@@ -28,7 +28,7 @@ class UmJunSikUtgInitializeServiceTest (
     private lateinit var uiExtractorManager: UiExtractorManager
 
     @Mock
-    private lateinit var menuAgent: MenuAgent
+    private lateinit var actionAgent: ActionAgent
 
     @InjectMocks
     private lateinit var utgInitializeService: UtgInitializeService
@@ -77,17 +77,17 @@ class UmJunSikUtgInitializeServiceTest (
         ))
         doNothing().`when`(uiGraphService).saveRel(any(), any(), any<NodeRelation>())
 
-        `when`(menuAgent.determineAction(any(), any())).thenAnswer { invocation ->
+        `when`(actionAgent.determineAction(any(), any())).thenAnswer { invocation ->
             val menuDto = invocation.arguments[0] as MenuInfoDto
             if (menuDto.category == menuDto.title) {
-                UiActionDto(goNext = true, score = 0.9F, coordinate = listOf(1, 2), title = "이동")
+                AgentActionDto(goNext = true, score = 0.9F, coordinate = listOf(1, 2), title = "이동")
             } else {
-                UiActionDto(goNext = false, score = 0.9F, coordinate = listOf(3, 4), title = "정지")
+                AgentActionDto(goNext = false, score = 0.9F, coordinate = listOf(3, 4), title = "정지")
             }
         }
 
         `when`(uiExtractorManager.queryUiExtractor(any())).thenReturn(omniUiComponents)
 
-        val result = utgInitializeService.initializeGraph(url, menuInfoList, paymentList)
+        val result = utgInitializeService.initializeGraph("moodTRBL", url, menuInfoList, paymentList)
     }
 }

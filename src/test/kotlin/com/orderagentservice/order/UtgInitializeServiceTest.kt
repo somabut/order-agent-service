@@ -23,18 +23,19 @@ class UtgInitializeServiceTest {
     @Test
     fun `주어진 메뉴를 기반으로 UTG를 생성한다`() {
         val url = "testUrl"
+        val kioskId = "abc"
         val menuList = DummyValueManager.getMenuInfoList()
         val omniList1 = DummyValueManager.getOmniUiComponentList(1)
         BDDMockito.given(uiExtractorManager.queryUiExtractor(any<File>())).willReturn(omniList1)
-        val actionList1 = utgInitializeService.initializeGraph(url, menuList, listOf())
+        val actionList1 = utgInitializeService.initializeGraph(kioskId, url, menuList, listOf())
 
         val omniList2 = DummyValueManager.getOmniUiComponentList(2)
         BDDMockito.given(uiExtractorManager.queryUiExtractor(any<File>())).willReturn(omniList2)
-        val actionList2 = utgInitializeService.initializeGraph(url, menuList, listOf())
+        val actionList2 = utgInitializeService.initializeGraph(kioskId, url, menuList, listOf())
 
         val omniList3 = DummyValueManager.getOmniUiComponentList(3)
         BDDMockito.given(uiExtractorManager.queryUiExtractor(any<File>())).willReturn(omniList3)
-        val actionList3 = utgInitializeService.initializeGraph(url, menuList, listOf())
+        val actionList3 = utgInitializeService.initializeGraph(kioskId, url, menuList, listOf())
 
         BDDMockito.verify(uiExtractorManager).queryUiExtractor(any<File>())
     }

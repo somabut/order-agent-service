@@ -2,8 +2,7 @@ package com.orderagentservice.agent
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.orderagentservice.agent.model.dto.LlmUiComponentDto
-import com.orderagentservice.agent.model.dto.UiActionDto
-import com.orderagentservice.agent.model.dto.UiBackDto
+import com.orderagentservice.agent.model.dto.AgentBackDto
 import com.orderagentservice.agent.util.LlmManager
 import com.orderagentservice.jsonMapper
 import com.orderagentservice.logger
@@ -16,10 +15,10 @@ class BackAgent @Autowired constructor(
 ) {
     private val log = logger()
 
-    fun determineBack(uiList: List<LlmUiComponentDto>): UiBackDto {
+    fun determineBack(uiList: List<LlmUiComponentDto>): AgentBackDto {
         val prompt = getPrompt(uiList)
         val json = llmManager.queryGeminiModel(prompt)
-        val response: UiBackDto = jsonMapper.readValue<UiBackDto>(json)
+        val response: AgentBackDto = jsonMapper.readValue<AgentBackDto>(json)
         return response
     }
 
