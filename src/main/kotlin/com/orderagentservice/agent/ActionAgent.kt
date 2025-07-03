@@ -2,7 +2,7 @@ package com.orderagentservice.agent
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.orderagentservice.agent.model.dto.LlmUiComponentDto
-import com.orderagentservice.agent.model.dto.UiActionDto
+import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.util.LlmManager
 import com.orderagentservice.jsonMapper
 import com.orderagentservice.logger
@@ -11,15 +11,15 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class MenuAgent @Autowired constructor(
+class ActionAgent @Autowired constructor(
     private val llmManager: LlmManager
 ) {
     private val log = logger()
 
-    fun determineAction(menuDto: MenuInfoDto, uiList: List<LlmUiComponentDto>): UiActionDto {
+    fun determineAction(menuDto: MenuInfoDto, uiList: List<LlmUiComponentDto>): AgentActionDto {
         val prompt = getPrompt(menuDto, uiList)
         val json = llmManager.queryGeminiModel(prompt)
-        val response: UiActionDto = jsonMapper.readValue<UiActionDto>(json)
+        val response: AgentActionDto = jsonMapper.readValue<AgentActionDto>(json)
         return response
     }
 

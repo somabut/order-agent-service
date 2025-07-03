@@ -2,7 +2,7 @@ package com.orderagentservice.agent
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.orderagentservice.jsonMapper
-import com.orderagentservice.agent.model.dto.ActionStepDto
+import com.orderagentservice.agent.model.dto.AgentStepDto
 import com.orderagentservice.agent.util.LlmManager
 import com.orderagentservice.logger
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,10 +14,10 @@ class StepAgent @Autowired constructor(
 ) {
     private val log = logger()
 
-    fun cutStep(input: String): ActionStepDto {
+    fun cutStep(input: String): AgentStepDto {
         val prompt = getPrompt(input)
         val json = llmManager.queryGeminiModel(prompt)
-        val steps: ActionStepDto = jsonMapper.readValue<ActionStepDto>(json)
+        val steps: AgentStepDto = jsonMapper.readValue<AgentStepDto>(json)
         return steps
     }
 
