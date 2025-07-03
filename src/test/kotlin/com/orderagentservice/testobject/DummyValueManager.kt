@@ -8,19 +8,29 @@ import org.springframework.stereotype.Component
 
 class DummyValueManager {
     companion object {
-        fun getMenuInfoList() = listOf(
-            MenuInfoDto(title = "크리스피 클래식", options = listOf(), category = "햄버거"),
-            MenuInfoDto(title = "크리스퍼 팩", options = listOf(), category = "햄버거"),
-            MenuInfoDto(title = "빅맥", options = listOf(), category = "햄버거"),
-            MenuInfoDto(title = "핫 토마토 모짜볼", options = listOf(), category = "사이드"),
-            MenuInfoDto(title = "바삭킹", options = listOf(), category = "사이드"),
-            MenuInfoDto(title = "코코넛슈림프", options = listOf(), category = "사이드"),
-            MenuInfoDto(title = "칠리소스", options = listOf(), category = "소스"),
-            MenuInfoDto(title = "시즈닝", options = listOf(), category = "소스"),
-            MenuInfoDto(title = "사이드", options = listOf(), category = "사이드"),
-            MenuInfoDto(title = "소스", options = listOf(), category = "기타"),
-            MenuInfoDto(title = "음료", options = listOf(), category = "음료")
-        )
+        fun getMenuInfoList(testNum: Int): List<MenuInfoDto> {
+            val result = mutableListOf<MenuInfoDto>()
+            when(testNum) {
+                1 -> {
+                    result.add(MenuInfoDto(title = "크리스피 클래식", options = listOf(), category = "햄버거"))
+                    result.add(MenuInfoDto(title = "크리스퍼 팩", options = listOf(), category = "햄버거"))
+                    result.add(MenuInfoDto(title = "빅맥", options = listOf(), category = "햄버거"))
+                    result.add(MenuInfoDto(title = "핫 토마토 모짜볼", options = listOf(), category = "사이드"))
+                }
+                2 -> {
+                    result.add(MenuInfoDto(title = "핫 토마토 모짜볼", options = listOf(), category = "사이드"))
+                    result.add(MenuInfoDto(title = "바삭킹", options = listOf(), category = "사이드"))
+                    result.add(MenuInfoDto(title = "코코넛슈림프", options = listOf(), category = "사이드"))
+                    result.add(MenuInfoDto(title = "칠리소스", options = listOf(), category = "소스"))
+                }
+                3 -> {
+                    result.add(MenuInfoDto(title = "칠리소스", options = listOf(), category = "소스"))
+                    result.add(MenuInfoDto(title = "시즈닝", options = listOf(), category = "소스"))
+                    result.add(MenuInfoDto(title = "핫 토마토 모짜볼", options = listOf(), category = "사이드"))
+                }
+            }
+            return result
+        }
 
         fun getOmniUiComponentList(testNum: Int): List<OmniUiComponentDto> {
             val result = mutableListOf<OmniUiComponentDto>()

@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class ActionAgent @Autowired constructor(
+class MenuAgent @Autowired constructor(
     private val llmManager: LlmManager
 ) {
     private val log = logger()
