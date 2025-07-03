@@ -47,8 +47,7 @@ class NotificationService @Autowired constructor(
             commandId = commandId,
             commandType = CommandType.CAPTURE,
             data = null
-        )
-        )
+        ))
         val emitter = notificationRepository.getEmitter(kioskId)
 
         //클라이언트는 여기서 보내진 commandId로 응답을 해야함

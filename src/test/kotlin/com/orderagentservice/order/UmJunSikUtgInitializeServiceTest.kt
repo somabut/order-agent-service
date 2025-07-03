@@ -1,6 +1,6 @@
 package com.orderagentservice.order
 
-import com.orderagentservice.agent.ActionAgent
+import com.orderagentservice.agent.MenuAgent
 import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.global.model.dto.RatioCoordinate
 import com.orderagentservice.order.model.NodeRelation
@@ -28,7 +28,7 @@ class UmJunSikUtgInitializeServiceTest (
     private lateinit var uiExtractorManager: UiExtractorManager
 
     @Mock
-    private lateinit var actionAgent: ActionAgent
+    private lateinit var menuAgent: MenuAgent
 
     @InjectMocks
     private lateinit var utgInitializeService: UtgInitializeService
@@ -77,7 +77,7 @@ class UmJunSikUtgInitializeServiceTest (
         ))
         doNothing().`when`(uiGraphService).saveRel(any(), any(), any<NodeRelation>())
 
-        `when`(actionAgent.determineAction(any(), any())).thenAnswer { invocation ->
+        `when`(menuAgent.determineAction(any(), any())).thenAnswer { invocation ->
             val menuDto = invocation.arguments[0] as MenuInfoDto
             if (menuDto.category == menuDto.title) {
                 AgentActionDto(goNext = true, score = 0.9F, coordinate = listOf(1, 2), title = "이동")
