@@ -16,7 +16,19 @@ class LlmManagerTest @Autowired constructor(
         val input = "안녕 응답이 잘 갔으면 정확하게 'moodTRBL'이라고만 답해"
 
         //when: llm에게 질의를 한다
-        val response = llmManager.queryGeminiModel(input)
+        val response = llmManager.queryGemini(input)
+
+        //then:
+        assertThat(response).isEqualTo("moodTRBL")
+    }
+
+    @Test
+    fun `gpt에게 질의하여 응답을 얻는다`() {
+        //given: 입력과 프롬프트
+        val input = "안녕 응답이 잘 갔으면 정확하게 'moodTRBL'이라고만 답해"
+
+        //when: llm에게 질의를 한다
+        val response = llmManager.queryGpt(input)
 
         //then:
         assertThat(response).isEqualTo("moodTRBL")

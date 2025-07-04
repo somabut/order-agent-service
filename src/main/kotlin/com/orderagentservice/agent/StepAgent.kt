@@ -16,7 +16,7 @@ class StepAgent @Autowired constructor(
 
     fun cutStep(input: String): AgentStepDto {
         val prompt = getPrompt(input)
-        val json = llmManager.queryGeminiModel(prompt)
+        val json = llmManager.queryGemini(prompt)
         val steps: AgentStepDto = jsonMapper.readValue<AgentStepDto>(json)
         return steps
     }

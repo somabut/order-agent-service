@@ -18,7 +18,7 @@ class MenuAgent @Autowired constructor(
 
     fun determineAction(menuDto: MenuInfoDto, uiList: List<LlmUiComponentDto>): AgentActionDto {
         val prompt = getPrompt(menuDto, uiList)
-        val json = llmManager.queryGeminiModel(prompt)
+        val json = llmManager.queryGemini(prompt)
         val response: AgentActionDto = jsonMapper.readValue<AgentActionDto>(json)
         return response
     }

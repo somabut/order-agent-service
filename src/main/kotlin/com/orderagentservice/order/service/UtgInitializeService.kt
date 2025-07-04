@@ -16,12 +16,6 @@ import org.springframework.stereotype.Service
 
 @Service
 class UtgInitializeService @Autowired constructor(
-    private val menuAgent: MenuAgent,
-    private val backAgent: BackAgent,
-    private val paymentAgent: PaymentAgent,
-    private val uiGraphService: UiGraphService,
-    private val uiExtractorManager: UiExtractorManager,
-    private val notificationService: NotificationService,
     private val menuGraphInitializeService: MenuGraphInitializeService,
     private val paymentGraphInitializeService: PaymentGraphInitializeService
 ) {
