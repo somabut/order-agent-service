@@ -17,7 +17,7 @@ class BackAgent @Autowired constructor(
 
     fun determineBack(uiList: List<LlmUiComponentDto>): AgentBackDto {
         val prompt = getPrompt(uiList)
-        val json = llmManager.queryGeminiModel(prompt)
+        val json = llmManager.queryGemini(prompt)
         val response: AgentBackDto = jsonMapper.readValue<AgentBackDto>(json)
         return response
     }
