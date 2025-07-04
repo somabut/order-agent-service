@@ -1,0 +1,65 @@
+# Git 관련
+.git
+.gitignore
+.gitattributes
+
+# IDE 관련
+.idea
+.vscode
+*.iml
+*.ipr
+*.iws
+
+# OS 관련
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Build outputs (Dockerfile에서 직접 빌드하므로)
+build/
+.gradle/
+
+# Test 관련
+src/test/
+
+# Documentation
+*.md
+docs/
+
+# Docker 관련
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# 기존 Docker 파일들 (통합 후 제거 예정)
+docker-compose.yml
+docker-compose.dev.yml
+Dockerfile.dev
+
+# Environment files
+.env*
+application-*.yml
+application-*.properties
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+
+# Node.js (만약 있다면)
+node_modules/
+npm-debug.log*
+
+# Python (만약 있다면)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/ 
