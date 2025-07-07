@@ -75,11 +75,20 @@ class MenuGraphInitializeService @Autowired constructor(
             notificationService.sendActionCommand(kioskId, action.coordinate)
 
             //메뉴의 옵션 노드 추가
-            //이후에 다시 원래 페이지로 돌아가야 하므로 backAgent를 통해 이전 페이지로 돌아가기
             val llmOptList = uiExtractorManager.getUiComponents(kioskId)
 
-            //TODO(감지되지 못한 옵션이 있는 경우 GPT 4.1에게 질의)
+            //TODO(감지되지 못한 옵션이 있는 경우 GPT 에게 질의)
+            for (opt in menuDto.options) {
+                for (ele in llmOptList) {
 
+                    //TODO(감지되지 못했다면 GPT에게 질의하여 알아내고 options에서 제거)
+                    if (ele.title.contains(opt) == false) {
+
+                    }
+                }
+            }
+
+            //다시 원래 페이지로 돌아가야 하므로 backAgent를 통해 이전 페이지로 돌아가기
             val backAction = backAgent.determineBack(llmOptList)
             for (opt in menuDto.options) {
                 val optAction = menuAgent.determineAction(MenuInfoDto(opt, listOf(), menuDto.title), llmOptList)

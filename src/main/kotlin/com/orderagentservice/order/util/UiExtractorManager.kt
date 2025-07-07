@@ -74,8 +74,7 @@ class UiExtractorManager @Autowired constructor(
                 x = cord.first,
                 y = cord.second,
                 title = title
-            )
-            )
+            ))
         }
         return llmUiList
     }

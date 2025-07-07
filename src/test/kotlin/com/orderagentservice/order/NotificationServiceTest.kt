@@ -18,7 +18,7 @@ class NotificationServiceTest @Autowired constructor(
     @Test
     fun `명령이 완료되면 파일을 가져온다`() {
         //when: private를 테스트를 위해 임시로 public으로 열고 파일을 저장한다
-        val method = notificationService.javaClass.getDeclaredMethod("waitCaptureCommand", String::class.java)
+        val method = notificationService.javaClass.getDeclaredMethod("findAvailableKey", String::class.java)
         method.isAccessible = true
         notificationRepository.saveCaptureCommand("moodTRBL", File("moodTRBL"))
 

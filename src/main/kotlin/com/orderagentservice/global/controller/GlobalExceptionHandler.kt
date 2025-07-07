@@ -1,6 +1,7 @@
 package com.orderagentservice.global.controller
 
 import com.orderagentservice.agent.exception.AgentManyRequestException
+import com.orderagentservice.global.model.RootException
 import com.orderagentservice.global.model.response.ApiResponse
 import com.orderagentservice.order.exception.CommandTimeoutException
 import com.orderagentservice.order.exception.NoSuchKioskException
@@ -22,5 +23,10 @@ class GlobalExceptionHandler {
     @ExceptionHandler(NoSuchKioskException::class)
     fun handleNoSuchKioskException(e: NoSuchKioskException): ApiResponse<*> {
         return ApiResponse.fail<NoSuchKioskException>(e)
+    }
+
+    @ExceptionHandler(RuntimeException::class)
+    fun handleRuntimeException(e: RootException): ApiResponse<*> {
+        return ApiResponse.fail<RootException>(e)
     }
 }
