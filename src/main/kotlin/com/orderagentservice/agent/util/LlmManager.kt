@@ -15,15 +15,22 @@ import org.springframework.web.client.RestTemplate
 
 @Component
 class LlmManager @Autowired constructor(
-    private val env: Environment
+    private val env: Environment,
+    private val llmRateLimiter: LlmRateLimiter
 ){
     private val GEMINI_MODEL_NAME = env.getProperty("agent.gemini.model-name")
-    private val GEMINI_API_KEY = env.getProperty("agent.gemini.api-key")
+//    private val GEMINI_API_KEY = env.getProperty("agent.gemini.api-key")
 
     private val GPT_MODEL_NAME = env.getProperty("agent.openai.model-name")
     private val GPT_API_KEY = env.getProperty("agent.openai.api-key")
 
     fun queryGemini(prompt: String): String {
+        return llmRateLimiter.executeWithLimit { apiKey ->
+            callGeminiApi(prompt, apiKey)
+        }
+    }
+
+    fun callGeminiApi(prompt: String, apiKey: String): String {
         val request = GeminiRequest(
             contents = listOf(
                 Content(
@@ -35,7 +42,7 @@ class LlmManager @Autowired constructor(
         )
 
         val restTemplate = RestTemplate()
-        val url = "https://generativelanguage.googleapis.com/v1beta/models/$GEMINI_MODEL_NAME:generateContent?key=$GEMINI_API_KEY"
+        val url = "https://generativelanguage.googleapis.com/v1beta/models/$GEMINI_MODEL_NAME:generateContent?key=$apiKey"
 
         try {
             val response: GeminiResponse = restTemplate.postForObject(url, request, GeminiResponse::class.java)!!
