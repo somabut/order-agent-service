@@ -10,13 +10,13 @@ data class UiDto(
     val x: Int,
     val y: Int,
     val title: String,
-    val url: String
+    val kioskId: String
 ) {
     fun toEntity(): UiEntity = UiEntity(
         isNext = isNext,
         x = x,
         y = y,
         title = title,
-        url = url
+        kioskId = kioskId
     )
 }

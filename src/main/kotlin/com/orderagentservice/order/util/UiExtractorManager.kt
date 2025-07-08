@@ -20,7 +20,6 @@ import java.io.File
 
 @Component
 class UiExtractorManager @Autowired constructor(
-    private val notificationService: NotificationService,
     private val env: Environment
 ) {
     private val UI_EXCTRACTOR_HOST = env.getProperty("ui-extractor.url")
@@ -50,10 +49,7 @@ class UiExtractorManager @Autowired constructor(
         return uiComponents
     }
 
-    fun getUiComponents(kioskId: String): MutableList<LlmUiComponentDto> {
-        //sse를 통해 클라이언트에게 캡쳐 이미지 받기
-        val image = notificationService.sendCaptureCommand(kioskId)
-
+    fun getUiComponents(image: File, kioskId: String): MutableList<LlmUiComponentDto> {
         //ui extractor에게 이미지 파싱 요청
         val uiComponents = queryUiExtractor(image)
 

@@ -1,19 +1,18 @@
 package com.orderagentservice.order.service
 
+import com.orderagentservice.order.exception.NodeNotFoundException
+import com.orderagentservice.order.exception.PathNotFoundException
 import com.orderagentservice.order.model.NodeRelation
+import com.orderagentservice.order.model.dto.ActionPathDto
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.entity.UiEntity
 import com.orderagentservice.order.repository.UiRepository
-import org.neo4j.driver.internal.InternalPath
-import org.neo4j.driver.types.Path
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.neo4j.core.Neo4jClient
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UiGraphService @Autowired constructor(
-    private val neo4jClient: Neo4jClient,
     private val uiRepository: UiRepository
 ) {
     @Transactional
@@ -33,14 +32,44 @@ class UiGraphService @Autowired constructor(
         }
     }
 
-    fun findTargetPath(url: String, target: String, rootTitle: String = "root"): List<Pair<Int, Int>> {
-        val paths = uiRepository.findPathByTitle(url, target, rootTitle)
-        val targetPath = paths.flatMap { path ->
-            path.nodes().map { node ->
-                Pair(node["x"].asInt(), node["y"].asInt())
-            }
-        }.drop(1)
+    fun findTargetPath(kioskId: String, sourceId: String, targetTitle: String): List<ActionPathDto> {
+        val nodesList = uiRepository.findPathByTitle(kioskId, sourceId, targetTitle)
+            .ifEmpty { throw PathNotFoundException() }
 
-        return targetPath
+        return nodesList
+            .map { node -> ActionPathDto(
+                node["id"].toString(), node["title"].toString(),
+                x = (node["x"] as Number).toInt(), y = (node["y"] as Number).toInt()
+            ) }
+            .drop(1)
+    }
+
+    fun findOptTarget(kioskId: String, menuId: String, optKeyword: String): ActionPathDto {
+        val entity = uiRepository.findOptionByTitle(kioskId, menuId, optKeyword)
+            ?: throw NodeNotFoundException()
+
+        return ActionPathDto(
+            id = entity.id, title = entity.title,
+            x = entity.x, y = entity.y
+        )
+    }
+
+    fun findBackPath(kioskId: String, sourceId: String): List<ActionPathDto> {
+        val nodesList = uiRepository.findBackPathByTitle(kioskId, sourceId)
+            .ifEmpty { throw PathNotFoundException() }
+
+        return nodesList
+            .map { node -> ActionPathDto(
+                node["id"].toString(), node["title"].toString(),
+                x = (node["x"] as Number).toInt(), y = (node["y"] as Number).toInt()
+            ) }
+            .drop(1)
+    }
+
+    fun findCategoryNodeId(kioskId: String, id: String): String {
+        val entity = uiRepository.findIncomingHasTo(kioskId, id)
+            ?: throw NodeNotFoundException()
+
+        return entity.id
     }
 }

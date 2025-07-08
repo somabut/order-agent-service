@@ -29,8 +29,8 @@ class UtgInitializeService @Autowired constructor(
         val startTime = System.nanoTime()
 
         val history = mutableListOf<AgentActionDto>()
-        val result = menuGraphInitializeService.initializeGraph(url = url, kioskId = kioskId, menuList = menuList)
-        val paymentHistory = paymentGraphInitializeService.initializeGraph(url, kioskId, result.second)
+        val result = menuGraphInitializeService.initializeGraph(kioskId = kioskId, menuList = menuList)
+        val paymentHistory = paymentGraphInitializeService.initializeGraph(kioskId, result.second)
 
         for (ele in result.first) {
             history.add(ele)

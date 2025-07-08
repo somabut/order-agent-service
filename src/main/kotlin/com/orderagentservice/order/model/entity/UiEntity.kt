@@ -4,7 +4,7 @@ import org.springframework.data.neo4j.core.schema.*
 import java.util.*
 
 @Node("UI")
-class UiEntity (
+class UiEntity(
     @Id
     val id: String = UUID.randomUUID().toString(),
 
@@ -20,12 +20,15 @@ class UiEntity (
     @Property("title")
     val title: String,
 
-    @Property("url")
-    val url: String,
+    @Property("kioskId")
+    val kioskId: String,
 
     @Relationship(type = "PATH_TO", direction = Relationship.Direction.OUTGOING)
     val connectedTo: Set<UiEntity>? = null,
 
     @Relationship(type = "HAS_TO", direction = Relationship.Direction.OUTGOING)
-    val hasTo: Set<UiEntity>? = null
+    val hasTo: Set<UiEntity>? = null,
+
+    @Relationship(type = "BACK_TO", direction = Relationship.Direction.OUTGOING)
+    val backTo: Set<UiEntity>? = null,
 )

@@ -36,11 +36,11 @@ class UtgInitializeServiceTest {
 //        BDDMockito.given(uiExtractorManager.queryUiExtractor(any<File>())).willReturn(omniList1)
 //        val actionList1 = utgInitializeService.initializeGraph(kioskId, url, menuList1, listOf())
 
-        val menuList2 = DummyValueManager.getMenuInfoList(2)
-        val omniList2 = DummyValueManager.getOmniUiComponentList(2)
-        BDDMockito.given(uiExtractorManager.queryUiExtractor(any<File>())).willReturn(omniList2)
-        val actionList2 = utgInitializeService.initializeGraph(kioskId, url, menuList2, listOf())
-        for (ele in actionList2) println(ele)
+//        val menuList2 = DummyValueManager.getMenuInfoList(2)
+//        val omniList2 = DummyValueManager.getOmniUiComponentList(2)
+//        BDDMockito.given(uiExtractorManager.queryUiExtractor(any<File>())).willReturn(omniList2)
+//        val actionList2 = utgInitializeService.initializeGraph(kioskId, url, menuList2, listOf())
+//        for (ele in actionList2) println(ele)
 
 //        val menuList3 = DummyValueManager.getMenuInfoList(3)
 //        val omniList3 = DummyValueManager.getOmniUiComponentList(3)
