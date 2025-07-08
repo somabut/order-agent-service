@@ -12,5 +12,7 @@ enum class ErrorCode(
     AGENT_MANY_REQUEST(101, "llm 모델에게 너무 많은 요청을 했습니다.", HttpStatus.TOO_MANY_REQUESTS),
 
     ORDER_NO_SUCH_KIOSK(201,"존재하지 않는 키오스크에게 sse를 보냈습니다.", HttpStatus.BAD_REQUEST),
-    ORDER_COMMAND_TIMEOUT(202, "클라이언트의 명령 응답시간이 초과되었습니다.", HttpStatus.REQUEST_TIMEOUT)
+    ORDER_COMMAND_TIMEOUT(202, "클라이언트의 명령 응답시간이 초과되었습니다.", HttpStatus.REQUEST_TIMEOUT),
+    ORDER_NO_PATH(203, "찾으려는 UTG 경로가 없습니다.", HttpStatus.BAD_REQUEST),
+    ORDER_NO_NODE(203, "찾으려는 UTG 노드가 없습니다.", HttpStatus.BAD_REQUEST),
 }

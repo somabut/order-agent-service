@@ -2,6 +2,7 @@ plugins {
     kotlin("jvm") version "1.9.25"
     kotlin("plugin.spring") version "1.9.25"
     kotlin("kapt") version "2.0.21"
+    kotlin("plugin.jpa") version "1.9.25"
     id("org.springframework.boot") version "3.5.3"
     id("io.spring.dependency-management") version "1.1.7"
     id("org.jetbrains.kotlin.plugin.noarg") version "1.7.22"
@@ -29,12 +30,18 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.1")
 
+    //orm
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
     //neo4j
     implementation("org.neo4j.driver:neo4j-java-driver:5.23.0")
     implementation("org.springframework.boot:spring-boot-starter-data-neo4j")
 
     //coroutine
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
+
+    //mysql
+    runtimeOnly("com.mysql:mysql-connector-j")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     testImplementation("org.springframework.boot:spring-boot-starter-test")

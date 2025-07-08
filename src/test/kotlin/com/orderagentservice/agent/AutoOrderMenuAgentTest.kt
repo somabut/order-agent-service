@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
-class MenuAgentTest @Autowired constructor(
+class AutoOrderMenuAgentTest @Autowired constructor(
     private val menuAgent: MenuAgent
 ) {
     @Test
@@ -67,7 +67,7 @@ class MenuAgentTest @Autowired constructor(
         val response2 = menuAgent.determineAction(menuDto2, uiList)
 
         //then: 올바른 액션을 반환한다.
-        assertThat(response1.title).isEqualTo("BBQ 통모짜와퍼 8700원")
+        assertThat(response1.title).isEqualTo("BBQ 통모짜와퍼")
         assertThat(response1.goNext).isEqualTo(false)
         assertThat(response1.coordinate[0]).isEqualTo(125)
         assertThat(response1.coordinate[1]).isEqualTo(732)

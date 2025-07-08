@@ -1,5 +1,6 @@
 package com.orderagentservice.order.service
 
+import com.orderagentservice.global.model.response.ApiResponse
 import com.orderagentservice.jsonMapper
 import com.orderagentservice.logger
 import com.orderagentservice.order.model.CommandType
@@ -65,14 +66,13 @@ class NotificationService @Autowired constructor(
             commandId = commandId,
             commandType = CommandType.CLICK,
             data = coordinate
-        )
-        )
+        ))
         val emitter = notificationRepository.getEmitter(kioskId)
 
         //클라이언트는 여기서 보내진 commandId로 응답을 해야함
         emitter.send(request)
-        val coordinate = waitActionCommand(commandId)
-        return coordinate
+        val coordinatePair = waitActionCommand(commandId)
+        return coordinatePair
     }
 
     // 캡처 명령 대기

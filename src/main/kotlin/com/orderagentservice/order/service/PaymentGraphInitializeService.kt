@@ -14,12 +14,13 @@ import org.springframework.stereotype.Service
 @Service
 class PaymentGraphInitializeService @Autowired constructor(
     private val paymentAgent: PaymentAgent,
+    private val notificationService: NotificationService,
     private val uiExtractorManager: UiExtractorManager,
     private val uiGraphService: UiGraphService
 ) {
     private val log = logger()
 
-    fun initializeGraph(url: String, kioskId: String, lastNode: UiEntity): List<AgentActionDto> {
+    fun initializeGraph(kioskId: String, lastNode: UiEntity): List<AgentActionDto> {
         log.info("결제 utg 생성 시작")
         val startTime = System.nanoTime()
 
@@ -29,17 +30,17 @@ class PaymentGraphInitializeService @Autowired constructor(
         var preNode = lastNode
         val history = mutableListOf<AgentActionDto>()
         while (true) {
-            llmUiList = uiExtractorManager.getUiComponents(kioskId)
+            val image = notificationService.sendCaptureCommand(kioskId)
+            llmUiList = uiExtractorManager.getUiComponents(image, kioskId)
             val action = paymentAgent.determineAction(llmUiList)
-            isNext = action.goNext
 
-            val entity = uiGraphService.saveNode(
-                UiDto(
+            log.info("결제 노드를 생성합니다. go_next: ${action.goNext}, score: ${action.score}, coordinate: ${action.coordinate}, title: ${action.title}")
+            isNext = action.goNext
+            val entity = uiGraphService.saveNode(UiDto(
                 isNext = isNext,
-                x = action.coordinate[0],
-                y = action.coordinate[1],
+                x = action.coordinate[0], y = action.coordinate[1],
                 title = action.title,
-                url = url
+                kioskId = kioskId
             ))
             uiGraphService.saveRel(preNode.id, entity.id, NodeRelation.PATH_TO)
 
