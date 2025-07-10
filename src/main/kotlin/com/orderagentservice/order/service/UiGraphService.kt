@@ -32,7 +32,7 @@ class UiGraphService @Autowired constructor(
         }
     }
 
-    fun findTargetPath(kioskId: String, sourceId: String, targetTitle: String): List<ActionPathDto> {
+    fun findPathToPath(kioskId: String, sourceId: String, targetTitle: String): List<ActionPathDto> {
         val nodesList = uiRepository.findPathByTitle(kioskId, sourceId, targetTitle)
             .ifEmpty { throw PathNotFoundException() }
 
@@ -44,7 +44,7 @@ class UiGraphService @Autowired constructor(
             .drop(1)
     }
 
-    fun findOptTarget(kioskId: String, menuId: String, optKeyword: String): ActionPathDto {
+    fun findOptionNode(kioskId: String, menuId: String, optKeyword: String): ActionPathDto {
         val entity = uiRepository.findOptionByTitle(kioskId, menuId, optKeyword)
             ?: throw NodeNotFoundException()
 
@@ -54,7 +54,7 @@ class UiGraphService @Autowired constructor(
         )
     }
 
-    fun findBackPath(kioskId: String, sourceId: String): List<ActionPathDto> {
+    fun findBackToPath(kioskId: String, sourceId: String): List<ActionPathDto> {
         val nodesList = uiRepository.findBackPathByTitle(kioskId, sourceId)
             .ifEmpty { throw PathNotFoundException() }
 

@@ -50,6 +50,15 @@ class PaymentGraphInitializeService @Autowired constructor(
             if (isNext == false) break
         }
 
+        //완료 노드를 추가하여 UTG의 끝을 알리기
+        val completeEntity =  uiGraphService.saveNode(UiDto(
+            isNext = false,
+            x = -1, y = -1,
+            title = "complete",
+            kioskId = kioskId
+        ))
+        uiGraphService.saveRel(preNode.id, completeEntity.id, NodeRelation.PATH_TO)
+
         val endTime = System.nanoTime()
         log.info("결제 utg 생성 완료. 수행시간: ${(endTime - startTime) / 1000000}ms")
 

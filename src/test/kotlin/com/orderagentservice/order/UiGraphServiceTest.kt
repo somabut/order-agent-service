@@ -2,10 +2,7 @@ package com.orderagentservice.order
 
 import com.orderagentservice.order.model.NodeRelation
 import com.orderagentservice.order.model.dto.UiDto
-import com.orderagentservice.order.model.entity.UiEntity
-import com.orderagentservice.order.repository.UiRepository
 import com.orderagentservice.order.service.UiGraphService
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -13,7 +10,6 @@ import org.junit.jupiter.api.TestInstance
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.neo4j.core.Neo4jClient
-import org.springframework.data.neo4j.core.Neo4jTemplate
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
@@ -139,7 +135,7 @@ class UiGraphServiceTest @Autowired constructor(
     @Test
     fun `저장된 노드에서 특정 노드까지 경로를 찾는다`() {
         //when: 경로를 찾는다
-        val path = uiGraphService.findTargetPath(testKioskId, "면", "콜라")
+        val path = uiGraphService.findPathToPath(testKioskId, "면", "콜라")
 
         //then: 올바른 경로가 반환된다
         assertThat(path[0].title).isEqualTo("음료")
@@ -149,9 +145,9 @@ class UiGraphServiceTest @Autowired constructor(
     @Test
     fun `현재 메뉴에서 옵션을 찾는다`() {
         //when: 옵션을 찾는다
-        val opt1 = uiGraphService.findOptTarget(testKioskId, "시오라멘", "면추가1")
-        val opt2 = uiGraphService.findOptTarget(testKioskId, "쇼유라멘", "면추가2")
-        val opt3 = uiGraphService.findOptTarget(testKioskId, "사이다", "제로2")
+        val opt1 = uiGraphService.findOptionNode(testKioskId, "시오라멘", "면추가1")
+        val opt2 = uiGraphService.findOptionNode(testKioskId, "쇼유라멘", "면추가2")
+        val opt3 = uiGraphService.findOptionNode(testKioskId, "사이다", "제로2")
 
         //then: 옵션이 올바르게 반환된다
         assertThat(opt1.title).isEqualTo("면추가1")
@@ -162,7 +158,7 @@ class UiGraphServiceTest @Autowired constructor(
     @Test
     fun `현재 노드에서 되돌아가는 경로를 찾는다`() {
         //when: 돌아가는 경로를 찾는다
-        val backPath = uiGraphService.findBackPath(testKioskId, "콜라")
+        val backPath = uiGraphService.findBackToPath(testKioskId, "콜라")
 
         //then: 경로가 올바르게 반환된다
         assertThat(backPath[0].title).isEqualTo("선택완료3")
