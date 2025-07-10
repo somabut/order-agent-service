@@ -9,7 +9,6 @@ data class ApiResponse<T> (
     val success: Boolean,
     val data: T?,
     val error: ExceptionDto?,
-    @JsonIgnore
     val httpStatus: HttpStatus?
 ) {
     companion object {
