@@ -2,6 +2,7 @@ package com.orderagentservice.order.model.request
 
 data class AutoOrderRequest(
     val autoOrderMenus: List<AutoOrderMenu>,
+    val place: String?,
     val payment: String
 )
 

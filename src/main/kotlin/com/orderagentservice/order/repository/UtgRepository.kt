@@ -1,12 +1,11 @@
 package com.orderagentservice.order.repository
 
 import com.orderagentservice.order.model.entity.UiEntity
-import org.neo4j.driver.types.Path
 import org.springframework.data.neo4j.repository.Neo4jRepository
 import org.springframework.data.neo4j.repository.query.Query
 import org.springframework.data.repository.query.Param
 
-interface UiRepository : Neo4jRepository<UiEntity, String> {
+interface UtgRepository : Neo4jRepository<UiEntity, String> {
     @Query(
         "MATCH path = (start:UI {kioskId: \$kioskId, title: \$sourceId})-[*..5]->(target:UI {kioskId: \$kioskId})\n " +
         "WHERE target.title CONTAINS \$targetTitle\n" +
@@ -50,6 +49,16 @@ interface UiRepository : Neo4jRepository<UiEntity, String> {
     fun findIncomingHasTo(
         @Param("kioskId") kioskId: String,
         @Param("id") id: String
+    ): UiEntity?
+
+    @Query(
+        "MATCH (currentNode {kioskId: \$kioskId, id: \$sourceId})-[:HAS_TO]->(targetNode {kioskId: \$kioskId, title: \$place})\n" +
+        "RETURN targetNode"
+    )
+    fun findPlaceByTitle(
+        @Param("kioskId") kioskId: String,
+        @Param("sourceId") sourceId: String,
+        @Param("place") place: String
     ): UiEntity?
 
     @Query("MATCH (a:UI {id: \$sourceId}), (b:UI {id: \$targetId}) MERGE (a)-[:PATH_TO]->(b)")
