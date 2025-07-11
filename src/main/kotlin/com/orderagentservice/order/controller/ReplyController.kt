@@ -3,7 +3,7 @@ package com.orderagentservice.order.controller
 import com.orderagentservice.global.model.response.ApiResponse
 import com.orderagentservice.order.model.request.ActionReplyRequest
 import com.orderagentservice.order.model.response.CommandResponse
-import com.orderagentservice.order.service.AmazonS3Service
+import com.orderagentservice.global.service.AmazonS3Service
 import com.orderagentservice.order.service.NotificationService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PathVariable
@@ -31,7 +31,7 @@ class ReplyController @Autowired constructor(
         image.transferTo(tempFile)
 
         notificationService.registerCaptureCommand(commandId, tempFile)
-        amazonS3Service.saveFile(kioskId, image)
+        amazonS3Service.saveFile(kioskId, commandId, tempFile)
         return ApiResponse.success(CommandResponse(commandId))
     }
 

@@ -1,6 +1,7 @@
 package com.orderagentservice.global.controller
 
 import com.orderagentservice.agent.exception.AgentManyRequestException
+import com.orderagentservice.global.exception.S3NotSupportedType
 import com.orderagentservice.global.model.RootException
 import com.orderagentservice.global.model.response.ApiResponse
 import com.orderagentservice.order.exception.CommandTimeoutException
@@ -40,5 +41,10 @@ class GlobalExceptionHandler {
     @ExceptionHandler(NodeNotFoundException::class)
     fun handlePathNotFoundException(e: NodeNotFoundException): ApiResponse<*> {
         return ApiResponse.fail<NodeNotFoundException>(e)
+    }
+
+    @ExceptionHandler(S3NotSupportedType::class)
+    fun handleS3NotSupportedType(e: S3NotSupportedType): ApiResponse<*> {
+        return ApiResponse.fail<S3NotSupportedType>(e)
     }
 }

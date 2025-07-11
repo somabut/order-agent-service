@@ -2,7 +2,7 @@ package com.orderagentservice.order
 
 import com.orderagentservice.order.model.NodeRelation
 import com.orderagentservice.order.model.dto.UiDto
-import com.orderagentservice.order.service.UiGraphService
+import com.orderagentservice.order.service.UtgService
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -13,8 +13,8 @@ import org.springframework.data.neo4j.core.Neo4jClient
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
-class UiGraphServiceTest @Autowired constructor(
-    private val uiGraphService: UiGraphService,
+class UtgServiceTest @Autowired constructor(
+    private val utgService: UtgService,
     private val neo4jClient: Neo4jClient
 ) {
     private val testKioskId = "TEST-MOODTRBL"
@@ -103,7 +103,7 @@ class UiGraphServiceTest @Autowired constructor(
         )
 
         //when: UI 노드를 저장한다.
-        uiGraphService.saveNode(uiDto)
+        utgService.saveNode(uiDto)
 
         //then: 저장이 완료된다.
     }
@@ -125,9 +125,9 @@ class UiGraphServiceTest @Autowired constructor(
         )
 
         //when: UI 노드를 저장하고 관계를 맺는다
-        val entity1 = uiGraphService.saveNode(uiDto1)
-        val entity2 = uiGraphService.saveNode(uiDto2)
-        uiGraphService.saveRel(entity1.id, entity2.id, NodeRelation.PATH_TO)
+        val entity1 = utgService.saveNode(uiDto1)
+        val entity2 = utgService.saveNode(uiDto2)
+        utgService.saveRel(entity1.id, entity2.id, NodeRelation.PATH_TO)
 
         //then: 저장이 완료된다
     }
@@ -135,7 +135,7 @@ class UiGraphServiceTest @Autowired constructor(
     @Test
     fun `저장된 노드에서 특정 노드까지 경로를 찾는다`() {
         //when: 경로를 찾는다
-        val path = uiGraphService.findPathToPath(testKioskId, "면", "콜라")
+        val path = utgService.findMenuPath(testKioskId, "면", "콜라")
 
         //then: 올바른 경로가 반환된다
         assertThat(path[0].title).isEqualTo("음료")
@@ -145,9 +145,9 @@ class UiGraphServiceTest @Autowired constructor(
     @Test
     fun `현재 메뉴에서 옵션을 찾는다`() {
         //when: 옵션을 찾는다
-        val opt1 = uiGraphService.findOptionNode(testKioskId, "시오라멘", "면추가1")
-        val opt2 = uiGraphService.findOptionNode(testKioskId, "쇼유라멘", "면추가2")
-        val opt3 = uiGraphService.findOptionNode(testKioskId, "사이다", "제로2")
+        val opt1 = utgService.findOptionNode(testKioskId, "시오라멘", "면추가1")
+        val opt2 = utgService.findOptionNode(testKioskId, "쇼유라멘", "면추가2")
+        val opt3 = utgService.findOptionNode(testKioskId, "사이다", "제로2")
 
         //then: 옵션이 올바르게 반환된다
         assertThat(opt1.title).isEqualTo("면추가1")
@@ -158,7 +158,7 @@ class UiGraphServiceTest @Autowired constructor(
     @Test
     fun `현재 노드에서 되돌아가는 경로를 찾는다`() {
         //when: 돌아가는 경로를 찾는다
-        val backPath = uiGraphService.findBackToPath(testKioskId, "콜라")
+        val backPath = utgService.findBackPath(testKioskId, "콜라")
 
         //then: 경로가 올바르게 반환된다
         assertThat(backPath[0].title).isEqualTo("선택완료3")
@@ -168,7 +168,7 @@ class UiGraphServiceTest @Autowired constructor(
     @Test
     fun `메뉴가 속해있는 카테고리 노드를 찾는다`() {
         //when: 자신의 카테고리를 찾는다
-        val categoryNodeId = uiGraphService.findCategoryNodeId(testKioskId, "가라아케")
+        val categoryNodeId = utgService.findCategoryNodeId(testKioskId, "가라아케")
 
         //then: 올바른 카테고리가 반환된다
         assertThat(categoryNodeId).isEqualTo("사이드")
