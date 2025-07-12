@@ -94,7 +94,7 @@ class MenuGraphInitializeService @Autowired constructor(
                 menuDto = menuDto,
                 entity = entity, preNode = preNode,
                 kioskId = kioskId
-            )
+            ).forEach { history.add(it) }
 
             //isNext이고 이전이랑 카테고리 다른 경우. 다른 페이지로 가야하는 경우
             if (isNext) {
@@ -127,10 +127,11 @@ class MenuGraphInitializeService @Autowired constructor(
         entity: UiEntity,
         preNode: UiEntity,
         kioskId: String
-    ): AgentBackDto {
+    ): List<AgentActionDto> {
         //메뉴의 옵션 노드 추가
         val image = notificationService.sendCaptureCommand(kioskId)
         val llmOptList = uiExtractorManager.getUiComponents(image, kioskId)
+        val optActionList = mutableListOf<AgentActionDto>()
 
         //감지되지 못한 옵션이 있을 수 있으므로 한번 더 탐색
         val additionalList = missingComponentAgent.determineAction(image, menuDto.options, llmOptList)
@@ -145,6 +146,7 @@ class MenuGraphInitializeService @Autowired constructor(
         val backAction = backAgent.determineBack(llmOptList)
         for (opt in menuDto.options) {
             val optAction = menuAgent.determineAction(MenuInfoDto(opt, listOf(), menuDto.title), llmOptList)
+            optActionList.add(optAction)
 
             log.info("옵션 노드를 생성합니다. go_next: ${optAction.goNext}, score: ${optAction.score}, coordinate: ${optAction.coordinate}, title: ${optAction.title}")
             val optEntity = utgService.saveNode(UiDto(
@@ -169,7 +171,8 @@ class MenuGraphInitializeService @Autowired constructor(
         log.info("돌아가는 좌표를 클릭중입니다. 좌표: ${backAction.coordinate}")
         notificationService.sendActionCommand(kioskId, backAction.coordinate)
 
-        return backAction
+        optActionList.add(backAction.toActionDto())
+        return optActionList
     }
 
     private fun removeDuplicate(sourceList: List<LlmUiComponentDto>, targetList: MutableList<LlmUiComponentDto>) {
@@ -184,5 +187,3 @@ class MenuGraphInitializeService @Autowired constructor(
         }
     }
 }
-//포장/매장은 주로 메뉴페이지, 결제하기를 누르고 존재 이 둘만 확인
-//메뉴 초기화의 끝, 결제 초기화의 시작부분에서 홗인

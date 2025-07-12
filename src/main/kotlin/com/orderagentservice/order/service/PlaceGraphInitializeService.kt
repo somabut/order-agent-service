@@ -21,7 +21,7 @@ class PlaceGraphInitializeService @Autowired constructor(
     fun initializeGraph(kioskId: String, lastNode: UiEntity, llmUiList: List<LlmUiComponentDto>): List<AgentActionDto> {
         val history = mutableListOf<AgentActionDto>()
         val action = placeAgent.determineAction(llmUiList)
-        if (action.size == 0) {
+        if (action.size <= 1) {
             log.info("포장/매장 UI를 발견하지 못했습니다.")
             return history
         }
