@@ -11,7 +11,14 @@ data class AgentBackDto(
     val score: Float,
     val coordinate: List<Int>,
     val title: String
-)
+) {
+    fun toActionDto() = AgentActionDto(
+        goNext = false,
+        score = score,
+        coordinate = coordinate,
+        title = title
+    )
+}
 
 data class AgentStepDto(
     val steps: List<String>

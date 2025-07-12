@@ -1,0 +1,853 @@
+2025-07-11 20:18:17.317 [INFO] [main] [c.o.OrderAgentServiceApplicationKt] - Starting OrderAgentServiceApplicationKt using Java 21.0.6 with PID 276840 (C:\Users\hachi\IdeaProjects\OrderAgentService\build\classes\kotlin\main started by sunwoo in C:\Users\hachi\IdeaProjects\OrderAgentService)
+2025-07-11 20:18:17.318 [INFO] [main] [c.o.OrderAgentServiceApplicationKt] - The following 1 profile is active: "local"
+2025-07-11 20:18:17.999 [INFO] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 20:18:18.001 [INFO] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-11 20:18:18.031 [INFO] [main] [o.s.d.r.c.RepositoryConfigurationExtensionSupport] - Spring Data JPA - Could not safely identify store assignment for repository candidate interface com.orderagentservice.order.repository.UtgRepository; If you want this repository to be a JPA repository, consider annotating your entities with one of these annotations: jakarta.persistence.Entity, jakarta.persistence.MappedSuperclass (preferred), or consider extending one of the following types with your repository: org.springframework.data.jpa.repository.JpaRepository
+2025-07-11 20:18:18.031 [INFO] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Finished Spring Data repository scanning in 25 ms. Found 0 JPA repository interfaces.
+2025-07-11 20:18:18.052 [INFO] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 20:18:18.053 [INFO] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 20:18:18.141 [INFO] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Finished Spring Data repository scanning in 87 ms. Found 0 Neo4j repository interfaces.
+2025-07-11 20:18:18.146 [INFO] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 20:18:18.146 [INFO] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 20:18:18.165 [INFO] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Finished Spring Data repository scanning in 18 ms. Found 1 Neo4j repository interface.
+2025-07-11 20:18:18.566 [INFO] [main] [o.s.b.w.e.tomcat.TomcatWebServer] - Tomcat initialized with port 8080 (http)
+2025-07-11 20:18:18.575 [INFO] [main] [o.a.coyote.http11.Http11NioProtocol] - Initializing ProtocolHandler ["http-nio-8080"]
+2025-07-11 20:18:18.576 [INFO] [main] [o.a.catalina.core.StandardService] - Starting service [Tomcat]
+2025-07-11 20:18:18.576 [INFO] [main] [o.a.catalina.core.StandardEngine] - Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-07-11 20:18:18.618 [INFO] [main] [o.a.c.c.C.[Tomcat].[localhost].[/]] - Initializing Spring embedded WebApplicationContext
+2025-07-11 20:18:18.618 [INFO] [main] [o.s.b.w.s.c.ServletWebServerApplicationContext] - Root WebApplicationContext: initialization completed in 1264 ms
+2025-07-11 20:18:18.732 [INFO] [main] [com.zaxxer.hikari.HikariDataSource] - HikariPool-1 - Starting...
+2025-07-11 20:18:20.308 [INFO] [main] [com.zaxxer.hikari.pool.HikariPool] - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@799fb45e
+2025-07-11 20:18:20.309 [INFO] [main] [com.zaxxer.hikari.HikariDataSource] - HikariPool-1 - Start completed.
+2025-07-11 20:18:20.348 [INFO] [main] [o.h.jpa.internal.util.LogHelper] - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-11 20:18:20.405 [INFO] [main] [org.hibernate.Version] - HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-07-11 20:18:20.434 [INFO] [main] [o.h.c.i.RegionFactoryInitiator] - HHH000026: Second-level cache disabled
+2025-07-11 20:18:20.682 [INFO] [main] [o.s.o.j.p.SpringPersistenceUnitInfo] - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-11 20:18:21.037 [INFO] [main] [o.hibernate.orm.connections.pooling] - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.42
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-11 20:18:21.571 [INFO] [main] [o.h.e.t.j.p.i.JtaPlatformInitiator] - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-11 20:18:21.574 [INFO] [main] [o.s.o.j.LocalContainerEntityManagerFactoryBean] - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 20:18:22.021 [INFO] [main] [o.n.driver.internal.DriverFactory] - Direct driver instance 1355039397 created for server address localhost:7687
+2025-07-11 20:18:22.591 [INFO] [main] [o.a.coyote.http11.Http11NioProtocol] - Starting ProtocolHandler ["http-nio-8080"]
+2025-07-11 20:18:22.599 [INFO] [main] [o.s.b.w.e.tomcat.TomcatWebServer] - Tomcat started on port 8080 (http) with context path '/'
+2025-07-11 20:18:22.603 [INFO] [main] [c.o.OrderAgentServiceApplicationKt] - Started OrderAgentServiceApplicationKt in 5.712 seconds (process running for 6.511)
+2025-07-11 20:25:32.332 [INFO] [SpringApplicationShutdownHook] [o.s.b.w.e.tomcat.GracefulShutdown] - Commencing graceful shutdown. Waiting for active requests to complete
+2025-07-11 20:25:32.337 [INFO] [tomcat-shutdown] [o.s.b.w.e.tomcat.GracefulShutdown] - Graceful shutdown complete
+2025-07-11 20:25:32.340 [INFO] [SpringApplicationShutdownHook] [o.n.driver.internal.InternalDriver] - Closing driver instance 1355039397
+2025-07-11 20:25:32.562 [INFO] [SpringApplicationShutdownHook] [o.s.o.j.LocalContainerEntityManagerFactoryBean] - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 20:25:32.563 [INFO] [SpringApplicationShutdownHook] [com.zaxxer.hikari.HikariDataSource] - HikariPool-1 - Shutdown initiated...
+2025-07-11 20:25:32.702 [INFO] [SpringApplicationShutdownHook] [com.zaxxer.hikari.HikariDataSource] - HikariPool-1 - Shutdown completed.
+2025-07-11 20:25:34.837 [INFO] [main] [c.o.OrderAgentServiceApplicationKt] - Starting OrderAgentServiceApplicationKt using Java 21.0.6 with PID 277320 (C:\Users\hachi\IdeaProjects\OrderAgentService\build\classes\kotlin\main started by sunwoo in C:\Users\hachi\IdeaProjects\OrderAgentService)
+2025-07-11 20:25:34.838 [INFO] [main] [c.o.OrderAgentServiceApplicationKt] - The following 1 profile is active: "local"
+2025-07-11 20:25:35.334 [INFO] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 20:25:35.335 [INFO] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-11 20:25:35.361 [INFO] [main] [o.s.d.r.c.RepositoryConfigurationExtensionSupport] - Spring Data JPA - Could not safely identify store assignment for repository candidate interface com.orderagentservice.order.repository.UtgRepository; If you want this repository to be a JPA repository, consider annotating your entities with one of these annotations: jakarta.persistence.Entity, jakarta.persistence.MappedSuperclass (preferred), or consider extending one of the following types with your repository: org.springframework.data.jpa.repository.JpaRepository
+2025-07-11 20:25:35.361 [INFO] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Finished Spring Data repository scanning in 22 ms. Found 0 JPA repository interfaces.
+2025-07-11 20:25:35.376 [INFO] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 20:25:35.377 [INFO] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 20:25:35.446 [INFO] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Finished Spring Data repository scanning in 68 ms. Found 0 Neo4j repository interfaces.
+2025-07-11 20:25:35.448 [INFO] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 20:25:35.449 [INFO] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 20:25:35.467 [INFO] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Finished Spring Data repository scanning in 17 ms. Found 1 Neo4j repository interface.
+2025-07-11 20:25:35.817 [INFO] [main] [o.s.b.w.e.tomcat.TomcatWebServer] - Tomcat initialized with port 8080 (http)
+2025-07-11 20:25:35.825 [INFO] [main] [o.a.coyote.http11.Http11NioProtocol] - Initializing ProtocolHandler ["http-nio-8080"]
+2025-07-11 20:25:35.827 [INFO] [main] [o.a.catalina.core.StandardService] - Starting service [Tomcat]
+2025-07-11 20:25:35.827 [INFO] [main] [o.a.catalina.core.StandardEngine] - Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-07-11 20:25:35.865 [INFO] [main] [o.a.c.c.C.[Tomcat].[localhost].[/]] - Initializing Spring embedded WebApplicationContext
+2025-07-11 20:25:35.865 [INFO] [main] [o.s.b.w.s.c.ServletWebServerApplicationContext] - Root WebApplicationContext: initialization completed in 997 ms
+2025-07-11 20:25:35.950 [INFO] [main] [com.zaxxer.hikari.HikariDataSource] - HikariPool-1 - Starting...
+2025-07-11 20:25:37.545 [INFO] [main] [com.zaxxer.hikari.pool.HikariPool] - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@2a2798a2
+2025-07-11 20:25:37.547 [INFO] [main] [com.zaxxer.hikari.HikariDataSource] - HikariPool-1 - Start completed.
+2025-07-11 20:25:37.572 [INFO] [main] [o.h.jpa.internal.util.LogHelper] - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-11 20:25:37.611 [INFO] [main] [org.hibernate.Version] - HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-07-11 20:25:37.634 [INFO] [main] [o.h.c.i.RegionFactoryInitiator] - HHH000026: Second-level cache disabled
+2025-07-11 20:25:37.838 [INFO] [main] [o.s.o.j.p.SpringPersistenceUnitInfo] - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-11 20:25:38.198 [INFO] [main] [o.hibernate.orm.connections.pooling] - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.42
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-11 20:25:38.717 [INFO] [main] [o.h.e.t.j.p.i.JtaPlatformInitiator] - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-11 20:25:38.720 [INFO] [main] [o.s.o.j.LocalContainerEntityManagerFactoryBean] - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 20:25:39.116 [INFO] [main] [o.n.driver.internal.DriverFactory] - Direct driver instance 1365343123 created for server address localhost:7687
+2025-07-11 20:25:39.633 [INFO] [main] [o.a.coyote.http11.Http11NioProtocol] - Starting ProtocolHandler ["http-nio-8080"]
+2025-07-11 20:25:39.641 [INFO] [main] [o.s.b.w.e.tomcat.TomcatWebServer] - Tomcat started on port 8080 (http) with context path '/'
+2025-07-11 20:25:39.644 [INFO] [main] [c.o.OrderAgentServiceApplicationKt] - Started OrderAgentServiceApplicationKt in 5.177 seconds (process running for 5.656)
+2025-07-11 20:26:37.880 [INFO] [SpringApplicationShutdownHook] [o.s.b.w.e.tomcat.GracefulShutdown] - Commencing graceful shutdown. Waiting for active requests to complete
+2025-07-11 20:26:37.886 [INFO] [tomcat-shutdown] [o.s.b.w.e.tomcat.GracefulShutdown] - Graceful shutdown complete
+2025-07-11 20:26:37.888 [INFO] [SpringApplicationShutdownHook] [o.n.driver.internal.InternalDriver] - Closing driver instance 1365343123
+2025-07-11 20:26:38.115 [INFO] [SpringApplicationShutdownHook] [o.s.o.j.LocalContainerEntityManagerFactoryBean] - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 20:26:38.116 [INFO] [SpringApplicationShutdownHook] [com.zaxxer.hikari.HikariDataSource] - HikariPool-1 - Shutdown initiated...
+2025-07-11 20:26:38.262 [INFO] [SpringApplicationShutdownHook] [com.zaxxer.hikari.HikariDataSource] - HikariPool-1 - Shutdown completed.
+2025-07-11 20:28:00.561 [INFO] [main] [c.o.OrderAgentServiceApplicationKt] - Starting OrderAgentServiceApplicationKt using Java 21.0.6 with PID 281676 (C:\Users\hachi\IdeaProjects\OrderAgentService\build\classes\kotlin\main started by sunwoo in C:\Users\hachi\IdeaProjects\OrderAgentService)
+2025-07-11 20:28:00.562 [INFO] [main] [c.o.OrderAgentServiceApplicationKt] - The following 1 profile is active: "local"
+2025-07-11 20:28:01.088 [INFO] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 20:28:01.089 [INFO] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-11 20:28:01.118 [INFO] [main] [o.s.d.r.c.RepositoryConfigurationExtensionSupport] - Spring Data JPA - Could not safely identify store assignment for repository candidate interface com.orderagentservice.order.repository.UtgRepository; If you want this repository to be a JPA repository, consider annotating your entities with one of these annotations: jakarta.persistence.Entity, jakarta.persistence.MappedSuperclass (preferred), or consider extending one of the following types with your repository: org.springframework.data.jpa.repository.JpaRepository
+2025-07-11 20:28:01.119 [INFO] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Finished Spring Data repository scanning in 24 ms. Found 0 JPA repository interfaces.
+2025-07-11 20:28:01.132 [INFO] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 20:28:01.133 [INFO] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 20:28:01.225 [INFO] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Finished Spring Data repository scanning in 90 ms. Found 0 Neo4j repository interfaces.
+2025-07-11 20:28:01.229 [INFO] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 20:28:01.230 [INFO] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 20:28:01.250 [INFO] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Finished Spring Data repository scanning in 19 ms. Found 1 Neo4j repository interface.
+2025-07-11 20:28:01.636 [INFO] [main] [o.s.b.w.e.tomcat.TomcatWebServer] - Tomcat initialized with port 8080 (http)
+2025-07-11 20:28:01.644 [INFO] [main] [o.a.coyote.http11.Http11NioProtocol] - Initializing ProtocolHandler ["http-nio-8080"]
+2025-07-11 20:28:01.645 [INFO] [main] [o.a.catalina.core.StandardService] - Starting service [Tomcat]
+2025-07-11 20:28:01.645 [INFO] [main] [o.a.catalina.core.StandardEngine] - Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-07-11 20:28:01.692 [INFO] [main] [o.a.c.c.C.[Tomcat].[localhost].[/]] - Initializing Spring embedded WebApplicationContext
+2025-07-11 20:28:01.693 [INFO] [main] [o.s.b.w.s.c.ServletWebServerApplicationContext] - Root WebApplicationContext: initialization completed in 1098 ms
+2025-07-11 20:28:01.782 [INFO] [main] [com.zaxxer.hikari.HikariDataSource] - HikariPool-1 - Starting...
+2025-07-11 20:28:03.402 [INFO] [main] [com.zaxxer.hikari.pool.HikariPool] - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@2a2798a2
+2025-07-11 20:28:03.404 [INFO] [main] [com.zaxxer.hikari.HikariDataSource] - HikariPool-1 - Start completed.
+2025-07-11 20:28:03.429 [INFO] [main] [o.h.jpa.internal.util.LogHelper] - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-11 20:28:03.472 [INFO] [main] [org.hibernate.Version] - HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-07-11 20:28:03.496 [INFO] [main] [o.h.c.i.RegionFactoryInitiator] - HHH000026: Second-level cache disabled
+2025-07-11 20:28:03.696 [INFO] [main] [o.s.o.j.p.SpringPersistenceUnitInfo] - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-11 20:28:04.055 [INFO] [main] [o.hibernate.orm.connections.pooling] - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.42
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-11 20:28:04.538 [INFO] [main] [o.h.e.t.j.p.i.JtaPlatformInitiator] - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-11 20:28:04.540 [INFO] [main] [o.s.o.j.LocalContainerEntityManagerFactoryBean] - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 20:28:04.938 [INFO] [main] [o.n.driver.internal.DriverFactory] - Direct driver instance 910668404 created for server address localhost:7687
+2025-07-11 20:28:05.456 [INFO] [main] [o.a.coyote.http11.Http11NioProtocol] - Starting ProtocolHandler ["http-nio-8080"]
+2025-07-11 20:28:05.463 [INFO] [main] [o.s.b.w.e.tomcat.TomcatWebServer] - Tomcat started on port 8080 (http) with context path '/'
+2025-07-11 20:28:05.467 [INFO] [main] [c.o.OrderAgentServiceApplicationKt] - Started OrderAgentServiceApplicationKt in 5.281 seconds (process running for 5.771)
+2025-07-11 20:30:03.018 [INFO] [SpringApplicationShutdownHook] [o.s.b.w.e.tomcat.GracefulShutdown] - Commencing graceful shutdown. Waiting for active requests to complete
+2025-07-11 20:30:03.023 [INFO] [tomcat-shutdown] [o.s.b.w.e.tomcat.GracefulShutdown] - Graceful shutdown complete
+2025-07-11 20:30:03.025 [INFO] [SpringApplicationShutdownHook] [o.n.driver.internal.InternalDriver] - Closing driver instance 910668404
+2025-07-11 20:30:03.246 [INFO] [SpringApplicationShutdownHook] [o.s.o.j.LocalContainerEntityManagerFactoryBean] - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 20:30:03.247 [INFO] [SpringApplicationShutdownHook] [com.zaxxer.hikari.HikariDataSource] - HikariPool-1 - Shutdown initiated...
+2025-07-11 20:30:03.395 [INFO] [SpringApplicationShutdownHook] [com.zaxxer.hikari.HikariDataSource] - HikariPool-1 - Shutdown completed.
+2025-07-11 20:30:05.462 [INFO] [main] [[34mINFO [0;39m c.o.OrderAgentServiceApplicationKt] - Starting OrderAgentServiceApplicationKt using Java 21.0.6 with PID 283136 (C:\Users\hachi\IdeaProjects\OrderAgentService\build\classes\kotlin\main started by sunwoo in C:\Users\hachi\IdeaProjects\OrderAgentService)
+2025-07-11 20:30:05.463 [INFO] [main] [[34mINFO [0;39m c.o.OrderAgentServiceApplicationKt] - The following 1 profile is active: "local"
+2025-07-11 20:30:05.957 [INFO] [main] [[34mINFO [0;39m o.s.d.r.c.RepositoryConfigurationDelegate] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 20:30:05.959 [INFO] [main] [[34mINFO [0;39m o.s.d.r.c.RepositoryConfigurationDelegate] - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-11 20:30:05.986 [INFO] [main] [[34mINFO [0;39m o.s.d.r.c.RepositoryConfigurationExtensionSupport] - Spring Data JPA - Could not safely identify store assignment for repository candidate interface com.orderagentservice.order.repository.UtgRepository; If you want this repository to be a JPA repository, consider annotating your entities with one of these annotations: jakarta.persistence.Entity, jakarta.persistence.MappedSuperclass (preferred), or consider extending one of the following types with your repository: org.springframework.data.jpa.repository.JpaRepository
+2025-07-11 20:30:05.987 [INFO] [main] [[34mINFO [0;39m o.s.d.r.c.RepositoryConfigurationDelegate] - Finished Spring Data repository scanning in 23 ms. Found 0 JPA repository interfaces.
+2025-07-11 20:30:06.000 [INFO] [main] [[34mINFO [0;39m o.s.d.r.c.RepositoryConfigurationDelegate] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 20:30:06.001 [INFO] [main] [[34mINFO [0;39m o.s.d.r.c.RepositoryConfigurationDelegate] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 20:30:06.074 [INFO] [main] [[34mINFO [0;39m o.s.d.r.c.RepositoryConfigurationDelegate] - Finished Spring Data repository scanning in 72 ms. Found 0 Neo4j repository interfaces.
+2025-07-11 20:30:06.077 [INFO] [main] [[34mINFO [0;39m o.s.d.r.c.RepositoryConfigurationDelegate] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 20:30:06.077 [INFO] [main] [[34mINFO [0;39m o.s.d.r.c.RepositoryConfigurationDelegate] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 20:30:06.096 [INFO] [main] [[34mINFO [0;39m o.s.d.r.c.RepositoryConfigurationDelegate] - Finished Spring Data repository scanning in 18 ms. Found 1 Neo4j repository interface.
+2025-07-11 20:30:06.451 [INFO] [main] [[34mINFO [0;39m o.s.b.w.e.tomcat.TomcatWebServer] - Tomcat initialized with port 8080 (http)
+2025-07-11 20:30:06.459 [INFO] [main] [[34mINFO [0;39m o.a.coyote.http11.Http11NioProtocol] - Initializing ProtocolHandler ["http-nio-8080"]
+2025-07-11 20:30:06.460 [INFO] [main] [[34mINFO [0;39m o.a.catalina.core.StandardService] - Starting service [Tomcat]
+2025-07-11 20:30:06.460 [INFO] [main] [[34mINFO [0;39m o.a.catalina.core.StandardEngine] - Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-07-11 20:30:06.499 [INFO] [main] [[34mINFO [0;39m o.a.c.c.C.[Tomcat].[localhost].[/]] - Initializing Spring embedded WebApplicationContext
+2025-07-11 20:30:06.499 [INFO] [main] [[34mINFO [0;39m o.s.b.w.s.c.ServletWebServerApplicationContext] - Root WebApplicationContext: initialization completed in 1002 ms
+2025-07-11 20:30:06.585 [INFO] [main] [[34mINFO [0;39m com.zaxxer.hikari.HikariDataSource] - HikariPool-1 - Starting...
+2025-07-11 20:30:08.199 [INFO] [main] [[34mINFO [0;39m com.zaxxer.hikari.pool.HikariPool] - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@299cab08
+2025-07-11 20:30:08.200 [INFO] [main] [[34mINFO [0;39m com.zaxxer.hikari.HikariDataSource] - HikariPool-1 - Start completed.
+2025-07-11 20:30:08.226 [INFO] [main] [[34mINFO [0;39m o.h.jpa.internal.util.LogHelper] - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-11 20:30:08.264 [INFO] [main] [[34mINFO [0;39m org.hibernate.Version] - HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-07-11 20:30:08.286 [INFO] [main] [[34mINFO [0;39m o.h.c.i.RegionFactoryInitiator] - HHH000026: Second-level cache disabled
+2025-07-11 20:30:08.486 [INFO] [main] [[34mINFO [0;39m o.s.o.j.p.SpringPersistenceUnitInfo] - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-11 20:30:08.846 [INFO] [main] [[34mINFO [0;39m o.hibernate.orm.connections.pooling] - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.42
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-11 20:30:09.328 [INFO] [main] [[34mINFO [0;39m o.h.e.t.j.p.i.JtaPlatformInitiator] - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-11 20:30:09.330 [INFO] [main] [[34mINFO [0;39m o.s.o.j.LocalContainerEntityManagerFactoryBean] - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 20:30:09.734 [INFO] [main] [[34mINFO [0;39m o.n.driver.internal.DriverFactory] - Direct driver instance 293338808 created for server address localhost:7687
+2025-07-11 20:30:10.255 [INFO] [main] [[34mINFO [0;39m o.a.coyote.http11.Http11NioProtocol] - Starting ProtocolHandler ["http-nio-8080"]
+2025-07-11 20:30:10.262 [INFO] [main] [[34mINFO [0;39m o.s.b.w.e.tomcat.TomcatWebServer] - Tomcat started on port 8080 (http) with context path '/'
+2025-07-11 20:30:10.266 [INFO] [main] [[34mINFO [0;39m c.o.OrderAgentServiceApplicationKt] - Started OrderAgentServiceApplicationKt in 5.188 seconds (process running for 5.716)
+2025-07-11 20:30:21.688 [INFO] [SpringApplicationShutdownHook] [[34mINFO [0;39m o.s.b.w.e.tomcat.GracefulShutdown] - Commencing graceful shutdown. Waiting for active requests to complete
+2025-07-11 20:30:21.694 [INFO] [tomcat-shutdown] [[34mINFO [0;39m o.s.b.w.e.tomcat.GracefulShutdown] - Graceful shutdown complete
+2025-07-11 20:30:21.696 [INFO] [SpringApplicationShutdownHook] [[34mINFO [0;39m o.n.driver.internal.InternalDriver] - Closing driver instance 293338808
+2025-07-11 20:30:21.917 [INFO] [SpringApplicationShutdownHook] [[34mINFO [0;39m o.s.o.j.LocalContainerEntityManagerFactoryBean] - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 20:30:21.918 [INFO] [SpringApplicationShutdownHook] [[34mINFO [0;39m com.zaxxer.hikari.HikariDataSource] - HikariPool-1 - Shutdown initiated...
+2025-07-11 20:30:22.066 [INFO] [SpringApplicationShutdownHook] [[34mINFO [0;39m com.zaxxer.hikari.HikariDataSource] - HikariPool-1 - Shutdown completed.
+2025-07-11 20:30:24.104 [[34mINFO [0;39m INFO] [main] [[34mINFO [0;39m c.o.OrderAgentServiceApplicationKt] - Starting OrderAgentServiceApplicationKt using Java 21.0.6 with PID 281196 (C:\Users\hachi\IdeaProjects\OrderAgentService\build\classes\kotlin\main started by sunwoo in C:\Users\hachi\IdeaProjects\OrderAgentService)
+2025-07-11 20:30:24.105 [[34mINFO [0;39m INFO] [main] [[34mINFO [0;39m c.o.OrderAgentServiceApplicationKt] - The following 1 profile is active: "local"
+2025-07-11 20:30:24.605 [[34mINFO [0;39m INFO] [main] [[34mINFO [0;39m o.s.d.r.c.RepositoryConfigurationDelegate] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 20:30:24.607 [[34mINFO [0;39m INFO] [main] [[34mINFO [0;39m o.s.d.r.c.RepositoryConfigurationDelegate] - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-11 20:30:24.634 [[34mINFO [0;39m INFO] [main] [[34mINFO [0;39m o.s.d.r.c.RepositoryConfigurationExtensionSupport] - Spring Data JPA - Could not safely identify store assignment for repository candidate interface com.orderagentservice.order.repository.UtgRepository; If you want this repository to be a JPA repository, consider annotating your entities with one of these annotations: jakarta.persistence.Entity, jakarta.persistence.MappedSuperclass (preferred), or consider extending one of the following types with your repository: org.springframework.data.jpa.repository.JpaRepository
+2025-07-11 20:30:24.634 [[34mINFO [0;39m INFO] [main] [[34mINFO [0;39m o.s.d.r.c.RepositoryConfigurationDelegate] - Finished Spring Data repository scanning in 22 ms. Found 0 JPA repository interfaces.
+2025-07-11 20:30:24.648 [[34mINFO [0;39m INFO] [main] [[34mINFO [0;39m o.s.d.r.c.RepositoryConfigurationDelegate] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 20:30:24.648 [[34mINFO [0;39m INFO] [main] [[34mINFO [0;39m o.s.d.r.c.RepositoryConfigurationDelegate] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 20:30:24.719 [[34mINFO [0;39m INFO] [main] [[34mINFO [0;39m o.s.d.r.c.RepositoryConfigurationDelegate] - Finished Spring Data repository scanning in 69 ms. Found 0 Neo4j repository interfaces.
+2025-07-11 20:30:24.721 [[34mINFO [0;39m INFO] [main] [[34mINFO [0;39m o.s.d.r.c.RepositoryConfigurationDelegate] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 20:30:24.722 [[34mINFO [0;39m INFO] [main] [[34mINFO [0;39m o.s.d.r.c.RepositoryConfigurationDelegate] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 20:30:24.741 [[34mINFO [0;39m INFO] [main] [[34mINFO [0;39m o.s.d.r.c.RepositoryConfigurationDelegate] - Finished Spring Data repository scanning in 17 ms. Found 1 Neo4j repository interface.
+2025-07-11 20:30:25.097 [[34mINFO [0;39m INFO] [main] [[34mINFO [0;39m o.s.b.w.e.tomcat.TomcatWebServer] - Tomcat initialized with port 8080 (http)
+2025-07-11 20:30:25.104 [[34mINFO [0;39m INFO] [main] [[34mINFO [0;39m o.a.coyote.http11.Http11NioProtocol] - Initializing ProtocolHandler ["http-nio-8080"]
+2025-07-11 20:30:25.105 [[34mINFO [0;39m INFO] [main] [[34mINFO [0;39m o.a.catalina.core.StandardService] - Starting service [Tomcat]
+2025-07-11 20:30:25.105 [[34mINFO [0;39m INFO] [main] [[34mINFO [0;39m o.a.catalina.core.StandardEngine] - Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-07-11 20:30:25.147 [[34mINFO [0;39m INFO] [main] [[34mINFO [0;39m o.a.c.c.C.[Tomcat].[localhost].[/]] - Initializing Spring embedded WebApplicationContext
+2025-07-11 20:30:25.147 [[34mINFO [0;39m INFO] [main] [[34mINFO [0;39m o.s.b.w.s.c.ServletWebServerApplicationContext] - Root WebApplicationContext: initialization completed in 1007 ms
+2025-07-11 20:30:25.225 [[34mINFO [0;39m INFO] [main] [[34mINFO [0;39m com.zaxxer.hikari.HikariDataSource] - HikariPool-1 - Starting...
+2025-07-11 20:30:26.894 [[34mINFO [0;39m INFO] [main] [[34mINFO [0;39m com.zaxxer.hikari.pool.HikariPool] - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@459e120b
+2025-07-11 20:30:26.895 [[34mINFO [0;39m INFO] [main] [[34mINFO [0;39m com.zaxxer.hikari.HikariDataSource] - HikariPool-1 - Start completed.
+2025-07-11 20:30:26.922 [[34mINFO [0;39m INFO] [main] [[34mINFO [0;39m o.h.jpa.internal.util.LogHelper] - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-11 20:30:26.962 [[34mINFO [0;39m INFO] [main] [[34mINFO [0;39m org.hibernate.Version] - HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-07-11 20:30:26.984 [[34mINFO [0;39m INFO] [main] [[34mINFO [0;39m o.h.c.i.RegionFactoryInitiator] - HHH000026: Second-level cache disabled
+2025-07-11 20:30:27.191 [[34mINFO [0;39m INFO] [main] [[34mINFO [0;39m o.s.o.j.p.SpringPersistenceUnitInfo] - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-11 20:30:27.563 [[34mINFO [0;39m INFO] [main] [[34mINFO [0;39m o.hibernate.orm.connections.pooling] - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.42
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-11 20:30:28.045 [[34mINFO [0;39m INFO] [main] [[34mINFO [0;39m o.h.e.t.j.p.i.JtaPlatformInitiator] - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-11 20:30:28.047 [[34mINFO [0;39m INFO] [main] [[34mINFO [0;39m o.s.o.j.LocalContainerEntityManagerFactoryBean] - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 20:30:28.445 [[34mINFO [0;39m INFO] [main] [[34mINFO [0;39m o.n.driver.internal.DriverFactory] - Direct driver instance 1181497822 created for server address localhost:7687
+2025-07-11 20:30:28.992 [[34mINFO [0;39m INFO] [main] [[34mINFO [0;39m o.a.coyote.http11.Http11NioProtocol] - Starting ProtocolHandler ["http-nio-8080"]
+2025-07-11 20:30:29.000 [[34mINFO [0;39m INFO] [main] [[34mINFO [0;39m o.s.b.w.e.tomcat.TomcatWebServer] - Tomcat started on port 8080 (http) with context path '/'
+2025-07-11 20:30:29.003 [[34mINFO [0;39m INFO] [main] [[34mINFO [0;39m c.o.OrderAgentServiceApplicationKt] - Started OrderAgentServiceApplicationKt in 5.274 seconds (process running for 5.776)
+2025-07-11 20:32:03.403 [[34mINFO [0;39m INFO] [SpringApplicationShutdownHook] [[34mINFO [0;39m o.s.b.w.e.tomcat.GracefulShutdown] - Commencing graceful shutdown. Waiting for active requests to complete
+2025-07-11 20:32:03.408 [[34mINFO [0;39m INFO] [tomcat-shutdown] [[34mINFO [0;39m o.s.b.w.e.tomcat.GracefulShutdown] - Graceful shutdown complete
+2025-07-11 20:32:03.410 [[34mINFO [0;39m INFO] [SpringApplicationShutdownHook] [[34mINFO [0;39m o.n.driver.internal.InternalDriver] - Closing driver instance 1181497822
+2025-07-11 20:32:03.629 [[34mINFO [0;39m INFO] [SpringApplicationShutdownHook] [[34mINFO [0;39m o.s.o.j.LocalContainerEntityManagerFactoryBean] - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 20:32:03.630 [[34mINFO [0;39m INFO] [SpringApplicationShutdownHook] [[34mINFO [0;39m com.zaxxer.hikari.HikariDataSource] - HikariPool-1 - Shutdown initiated...
+2025-07-11 20:32:03.782 [[34mINFO [0;39m INFO] [SpringApplicationShutdownHook] [[34mINFO [0;39m com.zaxxer.hikari.HikariDataSource] - HikariPool-1 - Shutdown completed.
+2025-07-11 20:35:17.325 [[34mINFO [0;39m] [main] [c.o.OrderAgentServiceApplicationKt] - Starting OrderAgentServiceApplicationKt using Java 21.0.6 with PID 279608 (C:\Users\hachi\IdeaProjects\OrderAgentService\build\classes\kotlin\main started by sunwoo in C:\Users\hachi\IdeaProjects\OrderAgentService)
+2025-07-11 20:35:17.327 [[34mINFO [0;39m] [main] [c.o.OrderAgentServiceApplicationKt] - The following 1 profile is active: "local"
+2025-07-11 20:35:17.830 [[34mINFO [0;39m] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 20:35:17.832 [[34mINFO [0;39m] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-11 20:35:17.860 [[34mINFO [0;39m] [main] [o.s.d.r.c.RepositoryConfigurationExtensionSupport] - Spring Data JPA - Could not safely identify store assignment for repository candidate interface com.orderagentservice.order.repository.UtgRepository; If you want this repository to be a JPA repository, consider annotating your entities with one of these annotations: jakarta.persistence.Entity, jakarta.persistence.MappedSuperclass (preferred), or consider extending one of the following types with your repository: org.springframework.data.jpa.repository.JpaRepository
+2025-07-11 20:35:17.861 [[34mINFO [0;39m] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Finished Spring Data repository scanning in 23 ms. Found 0 JPA repository interfaces.
+2025-07-11 20:35:17.874 [[34mINFO [0;39m] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 20:35:17.875 [[34mINFO [0;39m] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 20:35:17.951 [[34mINFO [0;39m] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Finished Spring Data repository scanning in 74 ms. Found 0 Neo4j repository interfaces.
+2025-07-11 20:35:17.954 [[34mINFO [0;39m] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 20:35:17.954 [[34mINFO [0;39m] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 20:35:17.973 [[34mINFO [0;39m] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Finished Spring Data repository scanning in 17 ms. Found 1 Neo4j repository interface.
+2025-07-11 20:35:18.325 [[34mINFO [0;39m] [main] [o.s.b.w.e.tomcat.TomcatWebServer] - Tomcat initialized with port 8080 (http)
+2025-07-11 20:35:18.333 [[34mINFO [0;39m] [main] [o.a.coyote.http11.Http11NioProtocol] - Initializing ProtocolHandler ["http-nio-8080"]
+2025-07-11 20:35:18.334 [[34mINFO [0;39m] [main] [o.a.catalina.core.StandardService] - Starting service [Tomcat]
+2025-07-11 20:35:18.334 [[34mINFO [0;39m] [main] [o.a.catalina.core.StandardEngine] - Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-07-11 20:35:18.371 [[34mINFO [0;39m] [main] [o.a.c.c.C.[Tomcat].[localhost].[/]] - Initializing Spring embedded WebApplicationContext
+2025-07-11 20:35:18.371 [[34mINFO [0;39m] [main] [o.s.b.w.s.c.ServletWebServerApplicationContext] - Root WebApplicationContext: initialization completed in 1010 ms
+2025-07-11 20:35:18.450 [[34mINFO [0;39m] [main] [com.zaxxer.hikari.HikariDataSource] - HikariPool-1 - Starting...
+2025-07-11 20:35:20.010 [[34mINFO [0;39m] [main] [com.zaxxer.hikari.pool.HikariPool] - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@4f7ba0af
+2025-07-11 20:35:20.011 [[34mINFO [0;39m] [main] [com.zaxxer.hikari.HikariDataSource] - HikariPool-1 - Start completed.
+2025-07-11 20:35:20.036 [[34mINFO [0;39m] [main] [o.h.jpa.internal.util.LogHelper] - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-11 20:35:20.074 [[34mINFO [0;39m] [main] [org.hibernate.Version] - HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-07-11 20:35:20.096 [[34mINFO [0;39m] [main] [o.h.c.i.RegionFactoryInitiator] - HHH000026: Second-level cache disabled
+2025-07-11 20:35:20.301 [[34mINFO [0;39m] [main] [o.s.o.j.p.SpringPersistenceUnitInfo] - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-11 20:35:20.651 [[34mINFO [0;39m] [main] [o.hibernate.orm.connections.pooling] - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.42
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-11 20:35:21.126 [[34mINFO [0;39m] [main] [o.h.e.t.j.p.i.JtaPlatformInitiator] - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-11 20:35:21.128 [[34mINFO [0;39m] [main] [o.s.o.j.LocalContainerEntityManagerFactoryBean] - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 20:35:21.520 [[34mINFO [0;39m] [main] [o.n.driver.internal.DriverFactory] - Direct driver instance 1070146065 created for server address localhost:7687
+2025-07-11 20:35:22.069 [[34mINFO [0;39m] [main] [o.a.coyote.http11.Http11NioProtocol] - Starting ProtocolHandler ["http-nio-8080"]
+2025-07-11 20:35:22.077 [[34mINFO [0;39m] [main] [o.s.b.w.e.tomcat.TomcatWebServer] - Tomcat started on port 8080 (http) with context path '/'
+2025-07-11 20:35:22.081 [[34mINFO [0;39m] [main] [c.o.OrderAgentServiceApplicationKt] - Started OrderAgentServiceApplicationKt in 5.138 seconds (process running for 5.65)
+2025-07-11 20:35:42.828 [[34mINFO [0;39m] [http-nio-8080-exec-2] [o.a.c.c.C.[Tomcat].[localhost].[/]] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-07-11 20:35:42.828 [[34mINFO [0;39m] [http-nio-8080-exec-2] [o.s.web.servlet.DispatcherServlet] - Initializing Servlet 'dispatcherServlet'
+2025-07-11 20:35:42.829 [[34mINFO [0;39m] [http-nio-8080-exec-2] [o.s.web.servlet.DispatcherServlet] - Completed initialization in 1 ms
+2025-07-11 20:36:21.913 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [o.s.b.w.e.tomcat.GracefulShutdown] - Commencing graceful shutdown. Waiting for active requests to complete
+2025-07-11 20:36:21.919 [[34mINFO [0;39m] [tomcat-shutdown] [o.s.b.w.e.tomcat.GracefulShutdown] - Graceful shutdown complete
+2025-07-11 20:36:21.921 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [o.n.driver.internal.InternalDriver] - Closing driver instance 1070146065
+2025-07-11 20:36:22.146 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [o.s.o.j.LocalContainerEntityManagerFactoryBean] - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 20:36:22.147 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [com.zaxxer.hikari.HikariDataSource] - HikariPool-1 - Shutdown initiated...
+2025-07-11 20:36:22.289 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [com.zaxxer.hikari.HikariDataSource] - HikariPool-1 - Shutdown completed.
+2025-07-11 20:37:09.903 [[34mINFO [0;39m] [main] [c.o.OrderAgentServiceApplicationKt] - Starting OrderAgentServiceApplicationKt using Java 21.0.6 with PID 207284 (C:\Users\hachi\IdeaProjects\OrderAgentService\build\classes\kotlin\main started by sunwoo in C:\Users\hachi\IdeaProjects\OrderAgentService)
+2025-07-11 20:37:09.904 [[34mINFO [0;39m] [main] [c.o.OrderAgentServiceApplicationKt] - The following 1 profile is active: "local"
+2025-07-11 20:37:10.421 [[34mINFO [0;39m] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 20:37:10.422 [[34mINFO [0;39m] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-11 20:37:10.451 [[34mINFO [0;39m] [main] [o.s.d.r.c.RepositoryConfigurationExtensionSupport] - Spring Data JPA - Could not safely identify store assignment for repository candidate interface com.orderagentservice.order.repository.UtgRepository; If you want this repository to be a JPA repository, consider annotating your entities with one of these annotations: jakarta.persistence.Entity, jakarta.persistence.MappedSuperclass (preferred), or consider extending one of the following types with your repository: org.springframework.data.jpa.repository.JpaRepository
+2025-07-11 20:37:10.452 [[34mINFO [0;39m] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Finished Spring Data repository scanning in 24 ms. Found 0 JPA repository interfaces.
+2025-07-11 20:37:10.467 [[34mINFO [0;39m] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 20:37:10.468 [[34mINFO [0;39m] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 20:37:10.544 [[34mINFO [0;39m] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Finished Spring Data repository scanning in 75 ms. Found 0 Neo4j repository interfaces.
+2025-07-11 20:37:10.550 [[34mINFO [0;39m] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 20:37:10.550 [[34mINFO [0;39m] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 20:37:10.570 [[34mINFO [0;39m] [main] [o.s.d.r.c.RepositoryConfigurationDelegate] - Finished Spring Data repository scanning in 19 ms. Found 1 Neo4j repository interface.
+2025-07-11 20:37:10.937 [[34mINFO [0;39m] [main] [o.s.b.w.e.tomcat.TomcatWebServer] - Tomcat initialized with port 8080 (http)
+2025-07-11 20:37:10.944 [[34mINFO [0;39m] [main] [o.a.coyote.http11.Http11NioProtocol] - Initializing ProtocolHandler ["http-nio-8080"]
+2025-07-11 20:37:10.945 [[34mINFO [0;39m] [main] [o.a.catalina.core.StandardService] - Starting service [Tomcat]
+2025-07-11 20:37:10.945 [[34mINFO [0;39m] [main] [o.a.catalina.core.StandardEngine] - Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-07-11 20:37:10.987 [[34mINFO [0;39m] [main] [o.a.c.c.C.[Tomcat].[localhost].[/]] - Initializing Spring embedded WebApplicationContext
+2025-07-11 20:37:10.988 [[34mINFO [0;39m] [main] [o.s.b.w.s.c.ServletWebServerApplicationContext] - Root WebApplicationContext: initialization completed in 1051 ms
+2025-07-11 20:37:11.065 [[34mINFO [0;39m] [main] [com.zaxxer.hikari.HikariDataSource] - HikariPool-1 - Starting...
+2025-07-11 20:37:12.675 [[34mINFO [0;39m] [main] [com.zaxxer.hikari.pool.HikariPool] - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@799fb45e
+2025-07-11 20:37:12.676 [[34mINFO [0;39m] [main] [com.zaxxer.hikari.HikariDataSource] - HikariPool-1 - Start completed.
+2025-07-11 20:37:12.701 [[34mINFO [0;39m] [main] [o.h.jpa.internal.util.LogHelper] - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-11 20:37:12.739 [[34mINFO [0;39m] [main] [org.hibernate.Version] - HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-07-11 20:37:12.762 [[34mINFO [0;39m] [main] [o.h.c.i.RegionFactoryInitiator] - HHH000026: Second-level cache disabled
+2025-07-11 20:37:12.970 [[34mINFO [0;39m] [main] [o.s.o.j.p.SpringPersistenceUnitInfo] - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-11 20:37:13.333 [[34mINFO [0;39m] [main] [o.hibernate.orm.connections.pooling] - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.42
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-11 20:37:13.846 [[34mINFO [0;39m] [main] [o.h.e.t.j.p.i.JtaPlatformInitiator] - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-11 20:37:13.847 [[34mINFO [0;39m] [main] [o.s.o.j.LocalContainerEntityManagerFactoryBean] - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 20:37:14.287 [[34mINFO [0;39m] [main] [o.n.driver.internal.DriverFactory] - Direct driver instance 1320358893 created for server address localhost:7687
+2025-07-11 20:37:14.818 [[34mINFO [0;39m] [main] [o.a.coyote.http11.Http11NioProtocol] - Starting ProtocolHandler ["http-nio-8080"]
+2025-07-11 20:37:14.824 [[34mINFO [0;39m] [main] [o.s.b.w.e.tomcat.TomcatWebServer] - Tomcat started on port 8080 (http) with context path '/'
+2025-07-11 20:37:14.829 [[34mINFO [0;39m] [main] [c.o.OrderAgentServiceApplicationKt] - Started OrderAgentServiceApplicationKt in 5.304 seconds (process running for 5.79)
+2025-07-11 20:38:08.197 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [o.s.b.w.e.tomcat.GracefulShutdown] - Commencing graceful shutdown. Waiting for active requests to complete
+2025-07-11 20:38:08.204 [[34mINFO [0;39m] [tomcat-shutdown] [o.s.b.w.e.tomcat.GracefulShutdown] - Graceful shutdown complete
+2025-07-11 20:38:08.206 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [o.n.driver.internal.InternalDriver] - Closing driver instance 1320358893
+2025-07-11 20:38:08.425 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [o.s.o.j.LocalContainerEntityManagerFactoryBean] - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 20:38:08.426 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [com.zaxxer.hikari.HikariDataSource] - HikariPool-1 - Shutdown initiated...
+2025-07-11 20:38:08.573 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [com.zaxxer.hikari.HikariDataSource] - HikariPool-1 - Shutdown completed.
+2025-07-11 20:38:10.575 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - Starting OrderAgentServiceApplicationKt using Java 21.0.6 with PID 288128 (C:\Users\hachi\IdeaProjects\OrderAgentService\build\classes\kotlin\main started by sunwoo in C:\Users\hachi\IdeaProjects\OrderAgentService)
+2025-07-11 20:38:10.577 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - The following 1 profile is active: "local"
+2025-07-11 20:38:11.074 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 20:38:11.076 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-11 20:38:11.103 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationExtensionSupport[0;39m] - Spring Data JPA - Could not safely identify store assignment for repository candidate interface com.orderagentservice.order.repository.UtgRepository; If you want this repository to be a JPA repository, consider annotating your entities with one of these annotations: jakarta.persistence.Entity, jakarta.persistence.MappedSuperclass (preferred), or consider extending one of the following types with your repository: org.springframework.data.jpa.repository.JpaRepository
+2025-07-11 20:38:11.104 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 23 ms. Found 0 JPA repository interfaces.
+2025-07-11 20:38:11.116 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 20:38:11.117 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 20:38:11.186 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 68 ms. Found 0 Neo4j repository interfaces.
+2025-07-11 20:38:11.190 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 20:38:11.190 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 20:38:11.207 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 16 ms. Found 1 Neo4j repository interface.
+2025-07-11 20:38:11.560 [[34mINFO [0;39m] [main] [[36mo.s.b.w.e.tomcat.TomcatWebServer[0;39m] - Tomcat initialized with port 8080 (http)
+2025-07-11 20:38:11.567 [[34mINFO [0;39m] [main] [[36mo.a.coyote.http11.Http11NioProtocol[0;39m] - Initializing ProtocolHandler ["http-nio-8080"]
+2025-07-11 20:38:11.568 [[34mINFO [0;39m] [main] [[36mo.a.catalina.core.StandardService[0;39m] - Starting service [Tomcat]
+2025-07-11 20:38:11.568 [[34mINFO [0;39m] [main] [[36mo.a.catalina.core.StandardEngine[0;39m] - Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-07-11 20:38:11.611 [[34mINFO [0;39m] [main] [[36mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m] - Initializing Spring embedded WebApplicationContext
+2025-07-11 20:38:11.612 [[34mINFO [0;39m] [main] [[36mo.s.b.w.s.c.ServletWebServerApplicationContext[0;39m] - Root WebApplicationContext: initialization completed in 1003 ms
+2025-07-11 20:38:11.691 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Starting...
+2025-07-11 20:38:13.305 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.pool.HikariPool[0;39m] - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@2a2798a2
+2025-07-11 20:38:13.307 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Start completed.
+2025-07-11 20:38:13.333 [[34mINFO [0;39m] [main] [[36mo.h.jpa.internal.util.LogHelper[0;39m] - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-11 20:38:13.372 [[34mINFO [0;39m] [main] [[36morg.hibernate.Version[0;39m] - HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-07-11 20:38:13.395 [[34mINFO [0;39m] [main] [[36mo.h.c.i.RegionFactoryInitiator[0;39m] - HHH000026: Second-level cache disabled
+2025-07-11 20:38:13.598 [[34mINFO [0;39m] [main] [[36mo.s.o.j.p.SpringPersistenceUnitInfo[0;39m] - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-11 20:38:13.957 [[34mINFO [0;39m] [main] [[36mo.hibernate.orm.connections.pooling[0;39m] - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.42
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-11 20:38:14.442 [[34mINFO [0;39m] [main] [[36mo.h.e.t.j.p.i.JtaPlatformInitiator[0;39m] - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-11 20:38:14.444 [[34mINFO [0;39m] [main] [[36mo.s.o.j.LocalContainerEntityManagerFactoryBean[0;39m] - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 20:38:14.850 [[34mINFO [0;39m] [main] [[36mo.n.driver.internal.DriverFactory[0;39m] - Direct driver instance 910668404 created for server address localhost:7687
+2025-07-11 20:38:15.382 [[34mINFO [0;39m] [main] [[36mo.a.coyote.http11.Http11NioProtocol[0;39m] - Starting ProtocolHandler ["http-nio-8080"]
+2025-07-11 20:38:15.389 [[34mINFO [0;39m] [main] [[36mo.s.b.w.e.tomcat.TomcatWebServer[0;39m] - Tomcat started on port 8080 (http) with context path '/'
+2025-07-11 20:38:15.392 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - Started OrderAgentServiceApplicationKt in 5.196 seconds (process running for 5.68)
+2025-07-11 20:38:38.735 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.s.b.w.e.tomcat.GracefulShutdown[0;39m] - Commencing graceful shutdown. Waiting for active requests to complete
+2025-07-11 20:38:38.741 [[34mINFO [0;39m] [tomcat-shutdown] [[36mo.s.b.w.e.tomcat.GracefulShutdown[0;39m] - Graceful shutdown complete
+2025-07-11 20:38:38.743 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.n.driver.internal.InternalDriver[0;39m] - Closing driver instance 910668404
+2025-07-11 20:38:38.964 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.s.o.j.LocalContainerEntityManagerFactoryBean[0;39m] - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 20:38:38.966 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Shutdown initiated...
+2025-07-11 20:38:39.112 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Shutdown completed.
+2025-07-11 20:39:04.105 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - Starting OrderAgentServiceApplicationKt using Java 21.0.6 with PID 283272 (C:\Users\hachi\IdeaProjects\OrderAgentService\build\classes\kotlin\main started by sunwoo in C:\Users\hachi\IdeaProjects\OrderAgentService)
+2025-07-11 20:39:04.106 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - The following 1 profile is active: "local"
+2025-07-11 20:39:04.632 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 20:39:04.634 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-11 20:39:04.663 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationExtensionSupport[0;39m] - Spring Data JPA - Could not safely identify store assignment for repository candidate interface com.orderagentservice.order.repository.UtgRepository; If you want this repository to be a JPA repository, consider annotating your entities with one of these annotations: jakarta.persistence.Entity, jakarta.persistence.MappedSuperclass (preferred), or consider extending one of the following types with your repository: org.springframework.data.jpa.repository.JpaRepository
+2025-07-11 20:39:04.663 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 24 ms. Found 0 JPA repository interfaces.
+2025-07-11 20:39:04.678 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 20:39:04.678 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 20:39:04.753 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 73 ms. Found 0 Neo4j repository interfaces.
+2025-07-11 20:39:04.757 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 20:39:04.758 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 20:39:04.779 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 20 ms. Found 1 Neo4j repository interface.
+2025-07-11 20:39:05.156 [[34mINFO [0;39m] [main] [[36mo.s.b.w.e.tomcat.TomcatWebServer[0;39m] - Tomcat initialized with port 8080 (http)
+2025-07-11 20:39:05.164 [[34mINFO [0;39m] [main] [[36mo.a.coyote.http11.Http11NioProtocol[0;39m] - Initializing ProtocolHandler ["http-nio-8080"]
+2025-07-11 20:39:05.165 [[34mINFO [0;39m] [main] [[36mo.a.catalina.core.StandardService[0;39m] - Starting service [Tomcat]
+2025-07-11 20:39:05.165 [[34mINFO [0;39m] [main] [[36mo.a.catalina.core.StandardEngine[0;39m] - Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-07-11 20:39:05.211 [[34mINFO [0;39m] [main] [[36mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m] - Initializing Spring embedded WebApplicationContext
+2025-07-11 20:39:05.211 [[34mINFO [0;39m] [main] [[36mo.s.b.w.s.c.ServletWebServerApplicationContext[0;39m] - Root WebApplicationContext: initialization completed in 1072 ms
+2025-07-11 20:39:05.297 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Starting...
+2025-07-11 20:39:06.864 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.pool.HikariPool[0;39m] - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@126254ec
+2025-07-11 20:39:06.866 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Start completed.
+2025-07-11 20:39:06.891 [[34mINFO [0;39m] [main] [[36mo.h.jpa.internal.util.LogHelper[0;39m] - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-11 20:39:06.932 [[34mINFO [0;39m] [main] [[36morg.hibernate.Version[0;39m] - HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-07-11 20:39:06.955 [[34mINFO [0;39m] [main] [[36mo.h.c.i.RegionFactoryInitiator[0;39m] - HHH000026: Second-level cache disabled
+2025-07-11 20:39:07.163 [[34mINFO [0;39m] [main] [[36mo.s.o.j.p.SpringPersistenceUnitInfo[0;39m] - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-11 20:39:07.513 [[34mINFO [0;39m] [main] [[36mo.hibernate.orm.connections.pooling[0;39m] - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.42
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-11 20:39:07.995 [[34mINFO [0;39m] [main] [[36mo.h.e.t.j.p.i.JtaPlatformInitiator[0;39m] - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-11 20:39:07.997 [[34mINFO [0;39m] [main] [[36mo.s.o.j.LocalContainerEntityManagerFactoryBean[0;39m] - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 20:39:08.400 [[34mINFO [0;39m] [main] [[36mo.n.driver.internal.DriverFactory[0;39m] - Direct driver instance 879591426 created for server address localhost:7687
+2025-07-11 20:39:08.941 [[34mINFO [0;39m] [main] [[36mo.a.coyote.http11.Http11NioProtocol[0;39m] - Starting ProtocolHandler ["http-nio-8080"]
+2025-07-11 20:39:08.948 [[34mINFO [0;39m] [main] [[36mo.s.b.w.e.tomcat.TomcatWebServer[0;39m] - Tomcat started on port 8080 (http) with context path '/'
+2025-07-11 20:39:08.952 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - Started OrderAgentServiceApplicationKt in 5.222 seconds (process running for 5.704)
+2025-07-11 20:40:04.376 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.s.b.w.e.tomcat.GracefulShutdown[0;39m] - Commencing graceful shutdown. Waiting for active requests to complete
+2025-07-11 20:40:04.381 [[34mINFO [0;39m] [tomcat-shutdown] [[36mo.s.b.w.e.tomcat.GracefulShutdown[0;39m] - Graceful shutdown complete
+2025-07-11 20:40:04.384 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.n.driver.internal.InternalDriver[0;39m] - Closing driver instance 879591426
+2025-07-11 20:40:04.602 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.s.o.j.LocalContainerEntityManagerFactoryBean[0;39m] - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 20:40:04.604 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Shutdown initiated...
+2025-07-11 20:40:04.745 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Shutdown completed.
+2025-07-11 20:40:21,632 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - Starting OrderAgentServiceApplicationKt using Java 21.0.6 with PID 288852 (C:\Users\hachi\IdeaProjects\OrderAgentService\build\classes\kotlin\main started by sunwoo in C:\Users\hachi\IdeaProjects\OrderAgentService)
+2025-07-11 20:40:21,633 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - The following 1 profile is active: "local"
+2025-07-11 20:40:22,144 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 20:40:22,145 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-11 20:40:22,173 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationExtensionSupport[0;39m] - Spring Data JPA - Could not safely identify store assignment for repository candidate interface com.orderagentservice.order.repository.UtgRepository; If you want this repository to be a JPA repository, consider annotating your entities with one of these annotations: jakarta.persistence.Entity, jakarta.persistence.MappedSuperclass (preferred), or consider extending one of the following types with your repository: org.springframework.data.jpa.repository.JpaRepository
+2025-07-11 20:40:22,173 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 23 ms. Found 0 JPA repository interfaces.
+2025-07-11 20:40:22,186 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 20:40:22,187 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 20:40:22,257 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 69 ms. Found 0 Neo4j repository interfaces.
+2025-07-11 20:40:22,260 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 20:40:22,261 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 20:40:22,279 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 17 ms. Found 1 Neo4j repository interface.
+2025-07-11 20:40:22,651 [[34mINFO [0;39m] [main] [[36mo.s.b.w.e.tomcat.TomcatWebServer[0;39m] - Tomcat initialized with port 8080 (http)
+2025-07-11 20:40:22,659 [[34mINFO [0;39m] [main] [[36mo.a.coyote.http11.Http11NioProtocol[0;39m] - Initializing ProtocolHandler ["http-nio-8080"]
+2025-07-11 20:40:22,660 [[34mINFO [0;39m] [main] [[36mo.a.catalina.core.StandardService[0;39m] - Starting service [Tomcat]
+2025-07-11 20:40:22,661 [[34mINFO [0;39m] [main] [[36mo.a.catalina.core.StandardEngine[0;39m] - Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-07-11 20:40:22,704 [[34mINFO [0;39m] [main] [[36mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m] - Initializing Spring embedded WebApplicationContext
+2025-07-11 20:40:22,704 [[34mINFO [0;39m] [main] [[36mo.s.b.w.s.c.ServletWebServerApplicationContext[0;39m] - Root WebApplicationContext: initialization completed in 1039 ms
+2025-07-11 20:40:22,794 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Starting...
+2025-07-11 20:40:24,413 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.pool.HikariPool[0;39m] - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@621392ea
+2025-07-11 20:40:24,414 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Start completed.
+2025-07-11 20:40:24,441 [[34mINFO [0;39m] [main] [[36mo.h.jpa.internal.util.LogHelper[0;39m] - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-11 20:40:24,482 [[34mINFO [0;39m] [main] [[36morg.hibernate.Version[0;39m] - HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-07-11 20:40:24,504 [[34mINFO [0;39m] [main] [[36mo.h.c.i.RegionFactoryInitiator[0;39m] - HHH000026: Second-level cache disabled
+2025-07-11 20:40:24,713 [[34mINFO [0;39m] [main] [[36mo.s.o.j.p.SpringPersistenceUnitInfo[0;39m] - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-11 20:40:25,072 [[34mINFO [0;39m] [main] [[36mo.hibernate.orm.connections.pooling[0;39m] - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.42
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-11 20:40:25,581 [[34mINFO [0;39m] [main] [[36mo.h.e.t.j.p.i.JtaPlatformInitiator[0;39m] - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-11 20:40:25,582 [[34mINFO [0;39m] [main] [[36mo.s.o.j.LocalContainerEntityManagerFactoryBean[0;39m] - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 20:40:25,992 [[34mINFO [0;39m] [main] [[36mo.n.driver.internal.DriverFactory[0;39m] - Direct driver instance 306173024 created for server address localhost:7687
+2025-07-11 20:40:26,535 [[34mINFO [0;39m] [main] [[36mo.a.coyote.http11.Http11NioProtocol[0;39m] - Starting ProtocolHandler ["http-nio-8080"]
+2025-07-11 20:40:26,542 [[34mINFO [0;39m] [main] [[36mo.s.b.w.e.tomcat.TomcatWebServer[0;39m] - Tomcat started on port 8080 (http) with context path '/'
+2025-07-11 20:40:26,546 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - Started OrderAgentServiceApplicationKt in 5.288 seconds (process running for 5.766)
+2025-07-11 22:13:17,788 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.s.b.w.e.tomcat.GracefulShutdown[0;39m] - Commencing graceful shutdown. Waiting for active requests to complete
+2025-07-11 22:13:17,800 [[34mINFO [0;39m] [tomcat-shutdown] [[36mo.s.b.w.e.tomcat.GracefulShutdown[0;39m] - Graceful shutdown complete
+2025-07-11 22:13:17,811 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.n.driver.internal.InternalDriver[0;39m] - Closing driver instance 306173024
+2025-07-11 22:13:18,039 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.s.o.j.LocalContainerEntityManagerFactoryBean[0;39m] - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 22:13:18,045 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Shutdown initiated...
+2025-07-11 22:13:18,197 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Shutdown completed.
+2025-07-11 22:47:38.359 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - Starting OrderAgentServiceApplicationKt using Java 21.0.6 with PID 334980 (C:\Users\hachi\IdeaProjects\OrderAgentService\build\classes\kotlin\main started by sunwoo in C:\Users\hachi\IdeaProjects\OrderAgentService)
+2025-07-11 22:47:38.363 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - The following 1 profile is active: "local"
+2025-07-11 22:47:38.930 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 22:47:38.931 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-11 22:47:38.962 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationExtensionSupport[0;39m] - Spring Data JPA - Could not safely identify store assignment for repository candidate interface com.orderagentservice.order.repository.UtgRepository; If you want this repository to be a JPA repository, consider annotating your entities with one of these annotations: jakarta.persistence.Entity, jakarta.persistence.MappedSuperclass (preferred), or consider extending one of the following types with your repository: org.springframework.data.jpa.repository.JpaRepository
+2025-07-11 22:47:38.963 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 20 ms. Found 0 JPA repository interfaces.
+2025-07-11 22:47:38.975 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 22:47:38.977 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 22:47:39.052 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 74 ms. Found 0 Neo4j repository interfaces.
+2025-07-11 22:47:39.055 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 22:47:39.055 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 22:47:39.076 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 19 ms. Found 1 Neo4j repository interface.
+2025-07-11 22:47:39.495 [[34mINFO [0;39m] [main] [[36mo.s.b.w.e.tomcat.TomcatWebServer[0;39m] - Tomcat initialized with port 8080 (http)
+2025-07-11 22:47:39.504 [[34mINFO [0;39m] [main] [[36mo.a.coyote.http11.Http11NioProtocol[0;39m] - Initializing ProtocolHandler ["http-nio-8080"]
+2025-07-11 22:47:39.505 [[34mINFO [0;39m] [main] [[36mo.a.catalina.core.StandardService[0;39m] - Starting service [Tomcat]
+2025-07-11 22:47:39.506 [[34mINFO [0;39m] [main] [[36mo.a.catalina.core.StandardEngine[0;39m] - Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-07-11 22:47:39.558 [[34mINFO [0;39m] [main] [[36mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m] - Initializing Spring embedded WebApplicationContext
+2025-07-11 22:47:39.558 [[34mINFO [0;39m] [main] [[36mo.s.b.w.s.c.ServletWebServerApplicationContext[0;39m] - Root WebApplicationContext: initialization completed in 1163 ms
+2025-07-11 22:47:39.669 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Starting...
+2025-07-11 22:47:41.229 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.pool.HikariPool[0;39m] - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@49f2646
+2025-07-11 22:47:41.230 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Start completed.
+2025-07-11 22:47:41.325 [[34mINFO [0;39m] [main] [[36morg.hibernate.Version[0;39m] - HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-07-11 22:47:41.355 [[34mINFO [0;39m] [main] [[36mo.h.c.i.RegionFactoryInitiator[0;39m] - HHH000026: Second-level cache disabled
+2025-07-11 22:47:41.591 [[34mINFO [0;39m] [main] [[36mo.s.o.j.p.SpringPersistenceUnitInfo[0;39m] - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-11 22:47:41.957 [[34mINFO [0;39m] [main] [[36mo.hibernate.orm.connections.pooling[0;39m] - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.42
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-11 22:47:42.533 [[34mINFO [0;39m] [main] [[36mo.h.e.t.j.p.i.JtaPlatformInitiator[0;39m] - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-11 22:47:42.536 [[34mINFO [0;39m] [main] [[36mo.s.o.j.LocalContainerEntityManagerFactoryBean[0;39m] - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 22:47:42.937 [[34mINFO [0;39m] [main] [[36mo.n.driver.internal.DriverFactory[0;39m] - Direct driver instance 2127619547 created for server address localhost:7687
+2025-07-11 22:47:43.518 [[34mINFO [0;39m] [main] [[36mo.a.coyote.http11.Http11NioProtocol[0;39m] - Starting ProtocolHandler ["http-nio-8080"]
+2025-07-11 22:47:43.526 [[34mINFO [0;39m] [main] [[36mo.s.b.w.e.tomcat.TomcatWebServer[0;39m] - Tomcat started on port 8080 (http) with context path '/'
+2025-07-11 22:47:43.534 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - Started OrderAgentServiceApplicationKt in 5.745 seconds (process running for 6.275)
+2025-07-11 22:48:40.003 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.s.b.w.e.tomcat.GracefulShutdown[0;39m] - Commencing graceful shutdown. Waiting for active requests to complete
+2025-07-11 22:48:40.009 [[34mINFO [0;39m] [tomcat-shutdown] [[36mo.s.b.w.e.tomcat.GracefulShutdown[0;39m] - Graceful shutdown complete
+2025-07-11 22:48:40.012 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.n.driver.internal.InternalDriver[0;39m] - Closing driver instance 2127619547
+2025-07-11 22:48:40.239 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.s.o.j.LocalContainerEntityManagerFactoryBean[0;39m] - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 22:48:40.240 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Shutdown initiated...
+2025-07-11 22:48:40.383 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Shutdown completed.
+2025-07-11 22:49:09.756 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - Starting OrderAgentServiceApplicationKt using Java 21.0.6 with PID 337492 (C:\Users\hachi\IdeaProjects\OrderAgentService\build\classes\kotlin\main started by sunwoo in C:\Users\hachi\IdeaProjects\OrderAgentService)
+2025-07-11 22:49:09.759 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - The following 1 profile is active: "local"
+2025-07-11 22:49:10.274 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 22:49:10.276 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-11 22:49:10.308 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationExtensionSupport[0;39m] - Spring Data JPA - Could not safely identify store assignment for repository candidate interface com.orderagentservice.order.repository.UtgRepository; If you want this repository to be a JPA repository, consider annotating your entities with one of these annotations: jakarta.persistence.Entity, jakarta.persistence.MappedSuperclass (preferred), or consider extending one of the following types with your repository: org.springframework.data.jpa.repository.JpaRepository
+2025-07-11 22:49:10.309 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 22 ms. Found 0 JPA repository interfaces.
+2025-07-11 22:49:10.350 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 22:49:10.352 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 22:49:10.430 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 77 ms. Found 0 Neo4j repository interfaces.
+2025-07-11 22:49:10.434 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 22:49:10.435 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 22:49:10.457 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 20 ms. Found 1 Neo4j repository interface.
+2025-07-11 22:49:10.861 [[34mINFO [0;39m] [main] [[36mo.s.b.w.e.tomcat.TomcatWebServer[0;39m] - Tomcat initialized with port 8080 (http)
+2025-07-11 22:49:10.871 [[34mINFO [0;39m] [main] [[36mo.a.coyote.http11.Http11NioProtocol[0;39m] - Initializing ProtocolHandler ["http-nio-8080"]
+2025-07-11 22:49:10.872 [[34mINFO [0;39m] [main] [[36mo.a.catalina.core.StandardService[0;39m] - Starting service [Tomcat]
+2025-07-11 22:49:10.872 [[34mINFO [0;39m] [main] [[36mo.a.catalina.core.StandardEngine[0;39m] - Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-07-11 22:49:10.921 [[34mINFO [0;39m] [main] [[36mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m] - Initializing Spring embedded WebApplicationContext
+2025-07-11 22:49:10.921 [[34mINFO [0;39m] [main] [[36mo.s.b.w.s.c.ServletWebServerApplicationContext[0;39m] - Root WebApplicationContext: initialization completed in 1129 ms
+2025-07-11 22:49:11.028 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Starting...
+2025-07-11 22:49:12.663 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.pool.HikariPool[0;39m] - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@1e7d3d87
+2025-07-11 22:49:12.664 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Start completed.
+2025-07-11 22:49:12.729 [[34mINFO [0;39m] [main] [[36morg.hibernate.Version[0;39m] - HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-07-11 22:49:12.753 [[34mINFO [0;39m] [main] [[36mo.h.c.i.RegionFactoryInitiator[0;39m] - HHH000026: Second-level cache disabled
+2025-07-11 22:49:12.973 [[34mINFO [0;39m] [main] [[36mo.s.o.j.p.SpringPersistenceUnitInfo[0;39m] - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-11 22:49:13.352 [[34mINFO [0;39m] [main] [[36mo.hibernate.orm.connections.pooling[0;39m] - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.42
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-11 22:49:13.871 [[34mINFO [0;39m] [main] [[36mo.h.e.t.j.p.i.JtaPlatformInitiator[0;39m] - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-11 22:49:13.874 [[34mINFO [0;39m] [main] [[36mo.s.o.j.LocalContainerEntityManagerFactoryBean[0;39m] - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 22:49:14.273 [[34mINFO [0;39m] [main] [[36mo.n.driver.internal.DriverFactory[0;39m] - Direct driver instance 1229735211 created for server address localhost:7687
+2025-07-11 22:49:14.829 [[34mINFO [0;39m] [main] [[36mo.a.coyote.http11.Http11NioProtocol[0;39m] - Starting ProtocolHandler ["http-nio-8080"]
+2025-07-11 22:49:14.837 [[34mINFO [0;39m] [main] [[36mo.s.b.w.e.tomcat.TomcatWebServer[0;39m] - Tomcat started on port 8080 (http) with context path '/'
+2025-07-11 22:49:14.843 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - Started OrderAgentServiceApplicationKt in 5.58 seconds (process running for 6.077)
+2025-07-11 22:49:26.575 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.s.b.w.e.tomcat.GracefulShutdown[0;39m] - Commencing graceful shutdown. Waiting for active requests to complete
+2025-07-11 22:49:26.581 [[34mINFO [0;39m] [tomcat-shutdown] [[36mo.s.b.w.e.tomcat.GracefulShutdown[0;39m] - Graceful shutdown complete
+2025-07-11 22:49:26.583 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.n.driver.internal.InternalDriver[0;39m] - Closing driver instance 1229735211
+2025-07-11 22:49:26.800 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.s.o.j.LocalContainerEntityManagerFactoryBean[0;39m] - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 22:49:26.801 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Shutdown initiated...
+2025-07-11 22:49:26.955 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Shutdown completed.
+2025-07-11 22:49:29.353 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - Starting OrderAgentServiceApplicationKt using Java 21.0.6 with PID 336176 (C:\Users\hachi\IdeaProjects\OrderAgentService\build\classes\kotlin\main started by sunwoo in C:\Users\hachi\IdeaProjects\OrderAgentService)
+2025-07-11 22:49:29.357 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - The following 1 profile is active: "local"
+2025-07-11 22:49:29.877 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 22:49:29.878 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-11 22:49:29.908 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationExtensionSupport[0;39m] - Spring Data JPA - Could not safely identify store assignment for repository candidate interface com.orderagentservice.order.repository.UtgRepository; If you want this repository to be a JPA repository, consider annotating your entities with one of these annotations: jakarta.persistence.Entity, jakarta.persistence.MappedSuperclass (preferred), or consider extending one of the following types with your repository: org.springframework.data.jpa.repository.JpaRepository
+2025-07-11 22:49:29.908 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 20 ms. Found 0 JPA repository interfaces.
+2025-07-11 22:49:29.920 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 22:49:29.922 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 22:49:29.995 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 71 ms. Found 0 Neo4j repository interfaces.
+2025-07-11 22:49:29.998 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 22:49:29.998 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 22:49:30.019 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 19 ms. Found 1 Neo4j repository interface.
+2025-07-11 22:49:30.402 [[34mINFO [0;39m] [main] [[36mo.s.b.w.e.tomcat.TomcatWebServer[0;39m] - Tomcat initialized with port 8080 (http)
+2025-07-11 22:49:30.411 [[34mINFO [0;39m] [main] [[36mo.a.coyote.http11.Http11NioProtocol[0;39m] - Initializing ProtocolHandler ["http-nio-8080"]
+2025-07-11 22:49:30.413 [[34mINFO [0;39m] [main] [[36mo.a.catalina.core.StandardService[0;39m] - Starting service [Tomcat]
+2025-07-11 22:49:30.413 [[34mINFO [0;39m] [main] [[36mo.a.catalina.core.StandardEngine[0;39m] - Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-07-11 22:49:30.465 [[34mINFO [0;39m] [main] [[36mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m] - Initializing Spring embedded WebApplicationContext
+2025-07-11 22:49:30.465 [[34mINFO [0;39m] [main] [[36mo.s.b.w.s.c.ServletWebServerApplicationContext[0;39m] - Root WebApplicationContext: initialization completed in 1068 ms
+2025-07-11 22:49:30.561 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Starting...
+2025-07-11 22:49:32.090 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.pool.HikariPool[0;39m] - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@4d4c4b14
+2025-07-11 22:49:32.091 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Start completed.
+2025-07-11 22:49:32.157 [[34mINFO [0;39m] [main] [[36morg.hibernate.Version[0;39m] - HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-07-11 22:49:32.183 [[34mINFO [0;39m] [main] [[36mo.h.c.i.RegionFactoryInitiator[0;39m] - HHH000026: Second-level cache disabled
+2025-07-11 22:49:32.403 [[34mINFO [0;39m] [main] [[36mo.s.o.j.p.SpringPersistenceUnitInfo[0;39m] - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-11 22:49:32.763 [[34mINFO [0;39m] [main] [[36mo.hibernate.orm.connections.pooling[0;39m] - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.42
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-11 22:49:33.288 [[34mINFO [0;39m] [main] [[36mo.h.e.t.j.p.i.JtaPlatformInitiator[0;39m] - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-11 22:49:33.291 [[34mINFO [0;39m] [main] [[36mo.s.o.j.LocalContainerEntityManagerFactoryBean[0;39m] - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 22:49:33.678 [[34mINFO [0;39m] [main] [[36mo.n.driver.internal.DriverFactory[0;39m] - Direct driver instance 512741784 created for server address localhost:7687
+2025-07-11 22:49:34.228 [[34mINFO [0;39m] [main] [[36mo.a.coyote.http11.Http11NioProtocol[0;39m] - Starting ProtocolHandler ["http-nio-8080"]
+2025-07-11 22:49:34.235 [[34mINFO [0;39m] [main] [[36mo.s.b.w.e.tomcat.TomcatWebServer[0;39m] - Tomcat started on port 8080 (http) with context path '/'
+2025-07-11 22:49:34.242 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - Started OrderAgentServiceApplicationKt in 5.388 seconds (process running for 5.923)
+2025-07-11 22:51:16.319 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.s.b.w.e.tomcat.GracefulShutdown[0;39m] - Commencing graceful shutdown. Waiting for active requests to complete
+2025-07-11 22:51:16.325 [[34mINFO [0;39m] [tomcat-shutdown] [[36mo.s.b.w.e.tomcat.GracefulShutdown[0;39m] - Graceful shutdown complete
+2025-07-11 22:51:16.327 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.n.driver.internal.InternalDriver[0;39m] - Closing driver instance 512741784
+2025-07-11 22:51:16.553 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.s.o.j.LocalContainerEntityManagerFactoryBean[0;39m] - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 22:51:16.554 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Shutdown initiated...
+2025-07-11 22:51:16.697 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Shutdown completed.
+2025-07-11 22:51:20.332 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - Starting OrderAgentServiceApplicationKt using Java 21.0.6 with PID 335228 (C:\Users\hachi\IdeaProjects\OrderAgentService\build\classes\kotlin\main started by sunwoo in C:\Users\hachi\IdeaProjects\OrderAgentService)
+2025-07-11 22:51:20.335 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - The following 1 profile is active: "local"
+2025-07-11 22:51:20.858 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 22:51:20.859 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-11 22:51:20.890 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationExtensionSupport[0;39m] - Spring Data JPA - Could not safely identify store assignment for repository candidate interface com.orderagentservice.order.repository.UtgRepository; If you want this repository to be a JPA repository, consider annotating your entities with one of these annotations: jakarta.persistence.Entity, jakarta.persistence.MappedSuperclass (preferred), or consider extending one of the following types with your repository: org.springframework.data.jpa.repository.JpaRepository
+2025-07-11 22:51:20.891 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 22 ms. Found 0 JPA repository interfaces.
+2025-07-11 22:51:20.903 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 22:51:20.905 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 22:51:20.978 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 71 ms. Found 0 Neo4j repository interfaces.
+2025-07-11 22:51:20.981 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 22:51:20.981 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 22:51:21.000 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 18 ms. Found 1 Neo4j repository interface.
+2025-07-11 22:51:21.381 [[34mINFO [0;39m] [main] [[36mo.s.b.w.e.tomcat.TomcatWebServer[0;39m] - Tomcat initialized with port 8080 (http)
+2025-07-11 22:51:21.390 [[34mINFO [0;39m] [main] [[36mo.a.coyote.http11.Http11NioProtocol[0;39m] - Initializing ProtocolHandler ["http-nio-8080"]
+2025-07-11 22:51:21.392 [[34mINFO [0;39m] [main] [[36mo.a.catalina.core.StandardService[0;39m] - Starting service [Tomcat]
+2025-07-11 22:51:21.392 [[34mINFO [0;39m] [main] [[36mo.a.catalina.core.StandardEngine[0;39m] - Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-07-11 22:51:21.435 [[34mINFO [0;39m] [main] [[36mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m] - Initializing Spring embedded WebApplicationContext
+2025-07-11 22:51:21.435 [[34mINFO [0;39m] [main] [[36mo.s.b.w.s.c.ServletWebServerApplicationContext[0;39m] - Root WebApplicationContext: initialization completed in 1068 ms
+2025-07-11 22:51:21.536 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Starting...
+2025-07-11 22:51:23.145 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.pool.HikariPool[0;39m] - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@5c5f12e
+2025-07-11 22:51:23.147 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Start completed.
+2025-07-11 22:51:23.214 [[34mINFO [0;39m] [main] [[36morg.hibernate.Version[0;39m] - HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-07-11 22:51:23.245 [[34mINFO [0;39m] [main] [[36mo.h.c.i.RegionFactoryInitiator[0;39m] - HHH000026: Second-level cache disabled
+2025-07-11 22:51:23.462 [[34mINFO [0;39m] [main] [[36mo.s.o.j.p.SpringPersistenceUnitInfo[0;39m] - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-11 22:51:23.830 [[34mINFO [0;39m] [main] [[36mo.hibernate.orm.connections.pooling[0;39m] - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.42
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-11 22:51:24.356 [[34mINFO [0;39m] [main] [[36mo.h.e.t.j.p.i.JtaPlatformInitiator[0;39m] - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-11 22:51:24.359 [[34mINFO [0;39m] [main] [[36mo.s.o.j.LocalContainerEntityManagerFactoryBean[0;39m] - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 22:51:24.753 [[34mINFO [0;39m] [main] [[36mo.n.driver.internal.DriverFactory[0;39m] - Direct driver instance 348801869 created for server address localhost:7687
+2025-07-11 22:51:25.314 [[34mINFO [0;39m] [main] [[36mo.a.coyote.http11.Http11NioProtocol[0;39m] - Starting ProtocolHandler ["http-nio-8080"]
+2025-07-11 22:51:25.321 [[34mINFO [0;39m] [main] [[36mo.s.b.w.e.tomcat.TomcatWebServer[0;39m] - Tomcat started on port 8080 (http) with context path '/'
+2025-07-11 22:51:25.329 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - Started OrderAgentServiceApplicationKt in 5.498 seconds (process running for 6.011)
+2025-07-11 22:52:13.794 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.s.b.w.e.tomcat.GracefulShutdown[0;39m] - Commencing graceful shutdown. Waiting for active requests to complete
+2025-07-11 22:52:13.800 [[34mINFO [0;39m] [tomcat-shutdown] [[36mo.s.b.w.e.tomcat.GracefulShutdown[0;39m] - Graceful shutdown complete
+2025-07-11 22:52:13.802 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.n.driver.internal.InternalDriver[0;39m] - Closing driver instance 348801869
+2025-07-11 22:52:14.025 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.s.o.j.LocalContainerEntityManagerFactoryBean[0;39m] - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 22:52:14.026 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Shutdown initiated...
+2025-07-11 22:52:14.172 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Shutdown completed.
+2025-07-11 22:52:16.416 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - Starting OrderAgentServiceApplicationKt using Java 21.0.6 with PID 304320 (C:\Users\hachi\IdeaProjects\OrderAgentService\build\classes\kotlin\main started by sunwoo in C:\Users\hachi\IdeaProjects\OrderAgentService)
+2025-07-11 22:52:16.419 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - The following 1 profile is active: "local"
+2025-07-11 22:52:16.965 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 22:52:16.967 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-11 22:52:16.999 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationExtensionSupport[0;39m] - Spring Data JPA - Could not safely identify store assignment for repository candidate interface com.orderagentservice.order.repository.UtgRepository; If you want this repository to be a JPA repository, consider annotating your entities with one of these annotations: jakarta.persistence.Entity, jakarta.persistence.MappedSuperclass (preferred), or consider extending one of the following types with your repository: org.springframework.data.jpa.repository.JpaRepository
+2025-07-11 22:52:17.000 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 21 ms. Found 0 JPA repository interfaces.
+2025-07-11 22:52:17.013 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 22:52:17.015 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 22:52:17.091 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 74 ms. Found 0 Neo4j repository interfaces.
+2025-07-11 22:52:17.094 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 22:52:17.094 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 22:52:17.116 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 19 ms. Found 1 Neo4j repository interface.
+2025-07-11 22:52:17.513 [[34mINFO [0;39m] [main] [[36mo.s.b.w.e.tomcat.TomcatWebServer[0;39m] - Tomcat initialized with port 8080 (http)
+2025-07-11 22:52:17.522 [[34mINFO [0;39m] [main] [[36mo.a.coyote.http11.Http11NioProtocol[0;39m] - Initializing ProtocolHandler ["http-nio-8080"]
+2025-07-11 22:52:17.524 [[34mINFO [0;39m] [main] [[36mo.a.catalina.core.StandardService[0;39m] - Starting service [Tomcat]
+2025-07-11 22:52:17.524 [[34mINFO [0;39m] [main] [[36mo.a.catalina.core.StandardEngine[0;39m] - Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-07-11 22:52:17.570 [[34mINFO [0;39m] [main] [[36mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m] - Initializing Spring embedded WebApplicationContext
+2025-07-11 22:52:17.570 [[34mINFO [0;39m] [main] [[36mo.s.b.w.s.c.ServletWebServerApplicationContext[0;39m] - Root WebApplicationContext: initialization completed in 1103 ms
+2025-07-11 22:52:17.672 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Starting...
+2025-07-11 22:52:19.307 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.pool.HikariPool[0;39m] - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@335972a5
+2025-07-11 22:52:19.308 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Start completed.
+2025-07-11 22:52:19.373 [[34mINFO [0;39m] [main] [[36morg.hibernate.Version[0;39m] - HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-07-11 22:52:19.396 [[34mINFO [0;39m] [main] [[36mo.h.c.i.RegionFactoryInitiator[0;39m] - HHH000026: Second-level cache disabled
+2025-07-11 22:52:19.622 [[34mINFO [0;39m] [main] [[36mo.s.o.j.p.SpringPersistenceUnitInfo[0;39m] - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-11 22:52:19.993 [[34mINFO [0;39m] [main] [[36mo.hibernate.orm.connections.pooling[0;39m] - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.42
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-11 22:52:20.492 [[34mINFO [0;39m] [main] [[36mo.h.e.t.j.p.i.JtaPlatformInitiator[0;39m] - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-11 22:52:20.495 [[34mINFO [0;39m] [main] [[36mo.s.o.j.LocalContainerEntityManagerFactoryBean[0;39m] - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 22:52:20.873 [[34mINFO [0;39m] [main] [[36mo.n.driver.internal.DriverFactory[0;39m] - Direct driver instance 372352532 created for server address localhost:7687
+2025-07-11 22:52:21.466 [[34mINFO [0;39m] [main] [[36mo.a.coyote.http11.Http11NioProtocol[0;39m] - Starting ProtocolHandler ["http-nio-8080"]
+2025-07-11 22:52:21.474 [[34mINFO [0;39m] [main] [[36mo.s.b.w.e.tomcat.TomcatWebServer[0;39m] - Tomcat started on port 8080 (http) with context path '/'
+2025-07-11 22:52:21.481 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - Started OrderAgentServiceApplicationKt in 5.549 seconds (process running for 6.037)
+2025-07-11 22:53:21.163 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.s.b.w.e.tomcat.GracefulShutdown[0;39m] - Commencing graceful shutdown. Waiting for active requests to complete
+2025-07-11 22:53:21.168 [[34mINFO [0;39m] [tomcat-shutdown] [[36mo.s.b.w.e.tomcat.GracefulShutdown[0;39m] - Graceful shutdown complete
+2025-07-11 22:53:21.171 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.n.driver.internal.InternalDriver[0;39m] - Closing driver instance 372352532
+2025-07-11 22:53:21.387 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.s.o.j.LocalContainerEntityManagerFactoryBean[0;39m] - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 22:53:21.388 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Shutdown initiated...
+2025-07-11 22:53:21.538 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Shutdown completed.
+2025-07-11 22:53:23.868 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - Starting OrderAgentServiceApplicationKt using Java 21.0.6 with PID 338336 (C:\Users\hachi\IdeaProjects\OrderAgentService\build\classes\kotlin\main started by sunwoo in C:\Users\hachi\IdeaProjects\OrderAgentService)
+2025-07-11 22:53:23.899 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - The following 1 profile is active: "local"
+2025-07-11 22:53:24.405 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 22:53:24.406 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-11 22:53:24.436 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationExtensionSupport[0;39m] - Spring Data JPA - Could not safely identify store assignment for repository candidate interface com.orderagentservice.order.repository.UtgRepository; If you want this repository to be a JPA repository, consider annotating your entities with one of these annotations: jakarta.persistence.Entity, jakarta.persistence.MappedSuperclass (preferred), or consider extending one of the following types with your repository: org.springframework.data.jpa.repository.JpaRepository
+2025-07-11 22:53:24.437 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 25 ms. Found 0 JPA repository interfaces.
+2025-07-11 22:53:24.449 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 22:53:24.450 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 22:53:24.522 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 70 ms. Found 0 Neo4j repository interfaces.
+2025-07-11 22:53:24.524 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 22:53:24.525 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 22:53:24.544 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 18 ms. Found 1 Neo4j repository interface.
+2025-07-11 22:53:24.903 [[34mINFO [0;39m] [main] [[36mo.s.b.w.e.tomcat.TomcatWebServer[0;39m] - Tomcat initialized with port 8080 (http)
+2025-07-11 22:53:24.912 [[34mINFO [0;39m] [main] [[36mo.a.coyote.http11.Http11NioProtocol[0;39m] - Initializing ProtocolHandler ["http-nio-8080"]
+2025-07-11 22:53:24.913 [[34mINFO [0;39m] [main] [[36mo.a.catalina.core.StandardService[0;39m] - Starting service [Tomcat]
+2025-07-11 22:53:24.913 [[34mINFO [0;39m] [main] [[36mo.a.catalina.core.StandardEngine[0;39m] - Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-07-11 22:53:24.954 [[34mINFO [0;39m] [main] [[36mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m] - Initializing Spring embedded WebApplicationContext
+2025-07-11 22:53:24.954 [[34mINFO [0;39m] [main] [[36mo.s.b.w.s.c.ServletWebServerApplicationContext[0;39m] - Root WebApplicationContext: initialization completed in 1025 ms
+2025-07-11 22:53:25.035 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Starting...
+2025-07-11 22:53:26.595 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.pool.HikariPool[0;39m] - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@736788b
+2025-07-11 22:53:26.597 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Start completed.
+2025-07-11 22:53:26.622 [[34mINFO [0;39m] [main] [[36mo.h.jpa.internal.util.LogHelper[0;39m] - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-11 22:53:26.661 [[34mINFO [0;39m] [main] [[36morg.hibernate.Version[0;39m] - HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-07-11 22:53:26.684 [[34mINFO [0;39m] [main] [[36mo.h.c.i.RegionFactoryInitiator[0;39m] - HHH000026: Second-level cache disabled
+2025-07-11 22:53:26.905 [[34mINFO [0;39m] [main] [[36mo.s.o.j.p.SpringPersistenceUnitInfo[0;39m] - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-11 22:53:27.264 [[34mINFO [0;39m] [main] [[36mo.hibernate.orm.connections.pooling[0;39m] - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.42
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-11 22:53:27.757 [[34mINFO [0;39m] [main] [[36mo.h.e.t.j.p.i.JtaPlatformInitiator[0;39m] - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-11 22:53:27.762 [[34mINFO [0;39m] [main] [[36mo.s.o.j.LocalContainerEntityManagerFactoryBean[0;39m] - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 22:53:28.143 [[34mINFO [0;39m] [main] [[36mo.n.driver.internal.DriverFactory[0;39m] - Direct driver instance 1458410096 created for server address localhost:7687
+2025-07-11 22:53:28.701 [[34mINFO [0;39m] [main] [[36mo.a.coyote.http11.Http11NioProtocol[0;39m] - Starting ProtocolHandler ["http-nio-8080"]
+2025-07-11 22:53:28.709 [[34mINFO [0;39m] [main] [[36mo.s.b.w.e.tomcat.TomcatWebServer[0;39m] - Tomcat started on port 8080 (http) with context path '/'
+2025-07-11 22:53:28.713 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - Started OrderAgentServiceApplicationKt in 5.341 seconds (process running for 5.901)
+2025-07-11 23:00:23.647 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.s.b.w.e.tomcat.GracefulShutdown[0;39m] - Commencing graceful shutdown. Waiting for active requests to complete
+2025-07-11 23:00:23.653 [[34mINFO [0;39m] [tomcat-shutdown] [[36mo.s.b.w.e.tomcat.GracefulShutdown[0;39m] - Graceful shutdown complete
+2025-07-11 23:00:23.656 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.n.driver.internal.InternalDriver[0;39m] - Closing driver instance 1458410096
+2025-07-11 23:00:23.883 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.s.o.j.LocalContainerEntityManagerFactoryBean[0;39m] - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 23:00:23.884 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Shutdown initiated...
+2025-07-11 23:00:24.029 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Shutdown completed.
+2025-07-11 23:00:26.340 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - Starting OrderAgentServiceApplicationKt using Java 21.0.6 with PID 341256 (C:\Users\hachi\IdeaProjects\OrderAgentService\build\classes\kotlin\main started by sunwoo in C:\Users\hachi\IdeaProjects\OrderAgentService)
+2025-07-11 23:00:26.343 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - The following 1 profile is active: "local"
+2025-07-11 23:00:26.851 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 23:00:26.853 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-11 23:00:26.882 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationExtensionSupport[0;39m] - Spring Data JPA - Could not safely identify store assignment for repository candidate interface com.orderagentservice.order.repository.UtgRepository; If you want this repository to be a JPA repository, consider annotating your entities with one of these annotations: jakarta.persistence.Entity, jakarta.persistence.MappedSuperclass (preferred), or consider extending one of the following types with your repository: org.springframework.data.jpa.repository.JpaRepository
+2025-07-11 23:00:26.883 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 24 ms. Found 0 JPA repository interfaces.
+2025-07-11 23:00:26.895 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 23:00:26.896 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 23:00:26.968 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 71 ms. Found 0 Neo4j repository interfaces.
+2025-07-11 23:00:26.971 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 23:00:26.972 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 23:00:26.991 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 18 ms. Found 1 Neo4j repository interface.
+2025-07-11 23:00:27.352 [[34mINFO [0;39m] [main] [[36mo.s.b.w.e.tomcat.TomcatWebServer[0;39m] - Tomcat initialized with port 8080 (http)
+2025-07-11 23:00:27.360 [[34mINFO [0;39m] [main] [[36mo.a.coyote.http11.Http11NioProtocol[0;39m] - Initializing ProtocolHandler ["http-nio-8080"]
+2025-07-11 23:00:27.362 [[34mINFO [0;39m] [main] [[36mo.a.catalina.core.StandardService[0;39m] - Starting service [Tomcat]
+2025-07-11 23:00:27.362 [[34mINFO [0;39m] [main] [[36mo.a.catalina.core.StandardEngine[0;39m] - Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-07-11 23:00:27.402 [[34mINFO [0;39m] [main] [[36mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m] - Initializing Spring embedded WebApplicationContext
+2025-07-11 23:00:27.402 [[34mINFO [0;39m] [main] [[36mo.s.b.w.s.c.ServletWebServerApplicationContext[0;39m] - Root WebApplicationContext: initialization completed in 1030 ms
+2025-07-11 23:00:27.484 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Starting...
+2025-07-11 23:00:29.074 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.pool.HikariPool[0;39m] - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@28e91f6d
+2025-07-11 23:00:29.076 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Start completed.
+2025-07-11 23:00:29.103 [[34mINFO [0;39m] [main] [[36mo.h.jpa.internal.util.LogHelper[0;39m] - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-11 23:00:29.145 [[34mINFO [0;39m] [main] [[36morg.hibernate.Version[0;39m] - HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-07-11 23:00:29.168 [[34mINFO [0;39m] [main] [[36mo.h.c.i.RegionFactoryInitiator[0;39m] - HHH000026: Second-level cache disabled
+2025-07-11 23:00:29.386 [[34mINFO [0;39m] [main] [[36mo.s.o.j.p.SpringPersistenceUnitInfo[0;39m] - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-11 23:00:29.754 [[34mINFO [0;39m] [main] [[36mo.hibernate.orm.connections.pooling[0;39m] - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.42
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-11 23:00:30.251 [[34mINFO [0;39m] [main] [[36mo.h.e.t.j.p.i.JtaPlatformInitiator[0;39m] - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-11 23:00:30.253 [[34mINFO [0;39m] [main] [[36mo.s.o.j.LocalContainerEntityManagerFactoryBean[0;39m] - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 23:00:30.640 [[34mINFO [0;39m] [main] [[36mo.n.driver.internal.DriverFactory[0;39m] - Direct driver instance 1862108076 created for server address localhost:7687
+2025-07-11 23:00:31.188 [[34mINFO [0;39m] [main] [[36mo.a.coyote.http11.Http11NioProtocol[0;39m] - Starting ProtocolHandler ["http-nio-8080"]
+2025-07-11 23:00:31.195 [[34mINFO [0;39m] [main] [[36mo.s.b.w.e.tomcat.TomcatWebServer[0;39m] - Tomcat started on port 8080 (http) with context path '/'
+2025-07-11 23:00:31.199 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - Started OrderAgentServiceApplicationKt in 5.35 seconds (process running for 5.862)
+2025-07-11 23:03:21.790 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.s.b.w.e.tomcat.GracefulShutdown[0;39m] - Commencing graceful shutdown. Waiting for active requests to complete
+2025-07-11 23:03:21.796 [[34mINFO [0;39m] [tomcat-shutdown] [[36mo.s.b.w.e.tomcat.GracefulShutdown[0;39m] - Graceful shutdown complete
+2025-07-11 23:03:21.799 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.n.driver.internal.InternalDriver[0;39m] - Closing driver instance 1862108076
+2025-07-11 23:03:22.024 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.s.o.j.LocalContainerEntityManagerFactoryBean[0;39m] - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 23:03:22.025 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Shutdown initiated...
+2025-07-11 23:03:22.170 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Shutdown completed.
+2025-07-11 23:03:24.669 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - Starting OrderAgentServiceApplicationKt using Java 21.0.6 with PID 341316 (C:\Users\hachi\IdeaProjects\OrderAgentService\build\classes\kotlin\main started by sunwoo in C:\Users\hachi\IdeaProjects\OrderAgentService)
+2025-07-11 23:03:24.674 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - The following 1 profile is active: "local"
+2025-07-11 23:03:25.226 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 23:03:25.227 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-11 23:03:25.258 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationExtensionSupport[0;39m] - Spring Data JPA - Could not safely identify store assignment for repository candidate interface com.orderagentservice.order.repository.UtgRepository; If you want this repository to be a JPA repository, consider annotating your entities with one of these annotations: jakarta.persistence.Entity, jakarta.persistence.MappedSuperclass (preferred), or consider extending one of the following types with your repository: org.springframework.data.jpa.repository.JpaRepository
+2025-07-11 23:03:25.259 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 26 ms. Found 0 JPA repository interfaces.
+2025-07-11 23:03:25.272 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 23:03:25.273 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 23:03:25.345 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 79 ms. Found 0 Neo4j repository interfaces.
+2025-07-11 23:03:25.358 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 23:03:25.358 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 23:03:25.373 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 19 ms. Found 1 Neo4j repository interface.
+2025-07-11 23:03:25.752 [[34mINFO [0;39m] [main] [[36mo.s.b.w.e.tomcat.TomcatWebServer[0;39m] - Tomcat initialized with port 8080 (http)
+2025-07-11 23:03:25.760 [[34mINFO [0;39m] [main] [[36mo.a.coyote.http11.Http11NioProtocol[0;39m] - Initializing ProtocolHandler ["http-nio-8080"]
+2025-07-11 23:03:25.762 [[34mINFO [0;39m] [main] [[36mo.a.catalina.core.StandardService[0;39m] - Starting service [Tomcat]
+2025-07-11 23:03:25.762 [[34mINFO [0;39m] [main] [[36mo.a.catalina.core.StandardEngine[0;39m] - Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-07-11 23:03:25.807 [[34mINFO [0;39m] [main] [[36mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m] - Initializing Spring embedded WebApplicationContext
+2025-07-11 23:03:25.807 [[34mINFO [0;39m] [main] [[36mo.s.b.w.s.c.ServletWebServerApplicationContext[0;39m] - Root WebApplicationContext: initialization completed in 1079 ms
+2025-07-11 23:03:25.894 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Starting...
+2025-07-11 23:03:27.437 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.pool.HikariPool[0;39m] - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@4be460e5
+2025-07-11 23:03:27.439 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Start completed.
+2025-07-11 23:03:27.466 [[34mINFO [0;39m] [main] [[36mo.h.jpa.internal.util.LogHelper[0;39m] - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-11 23:03:27.507 [[34mINFO [0;39m] [main] [[36morg.hibernate.Version[0;39m] - HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-07-11 23:03:27.532 [[34mINFO [0;39m] [main] [[36mo.h.c.i.RegionFactoryInitiator[0;39m] - HHH000026: Second-level cache disabled
+2025-07-11 23:03:27.749 [[34mINFO [0;39m] [main] [[36mo.s.o.j.p.SpringPersistenceUnitInfo[0;39m] - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-11 23:03:28.104 [[34mINFO [0;39m] [main] [[36mo.hibernate.orm.connections.pooling[0;39m] - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.42
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-11 23:03:28.631 [[34mINFO [0;39m] [main] [[36mo.h.e.t.j.p.i.JtaPlatformInitiator[0;39m] - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-11 23:03:28.633 [[34mINFO [0;39m] [main] [[36mo.s.o.j.LocalContainerEntityManagerFactoryBean[0;39m] - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 23:03:29.040 [[34mINFO [0;39m] [main] [[36mo.n.driver.internal.DriverFactory[0;39m] - Direct driver instance 1608992076 created for server address localhost:7687
+2025-07-11 23:03:29.610 [[34mINFO [0;39m] [main] [[36mo.a.coyote.http11.Http11NioProtocol[0;39m] - Starting ProtocolHandler ["http-nio-8080"]
+2025-07-11 23:03:29.624 [[34mINFO [0;39m] [main] [[36mo.s.b.w.e.tomcat.TomcatWebServer[0;39m] - Tomcat started on port 8080 (http) with context path '/'
+2025-07-11 23:03:29.628 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - Started OrderAgentServiceApplicationKt in 5.457 seconds (process running for 5.968)
+2025-07-11 23:07:18.785 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.s.b.w.e.tomcat.GracefulShutdown[0;39m] - Commencing graceful shutdown. Waiting for active requests to complete
+2025-07-11 23:07:18.791 [[34mINFO [0;39m] [tomcat-shutdown] [[36mo.s.b.w.e.tomcat.GracefulShutdown[0;39m] - Graceful shutdown complete
+2025-07-11 23:07:18.793 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.n.driver.internal.InternalDriver[0;39m] - Closing driver instance 1608992076
+2025-07-11 23:07:19.017 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.s.o.j.LocalContainerEntityManagerFactoryBean[0;39m] - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 23:07:19.018 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Shutdown initiated...
+2025-07-11 23:07:19.162 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Shutdown completed.
+2025-07-11 23:07:21.431 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - Starting OrderAgentServiceApplicationKt using Java 21.0.6 with PID 344484 (C:\Users\hachi\IdeaProjects\OrderAgentService\build\classes\kotlin\main started by sunwoo in C:\Users\hachi\IdeaProjects\OrderAgentService)
+2025-07-11 23:07:21.434 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - The following 1 profile is active: "local"
+2025-07-11 23:07:21.944 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 23:07:21.945 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-07-11 23:07:21.975 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationExtensionSupport[0;39m] - Spring Data JPA - Could not safely identify store assignment for repository candidate interface com.orderagentservice.order.repository.UtgRepository; If you want this repository to be a JPA repository, consider annotating your entities with one of these annotations: jakarta.persistence.Entity, jakarta.persistence.MappedSuperclass (preferred), or consider extending one of the following types with your repository: org.springframework.data.jpa.repository.JpaRepository
+2025-07-11 23:07:21.977 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 27 ms. Found 0 JPA repository interfaces.
+2025-07-11 23:07:21.990 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 23:07:21.991 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 23:07:22.064 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 71 ms. Found 0 Neo4j repository interfaces.
+2025-07-11 23:07:22.066 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Multiple Spring Data modules found, entering strict repository configuration mode
+2025-07-11 23:07:22.067 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2025-07-11 23:07:22.087 [[34mINFO [0;39m] [main] [[36mo.s.d.r.c.RepositoryConfigurationDelegate[0;39m] - Finished Spring Data repository scanning in 19 ms. Found 1 Neo4j repository interface.
+2025-07-11 23:07:22.502 [[34mINFO [0;39m] [main] [[36mo.s.b.w.e.tomcat.TomcatWebServer[0;39m] - Tomcat initialized with port 8080 (http)
+2025-07-11 23:07:22.513 [[34mINFO [0;39m] [main] [[36mo.a.coyote.http11.Http11NioProtocol[0;39m] - Initializing ProtocolHandler ["http-nio-8080"]
+2025-07-11 23:07:22.515 [[34mINFO [0;39m] [main] [[36mo.a.catalina.core.StandardService[0;39m] - Starting service [Tomcat]
+2025-07-11 23:07:22.515 [[34mINFO [0;39m] [main] [[36mo.a.catalina.core.StandardEngine[0;39m] - Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-07-11 23:07:22.588 [[34mINFO [0;39m] [main] [[36mo.a.c.c.C.[Tomcat].[localhost].[/][0;39m] - Initializing Spring embedded WebApplicationContext
+2025-07-11 23:07:22.588 [[34mINFO [0;39m] [main] [[36mo.s.b.w.s.c.ServletWebServerApplicationContext[0;39m] - Root WebApplicationContext: initialization completed in 1122 ms
+2025-07-11 23:07:22.683 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Starting...
+2025-07-11 23:07:24.326 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.pool.HikariPool[0;39m] - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@24f90aff
+2025-07-11 23:07:24.328 [[34mINFO [0;39m] [main] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Start completed.
+2025-07-11 23:07:24.354 [[34mINFO [0;39m] [main] [[36mo.h.jpa.internal.util.LogHelper[0;39m] - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-07-11 23:07:24.396 [[34mINFO [0;39m] [main] [[36morg.hibernate.Version[0;39m] - HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-07-11 23:07:24.420 [[34mINFO [0;39m] [main] [[36mo.h.c.i.RegionFactoryInitiator[0;39m] - HHH000026: Second-level cache disabled
+2025-07-11 23:07:24.645 [[34mINFO [0;39m] [main] [[36mo.s.o.j.p.SpringPersistenceUnitInfo[0;39m] - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-07-11 23:07:25.029 [[34mINFO [0;39m] [main] [[36mo.hibernate.orm.connections.pooling[0;39m] - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.42
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-07-11 23:07:25.546 [[34mINFO [0;39m] [main] [[36mo.h.e.t.j.p.i.JtaPlatformInitiator[0;39m] - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-07-11 23:07:25.548 [[34mINFO [0;39m] [main] [[36mo.s.o.j.LocalContainerEntityManagerFactoryBean[0;39m] - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 23:07:25.952 [[34mINFO [0;39m] [main] [[36mo.n.driver.internal.DriverFactory[0;39m] - Direct driver instance 1160596402 created for server address localhost:7687
+2025-07-11 23:07:26.546 [[34mINFO [0;39m] [main] [[36mo.a.coyote.http11.Http11NioProtocol[0;39m] - Starting ProtocolHandler ["http-nio-8080"]
+2025-07-11 23:07:26.558 [[34mINFO [0;39m] [main] [[36mo.s.b.w.e.tomcat.TomcatWebServer[0;39m] - Tomcat started on port 8080 (http) with context path '/'
+2025-07-11 23:07:26.563 [[34mINFO [0;39m] [main] [[36mc.o.OrderAgentServiceApplicationKt[0;39m] - Started OrderAgentServiceApplicationKt in 5.676 seconds (process running for 6.172)
+2025-07-11 23:31:47.919 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.s.b.w.e.tomcat.GracefulShutdown[0;39m] - Commencing graceful shutdown. Waiting for active requests to complete
+2025-07-11 23:31:47.925 [[34mINFO [0;39m] [tomcat-shutdown] [[36mo.s.b.w.e.tomcat.GracefulShutdown[0;39m] - Graceful shutdown complete
+2025-07-11 23:31:47.927 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.n.driver.internal.InternalDriver[0;39m] - Closing driver instance 1160596402
+2025-07-11 23:31:48.154 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mo.s.o.j.LocalContainerEntityManagerFactoryBean[0;39m] - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-07-11 23:31:48.156 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Shutdown initiated...
+2025-07-11 23:31:48.310 [[34mINFO [0;39m] [SpringApplicationShutdownHook] [[36mcom.zaxxer.hikari.HikariDataSource[0;39m] - HikariPool-1 - Shutdown completed.

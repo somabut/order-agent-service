@@ -32,6 +32,9 @@ class PaymentGraphInitializeService @Autowired constructor(
         var preNode = lastNode
         val history = mutableListOf<AgentActionDto>()
         while (true) {
+            val image = notificationService.sendCaptureCommand(kioskId)
+            llmUiList = uiExtractorManager.getUiComponents(image, kioskId)
+
             //포장/매장 UI 확인
             if (isFind == false) {
                 placeGraphInitializeService.initializeGraph(kioskId, preNode, llmUiList)
@@ -39,8 +42,6 @@ class PaymentGraphInitializeService @Autowired constructor(
                     .also { list -> if (list.size == 2) isFind = true }
             }
 
-            val image = notificationService.sendCaptureCommand(kioskId)
-            llmUiList = uiExtractorManager.getUiComponents(image, kioskId)
             val action = paymentAgent.determineAction(llmUiList)
 
             log.info("결제 노드를 생성합니다. go_next: ${action.goNext}, score: ${action.score}, coordinate: ${action.coordinate}, title: ${action.title}")

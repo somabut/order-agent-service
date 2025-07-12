@@ -95,6 +95,7 @@ class AutoOrderService @Autowired constructor(
         //현재 노드에서 인접한 노드에 포장/매장이 있는지 확인
         val action = utgService.findPlaceNodeId(kioskId, nodeId, place) ?: return false
 
+        log.info("포장/매장을 선택합니다. ${place}")
         notificationService.sendActionCommand(kioskId, listOf(action.x, action.y))
         return true
     }
