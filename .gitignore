@@ -6,6 +6,11 @@ build/
 !**/src/test/**/build/
 
 application.yml
+loki-data
+loki-wal
+logs
+gradle
+grafana-data
 
 ### STS ###
 .apt_generated
