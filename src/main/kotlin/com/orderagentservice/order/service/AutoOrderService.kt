@@ -1,15 +1,19 @@
 package com.orderagentservice.order.service
 
 import com.orderagentservice.logger
+import com.orderagentservice.order.model.dto.CoordinateDto
+import com.orderagentservice.order.model.dto.OrderResultDto
 import com.orderagentservice.order.model.request.AutoOrderMenu
 import com.orderagentservice.order.model.request.AutoOrderRequest
+import com.orderagentservice.order.util.GlobalLogger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
 class AutoOrderService @Autowired constructor(
     private val notificationService: NotificationService,
-    private val utgService: UtgService
+    private val utgService: UtgService,
+    private val globalLogger: GlobalLogger
 ) {
     private val log = logger()
 
@@ -19,23 +23,28 @@ class AutoOrderService @Autowired constructor(
 
     fun proceed(kioskId: String, orderRequest: AutoOrderRequest) {
         log.info("자동 주문을 시작합니다. 주문: ${orderRequest}")
+        globalLogger.loggingOrderStart(kioskId)
         val startTime = System.nanoTime()
         isPlace = (orderRequest.place == null)
 
         //메뉴 담기
-        proceedMenu(kioskId, orderRequest.autoOrderMenus, orderRequest.place)
+        val history = proceedMenu(kioskId, orderRequest.autoOrderMenus, orderRequest.place)
 
         //결제하기
         proceedPayment(kioskId, orderRequest.place)
 
         val endTime = System.nanoTime()
-        log.info("자동 주문 완료. 수행시간: ${(endTime - startTime) / 1000000}ms")
+        val processingTime = (endTime - startTime) / 1000000
+        log.info("자동 주문 완료. 수행시간: ${processingTime}ms")
+        globalLogger.loggingOrderResult(kioskId, history, processingTime, orderRequest.payment)
     }
 
-    private fun proceedMenu(kioskId: String, menuList: List<AutoOrderMenu>, place: String?) {
+    private fun proceedMenu(kioskId: String, menuList: List<AutoOrderMenu>, place: String?): List<OrderResultDto> {
         //메뉴 담기
+        val history = mutableListOf<OrderResultDto>()
         for (menu in menuList) {
             //포장/매장 클릭
+            val optHistory = mutableListOf<String>()
             if (isPlace == false) {
                 isPlace = clickPlaceNode(kioskId, nowNodeId, place!!)
             }
@@ -46,10 +55,10 @@ class AutoOrderService @Autowired constructor(
             //메뉴를 담기 위해 메뉴 노드까지 이동후 필요한 만큼 클릭
             val last = actionList.last()
             for (act in actionList) {
-                notificationService.sendActionCommand(kioskId, listOf(act.x, act.y))
+                notificationService.sendActionCommand(kioskId, CoordinateDto(act.x, act.y, act.title))
             }
             repeat(menu.count - 1) {
-                notificationService.sendActionCommand(kioskId, listOf(last.x, last.y))
+                notificationService.sendActionCommand(kioskId, CoordinateDto(last.x, last.y, last.title))
             }
 
             //옵션 선택
@@ -57,15 +66,22 @@ class AutoOrderService @Autowired constructor(
                 log.info("옵션을 선택합니다. 옵션: ${opt.title}")
                 val dto = utgService.findOptionNode(kioskId, last.id, opt.title)
                 repeat(opt.count) {
-                    notificationService.sendActionCommand(kioskId, listOf(dto.x, dto.y))
+                    notificationService.sendActionCommand(kioskId, CoordinateDto(dto.x, dto.y, dto.title))
                 }
+                optHistory.add(opt.title)
             }
+            history.add(
+                OrderResultDto(
+                    title = menu.title, category = menu.category,
+                    options = optHistory, quantity = menu.count
+                )
+            )
 
             //메뉴 페이지로 돌아가기
             if (menu.autoOrderOptions.isNotEmpty()) {
                 val backList = utgService.findBackPath(kioskId, last.id)
                 for (back in backList) {
-                    notificationService.sendActionCommand(kioskId, listOf(back.x, back.y))
+                    notificationService.sendActionCommand(kioskId, CoordinateDto(back.x, back.y, back.title))
                 }
             }
 
@@ -73,6 +89,7 @@ class AutoOrderService @Autowired constructor(
             val categoryId = utgService.findCategoryNodeId(kioskId, last.id)
             nowNodeId = categoryId
         }
+        return history
     }
 
     private fun proceedPayment(kioskId: String, place: String?) {
@@ -87,7 +104,7 @@ class AutoOrderService @Autowired constructor(
             }
 
             log.info("결제를 진행중입니다. 현재: ${act.title}")
-            notificationService.sendActionCommand(kioskId, listOf(act.x, act.y))
+            notificationService.sendActionCommand(kioskId, CoordinateDto(act.x, act.y, act.title))
         }
     }
 
@@ -96,7 +113,7 @@ class AutoOrderService @Autowired constructor(
         val action = utgService.findPlaceNodeId(kioskId, nodeId, place) ?: return false
 
         log.info("포장/매장을 선택합니다. ${place}")
-        notificationService.sendActionCommand(kioskId, listOf(action.x, action.y))
+        notificationService.sendActionCommand(kioskId, CoordinateDto(action.x, action.y, action.title))
         return true
     }
 }

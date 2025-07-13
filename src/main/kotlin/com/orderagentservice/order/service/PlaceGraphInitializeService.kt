@@ -5,6 +5,7 @@ import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.model.dto.LlmUiComponentDto
 import com.orderagentservice.logger
 import com.orderagentservice.order.model.NodeRelation
+import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.entity.UiEntity
 import org.springframework.beans.factory.annotation.Autowired
@@ -42,7 +43,7 @@ class PlaceGraphInitializeService @Autowired constructor(
         }
 
         //키오스크에 따라 버튼을 클릭해야 넘어가는 경우가 있으므로 클릭
-        notificationService.sendActionCommand(kioskId, listOf(action[0].coordinate[0], action[0].coordinate[1]))
+        notificationService.sendActionCommand(kioskId, CoordinateDto(action[0].coordinate[0], action[0].coordinate[1], action[0].title))
 
         return history
     }

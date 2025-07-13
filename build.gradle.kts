@@ -47,9 +47,10 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE")
 
     //logging
-    implementation ("org.springframework.boot:spring-boot-starter:3.5.3")
     implementation ("com.github.loki4j:loki-logback-appender:1.5.1")
+    implementation ("net.logstash.logback:logstash-logback-encoder:7.4")
 
+    implementation ("org.springframework.boot:spring-boot-starter:3.5.3")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")

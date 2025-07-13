@@ -8,6 +8,7 @@ import com.orderagentservice.agent.model.dto.AgentBackDto
 import com.orderagentservice.agent.model.dto.LlmUiComponentDto
 import com.orderagentservice.order.PlaceGraphInitializeServiceTest.Companion
 import com.orderagentservice.order.model.NodeRelation
+import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.entity.UiEntity
@@ -42,6 +43,7 @@ class MenuGraphInitializeServiceTest {
         private const val TEST_OPT_TITLE = "치즈추가"
         private const val TEST_CATEGORY = "버거"
         private val TEST_IMAGE_DATA = File("image_data")
+        private val TEST_COORDINATE = CoordinateDto(TEST_X_COORDINATE, TEST_Y_COORDINATE, "coordinate")
         private const val HIGH_SCORE = 0.8F
         private const val LOW_SCORE = 0.5F
     }
@@ -188,7 +190,7 @@ class MenuGraphInitializeServiceTest {
 
         whenever(missingComponentAgent.determineAction(TEST_IMAGE_DATA, menuInfoDto.options, llmUiList)).thenReturn(emptyList())
         whenever(backAgent.determineBack(any())).thenReturn(backAction)
-        whenever(notificationService.sendActionCommand(TEST_KIOSK_ID, listOf(TEST_X_COORDINATE, TEST_Y_COORDINATE))).thenReturn(actionResult)
+        whenever(notificationService.sendActionCommand(TEST_KIOSK_ID, TEST_COORDINATE)).thenReturn(actionResult)
         doNothing().whenever(utgService).saveRel(anyString(), anyString(), any())
 
         // when: 메뉴 그래프 초기화 실행
@@ -211,7 +213,7 @@ class MenuGraphInitializeServiceTest {
         assertEquals("root", calls[0].title)
         assertEquals(TEST_MENU_TITLE, calls[1].title)
 
-        verify(notificationService).sendActionCommand(TEST_KIOSK_ID, menuAction.coordinate)
+        verify(notificationService, times(2)).sendActionCommand(anyString(), any<CoordinateDto>())
         verify(utgService).saveRel(TEST_ROOT_NODE_ID, TEST_MENU_ENTITY_ID, NodeRelation.HAS_TO)
     }
 
@@ -244,7 +246,7 @@ class MenuGraphInitializeServiceTest {
         whenever(menuAgent.determineAction(any<MenuInfoDto>(), anyList())).thenReturn(lowScoreAction).thenReturn(highScoreAction)
         whenever(missingComponentAgent.determineAction(TEST_IMAGE_DATA, lowMenuDto.options, llmUiList)).thenReturn(emptyList())
         whenever(backAgent.determineBack(any())).thenReturn(backAction)
-        whenever(notificationService.sendActionCommand(TEST_KIOSK_ID, listOf(TEST_X_COORDINATE, TEST_Y_COORDINATE))).thenReturn(actionResult)
+        whenever(notificationService.sendActionCommand(TEST_KIOSK_ID, TEST_COORDINATE)).thenReturn(actionResult)
         doNothing().whenever(utgService).saveRel(anyString(), anyString(), any())
 
         // when: 메뉴 그래프 초기화 실행
@@ -290,7 +292,7 @@ class MenuGraphInitializeServiceTest {
         whenever(menuAgent.determineAction(any<MenuInfoDto>(), anyList())).thenReturn(nextPageAction).thenReturn(lastPageAction)
         whenever(missingComponentAgent.determineAction(TEST_IMAGE_DATA, menuInfoDto.options, llmUiList)).thenReturn(emptyList())
         whenever(backAgent.determineBack(any())).thenReturn(backAction)
-        whenever(notificationService.sendActionCommand(TEST_KIOSK_ID, listOf(TEST_X_COORDINATE, TEST_Y_COORDINATE))).thenReturn(actionResult)
+        whenever(notificationService.sendActionCommand(TEST_KIOSK_ID, TEST_COORDINATE)).thenReturn(actionResult)
         doNothing().whenever(utgService).saveRel(anyString(), anyString(), any())
 
         // when: 메뉴 그래프 초기화 실행
@@ -316,7 +318,7 @@ class MenuGraphInitializeServiceTest {
         whenever(menuAgent.determineAction(any<MenuInfoDto>(), anyList())).thenReturn(menuAction)
         whenever(missingComponentAgent.determineAction(TEST_IMAGE_DATA, menuInfoDto.options, llmUiList)).thenReturn(emptyList())
         whenever(backAgent.determineBack(any())).thenReturn(backAction)
-        whenever(notificationService.sendActionCommand(TEST_KIOSK_ID, listOf(TEST_X_COORDINATE, TEST_Y_COORDINATE))).thenReturn(actionResult)
+        whenever(notificationService.sendActionCommand(TEST_KIOSK_ID, TEST_COORDINATE)).thenReturn(actionResult)
         doNothing().whenever(utgService).saveRel(anyString(), anyString(), any())
 
         // when: 메뉴 그래프 초기화 실행
@@ -343,7 +345,7 @@ class MenuGraphInitializeServiceTest {
         whenever(menuAgent.determineAction(any<MenuInfoDto>(), anyList())).thenReturn(menuAction)
         whenever(missingComponentAgent.determineAction(TEST_IMAGE_DATA, menuInfoDto.options, llmUiList)).thenReturn(additionalComponents)
         whenever(backAgent.determineBack(any())).thenReturn(backAction)
-        whenever(notificationService.sendActionCommand(TEST_KIOSK_ID, listOf(TEST_X_COORDINATE, TEST_Y_COORDINATE))).thenReturn(actionResult)
+        whenever(notificationService.sendActionCommand(TEST_KIOSK_ID, TEST_COORDINATE)).thenReturn(actionResult)
         doNothing().whenever(utgService).saveRel(anyString(), anyString(), any())
 
         // when: 메뉴 그래프 초기화 실행

@@ -11,6 +11,8 @@ loki-wal
 logs
 gradle
 grafana-data
+logback-spring.xml
+logback-variables.properties
 
 ### STS ###
 .apt_generated

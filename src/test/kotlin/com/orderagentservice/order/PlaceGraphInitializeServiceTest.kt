@@ -3,7 +3,9 @@ package com.orderagentservice.order
 import com.orderagentservice.agent.PlaceAgent
 import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.model.dto.LlmUiComponentDto
+import com.orderagentservice.order.MenuGraphInitializeServiceTest.Companion
 import com.orderagentservice.order.model.NodeRelation
+import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.entity.UiEntity
 import com.orderagentservice.order.service.NotificationService
@@ -29,6 +31,7 @@ class PlaceGraphInitializeServiceTest {
         private const val TEST_X_COORDINATE = 100
         private const val TEST_Y_COORDINATE = 200
         private const val TEST_TITLE = "포장"
+        private val TEST_COORDINATE = CoordinateDto(TEST_X_COORDINATE, TEST_Y_COORDINATE, "coordinate")
     }
 
     private lateinit var placeAgent: PlaceAgent
@@ -96,7 +99,7 @@ class PlaceGraphInitializeServiceTest {
         whenever(placeAgent.determineAction(llmUiList)).thenReturn(successAgentActionList)
         whenever(utgService.saveNode(any<UiDto>())).thenReturn(uiEntity)
         doNothing().whenever(utgService).saveRel(TEST_LAST_NODE_ID, TEST_ENTITY_ID, NodeRelation.HAS_TO)
-        whenever(notificationService.sendActionCommand(TEST_KIOSK_ID, listOf(TEST_X_COORDINATE, TEST_Y_COORDINATE))).thenReturn(actionResult)
+        whenever(notificationService.sendActionCommand(TEST_KIOSK_ID, TEST_COORDINATE)).thenReturn(actionResult)
 
         // when: 그래프 초기화 실행
         val result = placeGraphInitializeService.initializeGraph(TEST_KIOSK_ID, lastNode, llmUiList)
@@ -107,7 +110,7 @@ class PlaceGraphInitializeServiceTest {
         verify(placeAgent).determineAction(llmUiList)
         verify(utgService, times(2)).saveNode(any())
         verify(utgService, times(2)).saveRel(TEST_LAST_NODE_ID, TEST_ENTITY_ID, NodeRelation.HAS_TO)
-        verify(notificationService).sendActionCommand(TEST_KIOSK_ID, listOf(TEST_X_COORDINATE, TEST_Y_COORDINATE))
+        verify(notificationService).sendActionCommand(anyString(), any<CoordinateDto>())
     }
 
     @Test
@@ -124,6 +127,6 @@ class PlaceGraphInitializeServiceTest {
         verify(placeAgent).determineAction(llmUiList)
         verify(utgService, never()).saveNode(any<UiDto>())
         verify(utgService, never()).saveRel(anyString(), anyString(), any())
-        verify(notificationService, never()).sendActionCommand(anyString(), anyList())
+        verify(notificationService, never()).sendActionCommand(anyString(), any<CoordinateDto>())
     }
 }
