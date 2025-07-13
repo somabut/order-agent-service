@@ -9,41 +9,25 @@
         </encoder>
     </appender>
 
-    <appender name="FILE1" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>info</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
-        </filter>
-        <file>${LOG_PATH}/info/${ToDay}_${LOG_FILE_NAME}.log</file>
+    <appender name="LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/log/${ToDay}_${LOG_FILE_NAME}.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>
-                ${LOG_PATH}/info/%d{yyyyMMdd}_${LOG_FILE_NAME}_%i.log
+                ${LOG_PATH}/log/%d{yyyyMMdd}_${LOG_FILE_NAME}_%i.log
             </fileNamePattern>
-            <maxFileSize>10MB</maxFileSize>
-            <maxHistory>30</maxHistory>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>90</maxHistory>
         </rollingPolicy>
-        <encoder>
-            <pattern>${LOG_PATTERN}</pattern>
-        </encoder>
-    </appender>
-
-    <appender name="FILE2" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>error</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
-        </filter>
-        <file>${LOG_PATH}/error/${TODAY}_${LOG_FILE_NAME}.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>
-                ${LOG_PATH}/error/%d{yyyyMMdd}_${LOG_FILE_NAME}_%i.log
-            </fileNamePattern>
-            <maxFileSize>10MB</maxFileSize>
-            <maxHistory>30</maxHistory>
-        </rollingPolicy>
-        <encoder>
-            <pattern>${LOG_PATTERN}</pattern>
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp/>
+                <logLevel/>
+                <loggerName/>
+                <mdc/>
+                <message/>
+                <arguments/>
+                <stackTrace/>
+            </providers>
         </encoder>
     </appender>
 
@@ -64,10 +48,9 @@
     <logger name="com.zaxxer.hikari" level="INFO"/>
 
     <root level="INFO">
-        <appender-ref ref="FILE1" />
-        <appender-ref ref="FILE2" />
         <appender-ref ref="CONSOLE" />
         <appender-ref ref="LOKI" />
+        <appender-ref ref="LOG" />
     </root>
 
 </configuration>

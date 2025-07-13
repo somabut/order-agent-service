@@ -7,6 +7,7 @@ data class AutoOrderRequest(
 )
 
 data class AutoOrderMenu(
+    val category: String,
     val title: String,
     val count: Int,
     val autoOrderOptions: List<AutoOrderOption>

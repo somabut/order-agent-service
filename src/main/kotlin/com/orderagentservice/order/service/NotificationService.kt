@@ -5,8 +5,10 @@ import com.orderagentservice.jsonMapper
 import com.orderagentservice.logger
 import com.orderagentservice.order.model.CommandType
 import com.orderagentservice.order.exception.CommandTimeoutException
+import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.request.CommandRequest
 import com.orderagentservice.order.repository.NotificationRepository
+import com.orderagentservice.order.util.GlobalLogger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
@@ -15,7 +17,8 @@ import java.util.UUID
 
 @Service
 class NotificationService @Autowired constructor(
-    private val notificationRepository: NotificationRepository
+    private val notificationRepository: NotificationRepository,
+    private val globalLogger: GlobalLogger
 ) {
     private val log = logger()
 
@@ -57,7 +60,7 @@ class NotificationService @Autowired constructor(
         return file
     }
 
-    fun sendActionCommand(kioskId: String, coordinate: List<Int>): Pair<Int, Int> {
+    fun sendActionCommand(kioskId: String, coordinate: CoordinateDto): Pair<Int, Int> {
         log.info("클라이언트에게 액션 요청을 보냅니다.")
         val commandId = UUID.randomUUID().toString()
         val request = jsonMapper.writeValueAsString(
@@ -71,7 +74,15 @@ class NotificationService @Autowired constructor(
 
         //클라이언트는 여기서 보내진 commandId로 응답을 해야함
         emitter.send(request)
-        val coordinatePair = waitActionCommand(commandId)
+        val coordinatePair: Pair<Int, Int>
+        try {
+            coordinatePair = waitActionCommand(commandId)
+        } catch (e: CommandTimeoutException) {
+            globalLogger.loggingActionResult(kioskId, commandId, "CLICK", false, coordinate)
+            throw e
+        }
+
+        globalLogger.loggingActionResult(kioskId, commandId, "CLICK", true, coordinate)
         return coordinatePair
     }
 

@@ -8,6 +8,7 @@ import com.orderagentservice.agent.model.dto.AgentBackDto
 import com.orderagentservice.agent.model.dto.LlmUiComponentDto
 import com.orderagentservice.logger
 import com.orderagentservice.order.model.NodeRelation
+import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.MenuGraphDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.dto.UiDto
@@ -87,7 +88,7 @@ class MenuGraphInitializeService @Autowired constructor(
             ))
 
             //sse를 통해 클라이언트에게 현재 메뉴 좌표 클릭하도록 하기
-            notificationService.sendActionCommand(kioskId, action.coordinate)
+            notificationService.sendActionCommand(kioskId,  CoordinateDto(action.coordinate[0], action.coordinate[1], action.title))
 
             //옵션 노드 초기화
             processOptions(
@@ -169,7 +170,7 @@ class MenuGraphInitializeService @Autowired constructor(
 
         //sse를 통해 클라이언트에게 원래 페이지로 돌아가는 좌표 클릭하도록 하기
         log.info("돌아가는 좌표를 클릭중입니다. 좌표: ${backAction.coordinate}")
-        notificationService.sendActionCommand(kioskId, backAction.coordinate)
+        notificationService.sendActionCommand(kioskId,  CoordinateDto(backAction.coordinate[0], backAction.coordinate[1], backAction.title))
 
         optActionList.add(backAction.toActionDto())
         return optActionList

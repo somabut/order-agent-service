@@ -22,7 +22,7 @@ import java.io.File
 class UiExtractorManager @Autowired constructor(
     private val env: Environment
 ) {
-    private val UI_EXCTRACTOR_HOST = env.getProperty("ui-extractor.url")
+    private val UI_EXCTRACTOR_HOST = env.getProperty("ui-extractor.host")
     private val UI_EXCTRACTOR_PORT = env.getProperty("ui-extractor.port")
 
     fun queryUiExtractor(image: File): List<OmniUiComponentDto> {

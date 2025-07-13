@@ -4,10 +4,7 @@ import com.orderagentservice.agent.exception.AgentManyRequestException
 import com.orderagentservice.global.exception.S3NotSupportedType
 import com.orderagentservice.global.model.RootException
 import com.orderagentservice.global.model.response.ApiResponse
-import com.orderagentservice.order.exception.CommandTimeoutException
-import com.orderagentservice.order.exception.NoSuchKioskException
-import com.orderagentservice.order.exception.NodeNotFoundException
-import com.orderagentservice.order.exception.PathNotFoundException
+import com.orderagentservice.order.exception.*
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
@@ -46,5 +43,15 @@ class GlobalExceptionHandler {
     @ExceptionHandler(S3NotSupportedType::class)
     fun handleS3NotSupportedType(e: S3NotSupportedType): ApiResponse<*> {
         return ApiResponse.fail<S3NotSupportedType>(e)
+    }
+
+    @ExceptionHandler(KioskAdminSignInException::class)
+    fun handleKioskAdminSignInException(e: KioskAdminSignInException): ApiResponse<*> {
+        return ApiResponse.fail<KioskAdminSignInException>(e)
+    }
+
+    @ExceptionHandler(MenuInfoRequestException::class)
+    fun handleMenuInfoRequestException(e: MenuInfoRequestException): ApiResponse<*> {
+        return ApiResponse.fail<MenuInfoRequestException>(e)
     }
 }
