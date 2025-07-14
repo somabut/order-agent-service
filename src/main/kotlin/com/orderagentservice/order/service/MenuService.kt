@@ -13,8 +13,8 @@ class MenuService @Autowired constructor(
 ) {
     private val log = logger()
 
-    fun getMenus(kioskId: String, signInRequest: KioskAdminSignInRequest): List<MenuInfoDto> {
-        val response = menuRepository.findAllMenus(kioskId, signInRequest)
+    fun getMenus(kioskId: String, accessToken: String): List<MenuInfoDto> {
+        val response = menuRepository.findAllMenus(kioskId, accessToken)
         val menuInfoList = mutableListOf<MenuInfoDto>()
 
         for (category in response.categories) {

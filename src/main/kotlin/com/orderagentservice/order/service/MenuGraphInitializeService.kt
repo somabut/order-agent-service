@@ -4,7 +4,6 @@ import com.orderagentservice.agent.BackAgent
 import com.orderagentservice.agent.MenuAgent
 import com.orderagentservice.agent.MissingComponentAgent
 import com.orderagentservice.agent.model.dto.AgentActionDto
-import com.orderagentservice.agent.model.dto.AgentBackDto
 import com.orderagentservice.agent.model.dto.LlmUiComponentDto
 import com.orderagentservice.logger
 import com.orderagentservice.order.model.NodeRelation
@@ -55,17 +54,32 @@ class MenuGraphInitializeService @Autowired constructor(
                 llmUiList.clear()
                 val image = notificationService.sendCaptureCommand(kioskId)
                 llmUiList = uiExtractorManager.getUiComponents(image, kioskId)
+
+                if (isFirst == true) {
+                    //포장/매장 UI 확인
+                    placeGraphInitializeService.initializeGraph(kioskId, preNode, llmUiList)
+                        .onEach { history.add(it) }
+                        .also { list -> if (list.size == 2) isFindPlace = true }
+
+                    //루트 -> 처음 카테고리 노드로 연결
+                    val firstMenuDto = MenuInfoDto(title = menuDto.category, options = listOf(), category = menuDto.category)
+                    val firstAction = menuAgent.determineAction(firstMenuDto, llmUiList)
+                    val firstNode = utgService.saveNode(UiDto(
+                        isNext = true,
+                        x = firstAction.coordinate[0], y = firstAction.coordinate[1],
+                        title = firstAction.title,
+                        kioskId = kioskId
+                    ))
+
+                    utgService.saveRel(preNode.id, firstNode.id, NodeRelation.PATH_TO)
+                    preNode = firstNode
+
+                    history.add(firstAction)
+                    isFirst = false
+                }
+
                 isNext = false
                 continue
-            }
-
-            //포장/매장 UI 확인
-            if (isFirst == true) {
-                placeGraphInitializeService.initializeGraph(kioskId, preNode, llmUiList)
-                    .onEach { history.add(it) }
-                    .also { list -> if (list.size == 2) isFindPlace = true }
-
-                isFirst = false
             }
 
             log.info("진행 중인 노드 menu: ${menuDto.title}, category: ${menuDto.category}")
@@ -80,7 +94,7 @@ class MenuGraphInitializeService @Autowired constructor(
 
             log.info("메뉴 노드를 생성합니다. go_next: ${action.goNext}, score: ${action.score}, coordinate: ${action.coordinate}, title: ${action.title}")
             isNext = action.goNext
-            val entity = utgService.saveNode(UiDto(
+            val node = utgService.saveNode(UiDto(
                 isNext = isNext,
                 x = action.coordinate[0], y = action.coordinate[1],
                 title = action.title,
@@ -93,17 +107,17 @@ class MenuGraphInitializeService @Autowired constructor(
             //옵션 노드 초기화
             processOptions(
                 menuDto = menuDto,
-                entity = entity, preNode = preNode,
+                entity = node, preNode = preNode,
                 kioskId = kioskId
             ).forEach { history.add(it) }
 
             //isNext이고 이전이랑 카테고리 다른 경우. 다른 페이지로 가야하는 경우
             if (isNext) {
-                utgService.saveRel(preNode.id, entity.id, NodeRelation.PATH_TO)
-                utgService.saveRel(entity.id, preNode.id, NodeRelation.PATH_TO)
-                preNode = entity
+                utgService.saveRel(preNode.id, node.id, NodeRelation.PATH_TO)
+                utgService.saveRel(node.id, preNode.id, NodeRelation.PATH_TO)
+                preNode = node
             } else {
-                utgService.saveRel(preNode.id, entity.id, NodeRelation.HAS_TO)
+                utgService.saveRel(preNode.id, node.id, NodeRelation.HAS_TO)
                 menuIndex++
             }
 

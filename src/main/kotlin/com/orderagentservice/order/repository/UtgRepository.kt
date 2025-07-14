@@ -61,6 +61,16 @@ interface UtgRepository : Neo4jRepository<UiEntity, String> {
         @Param("place") place: String
     ): UiEntity?
 
+    @Query(
+        "MATCH (n:UI {kioskId: \$kioskId, title: \$title})\n" +
+        "RETURN n\n" +
+        "LIMIT 1"
+    )
+    fun findRootNode(
+        @Param("kioskId") kioskId: String,
+        @Param("title") title: String = "root",
+    ): UiEntity?
+
     @Query("MATCH (a:UI {id: \$sourceId}), (b:UI {id: \$targetId}) MERGE (a)-[:PATH_TO]->(b)")
     fun savePathRelation(sourceId: String, targetId: String)
 

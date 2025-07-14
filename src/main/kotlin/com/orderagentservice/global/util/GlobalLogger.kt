@@ -1,11 +1,9 @@
-package com.orderagentservice.order.util
+package com.orderagentservice.global.util
 
 import com.orderagentservice.global.model.LogType
 import com.orderagentservice.jsonMapper
 import com.orderagentservice.order.model.dto.CoordinateDto
-import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.dto.OrderResultDto
-import jdk.internal.classfile.components.ClassPrinter.toJson
 import org.slf4j.LoggerFactory
 import org.slf4j.MDC
 import org.springframework.stereotype.Component

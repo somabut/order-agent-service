@@ -81,4 +81,13 @@ class UtgService @Autowired constructor(
             x = entity.x, y = entity.y
         )
     }
+
+    fun findRootNodeId(kioskId: String): ActionPathDto {
+        val entity = utgRepository.findRootNode(kioskId) ?: throw NodeNotFoundException()
+
+        return ActionPathDto(
+            id = entity.id, title = entity.title,
+            x = entity.x, y = entity.y
+        )
+    }
 }

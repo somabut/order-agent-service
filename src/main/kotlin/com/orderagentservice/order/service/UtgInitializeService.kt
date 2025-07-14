@@ -16,17 +16,17 @@ import org.springframework.stereotype.Service
 
 @Service
 class UtgInitializeService @Autowired constructor(
+    private val menuService: MenuService,
     private val menuGraphInitializeService: MenuGraphInitializeService,
     private val paymentGraphInitializeService: PaymentGraphInitializeService
 ) {
     private val log = logger()
 
-    fun initializeGraph(
-        url: String, kioskId: String,
-        menuList: List<MenuInfoDto>, paymentList: List<PaymentInfoDto>
-    ): List<AgentActionDto> {
+    fun initializeGraph(kioskId: String, accessToken: String): List<AgentActionDto> {
         log.info("UTG 생성 시작")
         val startTime = System.nanoTime()
+
+        val menuList = menuService.getMenus(kioskId, accessToken)
 
         val history = mutableListOf<AgentActionDto>()
         val result = menuGraphInitializeService.initializeGraph(

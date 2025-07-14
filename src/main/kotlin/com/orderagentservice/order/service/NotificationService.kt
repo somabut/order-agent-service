@@ -1,6 +1,5 @@
 package com.orderagentservice.order.service
 
-import com.orderagentservice.global.model.response.ApiResponse
 import com.orderagentservice.jsonMapper
 import com.orderagentservice.logger
 import com.orderagentservice.order.model.CommandType
@@ -8,7 +7,7 @@ import com.orderagentservice.order.exception.CommandTimeoutException
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.request.CommandRequest
 import com.orderagentservice.order.repository.NotificationRepository
-import com.orderagentservice.order.util.GlobalLogger
+import com.orderagentservice.global.util.GlobalLogger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter

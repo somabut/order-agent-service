@@ -30,18 +30,12 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.1")
 
-    //orm
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-
     //neo4j
     implementation("org.neo4j.driver:neo4j-java-driver:5.23.0")
     implementation("org.springframework.boot:spring-boot-starter-data-neo4j")
 
     //coroutine
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
-
-    //mysql
-    runtimeOnly("com.mysql:mysql-connector-j")
 
     //aws
     implementation("org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE")

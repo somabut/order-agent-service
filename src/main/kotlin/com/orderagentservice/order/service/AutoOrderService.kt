@@ -5,7 +5,7 @@ import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.OrderResultDto
 import com.orderagentservice.order.model.request.AutoOrderMenu
 import com.orderagentservice.order.model.request.AutoOrderRequest
-import com.orderagentservice.order.util.GlobalLogger
+import com.orderagentservice.global.util.GlobalLogger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -17,8 +17,7 @@ class AutoOrderService @Autowired constructor(
 ) {
     private val log = logger()
 
-    //TODO(시작 노드 아이디 가져오기. 밑의 root는 임시코드)
-    var nowNodeId = "root"
+    lateinit var nowNodeId: String
     var isPlace = false
 
     fun proceed(kioskId: String, orderRequest: AutoOrderRequest) {
@@ -26,6 +25,9 @@ class AutoOrderService @Autowired constructor(
         globalLogger.loggingOrderStart(kioskId)
         val startTime = System.nanoTime()
         isPlace = (orderRequest.place == null)
+
+        //루트 노드 가져오기
+        nowNodeId = utgService.findRootNodeId(kioskId).id
 
         //메뉴 담기
         val history = proceedMenu(kioskId, orderRequest.autoOrderMenus, orderRequest.place)

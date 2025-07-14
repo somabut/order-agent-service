@@ -24,10 +24,9 @@ class MenuRepository @Autowired constructor(
     private val KIOSK_ADMIN_HOST = env.getProperty("kiosk-admin.host")
     private val KIOSK_ADMIN_PORT = env.getProperty("kiosk-admin.port")
 
-    fun findAllMenus(kioskId: String, signInRequest: KioskAdminSignInRequest): MenuInfoResponse {
+    fun findAllMenus(kioskId: String, accessToken: String): MenuInfoResponse {
         val restTemplate = RestTemplate()
-        val url = "$KIOSK_ADMIN_HOST:$KIOSK_ADMIN_PORT/v1/admin/kiosks/$kioskId/menu-data"
-        val accessToken = signIn(signInRequest)
+        val url = "$KIOSK_ADMIN_HOST/v1/admin/kiosks/$kioskId/menu-data"
 
         val headers = HttpHeaders()
         headers.contentType = MediaType.APPLICATION_JSON
@@ -40,22 +39,5 @@ class MenuRepository @Autowired constructor(
         ).body!!.data ?: throw MenuInfoRequestException()
 
         return response
-    }
-
-    private fun signIn(signInRequest: KioskAdminSignInRequest): String {
-        val restTemplate = RestTemplate()
-        val url = "$KIOSK_ADMIN_HOST:$KIOSK_ADMIN_PORT/v1/auth/login"
-
-        val headers = HttpHeaders()
-        headers.contentType = MediaType.APPLICATION_JSON
-        val request: HttpEntity<KioskAdminSignInRequest> = HttpEntity<KioskAdminSignInRequest>(signInRequest, headers)
-
-        val response = restTemplate.exchange(
-            url, HttpMethod.POST,
-            request,
-            object : ParameterizedTypeReference<ApiResponse<KioskAdminSingInResponse>>() {}
-        ).body!!.data ?: throw KioskAdminSignInException()
-
-        return response.accessToken
     }
 }
