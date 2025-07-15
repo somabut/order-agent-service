@@ -41,6 +41,11 @@ class NotificationService @Autowired constructor(
         notificationRepository.saveActionCommand(commandId, coordinate)
     }
 
+    fun sendMessage(kioskId: String, message: String) {
+        val emitter = notificationRepository.getEmitter(kioskId)
+        emitter.send(message)
+    }
+
     fun sendCaptureCommand(kioskId: String): File {
         log.info("클라이언트에게 캡쳐 요청을 보냅니다.")
         val commandId = UUID.randomUUID().toString()

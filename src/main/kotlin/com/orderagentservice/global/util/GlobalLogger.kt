@@ -13,9 +13,10 @@ class GlobalLogger {
     private val LOGGER_NAME = "AUTO_ORDER"
     private val logger = LoggerFactory.getLogger(LOGGER_NAME)
 
-    fun loggingOrderStart(kioskId: String) {
+    fun loggingOrderStart(kioskId: String, taskId: String) {
         MDC.put("logType", LogType.ORDER_START.name)
         MDC.put("kioskId", kioskId)
+        MDC.put("taskId", taskId)
         logger.info(LogType.ORDER_START.message)
         MDC.clear()
     }
@@ -38,13 +39,15 @@ class GlobalLogger {
 
     fun loggingOrderResult(
         kioskId: String, menuList: List<OrderResultDto>,
-        processingTime: Long, paymentMethod: String
+        processingTime: Long, paymentMethod: String,
+        taskId: String
     ) {
         val menuJson = jsonMapper.writeValueAsString(menuList)
         val totalAmount = menuList.sumOf { it.quantity }
 
         MDC.put("logType", LogType.ORDER_RESULT.name)
         MDC.put("kioskId", kioskId)
+        MDC.put("taskId", taskId)
         MDC.put("menuList", menuJson)
         MDC.put("processingTime (ms)", processingTime.toString())
         MDC.put("paymentMethod", paymentMethod)

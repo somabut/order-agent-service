@@ -8,6 +8,7 @@ import com.orderagentservice.order.model.request.AutoOrderRequest
 import com.orderagentservice.global.util.GlobalLogger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.util.UUID
 
 @Service
 class AutoOrderService @Autowired constructor(
@@ -20,9 +21,9 @@ class AutoOrderService @Autowired constructor(
     lateinit var nowNodeId: String
     var isPlace = false
 
-    fun proceed(kioskId: String, orderRequest: AutoOrderRequest) {
-        log.info("자동 주문을 시작합니다. 주문: ${orderRequest}")
-        globalLogger.loggingOrderStart(kioskId)
+    fun proceed(kioskId: String, taskId: String, orderRequest: AutoOrderRequest) {
+        logOrder(kioskId, "자동 주문을 시작합니다. 주문: ${orderRequest}")
+        globalLogger.loggingOrderStart(kioskId, taskId)
         val startTime = System.nanoTime()
         isPlace = (orderRequest.place == null)
 
@@ -37,8 +38,12 @@ class AutoOrderService @Autowired constructor(
 
         val endTime = System.nanoTime()
         val processingTime = (endTime - startTime) / 1000000
-        log.info("자동 주문 완료. 수행시간: ${processingTime}ms")
-        globalLogger.loggingOrderResult(kioskId, history, processingTime, orderRequest.payment)
+        logOrder(kioskId, "자동 주문 완료. 수행시간: ${processingTime}ms")
+        globalLogger.loggingOrderResult(
+            kioskId = kioskId, menuList = history,
+            processingTime = processingTime, paymentMethod = orderRequest.payment,
+            taskId = taskId
+        )
     }
 
     private fun proceedMenu(kioskId: String, menuList: List<AutoOrderMenu>, place: String?): List<OrderResultDto> {
@@ -51,7 +56,7 @@ class AutoOrderService @Autowired constructor(
                 isPlace = clickPlaceNode(kioskId, nowNodeId, place!!)
             }
 
-            log.info("메뉴를 담습니다. 메뉴: ${menu.title}")
+            logOrder(kioskId, "메뉴를 담습니다. 메뉴: ${menu.title}")
             val actionList = utgService.findMenuPath(kioskId, nowNodeId, menu.title)
 
             //메뉴를 담기 위해 메뉴 노드까지 이동후 필요한 만큼 클릭
@@ -65,7 +70,7 @@ class AutoOrderService @Autowired constructor(
 
             //옵션 선택
             for (opt in menu.autoOrderOptions) {
-                log.info("옵션을 선택합니다. 옵션: ${opt.title}")
+                logOrder(kioskId, "옵션을 선택합니다. 옵션: ${opt.title}")
                 val dto = utgService.findOptionNode(kioskId, last.id, opt.title)
                 repeat(opt.count) {
                     notificationService.sendActionCommand(kioskId, CoordinateDto(dto.x, dto.y, dto.title))
@@ -105,7 +110,7 @@ class AutoOrderService @Autowired constructor(
                 isPlace = clickPlaceNode(kioskId, nowNodeId, place!!)
             }
 
-            log.info("결제를 진행중입니다. 현재: ${act.title}")
+            logOrder(kioskId, "결제를 진행중입니다. 현재: ${act.title}")
             notificationService.sendActionCommand(kioskId, CoordinateDto(act.x, act.y, act.title))
         }
     }
@@ -114,8 +119,13 @@ class AutoOrderService @Autowired constructor(
         //현재 노드에서 인접한 노드에 포장/매장이 있는지 확인
         val action = utgService.findPlaceNodeId(kioskId, nodeId, place) ?: return false
 
-        log.info("포장/매장을 선택합니다. ${place}")
+        logOrder(kioskId, "포장/매장을 선택합니다. ${place}")
         notificationService.sendActionCommand(kioskId, CoordinateDto(action.x, action.y, action.title))
         return true
+    }
+
+    private fun logOrder(kioskId: String, message: String) {
+        log.info(message)
+        notificationService.sendMessage(kioskId, message)
     }
 }

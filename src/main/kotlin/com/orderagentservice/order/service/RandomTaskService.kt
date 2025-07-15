@@ -5,12 +5,27 @@ import com.orderagentservice.order.model.request.AutoOrderOption
 import com.orderagentservice.order.model.request.AutoOrderRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.util.UUID
 import kotlin.random.Random
 
 @Service
 class RandomTaskService @Autowired constructor(
+    private val autoOrderService: AutoOrderService,
     private val menuService: MenuService
 ) {
+    fun proceed(count: Int, kioskId: String, accessToken: String): List<String> {
+        val taskList = mutableListOf<String>()
+        repeat(count) {
+            val taskId = UUID.randomUUID().toString()
+            val menuCount = Random.nextInt(1, 6)
+            val request = generate(menuCount, kioskId, accessToken)
+
+            autoOrderService.proceed(kioskId, taskId, request)
+            taskList.add(taskId)
+        }
+        return taskList
+    }
+
     fun generate(count: Int, kioskId: String, accessToken: String): AutoOrderRequest {
         val menuList = menuService.getMenus(kioskId, accessToken)
 
@@ -45,7 +60,9 @@ class RandomTaskService @Autowired constructor(
                 )
             )
         }
-        return AutoOrderRequest(autoOrderMenus = selectMenuList, place = "포장", payment = "카드")
+        val placeOptions = listOf("포장", "매장")
+        val randomPlace = placeOptions.random()
+        return AutoOrderRequest(autoOrderMenus = selectMenuList, place = randomPlace, payment = "카드")
     }
 
     private fun getRandomValue(max: Int, count: Int): List<Int> {
