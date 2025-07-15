@@ -70,3 +70,11 @@ tasks.withType<Test> {
 
     include("**/mocktest/**")
 }
+
+tasks.jar {
+    manifest {
+        attributes(
+            "Main-Class" to "com.orderagentservice.OrderAgentServiceApplication.kt"
+        )
+    }
+}
