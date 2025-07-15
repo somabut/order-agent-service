@@ -60,9 +60,8 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.AWS_HOST }}
-          port: ${{ secrets.AWS_PORT }}
           username: ${{ secrets.AWS_USERNAME }}
-          key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
+          password: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
           script: |
             # compose 파일 위치로 이동 (예시: /home/ubuntu/deploy)
             cd /home/alike
