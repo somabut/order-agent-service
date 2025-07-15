@@ -17,7 +17,7 @@ services:
     image: grafana/promtail:2.9.4
     container_name: promtail
     volumes:
-      - /logs/log:/var/log
+      - ./logs/log:/var/log
       - ./promtail-config.yml:/etc/promtail/config.yml
     command: -config.file=/etc/promtail/config.yml
     restart: unless-stopped
@@ -32,3 +32,16 @@ services:
     volumes:
       - ./grafana-data:/var/lib/grafana
     restart: unless-stopped
+
+  spring:
+    image: moodtrbl/order-agent-service:latest
+    container_name: order-agent-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - loki
+      - promtail
+      - grafana
+    environment:
+      - SPRING_PROFILES_ACTIVE=deploy
+      - HOSTNAME=order-agent-service

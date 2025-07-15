@@ -4,19 +4,21 @@ import com.orderagentservice.agent.model.dto.LlmUiComponentDto
 import com.orderagentservice.global.model.response.ApiResponse
 import com.orderagentservice.order.model.dto.OmniUiComponentDto
 import com.orderagentservice.order.model.response.OmniResponse
-import com.orderagentservice.order.service.NotificationService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.core.env.Environment
-import org.springframework.core.io.FileSystemResource
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
-import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.client.RestTemplate
 import java.io.File
+import java.io.FileInputStream
+import java.nio.file.Files
+import java.util.*
+import kotlin.collections.HashMap
+
 
 @Component
 class UiExtractorManager @Autowired constructor(
@@ -24,17 +26,23 @@ class UiExtractorManager @Autowired constructor(
 ) {
     private val UI_EXCTRACTOR_HOST = env.getProperty("ui-extractor.host")
     private val UI_EXCTRACTOR_PORT = env.getProperty("ui-extractor.port")
+    private val UI_EXTRACTOR_API_KEY = env.getProperty("ui-extractor.api-key")!!
 
     fun queryUiExtractor(image: File): List<OmniUiComponentDto> {
         val restTemplate = RestTemplate()
-        val url = "$UI_EXCTRACTOR_HOST:$UI_EXCTRACTOR_PORT/api/extract-ui"
+        val url = "$UI_EXCTRACTOR_HOST/v2/1p99bupisk41r7/runsync"
 
-        val fileResource = FileSystemResource(image)
-        val body = LinkedMultiValueMap<String, Any>()
-        body.add("file", fileResource)
+        val fileContent = FileInputStream(image).use { it.readBytes() }
+        val base64Encoded = Base64.getEncoder().encodeToString(fileContent)
+
+        val input: MutableMap<String, Any> = HashMap()
+        val body: MutableMap<String, Any> = HashMap()
+        input["file"] = base64Encoded
+        body["input"] = input
 
         val headers = HttpHeaders()
         headers.contentType = MediaType.MULTIPART_FORM_DATA
+        headers.setBearerAuth(UI_EXTRACTOR_API_KEY)
 
         //ui extractor service에게 UI 추출 요청
         val requestEntity = HttpEntity(body, headers)

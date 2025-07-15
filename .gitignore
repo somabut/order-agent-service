@@ -6,13 +6,7 @@ build/
 !**/src/test/**/build/
 
 application.yml
-loki-data
-loki-wal
-logs
 gradle
-grafana-data
-logback-spring.xml
-logback-variables.properties
 
 ### STS ###
 .apt_generated

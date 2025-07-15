@@ -67,4 +67,6 @@ dependencyManagement {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+
+    include("**/mocktest/**")
 }

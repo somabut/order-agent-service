@@ -1,9 +1,8 @@
-package com.orderagentservice.order
+package com.orderagentservice.mocktest.order
 
 import com.orderagentservice.agent.PaymentAgent
 import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.model.dto.LlmUiComponentDto
-import com.orderagentservice.order.PlaceGraphInitializeServiceTest.Companion
 import com.orderagentservice.order.model.NodeRelation
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.entity.UiEntity
@@ -21,7 +20,6 @@ import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.doNothing
 import org.mockito.kotlin.whenever
 import org.springframework.boot.test.context.SpringBootTest
-import org.w3c.dom.Node
 import java.io.File
 import kotlin.test.Test
 

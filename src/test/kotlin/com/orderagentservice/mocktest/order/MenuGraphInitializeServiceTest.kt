@@ -1,4 +1,4 @@
-package com.orderagentservice.order
+package com.orderagentservice.mocktest.order
 
 import com.orderagentservice.agent.BackAgent
 import com.orderagentservice.agent.MenuAgent
@@ -6,7 +6,6 @@ import com.orderagentservice.agent.MissingComponentAgent
 import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.model.dto.AgentBackDto
 import com.orderagentservice.agent.model.dto.LlmUiComponentDto
-import com.orderagentservice.order.PlaceGraphInitializeServiceTest.Companion
 import com.orderagentservice.order.model.NodeRelation
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
@@ -26,7 +25,6 @@ import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.reset
 import org.mockito.kotlin.*
-import org.springframework.boot.test.context.SpringBootTest
 import java.io.File
 
 class MenuGraphInitializeServiceTest {

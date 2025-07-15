@@ -1,4 +1,4 @@
-package com.orderagentservice.order
+package com.orderagentservice.mocktest.order
 
 import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.model.dto.AgentBackDto
@@ -20,7 +20,6 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
-import org.springframework.boot.test.context.SpringBootTest
 
 @ExtendWith(MockitoExtension::class)
 class AutoOrderServiceTest {
@@ -42,10 +41,6 @@ class AutoOrderServiceTest {
         private const val TEST_Y_COORDINATE_2 = 250
         private const val TEST_X_COORDINATE_3 = 300
         private const val TEST_Y_COORDINATE_3 = 400
-        private const val TEST_PLACE_X = 80
-        private const val TEST_PLACE_Y = 120
-        private const val TEST_BACK_X = 50
-        private const val TEST_BACK_Y = 100
 
         private const val TEST_MENU_TITLE = "아메리카노"
         private const val TEST_MENU_TITLE_2 = "카페라떼"
@@ -63,7 +58,6 @@ class AutoOrderServiceTest {
         private const val TEST_MENU_COUNT = 2
         private const val TEST_MENU_COUNT_1 = 1
         private const val TEST_OPTION_COUNT = 1
-        private const val TEST_PROCESSING_TIME = 1000.0
     }
 
     @Mock
@@ -80,6 +74,7 @@ class AutoOrderServiceTest {
     private lateinit var mockActionList: List<AgentActionDto>
     private lateinit var mockPath: ActionPathDto
     private lateinit var mockOpt: ActionPathDto
+    private lateinit var mockRoot: ActionPathDto
     private lateinit var mockTakePlace: ActionPathDto
     private lateinit var mockDinePlace: ActionPathDto
     private lateinit var mockPathList: List<ActionPathDto>
@@ -124,11 +119,14 @@ class AutoOrderServiceTest {
 
         mockPath = ActionPathDto(id = TEST_MENU_ID, x = TEST_X_COORDINATE, y = TEST_Y_COORDINATE, title = TEST_MENU_TITLE)
         mockOpt = ActionPathDto(id = TEST_OPTION_ID, x = TEST_X_COORDINATE, y = TEST_Y_COORDINATE, title = TEST_OPTION_TITLE)
+        mockRoot = ActionPathDto(id = TEST_ROOT_NODE_ID, x = TEST_X_COORDINATE, y = TEST_Y_COORDINATE, title = "root")
         mockTakePlace = ActionPathDto(id = TEST_PLACE_ID, x = TEST_X_COORDINATE, y = TEST_Y_COORDINATE, title = TEST_PLACE_TAKEOUT)
         mockDinePlace = ActionPathDto(id = TEST_PLACE_ID, x = TEST_X_COORDINATE, y = TEST_Y_COORDINATE, title = TEST_PLACE_STORE)
         mockPathList = listOf(mockPath)
 
-        mockPlaceAction = AgentActionDto(title = TEST_MENU_TITLE, goNext = false, score = 0.9F, coordinate = listOf(TEST_X_COORDINATE, TEST_Y_COORDINATE))
+        mockPlaceAction = AgentActionDto(title = TEST_MENU_TITLE, goNext = false, score = 0.9F, coordinate = listOf(
+            TEST_X_COORDINATE, TEST_Y_COORDINATE
+        ))
     }
 
     @Test
@@ -139,6 +137,7 @@ class AutoOrderServiceTest {
         whenever(utgService.findBackPath(TEST_KIOSK_ID, TEST_MENU_ID)).thenReturn(mockBackPathList)
         whenever(utgService.findCategoryNodeId(TEST_KIOSK_ID, TEST_MENU_ID)).thenReturn(TEST_CATEGORY_ID)
         whenever(utgService.findMenuPath(TEST_KIOSK_ID, TEST_CATEGORY_ID, TEST_COMPLETE_TITLE)).thenReturn(mockPathList)
+        whenever(utgService.findRootNodeId(TEST_KIOSK_ID)).thenReturn(mockRoot)
         doNothing().whenever(globalLogger).loggingOrderStart(TEST_KIOSK_ID)
         doNothing().whenever(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), any(), any(), eq(TEST_PAYMENT_CARD))
 
@@ -188,6 +187,7 @@ class AutoOrderServiceTest {
         whenever(utgService.findMenuPath(TEST_KIOSK_ID, TEST_CATEGORY_ID, TEST_COMPLETE_TITLE)).thenReturn(
             listOf(ActionPathDto(id = TEST_COMPLETE_ID, x = TEST_X_COORDINATE_3, y = TEST_Y_COORDINATE_3, title = TEST_COMPLETE_TITLE))
         )
+        whenever(utgService.findRootNodeId(TEST_KIOSK_ID)).thenReturn(mockRoot)
         doNothing().whenever(globalLogger).loggingOrderStart(TEST_KIOSK_ID)
         doNothing().whenever(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), any(), any(), eq(TEST_PAYMENT_CASH))
 
@@ -233,6 +233,7 @@ class AutoOrderServiceTest {
         whenever(utgService.findMenuPath(TEST_KIOSK_ID, TEST_CATEGORY_ID_2, TEST_COMPLETE_TITLE)).thenReturn(
             listOf(ActionPathDto(id = TEST_COMPLETE_ID, x = TEST_X_COORDINATE_3, y = TEST_Y_COORDINATE_3, title = TEST_COMPLETE_TITLE))
         )
+        whenever(utgService.findRootNodeId(TEST_KIOSK_ID)).thenReturn(mockRoot)
         doNothing().whenever(globalLogger).loggingOrderStart(TEST_KIOSK_ID)
         doNothing().whenever(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), any(), any(), eq(TEST_PAYMENT_CARD))
 
@@ -262,6 +263,7 @@ class AutoOrderServiceTest {
         whenever(utgService.findMenuPath(TEST_KIOSK_ID, TEST_CATEGORY_ID, TEST_COMPLETE_TITLE)).thenReturn(
             listOf(ActionPathDto(id = TEST_COMPLETE_ID, x = TEST_X_COORDINATE_3, y = TEST_Y_COORDINATE_3, title = TEST_COMPLETE_TITLE))
         )
+        whenever(utgService.findRootNodeId(TEST_KIOSK_ID)).thenReturn(mockRoot)
         doNothing().whenever(globalLogger).loggingOrderStart(TEST_KIOSK_ID)
         doNothing().whenever(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), any(), any(), eq(TEST_PAYMENT_CARD))
 
