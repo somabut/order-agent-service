@@ -16,7 +16,7 @@ class StepAgentTest @Autowired constructor(
         val answer = listOf("시오라멘 면추가 차슈추가 2개", "크리스퍼 클래식 펩시제로추가 코울슬로추가 맥너겟추가 3개", "크리스피 윙 2조각", "포장", "카드 결제해줘")
 
         //when: 주문을 액션스탭별로 나눈다
-        val steps = stepAgent.cutStep(input)
+        val steps = stepAgent.determineAction(input)
 
         //then: 스탭별로 나누어진다
         for(i in 0..4) {

@@ -1,0 +1,239 @@
+package com.orderagentservice.mocktest.order
+
+import com.orderagentservice.agent.PaymentAgent
+import com.orderagentservice.agent.model.dto.AgentActionDto
+import com.orderagentservice.agent.model.dto.LlmUiComponentDto
+import com.orderagentservice.order.model.NodeRelation
+import com.orderagentservice.order.model.dto.UiDto
+import com.orderagentservice.order.model.entity.UiEntity
+import com.orderagentservice.order.service.NotificationService
+import com.orderagentservice.order.service.PaymentGraphInitializeService
+import com.orderagentservice.order.service.PlaceGraphInitializeService
+import com.orderagentservice.order.service.UtgService
+import com.orderagentservice.order.util.UiExtractorManager
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
+import org.mockito.ArgumentMatchers.anyString
+import org.mockito.Mockito.*
+import org.mockito.kotlin.any
+import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.doNothing
+import org.mockito.kotlin.whenever
+import org.springframework.boot.test.context.SpringBootTest
+import java.io.File
+import kotlin.test.Test
+
+@SpringBootTest
+class PaymentGraphInitializeServiceTest {
+    companion object {
+        private const val TEST_KIOSK_ID = "KIOSK_123123"
+        private const val TEST_LAST_NODE_ID = "NODE_123"
+        private const val TEST_ENTITY_ID = "ENTITY_123"
+        private const val TEST_COMPLETE_ENTITY_ID = "COMPLETE_ENTITY_123"
+        private const val TEST_X_COORDINATE = 100
+        private const val TEST_Y_COORDINATE = 200
+        private const val TEST_TITLE = "결제하기"
+        private val TEST_IMAGE_DATA = File("")
+    }
+
+    private lateinit var paymentAgent: PaymentAgent
+    private lateinit var placeGraphInitializeService: PlaceGraphInitializeService
+    private lateinit var notificationService: NotificationService
+    private lateinit var uiExtractorManager: UiExtractorManager
+    private lateinit var utgService: UtgService
+    private lateinit var paymentGraphInitializeService: PaymentGraphInitializeService
+
+    private lateinit var lastNode: UiEntity
+    private lateinit var llmUiList: MutableList<LlmUiComponentDto>
+    private lateinit var agentActionDto: AgentActionDto
+    private lateinit var uiEntity: UiEntity
+    private lateinit var completeEntity: UiEntity
+    private lateinit var placeActionList: List<AgentActionDto>
+
+    @BeforeEach
+    fun setUp() {
+        paymentAgent = mock()
+        placeGraphInitializeService = mock()
+        notificationService = mock()
+        uiExtractorManager = mock()
+        utgService = mock()
+        paymentGraphInitializeService = PaymentGraphInitializeService(
+            paymentAgent, placeGraphInitializeService, notificationService, uiExtractorManager, utgService
+        )
+
+        lastNode = UiEntity(
+            id = TEST_LAST_NODE_ID,
+            isNext = false,
+            x = 50,
+            y = 50,
+            title = "이전노드",
+            kioskId = TEST_KIOSK_ID
+        )
+
+        llmUiList = mutableListOf(
+            LlmUiComponentDto(
+                x = TEST_X_COORDINATE, y = TEST_X_COORDINATE, title = TEST_TITLE
+            )
+        )
+
+        agentActionDto = AgentActionDto(
+            coordinate = listOf(TEST_X_COORDINATE, TEST_Y_COORDINATE),
+            title = TEST_TITLE,
+            goNext = false,
+            score = 0.95F
+        )
+
+        uiEntity = UiEntity(
+            id = TEST_ENTITY_ID,
+            isNext = false,
+            x = TEST_X_COORDINATE, y = TEST_Y_COORDINATE,
+            title = TEST_TITLE,
+            kioskId = TEST_KIOSK_ID
+        )
+
+        completeEntity = UiEntity(
+            id = TEST_COMPLETE_ENTITY_ID,
+            isNext = false,
+            x = -1, y = -1,
+            title = "complete",
+            kioskId = TEST_KIOSK_ID
+        )
+
+        placeActionList = listOf(
+            AgentActionDto(false, 0.9F, listOf(150, 250), "포장"),
+            AgentActionDto(false, 0.8F, listOf(100, 200), "매장")
+        )
+
+        reset(paymentAgent, placeGraphInitializeService, notificationService, uiExtractorManager, utgService)
+    }
+
+    @Test
+    fun `포장_매장_UI를_찾은_상태에서_결제_그래프_초기화가_성공한다`() {
+        // given: 포장/매장 UI를 이미 찾은 상태
+        val isFindPlace = true
+        whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
+        whenever(uiExtractorManager.getUiComponents(TEST_IMAGE_DATA, TEST_KIOSK_ID)).thenReturn(llmUiList)
+        whenever(paymentAgent.determineAction(llmUiList)).thenReturn(agentActionDto)
+        whenever(utgService.saveNode(any<UiDto>())).thenReturn(uiEntity).thenReturn(completeEntity)
+        doNothing().whenever(utgService).saveRel(anyString(), anyString(), any())
+
+        // when: 결제 그래프 초기화 실행
+        val result = paymentGraphInitializeService.initializeGraph(TEST_KIOSK_ID, lastNode, isFindPlace)
+
+        // then: 결제 액션이 히스토리에 추가되고 완료 노드가 생성된다
+        assertEquals(1, result.size)
+        assertEquals(agentActionDto, result[0])
+
+        verify(placeGraphInitializeService, never()).initializeGraph(anyString(), any(), anyList())
+        verify(notificationService).sendCaptureCommand(TEST_KIOSK_ID)
+        verify(uiExtractorManager).getUiComponents(TEST_IMAGE_DATA, TEST_KIOSK_ID)
+        verify(paymentAgent).determineAction(llmUiList)
+        verify(utgService, times(2)).saveNode(any<UiDto>())
+        verify(utgService, times(2)).saveRel(anyString(), anyString(), any<NodeRelation>())
+    }
+
+    @Test
+    fun `포장_매장_UI를_찾지_못한_상태에서_결제_그래프_초기화가_성공한다`() {
+        // given: 포장/매장 UI를 찾지 못한 상태
+        val isFindPlace = false
+
+        whenever(placeGraphInitializeService.initializeGraph(TEST_KIOSK_ID, lastNode, llmUiList)).thenReturn(placeActionList)
+        whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
+        whenever(uiExtractorManager.getUiComponents(TEST_IMAGE_DATA, TEST_KIOSK_ID)).thenReturn(llmUiList)
+        whenever(paymentAgent.determineAction(llmUiList)).thenReturn(agentActionDto)
+        whenever(utgService.saveNode(any<UiDto>())).thenReturn(uiEntity).thenReturn(completeEntity)
+        doNothing().whenever(utgService).saveRel(anyString(), anyString(), any())
+
+        // when: 결제 그래프 초기화 실행
+        val result = paymentGraphInitializeService.initializeGraph(TEST_KIOSK_ID, lastNode, isFindPlace)
+
+        // then: 포장/매장 액션과 결제 액션이 모두 히스토리에 추가된다
+        assertEquals(3, result.size)
+        assertEquals(placeActionList[0], result[0])
+        assertEquals(placeActionList[1], result[1])
+        assertEquals(agentActionDto, result[2])
+
+        verify(placeGraphInitializeService).initializeGraph(TEST_KIOSK_ID, lastNode, llmUiList)
+        verify(notificationService).sendCaptureCommand(TEST_KIOSK_ID)
+        verify(uiExtractorManager).getUiComponents(TEST_IMAGE_DATA, TEST_KIOSK_ID)
+        verify(paymentAgent).determineAction(llmUiList)
+        verify(utgService, times(2)).saveNode(any<UiDto>())
+        verify(utgService, times(2)).saveRel(anyString(), anyString(), any<NodeRelation>())
+    }
+
+    @Test
+    fun `여러_단계의_결제_과정을_거쳐_그래프가_완성된다`() {
+        // given: 여러 단계의 결제 과정이 필요한 상황
+        val isFindPlace = true
+        val firstAction = AgentActionDto(
+            coordinate = listOf(100, 200),
+            title = "카드결제",
+            goNext = true,
+            score = 0.9F
+        )
+        val secondAction = AgentActionDto(
+            coordinate = listOf(200, 300),
+            title = "결제완료",
+            goNext = false,
+            score = 0.95F
+        )
+        val firstEntity = UiEntity(TEST_ENTITY_ID, true, 100, 200, "카드결제", TEST_KIOSK_ID)
+        val secondEntity = UiEntity("ENTITY_456", false, 200, 300, "결제완료", TEST_KIOSK_ID)
+
+        whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
+        whenever(uiExtractorManager.getUiComponents(TEST_IMAGE_DATA, TEST_KIOSK_ID)).thenReturn(llmUiList)
+        whenever(paymentAgent.determineAction(llmUiList)).thenReturn(firstAction).thenReturn(secondAction)
+        whenever(utgService.saveNode(any<UiDto>()))
+            .thenReturn(firstEntity)
+            .thenReturn(secondEntity)
+            .thenReturn(completeEntity)
+        doNothing().whenever(utgService).saveRel(anyString(), anyString(), any())
+
+        // when: 결제 그래프 초기화 실행
+        val result = paymentGraphInitializeService.initializeGraph(TEST_KIOSK_ID, lastNode, isFindPlace)
+
+        // then: 모든 결제 단계가 히스토리에 추가되고 완료 노드가 생성된다
+        assertEquals(2, result.size)
+        assertEquals(firstAction, result[0])
+        assertEquals(secondAction, result[1])
+
+        verify(notificationService, times(2)).sendCaptureCommand(TEST_KIOSK_ID)
+        verify(uiExtractorManager, times(2)).getUiComponents(TEST_IMAGE_DATA, TEST_KIOSK_ID)
+        verify(paymentAgent, times(2)).determineAction(llmUiList)
+        verify(utgService, times(3)).saveNode(any<UiDto>())
+        verify(utgService, times(3)).saveRel(anyString(), anyString(), any<NodeRelation>())
+    }
+
+    @Test
+    fun 완료_노드가_올바르게_생성된다() {
+        // given: 결제 과정이 완료되는 상황
+        val isFindPlace = true
+        whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
+        whenever(uiExtractorManager.getUiComponents(TEST_IMAGE_DATA, TEST_KIOSK_ID)).thenReturn(llmUiList)
+        whenever(paymentAgent.determineAction(llmUiList)).thenReturn(agentActionDto)
+        whenever(utgService.saveNode(any<UiDto>())).thenReturn(uiEntity).thenReturn(completeEntity)
+        doNothing().whenever(utgService).saveRel(anyString(), anyString(), any())
+
+        // when: 결제 그래프 초기화 실행
+        paymentGraphInitializeService.initializeGraph(TEST_KIOSK_ID, lastNode, isFindPlace)
+
+        // then: 완료 노드가 올바른 파라미터로 생성된다
+        val expectedCompleteUiDto = UiDto(
+            isNext = false,
+            x = -1, y = -1,
+            title = "complete",
+            kioskId = TEST_KIOSK_ID
+        )
+
+        val captor = argumentCaptor<UiDto>()
+        verify(utgService, times(2)).saveNode(captor.capture())
+
+        val lastArg = captor.lastValue
+        assertEquals(expectedCompleteUiDto.x, lastArg.x)
+        assertEquals(expectedCompleteUiDto.y, lastArg.y)
+        assertEquals(expectedCompleteUiDto.title, lastArg.title)
+        assertEquals(expectedCompleteUiDto.kioskId, lastArg.kioskId)
+
+        verify(utgService, times(2)).saveRel(anyString(), anyString(), any<NodeRelation>())
+    }
+}

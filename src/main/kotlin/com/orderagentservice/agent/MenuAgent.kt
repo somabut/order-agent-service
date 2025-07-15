@@ -2,7 +2,7 @@ package com.orderagentservice.agent
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.orderagentservice.agent.model.dto.LlmUiComponentDto
-import com.orderagentservice.agent.model.dto.UiActionDto
+import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.util.LlmManager
 import com.orderagentservice.jsonMapper
 import com.orderagentservice.logger
@@ -16,10 +16,10 @@ class MenuAgent @Autowired constructor(
 ) {
     private val log = logger()
 
-    fun determineAction(menuDto: MenuInfoDto, uiList: List<LlmUiComponentDto>): UiActionDto {
+    fun determineAction(menuDto: MenuInfoDto, uiList: List<LlmUiComponentDto>): AgentActionDto {
         val prompt = getPrompt(menuDto, uiList)
-        val json = llmManager.queryGeminiModel(prompt)
-        val response: UiActionDto = jsonMapper.readValue<UiActionDto>(json)
+        val json = llmManager.queryGemini(prompt)
+        val response: AgentActionDto = jsonMapper.readValue<AgentActionDto>(json)
         return response
     }
 
@@ -43,7 +43,7 @@ class MenuAgent @Autowired constructor(
             6. The response should be scored on what you judged on the input. This score is the accuracy of your response you think.
             7. The score is between 0 and 1 and it's marked as a float.
             8. Please let me know the 'coordinate' in the response as the UI I need to click to go to the page with the ui corresponding to the input. Please add coordinate information for 'coordinate'.
-            9. Make sure to return the 'coordinate' and 'title' in the response to those in the ui list.
+            9. Make sure to return the 'coordinate' and 'title' in the response to those in the ui list. However, if 'goNext' is false, return the 'title' of the response to the 'title' in the given request input.
 
             'goNext' is whether to go to the next page, 'score' is the accuracy score, 'coordinate' is the UI coordinate you need to click to go to the next page and 'title' is the UI title that you click.
 
@@ -61,7 +61,7 @@ class MenuAgent @Autowired constructor(
                 "goNext": "false",
                 "score": 0.8,
                 "coordinate": [210, 364],
-                "title": "아메라카노 5000원-"
+                "title": "아메리카노"
             }
             ```
 

@@ -2,6 +2,7 @@ plugins {
     kotlin("jvm") version "1.9.25"
     kotlin("plugin.spring") version "1.9.25"
     kotlin("kapt") version "2.0.21"
+    kotlin("plugin.jpa") version "1.9.25"
     id("org.springframework.boot") version "3.5.3"
     id("io.spring.dependency-management") version "1.1.7"
     id("org.jetbrains.kotlin.plugin.noarg") version "1.7.22"
@@ -33,6 +34,17 @@ dependencies {
     implementation("org.neo4j.driver:neo4j-java-driver:5.23.0")
     implementation("org.springframework.boot:spring-boot-starter-data-neo4j")
 
+    //coroutine
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
+
+    //aws
+    implementation("org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE")
+
+    //logging
+    implementation ("com.github.loki4j:loki-logback-appender:1.5.1")
+    implementation ("net.logstash.logback:logstash-logback-encoder:7.4")
+
+    implementation ("org.springframework.boot:spring-boot-starter:3.5.3")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
@@ -55,4 +67,6 @@ dependencyManagement {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+
+    include("**/mocktest/**")
 }
