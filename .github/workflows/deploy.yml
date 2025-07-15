@@ -65,7 +65,7 @@ jobs:
           key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
           script: |
             # compose 파일 위치로 이동 (예시: /home/ubuntu/deploy)
-            cd /home/ubuntu/deploy
+            cd /home/alike
 
             # 전체 서비스 중단 후 재시작
             docker stop ${{ env.IMAGE_NAME }}:latest
