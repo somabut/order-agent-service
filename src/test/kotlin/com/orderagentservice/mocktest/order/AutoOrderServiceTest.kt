@@ -34,6 +34,7 @@ class AutoOrderServiceTest {
         private const val TEST_COMPLETE_ID = "complete"
         private const val TEST_PLACE_ID = "place1"
         private const val TEST_BACK_ID = "back1"
+        private const val TEST_TASK_ID = "task1"
 
         private const val TEST_X_COORDINATE = 100
         private const val TEST_Y_COORDINATE = 200
@@ -138,15 +139,15 @@ class AutoOrderServiceTest {
         whenever(utgService.findCategoryNodeId(TEST_KIOSK_ID, TEST_MENU_ID)).thenReturn(TEST_CATEGORY_ID)
         whenever(utgService.findMenuPath(TEST_KIOSK_ID, TEST_CATEGORY_ID, TEST_COMPLETE_TITLE)).thenReturn(mockPathList)
         whenever(utgService.findRootNodeId(TEST_KIOSK_ID)).thenReturn(mockRoot)
-        doNothing().whenever(globalLogger).loggingOrderStart(TEST_KIOSK_ID)
-        doNothing().whenever(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), any(), any(), eq(TEST_PAYMENT_CARD))
+        doNothing().whenever(globalLogger).loggingOrderStart(TEST_KIOSK_ID, TEST_TASK_ID)
+        doNothing().whenever(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), any(), any(), eq(TEST_PAYMENT_CARD), eq(TEST_TASK_ID))
 
         // when: 자동주문 진행
-        autoOrderService.proceed(TEST_KIOSK_ID, orderRequest)
+        autoOrderService.proceed(TEST_KIOSK_ID, TEST_TASK_ID, orderRequest)
 
         // then: 로그 기록 및 서비스 호출이 정상적으로 수행된다
-        verify(globalLogger).loggingOrderStart(TEST_KIOSK_ID)
-        verify(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), any(), any(), eq(TEST_PAYMENT_CARD))
+        verify(globalLogger).loggingOrderStart(TEST_KIOSK_ID, TEST_TASK_ID)
+        verify(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), any(), any(), eq(TEST_PAYMENT_CARD), eq(TEST_TASK_ID))
 
         val coordinateCaptor = argumentCaptor<CoordinateDto>()
         verify(notificationService, atLeast(3)).sendActionCommand(eq(TEST_KIOSK_ID), coordinateCaptor.capture())
@@ -188,17 +189,17 @@ class AutoOrderServiceTest {
             listOf(ActionPathDto(id = TEST_COMPLETE_ID, x = TEST_X_COORDINATE_3, y = TEST_Y_COORDINATE_3, title = TEST_COMPLETE_TITLE))
         )
         whenever(utgService.findRootNodeId(TEST_KIOSK_ID)).thenReturn(mockRoot)
-        doNothing().whenever(globalLogger).loggingOrderStart(TEST_KIOSK_ID)
-        doNothing().whenever(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), any(), any(), eq(TEST_PAYMENT_CASH))
+        doNothing().whenever(globalLogger).loggingOrderStart(TEST_KIOSK_ID, TEST_TASK_ID)
+        doNothing().whenever(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), any(), any(), eq(TEST_PAYMENT_CASH), eq(TEST_TASK_ID))
 
         // when: 자동주문 진행
-        autoOrderService.proceed(TEST_KIOSK_ID, takeoutOrderRequest)
+        autoOrderService.proceed(TEST_KIOSK_ID, TEST_TASK_ID, takeoutOrderRequest)
 
         // then: 포장 노드 클릭이 정상적으로 수행된다
         verify(utgService).findPlaceNodeId(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_PLACE_TAKEOUT)
         verify(notificationService).sendActionCommand(TEST_KIOSK_ID, CoordinateDto(TEST_X_COORDINATE, TEST_Y_COORDINATE, TEST_PLACE_TAKEOUT))
-        verify(globalLogger).loggingOrderStart(TEST_KIOSK_ID)
-        verify(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), any(), any(), eq(TEST_PAYMENT_CASH))
+        verify(globalLogger).loggingOrderStart(TEST_KIOSK_ID, TEST_TASK_ID)
+        verify(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), any(), any(), eq(TEST_PAYMENT_CASH), eq(TEST_TASK_ID))
     }
 
     @Test
@@ -234,11 +235,11 @@ class AutoOrderServiceTest {
             listOf(ActionPathDto(id = TEST_COMPLETE_ID, x = TEST_X_COORDINATE_3, y = TEST_Y_COORDINATE_3, title = TEST_COMPLETE_TITLE))
         )
         whenever(utgService.findRootNodeId(TEST_KIOSK_ID)).thenReturn(mockRoot)
-        doNothing().whenever(globalLogger).loggingOrderStart(TEST_KIOSK_ID)
-        doNothing().whenever(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), any(), any(), eq(TEST_PAYMENT_CARD))
+        doNothing().whenever(globalLogger).loggingOrderStart(TEST_KIOSK_ID, TEST_TASK_ID)
+        doNothing().whenever(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), any(), any(), eq(TEST_PAYMENT_CARD), eq(TEST_TASK_ID))
 
         // when: 자동주문 진행
-        autoOrderService.proceed(TEST_KIOSK_ID, multiMenuOrderRequest)
+        autoOrderService.proceed(TEST_KIOSK_ID, TEST_TASK_ID, multiMenuOrderRequest)
 
         // then: 각 메뉴가 개별적으로 처리되고 결과에 2개 메뉴가 포함된다
         verify(utgService).findMenuPath(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_MENU_TITLE)
@@ -247,7 +248,7 @@ class AutoOrderServiceTest {
         verify(notificationService).sendActionCommand(TEST_KIOSK_ID, CoordinateDto(TEST_X_COORDINATE_2, TEST_Y_COORDINATE_2, TEST_MENU_TITLE_3))
 
         val historyCaptor = argumentCaptor<List<OrderResultDto>>()
-        verify(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), historyCaptor.capture(), any(), eq(TEST_PAYMENT_CARD))
+        verify(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), historyCaptor.capture(), any(), eq(TEST_PAYMENT_CARD), eq(TEST_TASK_ID))
         assertEquals(2, historyCaptor.firstValue.size)
         assertEquals(TEST_MENU_TITLE, historyCaptor.firstValue[0].title)
         assertEquals(TEST_MENU_TITLE_3, historyCaptor.firstValue[1].title)
@@ -264,11 +265,11 @@ class AutoOrderServiceTest {
             listOf(ActionPathDto(id = TEST_COMPLETE_ID, x = TEST_X_COORDINATE_3, y = TEST_Y_COORDINATE_3, title = TEST_COMPLETE_TITLE))
         )
         whenever(utgService.findRootNodeId(TEST_KIOSK_ID)).thenReturn(mockRoot)
-        doNothing().whenever(globalLogger).loggingOrderStart(TEST_KIOSK_ID)
-        doNothing().whenever(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), any(), any(), eq(TEST_PAYMENT_CARD))
+        doNothing().whenever(globalLogger).loggingOrderStart(TEST_KIOSK_ID, TEST_TASK_ID)
+        doNothing().whenever(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), any(), any(), eq(TEST_PAYMENT_CARD), eq(TEST_TASK_ID))
 
         // when: 자동주문 진행
-        autoOrderService.proceed(TEST_KIOSK_ID, orderRequest)
+        autoOrderService.proceed(TEST_KIOSK_ID, TEST_TASK_ID, orderRequest)
 
         // then: 옵션 선택 후 뒤로가기가 정상적으로 수행된다
         verify(utgService).findOptionNode(TEST_KIOSK_ID, TEST_MENU_ID, TEST_OPTION_TITLE)
@@ -277,7 +278,7 @@ class AutoOrderServiceTest {
         verify(notificationService).sendActionCommand(TEST_KIOSK_ID, CoordinateDto(TEST_X_COORDINATE, TEST_Y_COORDINATE, TEST_BACK_TITLE))
 
         val historyCaptor = argumentCaptor<List<OrderResultDto>>()
-        verify(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), historyCaptor.capture(), any(), eq(TEST_PAYMENT_CARD))
+        verify(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), historyCaptor.capture(), any(), eq(TEST_PAYMENT_CARD), eq(TEST_TASK_ID))
         assertTrue(historyCaptor.firstValue[0].options.contains(TEST_OPTION_TITLE))
     }
 }
