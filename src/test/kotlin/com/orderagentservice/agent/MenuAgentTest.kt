@@ -48,7 +48,7 @@ class MenuAgentTest @Autowired constructor(
             LlmUiComponentDto(x = 401, y = 633, title = "소스 700원"),
             LlmUiComponentDto(x = 289, y = 914, title = "시즈닝 600원"),
             LlmUiComponentDto(x = 289, y = 234, title = "사이드"),
-            LlmUiComponentDto(x = 115, y = 234, title = "음료"),
+            LlmUiComponentDto(x = 115, y = 234, title = "음류"),
             LlmUiComponentDto(x = 28, y = 889, title = "결제하기")
         )
         val menuDto1 = MenuInfoDto(
@@ -65,6 +65,9 @@ class MenuAgentTest @Autowired constructor(
         //when: llm에게 질의 한다
         val response1 = menuAgent.determineAction(menuDto1, uiList)
         val response2 = menuAgent.determineAction(menuDto2, uiList)
+
+        println(response1)
+        println(response2)
 
         //then: 올바른 액션을 반환한다.
         assertThat(response1.title).isEqualTo("BBQ 통모짜와퍼")

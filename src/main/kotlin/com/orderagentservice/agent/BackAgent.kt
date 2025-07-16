@@ -34,8 +34,14 @@ class BackAgent @Autowired constructor(
             1. To complete what you put in your cart, you need to interact with the following UI: '담기', '완료', '계속', '추기', and '다음'
             2. The UI to complete what you put in your shopping cart means moving on or completing the current action.
             3. The response should be scored on what you judged on the input. This score is the accuracy of your response you think.
-            4. The score is between 0 and 1 and it's marked as a float.
+            4. The score is between 0 and 1 and it's marked as a float. 
             5. Make sure to return the 'coordinate' and 'title' in the response to those in the ui list.
+            
+            The criteria for the 'score' are as follows. 
+                "I'm sure I got it right" → 1.0
+                "Meaning or context is correct, but not 100% sure" → 0.7~0.9
+                "Looks similar but uncertain" → 0.5~0.6
+                "Almost not sure" → 0~0.4
             
             One Example(
                 ui list: [

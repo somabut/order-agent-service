@@ -48,6 +48,12 @@ class MissingComponentAgent@Autowired constructor(
             
             `coordinate` is the coordinate of the UI found because a specific UI is not in the `ui list`, and the `title` is the title of the UI with that coordinate.
             
+            The criteria for the 'score' are as follows. 
+                "I'm sure I got it right" → 1.0
+                "Meaning or context is correct, but not 100% sure" → 0.7~0.9
+                "Looks similar but uncertain" → 0.5~0.6
+                "Almost not sure" → 0~0.4
+            
             One Example(
                 title_list: ["샷추가, 휘핑크림 추가", "펄 추가"]),
                 ui_list: [

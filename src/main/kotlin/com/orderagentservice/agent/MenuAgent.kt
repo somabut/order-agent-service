@@ -35,7 +35,8 @@ class MenuAgent @Autowired constructor(
 
             IMPORTANT NOTES:
             1. It is determined that the string on the ui list must contain the string of input correctly to exist. [ex) If the input is '초코 케이크', if there is '딸기 케이크', '당근 케이크', '치즈 케이크', then exactly there is no '초코 케이크']
-            2. If it doesn't exist on the ui list, please let me know which ui exists on the ui list to go to the page where the input exists. There are categories of these, such as 'category' and 'next'
+            2. If it doesn't exist on the ui list, please let me know which ui exists on the ui list to go to the page where the input exists. 
+            In this case, the category should be put in the 'title' of the response, not the title found in the ui list.
             3. For UI information that you need to interact with to move on to the next page, please refer to the 'category' in the given input. 
             In other words, when you don't have a menu and need to go to a category, please make 'goNext' true
             4. A category is a broad word that can include a specific menu, not a specific menu name. [ex) '콜라', '주스', '사이다' is '음료' category. '감자튀김', '만두' is '사이드' category]
@@ -43,9 +44,31 @@ class MenuAgent @Autowired constructor(
             6. The response should be scored on what you judged on the input. This score is the accuracy of your response you think.
             7. The score is between 0 and 1 and it's marked as a float.
             8. Please let me know the 'coordinate' in the response as the UI I need to click to go to the page with the ui corresponding to the input. Please add coordinate information for 'coordinate'.
-            9. Make sure to return the 'coordinate' and 'title' in the response to those in the ui list. However, if 'goNext' is false, return the 'title' of the response to the 'title' in the given request input.
+            9. Make sure to return the 'coordinate' in the response to those in the ui list. 
+            10. The 'title' of the response like menu or category must be the value of the input not value of ui list.
 
             'goNext' is whether to go to the next page, 'score' is the accuracy score, 'coordinate' is the UI coordinate you need to click to go to the next page and 'title' is the UI title that you click.
+            
+            SCORE NOTES:
+            1. Perfect match (Score: 1.0)
+                Situation: When the title of input matches exactly the title of the UI in the uiList.
+                Judgment: the most ideal situation where no further exploration is needed.
+            
+            2. If the categories match perfectly (Score: 1.0)
+                Situation: Title is not on the ui list, but when the category that came with input matches exactly the Title on the UI on the uiList.
+                Judgment: The next step (move category) to find the menu is clear.
+                
+            3. When semantic/contextual categories match (Score: 0.8 to 0.9)
+                Situation: neither input's title nor category is on the uiList, but when AI finds a top category on the ui list that is very similar in meaning to input's category or includes it.
+                Judgment: No direct information, but we used AI's knowledge to infer the most likely next steps.
+                
+            4. Uncertain but most likely choice made (Score: 0.5 to 0.7)
+                Situation: When there is no matching menu or clear category at all. But when ui list has a general UI to continue navigating, such as "모든 메뉴 보기", "다음", "더보기".
+                Judgment: I can't find the answer on the current page, but I can suggest a way to continue my quest.
+                
+            5. If no action can be proposed (Score: 0.0 to 0.4)
+                Situation: When matching menus, categories, and even general navigation UI like "다음" are not on ui list.
+                Judgment: There is no valid click action that AI can do in the current state.
 
             One Example(
                 input: {"title": "아메리카노", "option": ["샷", "망고"], "category": "음료"} 
@@ -59,7 +82,7 @@ class MenuAgent @Autowired constructor(
             ```json
             {
                 "goNext": "false",
-                "score": 0.8,
+                "score": 1.0,
                 "coordinate": [210, 364],
                 "title": "아메리카노"
             }
@@ -78,7 +101,7 @@ class MenuAgent @Autowired constructor(
             ```json
             {
                 "goNext": "true",
-                "score": 0.7,
+                "score": 1.0,
                 "coordinate": [120, 444],
                 "title": "디저트"
             }
@@ -90,14 +113,14 @@ class MenuAgent @Autowired constructor(
                     {"coordinate": [210, 364], "contents": ["블루베리 스무디 7000원-"]},
                     {"coordinate": [67, 90], "contents": ["딸기 요거트 스무디 5400원-"]},
                     {"coordinate": [79, 89], "contents": ["결제"]},
-                    {"coordinate": [68, 12], "contents": ["에이드"]},
+                    {"coordinate": [68, 12], "contents": ["에이드류"]},
                     {"coordinate": [90, 456], "contents": ["키위&망고 블렌더 7000원-"]},
                     {"coordinate": [120, 74], "contents": ["패션후르트&파인애플 스무디 7000원-"]}
                 ]):
             ```json
             {
                 "goNext": "true",
-                "score": 0.7,
+                "score": 0.9,
                 "coordinate": [68, 12],
                 "title": "에이드"
             }
