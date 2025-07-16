@@ -42,11 +42,14 @@ class BackAgent @Autowired constructor(
                 Situation: When there is a UI that directly indicates the action of adding the currently selected menu (and options) to your shopping cart. This action is 'Exit screen after selection'.
                 Judgment: The most accurate command that matches 100% of the goal of 'completed and returned' that the user wants.
             
-            The criteria for the 'score' are as follows. 
-                "I'm sure I got it right" → 1.0
-                "Meaning or context is correct, but not 100% sure" → 0.7~0.9
-                "Looks similar but uncertain" → 0.5~0.6
-                "Almost not sure" → 0~0.4
+            2. Comprehensive UI meaning 'completed/next' (Score: 0.9)
+                Situation: There's no direct expression for '담기', but when there's a UI that means "getting on" with the current stage.
+                Judgment: '완료' or '다음' means finishing your current option selection and moving on to the next process (mainly checking your shopping cart), so it's almost in line with your intentions.
+                
+            3. UI to close the current window through '확인' (Score: 0.8)
+                Situation: When the above keywords are missing, only the '확인' button. This confirmation is likely to serve to confirm the option selection and close the window.
+                Judgment: Confirmation can also mean other actions (e.g., simple notification confirmation), which makes it somewhat ambiguous rather than complete or contain it. 
+                          However, it is the most likely 'return after completion' means of choice.
             
             One Example(
                 ui list: [
