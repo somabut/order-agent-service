@@ -18,7 +18,7 @@ class MenuAgentTest @Autowired constructor(
             LlmUiComponentDto(x = 145, y = 310, title = "크리스피 클래식 5600원"),
             LlmUiComponentDto(x = 212, y = 485, title = "크리스퍼 팩 7900원"),
             LlmUiComponentDto(x = 398, y = 605, title = "통모짜와퍼 8200원"),
-            LlmUiComponentDto(x = 125, y = 732, title = "BBQ 통모짜와퍼 8700원"),
+            LlmUiComponentDto(x = 125, y = 732, title = "BBQ 통모짜Oㅏ퍼 8700원"),
             LlmUiComponentDto(x = 362, y = 298, title = "불끈버거 맥시멈 7500원"),
             LlmUiComponentDto(x = 274, y = 847, title = "불끈버거 맥시멈 더블 9500원"),
             LlmUiComponentDto(x = 458, y = 415, title = "몬스터 와퍼 8900원"),
@@ -48,7 +48,7 @@ class MenuAgentTest @Autowired constructor(
             LlmUiComponentDto(x = 401, y = 633, title = "소스 700원"),
             LlmUiComponentDto(x = 289, y = 914, title = "시즈닝 600원"),
             LlmUiComponentDto(x = 289, y = 234, title = "사이드"),
-            LlmUiComponentDto(x = 115, y = 234, title = "음류"),
+            LlmUiComponentDto(x = 115, y = 234, title = "음류"),      //일부러 오타를 내어 정확도 검증
             LlmUiComponentDto(x = 28, y = 889, title = "결제하기")
         )
         val menuDto1 = MenuInfoDto(
