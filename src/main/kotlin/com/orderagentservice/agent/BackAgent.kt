@@ -37,6 +37,11 @@ class BackAgent @Autowired constructor(
             4. The score is between 0 and 1 and it's marked as a float. 
             5. Make sure to return the 'coordinate' and 'title' in the response to those in the ui list.
             
+            SCORE NOTES:
+            1. UI which clearly means 'to put in the shopping cart (Score: 1.0)
+                Situation: When there is a UI that directly indicates the action of adding the currently selected menu (and options) to your shopping cart. This action is 'Exit screen after selection'.
+                Judgment: The most accurate command that matches 100% of the goal of 'completed and returned' that the user wants.
+            
             The criteria for the 'score' are as follows. 
                 "I'm sure I got it right" → 1.0
                 "Meaning or context is correct, but not 100% sure" → 0.7~0.9

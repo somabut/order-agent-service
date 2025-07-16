@@ -13,7 +13,6 @@ class WebConfig : WebMvcConfigurer {
             .allowedOriginPatterns("*")
             .allowedMethods("*")
             .allowedHeaders("*")
-            .allowCredentials(true)
             .maxAge(3600)
     }
 }
