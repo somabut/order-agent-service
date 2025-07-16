@@ -19,4 +19,5 @@ enum class ErrorCode(
     ORDER_NO_NODE(204, "찾으려는 UTG 노드가 없습니다.", HttpStatus.BAD_REQUEST),
     ORDER_ADMIN_LOGIN_FAIL(205, "키오스크 어드민 인증에 실패하였습니다.", HttpStatus.UNAUTHORIZED),
     ORDER_MENU_REQUEST_FAIL(206, "키오크스의 메뉴 정보를 얻어오지 못했습니다.", HttpStatus.BAD_REQUEST),
+    ORDER_SCORE_TOO_LOW(207, "agent의 응답 점수가 너무 낮습니다.", HttpStatus.INTERNAL_SERVER_ERROR)
 }

@@ -35,24 +35,22 @@ class MissingComponentAgent@Autowired constructor(
             Here is ui list: $uiList
 
             IMPORTANT NOTES:
-            1. The criterion for determining whether it is the same UI is whether the elements of 'title' and 'title list' match.
-            2. You shouldn't judge similar words to be the same, but there may be minor typos on the 'ui list', so take this into account. 
-            3. Pixel coordinates should be judged as accurately as possible. You can refer to other UIs on the 'ui list' for accurate judgment. 
-            In other words, if what you're trying to find isn't on the 'ui list', you have to infer on the same column/row basis. 
-            [ex) If b exists between a and c, we can judge that b exists in the coordinate between a and c.]
-            4. If there is a (+) after the name in the 'title list', you need to find the '+' button to choose the quantity. not the pixel coordinates of the string. [ex)If it's "면추가 (+)", not "면추가"]
-            5. The information that can be compared('title list') at this time is not tied together like 'title +', but 'title' and '+' buttons come in separately, so you have to tell me the coordinates of the + button.
-            6. '+' Infer the coordinates of the button by referring to Rule 3.
-            7. These coordinates have to be really accurate, so we have to think carefully about it and respond.
-            8. Make sure to return the 'title' in the response to those in the title list.
+            1. Find UI elements that are NOT in the current ui list but exist in the title list.
+            2. You shouldn't judge similar words to be the same, but there may be minor typos on the 'ui list', so take this into account.
+            3. COORDINATE INFERENCE: When the target element is not in ui list:
+               - Analyze the layout pattern of similar elements in ui list
+               - Infer coordinates based on spatial relationships (relative positioning, alignment, spacing)
+               - Consider UI design patterns (buttons are usually aligned, menus have consistent spacing)
+             
+            4. QUANTITY SELECTION: If target has "(+)" suffix [ex)If it's "면추가 (+)", not "면추가"]:
+               - Find the "+" button near the base element name
+               - Return coordinates of the "+" button, NOT the text coordinates
+               - The "+" button is usually located on the left and right sides of the element name
+               
+            5. Return the exact title from the target list, not from ui list.
+            6. These coordinates have to be really accurate, so we have to think carefully about it and respond.
             
-            `coordinate` is the coordinate of the UI found because a specific UI is not in the `ui list`, and the `title` is the title of the UI with that coordinate.
-            
-            The criteria for the 'score' are as follows. 
-                "I'm sure I got it right" → 1.0
-                "Meaning or context is correct, but not 100% sure" → 0.7~0.9
-                "Looks similar but uncertain" → 0.5~0.6
-                "Almost not sure" → 0~0.4
+            `coordinate` is the coordinate of the UI found because a specific UI is not in the `ui list`, and the `title` is the title of the UI with that coordinate.            
             
             One Example(
                 title_list: ["샷추가, 휘핑크림 추가", "펄 추가"]),

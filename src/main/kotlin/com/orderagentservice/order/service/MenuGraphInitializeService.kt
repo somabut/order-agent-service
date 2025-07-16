@@ -6,6 +6,8 @@ import com.orderagentservice.agent.MissingComponentAgent
 import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.model.dto.LlmUiComponentDto
 import com.orderagentservice.logger
+import com.orderagentservice.order.exception.LowScoreException
+import com.orderagentservice.order.model.GraphInitializeContext
 import com.orderagentservice.order.model.NodeRelation
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.MenuGraphDto
@@ -15,6 +17,7 @@ import com.orderagentservice.order.model.entity.UiEntity
 import com.orderagentservice.order.util.UiExtractorManager
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class MenuGraphInitializeService @Autowired constructor(
@@ -28,14 +31,14 @@ class MenuGraphInitializeService @Autowired constructor(
 ) {
     private val log = logger()
 
-    fun initializeGraph(kioskId: String, menuList: List<MenuInfoDto>): MenuGraphDto {
+    @Transactional
+    fun initializeGraph(context: GraphInitializeContext, menuList: List<MenuInfoDto>) {
         log.info("메뉴 utg 생성 시작")
         val startTime = System.nanoTime()
 
         var isNext = true
         var isFirst = true
-        var isFindPlace = false
-        val history = mutableListOf<AgentActionDto>()
+        val kioskId = context.kioskId
 
         val rootUiDto = UiDto(
             isNext = true,
@@ -43,7 +46,7 @@ class MenuGraphInitializeService @Autowired constructor(
             kioskId = kioskId,
             title = "root"
         )
-        var preNode = utgService.saveNode(rootUiDto)
+        context.lastNode = utgService.saveNode(rootUiDto)
         var llmUiList = mutableListOf<LlmUiComponentDto>()
         var menuIndex = 0
         while (true) {
@@ -57,9 +60,7 @@ class MenuGraphInitializeService @Autowired constructor(
 
                 if (isFirst == true) {
                     //포장/매장 UI 확인
-                    placeGraphInitializeService.initializeGraph(kioskId, preNode, llmUiList)
-                        .onEach { history.add(it) }
-                        .also { list -> if (list.size == 2) isFindPlace = true }
+                    placeGraphInitializeService.initializeGraph(context, llmUiList)
 
                     //루트 -> 처음 카테고리 노드로 연결
                     val firstMenuDto = MenuInfoDto(title = menuDto.category, options = listOf(), category = menuDto.category)
@@ -71,10 +72,10 @@ class MenuGraphInitializeService @Autowired constructor(
                         kioskId = kioskId
                     ))
 
-                    utgService.saveRel(preNode.id, firstNode.id, NodeRelation.PATH_TO)
-                    preNode = firstNode
+                    utgService.saveRel(context.lastNode!!.id, firstNode.id, NodeRelation.PATH_TO)
+                    context.lastNode = firstNode
 
-                    history.add(firstAction)
+                    context.history.add(firstAction)
                     isFirst = false
                 }
 
@@ -85,11 +86,22 @@ class MenuGraphInitializeService @Autowired constructor(
             log.info("진행 중인 노드 menu: ${menuDto.title}, category: ${menuDto.category}")
 
             val action = menuAgent.determineAction(menuDto, llmUiList)
-            history.add(action)
+            context.history.add(action)
 
-            if (action.score < 0.6) {
+            val addCount = when {
+                action.score in 0.6..<0.7 -> 1
+                action.score <= 0.5 -> 3
+                else -> 0
+            }
+            if (addCount > 0) {
                 log.info("낮은 액션 정확도 점수: ${action.score}")
+                context.lowScoreCount += addCount
                 continue
+            }
+
+            //낮은 점수가 쌓이면 예외
+            if (context.lowScoreCount >= 5) {
+                throw LowScoreException()
             }
 
             log.info("메뉴 노드를 생성합니다. go_next: ${action.goNext}, score: ${action.score}, coordinate: ${action.coordinate}, title: ${action.title}")
@@ -107,17 +119,16 @@ class MenuGraphInitializeService @Autowired constructor(
             //옵션 노드 초기화
             processOptions(
                 menuDto = menuDto,
-                entity = node, preNode = preNode,
-                kioskId = kioskId
-            ).forEach { history.add(it) }
+                context = context
+            )
 
             //isNext이고 이전이랑 카테고리 다른 경우. 다른 페이지로 가야하는 경우
             if (isNext) {
-                utgService.saveRel(preNode.id, node.id, NodeRelation.PATH_TO)
-                utgService.saveRel(node.id, preNode.id, NodeRelation.PATH_TO)
-                preNode = node
+                utgService.saveRel(context.lastNode!!.id, node.id, NodeRelation.PATH_TO)
+                utgService.saveRel(node.id, context.lastNode!!.id, NodeRelation.PATH_TO)
+                context.lastNode = node
             } else {
-                utgService.saveRel(preNode.id, node.id, NodeRelation.HAS_TO)
+                utgService.saveRel(context.lastNode!!.id, node.id, NodeRelation.HAS_TO)
                 menuIndex++
             }
 
@@ -125,28 +136,22 @@ class MenuGraphInitializeService @Autowired constructor(
         }
 
         //포장 매장 확인
-        if (isFindPlace == false) {
-            placeGraphInitializeService.initializeGraph(kioskId, preNode, llmUiList)
-                .onEach { history.add(it) }
-                .also { list -> if (list.size == 2) isFindPlace = true }
+        if (context.isFindPlace == false) {
+            placeGraphInitializeService.initializeGraph(context, llmUiList)
         }
 
         val endTime = System.nanoTime()
         log.info("메뉴 utg 생성 완료. 수행시간: ${(endTime - startTime) / 1000000}ms")
-
-        return MenuGraphDto(history, preNode, isFindPlace)
     }
 
     private fun processOptions(
         menuDto: MenuInfoDto,
-        entity: UiEntity,
-        preNode: UiEntity,
-        kioskId: String
-    ): List<AgentActionDto> {
+        context: GraphInitializeContext
+    ) {
         //메뉴의 옵션 노드 추가
+        val kioskId = context.kioskId
         val image = notificationService.sendCaptureCommand(kioskId)
         val llmOptList = uiExtractorManager.getUiComponents(image, kioskId)
-        val optActionList = mutableListOf<AgentActionDto>()
 
         //감지되지 못한 옵션이 있을 수 있으므로 한번 더 탐색
         val additionalList = missingComponentAgent.determineAction(image, menuDto.options, llmOptList)
@@ -161,7 +166,7 @@ class MenuGraphInitializeService @Autowired constructor(
         val backAction = backAgent.determineBack(llmOptList)
         for (opt in menuDto.options) {
             val optAction = menuAgent.determineAction(MenuInfoDto(opt, listOf(), menuDto.title), llmOptList)
-            optActionList.add(optAction)
+            context.history.add(optAction)
 
             log.info("옵션 노드를 생성합니다. go_next: ${optAction.goNext}, score: ${optAction.score}, coordinate: ${optAction.coordinate}, title: ${optAction.title}")
             val optEntity = utgService.saveNode(UiDto(
@@ -170,7 +175,7 @@ class MenuGraphInitializeService @Autowired constructor(
                 title = optAction.title,
                 kioskId = kioskId
             ))
-            utgService.saveRel(entity.id, optEntity.id, NodeRelation.OPT_TO)
+            utgService.saveRel(context.lastNode!!.id, optEntity.id, NodeRelation.OPT_TO)
         }
 
         val backEntity = utgService.saveNode(UiDto(
@@ -179,15 +184,14 @@ class MenuGraphInitializeService @Autowired constructor(
             title = backAction.title,
             kioskId = kioskId
         ))
-        utgService.saveRel(entity.id, backEntity.id, NodeRelation.BACK_TO)
-        utgService.saveRel(backEntity.id, preNode.id, NodeRelation.BACK_TO)
+        utgService.saveRel(context.lastNode!!.id, backEntity.id, NodeRelation.BACK_TO)
+        utgService.saveRel(backEntity.id, context.lastNode!!.id, NodeRelation.BACK_TO)
 
         //sse를 통해 클라이언트에게 원래 페이지로 돌아가는 좌표 클릭하도록 하기
         log.info("돌아가는 좌표를 클릭중입니다. 좌표: ${backAction.coordinate}")
         notificationService.sendActionCommand(kioskId,  CoordinateDto(backAction.coordinate[0], backAction.coordinate[1], backAction.title))
 
-        optActionList.add(backAction.toActionDto())
-        return optActionList
+        context.history.add(backAction.toActionDto())
     }
 
     private fun removeDuplicate(sourceList: List<LlmUiComponentDto>, targetList: MutableList<LlmUiComponentDto>) {

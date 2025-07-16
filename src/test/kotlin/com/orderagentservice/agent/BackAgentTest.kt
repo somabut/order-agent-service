@@ -18,10 +18,10 @@ class BackAgentTest @Autowired constructor(
             LlmUiComponentDto(x = 145, y = 310, title = "프렌치 프라이 5600원"),
             LlmUiComponentDto(x = 212, y = 485, title = "너겟킹 7900원"),
             LlmUiComponentDto(x = 398, y = 605, title = "리얼 어니언링 8200원"),
-            LlmUiComponentDto(x = 125, y = 732, title = "완료"),
+            LlmUiComponentDto(x = 125, y = 732, title = "장바구니 담기"),
             LlmUiComponentDto(x = 362, y = 298, title = "코카콜라 7500원"),
             LlmUiComponentDto(x = 274, y = 847, title = "코카콜라 제로 9500원"),
-            LlmUiComponentDto(x = 458, y = 415, title = "취소 8900원"),
+            LlmUiComponentDto(x = 458, y = 415, title = "취소"),
             LlmUiComponentDto(x = 107, y = 921, title = "미밋메이드 오렌지 8800원"),
             LlmUiComponentDto(x = 376, y = 534, title = "스프라이트 8500원")
         )
@@ -31,7 +31,7 @@ class BackAgentTest @Autowired constructor(
 
         //then: 올바른 액션 반환
         assertThat(response.score).isGreaterThan(0.8F)
-        assertThat(response.title).isEqualTo("완료")
+        assertThat(response.title).isEqualTo("장바구니 담기")
         assertThat(response.coordinate[0]).isEqualTo(125)
         assertThat(response.coordinate[1]).isEqualTo(732)
     }

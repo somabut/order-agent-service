@@ -6,6 +6,7 @@ import com.orderagentservice.agent.MissingComponentAgent
 import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.model.dto.AgentBackDto
 import com.orderagentservice.agent.model.dto.LlmUiComponentDto
+import com.orderagentservice.order.model.GraphInitializeContext
 import com.orderagentservice.order.model.NodeRelation
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
@@ -206,11 +207,20 @@ class MenuGraphInitializeServiceTest {
     @Test
     fun `메뉴 그래프 초기화가 성공한다`() {
         // given: 정상적인 메뉴 데이터와 높은 점수의 액션
-
+        val context = GraphInitializeContext(
+            kioskId = TEST_KIOSK_ID,
+            isFindPlace = false,
+            lowScoreCount = 0,
+            lastNode = null,
+            history = mutableListOf()
+        )
         whenever(utgService.saveNode(any<UiDto>())).thenReturn(rootNode).thenReturn(firstNode).thenReturn(menuEntity)
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
         whenever(uiExtractorManager.getUiComponents(TEST_IMAGE_DATA, TEST_KIOSK_ID)).thenReturn(llmUiList)
-        whenever(placeGraphInitializeService.initializeGraph(TEST_KIOSK_ID, rootNode, llmUiList)).thenReturn(placeActionList)
+        whenever(placeGraphInitializeService.initializeGraph(any(), anyList())).thenAnswer {
+            context.isFindPlace = true
+            placeActionList.forEach { context.history.add(it) }
+        }
         whenever(menuAgent.determineAction(menuInfoDto, llmUiList)).thenReturn(menuAction)
         whenever(menuAgent.determineAction(optInfoDto, llmUiList)).thenReturn(optAction)
         whenever(menuAgent.determineAction(firstDto, llmUiList)).thenReturn(firstAction)
@@ -221,19 +231,18 @@ class MenuGraphInitializeServiceTest {
         doNothing().whenever(utgService).saveRel(anyString(), anyString(), any())
 
         // when: 메뉴 그래프 초기화 실행
-        val result = menuGraphInitializeService.initializeGraph(TEST_KIOSK_ID, menuList)
-        println(result)
+        menuGraphInitializeService.initializeGraph(context, menuList)
 
         // then: 메뉴 그래프가 성공적으로 생성되고 포장/매장 액션이 히스토리에 포함된다
-        assertEquals(6, result.actionList.size)
-        assertEquals(placeActionList[0], result.actionList[0])
-        assertEquals(placeActionList[1], result.actionList[1])
-        assertEquals(firstAction, result.actionList[2])
-        assertEquals(menuAction, result.actionList[3])
-        assertEquals(optAction, result.actionList[4])
-        assertEquals(backAction.toActionDto(), result.actionList[5])
-        assertEquals(TEST_FIRST_NODE_ID, result.lastNode.id)
-        assertTrue(result.isFindPlace)
+        assertEquals(6, context.history.size)
+        assertEquals(placeActionList[0], context.history[0])
+        assertEquals(placeActionList[1], context.history[1])
+        assertEquals(firstAction, context.history[2])
+        assertEquals(menuAction, context.history[3])
+        assertEquals(optAction, context.history[4])
+        assertEquals(backAction.toActionDto(), context.history[5])
+        assertEquals(TEST_FIRST_NODE_ID, context.lastNode!!.id)
+        assertTrue(context.isFindPlace)
 
         val captor = argumentCaptor<UiDto>()
         verify(utgService, times(5)).saveNode(captor.capture())
@@ -267,10 +276,19 @@ class MenuGraphInitializeServiceTest {
         )
         val lowMenuList = listOf(lowMenuDto)
 
+        val context = GraphInitializeContext(
+            kioskId = TEST_KIOSK_ID,
+            isFindPlace = false,
+            lowScoreCount = 0,
+            lastNode = null,
+            history = mutableListOf()
+        )
+
         whenever(utgService.saveNode(any<UiDto>())).thenReturn(rootNode).thenReturn(firstNode).thenReturn(menuEntity)
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
         whenever(uiExtractorManager.getUiComponents(TEST_IMAGE_DATA, TEST_KIOSK_ID)).thenReturn(llmUiList)
-        whenever(placeGraphInitializeService.initializeGraph(TEST_KIOSK_ID, rootNode, llmUiList)).thenReturn(emptyList())
+        whenever(placeGraphInitializeService.initializeGraph(any(), anyList())).thenAnswer {}
+
         whenever(menuAgent.determineAction(any<MenuInfoDto>(), anyList())).thenReturn(firstAction).thenReturn(lowScoreAction).thenReturn(highScoreAction)
         whenever(missingComponentAgent.determineAction(TEST_IMAGE_DATA, lowMenuDto.options, llmUiList)).thenReturn(emptyList())
         whenever(backAgent.determineBack(any())).thenReturn(backAction)
@@ -278,14 +296,13 @@ class MenuGraphInitializeServiceTest {
         doNothing().whenever(utgService).saveRel(anyString(), anyString(), any())
 
         // when: 메뉴 그래프 초기화 실행
-        val result = menuGraphInitializeService.initializeGraph(TEST_KIOSK_ID, lowMenuList)
+        menuGraphInitializeService.initializeGraph(context, lowMenuList)
 
         // then: 낮은 점수 액션은 히스토리에 포함되지만 노드는 생성되지 않는다
-        assertEquals(4, result.actionList.size) // 낮은 점수 + 높은 점수 + back
-        println(result.actionList)
-        assertEquals(firstAction, result.actionList[0])
-        assertEquals(lowScoreAction, result.actionList[1])
-        assertEquals(highScoreAction, result.actionList[2])
+        assertEquals(4, context.history.size) // 낮은 점수 + 높은 점수 + back
+        assertEquals(firstAction, context.history[0])
+        assertEquals(lowScoreAction, context.history[1])
+        assertEquals(highScoreAction, context.history[2])
 
         verify(menuAgent, times(2)).determineAction(lowMenuDto, llmUiList)
         verify(utgService, times(4)).saveNode(any<UiDto>()) // root + 높은 점수 액션만
@@ -318,7 +335,7 @@ class MenuGraphInitializeServiceTest {
         whenever(utgService.saveNode(any<UiDto>())).thenReturn(rootNode).thenReturn(nextPageEntity)
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
         whenever(uiExtractorManager.getUiComponents(TEST_IMAGE_DATA, TEST_KIOSK_ID)).thenReturn(llmUiList)
-        whenever(placeGraphInitializeService.initializeGraph(TEST_KIOSK_ID, rootNode, llmUiList)).thenReturn(emptyList())
+        whenever(placeGraphInitializeService.initializeGraph(any(), anyList())).thenAnswer { }
         whenever(menuAgent.determineAction(any<MenuInfoDto>(), anyList())).thenReturn(nextPageAction).thenReturn(lastPageAction)
         whenever(missingComponentAgent.determineAction(TEST_IMAGE_DATA, menuInfoDto.options, llmUiList)).thenReturn(emptyList())
         whenever(backAgent.determineBack(any())).thenReturn(backAction)
@@ -326,7 +343,14 @@ class MenuGraphInitializeServiceTest {
         doNothing().whenever(utgService).saveRel(anyString(), anyString(), any())
 
         // when: 메뉴 그래프 초기화 실행
-        menuGraphInitializeService.initializeGraph(TEST_KIOSK_ID, menuList)
+        val context = GraphInitializeContext(
+            kioskId = TEST_KIOSK_ID,
+            isFindPlace = false,
+            lowScoreCount = 0,
+            lastNode = null,
+            history = mutableListOf()
+        )
+        menuGraphInitializeService.initializeGraph(context, menuList)
 
         // then: PATH_TO 관계로 양방향 연결된다
         verify(utgService).saveRel(TEST_ROOT_NODE_ID, "NEXT_PAGE_ENTITY", NodeRelation.PATH_TO)
@@ -339,11 +363,26 @@ class MenuGraphInitializeServiceTest {
             AgentActionDto(true, 0.9F, listOf(150, 250), "포장"),
             AgentActionDto(true, 0.9F, listOf(300, 250), "매장"),
         )
+        val context = GraphInitializeContext(
+            kioskId = TEST_KIOSK_ID,
+            isFindPlace = false,
+            lowScoreCount = 0,
+            lastNode = null,
+            history = mutableListOf()
+        )
+        var callCount = 0
+
 
         whenever(utgService.saveNode(any<UiDto>())).thenReturn(rootNode).thenReturn(firstNode).thenReturn(menuEntity)
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
         whenever(uiExtractorManager.getUiComponents(TEST_IMAGE_DATA, TEST_KIOSK_ID)).thenReturn(llmUiList)
-        whenever(placeGraphInitializeService.initializeGraph(anyString(), any<UiEntity>(), anyList())).thenReturn(emptyList()).thenReturn(placeActions)
+        whenever(placeGraphInitializeService.initializeGraph(any(), anyList())).thenAnswer {
+            callCount++
+            if (callCount == 2) {
+                context.isFindPlace = true
+                placeActions.forEach { context.history.add(it) }
+            }
+        }
         whenever(menuAgent.determineAction(any<MenuInfoDto>(), anyList())).thenReturn(menuAction)
         whenever(missingComponentAgent.determineAction(TEST_IMAGE_DATA, menuInfoDto.options, llmUiList)).thenReturn(emptyList())
         whenever(backAgent.determineBack(any())).thenReturn(backAction)
@@ -351,14 +390,13 @@ class MenuGraphInitializeServiceTest {
         doNothing().whenever(utgService).saveRel(anyString(), anyString(), any())
 
         // when: 메뉴 그래프 초기화 실행
-        val result = menuGraphInitializeService.initializeGraph(TEST_KIOSK_ID, menuList)
-        println(result.actionList)
+        menuGraphInitializeService.initializeGraph(context, menuList)
 
         // then: 포장/매장 UI 탐색이 두 번 호출되고 마지막에 찾아진다
-        assertEquals(6, result.actionList.size) // first, 메뉴, 옵션, back, 포장, 매장
-        assertTrue(result.isFindPlace)
+        assertEquals(6, context.history.size) // first, 메뉴, 옵션, back, 포장, 매장
+        assertTrue(context.isFindPlace)
 
-        verify(placeGraphInitializeService, times(2)).initializeGraph(anyString(), any(), any())
+        verify(placeGraphInitializeService, times(2)).initializeGraph(any(), any())
     }
 
     @Test
@@ -371,7 +409,7 @@ class MenuGraphInitializeServiceTest {
         whenever(utgService.saveNode(any<UiDto>())).thenReturn(rootNode).thenReturn(menuEntity)
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
         whenever(uiExtractorManager.getUiComponents(TEST_IMAGE_DATA, TEST_KIOSK_ID)).thenReturn(llmUiList)
-        whenever(placeGraphInitializeService.initializeGraph(TEST_KIOSK_ID, rootNode, llmUiList)).thenReturn(emptyList())
+        whenever(placeGraphInitializeService.initializeGraph(any(), anyList())).thenAnswer {  }
         whenever(menuAgent.determineAction(any<MenuInfoDto>(), anyList())).thenReturn(menuAction)
         whenever(missingComponentAgent.determineAction(TEST_IMAGE_DATA, menuInfoDto.options, llmUiList)).thenReturn(additionalComponents)
         whenever(backAgent.determineBack(any())).thenReturn(backAction)
@@ -379,7 +417,14 @@ class MenuGraphInitializeServiceTest {
         doNothing().whenever(utgService).saveRel(anyString(), anyString(), any())
 
         // when: 메뉴 그래프 초기화 실행
-        menuGraphInitializeService.initializeGraph(TEST_KIOSK_ID, menuList)
+        val context = GraphInitializeContext(
+            kioskId = TEST_KIOSK_ID,
+            isFindPlace = false,
+            lowScoreCount = 0,
+            lastNode = null,
+            history = mutableListOf()
+        )
+        menuGraphInitializeService.initializeGraph(context, menuList)
 
         // then: 누락된 컴포넌트가 감지되고 추가된다
         verify(missingComponentAgent).determineAction(TEST_IMAGE_DATA, menuInfoDto.options, llmUiList)

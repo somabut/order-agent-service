@@ -18,7 +18,7 @@ class PlaceAgentTest @Autowired constructor(
             LlmUiComponentDto(x = 145, y = 310, title = "먹고가기"),
             LlmUiComponentDto(x = 212, y = 485, title = "너겟킹 7900원"),
             LlmUiComponentDto(x = 398, y = 605, title = "리얼 어니언링 8200원"),
-            LlmUiComponentDto(x = 125, y = 732, title = "포장"),
+            LlmUiComponentDto(x = 125, y = 732, title = "가져가기"),
             LlmUiComponentDto(x = 362, y = 298, title = "코카콜라 7500원"),
             LlmUiComponentDto(x = 274, y = 847, title = "코카콜라 제로 9500원"),
             LlmUiComponentDto(x = 458, y = 415, title = "취소 8900원"),
@@ -30,6 +30,7 @@ class PlaceAgentTest @Autowired constructor(
         val response = placeAgent.determineAction(uiList)
 
         //then: 올바른 액션 반환
+        assertThat(response.size).isEqualTo(2)
         for (dto in response) {
             if (dto.title == "매장") {
                 assertThat(dto.coordinate[0]).isEqualTo(145)

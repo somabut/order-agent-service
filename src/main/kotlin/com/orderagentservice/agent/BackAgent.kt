@@ -46,10 +46,14 @@ class BackAgent @Autowired constructor(
                 Situation: There's no direct expression for '담기', but when there's a UI that means "getting on" with the current stage.
                 Judgment: '완료' or '다음' means finishing your current option selection and moving on to the next process (mainly checking your shopping cart), so it's almost in line with your intentions.
                 
-            3. UI to close the current window through '확인' (Score: 0.8)
+            3. UI to close the current window through '확인' (Score: 0.7 to 0.8)
                 Situation: When the above keywords are missing, only the '확인' button. This confirmation is likely to serve to confirm the option selection and close the window.
                 Judgment: Confirmation can also mean other actions (e.g., simple notification confirmation), which makes it somewhat ambiguous rather than complete or contain it. 
                           However, it is the most likely 'return after completion' means of choice.
+                          
+            4. UI meaning 'back/cancel' or Noting exists (Score: 0 to 0.6)
+                Situation: when there is UI such as '뒤로', '취소', etc.
+                Judgment: According to the user's description, this is the wrong behavior of 'dismissing' and going back, not 'dismissing', which means you will fail to achieve your goal.
             
             One Example(
                 ui list: [
@@ -62,7 +66,7 @@ class BackAgent @Autowired constructor(
                 ]):
             ```json
             {
-                "score": 0.8,
+                "score": 1.0,
                 "coordinate": [90, 456],
                 "title": "카트 담기"
             }
@@ -73,11 +77,12 @@ class BackAgent @Autowired constructor(
                     {"coordinate": [210, 364], "title": "면 추가 5000원-"},
                     {"coordinate": [67, 90], "title": "밥 추가 5400원-"},
                     {"coordinate": [123, 87], "title": "완료"},
+                    {"coordinate": [788, 43], "title": "취소"},
                     {"coordinate": [129, 74], "title": "차슈 추가 5000원-"}
                 ]):
             ```json
             {
-                "score": 0.7,
+                "score": 0.9,
                 "coordinate": [123, 87],
                 "title": "완료"
             }
@@ -89,10 +94,11 @@ class BackAgent @Autowired constructor(
                     {"coordinate": [67, 90], "title": "제로콜라 5400원-"},
                     {"coordinate": [123, 87], "title": "사이다 5000원-"},
                     {"coordinate": [120, 74], "title": "다음으로"}
+                    {"coordinate": [21, 78], "title": "취소"}
                 ]):
             ```json
             {
-                "score": 0.8,
+                "score": 0.9,
                 "coordinate": [120, 74],
                 "title": "다음으로"
             }
