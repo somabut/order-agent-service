@@ -28,21 +28,41 @@ class PlaceAgent @Autowired constructor(
             
             IMPORTANT NOTES:
             1. You need to find and return all the Dine In/Take Out UI.
-            2. An example of dine in UI is to eat at a current restaurant such as '먹고가기', '매장' etc.
-            3. An example of take out UI means that you take it without eating at the current restaurant such as '포장' etc
+            2. An example of dine in UI is to eat at a current restaurant such as '먹고가기', '매장식사', '매장', '홀', '테이블', '내부식사' etc.
+            3. An example of take out UI means that you take it without eating at the current restaurant such as '포장', '테이크아웃', '픽업', '포장주문', '가져가기' etc.
             4. Make sure to return the 'coordinate' is on the ui list
             5. If UI means take out, write '포장' and if it means dine in, write '매장'
-            6. If the Dine In/Take Out UI cannot be found, leave 'title' as an empty string and set the 'coordinate' to [-1, -1].
+            6. If neither Dine-In/Take-Out UI can be found, leave 'title' as an empty string and set the 'coordinate' to [-1, -1].
             7. The response should be scored on what you judged on the input. This score is the accuracy of your response you think.
             8. The score is between 0 and 1 and it's marked as a float.
+            9. Response logic:
+               - If BOTH dine-in AND take-out UI are found: return both
+               - If NEITHER can be found: return empty string
+               - Success: [{"title": "매장", "coordinate": [x, y]}, {"title": "포장", "coordinate": [x, y]}] (See the example below for more detailed formatting)
+               - Not found: [{"title": "", "coordinate": [-1, -1]}] (See the example below for more detailed formatting)
             
             'goNext' is always false, 'score' is the accuracy score, 'coordinate' is the UI coordinate, 'title' is a string that follows Rule 5.
             
-            The criteria for the 'score' are as follows. 
-                "I'm sure I got it right" → 1.0
-                "Meaning or context is correct, but not 100% sure" → 0.7~0.9
-                "Looks similar but uncertain" → 0.5~0.6
-                "Almost not sure" → 0~0.4
+            SCORE NOTES:
+            1. Perfect match (Score: 1.0)
+               Situation: When both dine-in and take-out UI elements are clearly found in the ui list with exact keyword matches.
+               Judgment: The most ideal situation where both options are explicitly available and easily identifiable.
+            
+            2. Partial match (Score: 0.8 to 0.9)
+               Situation: Only one type (dine-in OR take-out) is found in the uiList with exact keyword matches, or both are found but with slight variations in wording.
+               Judgment: Clear identification of available option(s) with minor uncertainty due to incomplete options or slight keyword differences.
+            
+            3. Semantic/contextual match (Score: 0.6 to 0.7)
+               Situation: UI elements are found that semantically imply dine-in or take-out options but don't use exact keywords (e.g., '여기서', '가져가세요').
+               Judgment: Reasonable inference based on context and meaning, but requires interpretation of implicit UI text.
+            
+            4. Uncertain identification (Score: 0 to 0.5)
+               Situation: Found UI elements that might be related to dine-in/take-out but the connection is ambiguous or requires significant assumption.
+               Judgment: Low confidence due to unclear UI labeling or unconventional terminology.
+            
+            5. Correct absence detection (Score: 0.9 to 1.0)
+               Situation: No dine-in/take-out UI elements exist in the uiList, and this is correctly identified and reported.
+               Judgment: High confidence in correctly determining that no relevant UI elements are present on this screen.
              
              One Example(
                 ui_list: [
@@ -56,13 +76,13 @@ class PlaceAgent @Autowired constructor(
             [
                 {
                     "goNext": "false",
-                    "score": 0.8,
+                    "score": 1.0,
                     "coordinate": [123, 87],
                     "title": "매장"
                 },
                 {
                     "goNext": "false",
-                    "score": 0.8,
+                    "score": 1.0,
                     "coordinate": [120, 74],
                     "title": "포장"
                 }
@@ -81,7 +101,7 @@ class PlaceAgent @Autowired constructor(
             [
                 {
                     "goNext": "false",
-                    "score": 0.8,
+                    "score": 0.9,
                     "coordinate": [-1, -1],
                     "title": ""
                 }

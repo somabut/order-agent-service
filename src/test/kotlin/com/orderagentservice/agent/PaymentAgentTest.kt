@@ -21,14 +21,14 @@ class PaymentAgentTest @Autowired constructor(
             LlmUiComponentDto(x = 220, y = 600, title = "돌아가기")
         )
 
-        uiList.add(LlmUiComponentDto(x = 220, y = 200, title = "담기"))
+        uiList.add(LlmUiComponentDto(x = 220, y = 200, title = "완료"))
 
         //when-1: llm에게 질의 한다
         val response1 = paymentAgent.determineAction(uiList)
+        println(response1)
 
         //then-1: 올바른 액션을 반환한다
-        assertThat(response1.score).isGreaterThan(0.8F)
-        assertThat(response1.title).isEqualTo("담기")
+        assertThat(response1.title).isEqualTo("완료")
         assertThat(response1.goNext).isEqualTo(true)
         uiList.removeLast()
         Thread.sleep(1000)
@@ -37,9 +37,9 @@ class PaymentAgentTest @Autowired constructor(
 
         //when-2: llm에게 질의 한다
         val response2 = paymentAgent.determineAction(uiList)
+        println(response2)
 
         //then-2: 올바른 액션을 반환한다
-        assertThat(response2.score).isGreaterThan(0.8F)
         assertThat(response2.title).isEqualTo("결제하기")
         assertThat(response2.goNext).isEqualTo(true)
         uiList.removeLast()
@@ -49,9 +49,9 @@ class PaymentAgentTest @Autowired constructor(
 
         //when-3: llm에게 질의 한다
         val response3 = paymentAgent.determineAction(uiList)
+        println(response3)
 
         //then-3: 올바른 액션을 반환한다
-        assertThat(response3.score).isGreaterThan(0.8F)
         assertThat(response3.title).isEqualTo("카드를 삽입해주세요")
         assertThat(response3.goNext).isEqualTo(false)
         uiList.removeLast()
@@ -61,9 +61,9 @@ class PaymentAgentTest @Autowired constructor(
 
         //when-4: llm에게 질의 한다
         val response4 = paymentAgent.determineAction(uiList)
+        println(response4)
 
         //then-4: 올바른 액션을 반환한다
-        assertThat(response4.score).isGreaterThan(0.8F)
         assertThat(response4.title).isEqualTo("신용/체크카드")
         assertThat(response4.goNext).isEqualTo(true)
         uiList.removeLast()

@@ -48,13 +48,9 @@ class MenuAgent @Autowired constructor(
                - Use the coordinate of the matching title UI element
             
             4. A category is a broad word that can include a specific menu, not a specific menu name. [ex) '콜라', '주스', '사이다' is '음료' category. '감자튀김', '만두' is '사이드' category]
-            
             5. The response should be scored on what you judged on the input. This score is the accuracy of your response you think.
-            
             6. The score is between 0 and 1 and it's marked as a float.
-            
             7. Please let me know the 'coordinate' in the response as the UI I need to click to go to the page with the ui corresponding to the input. Please add coordinate information for 'coordinate'.
-            
             8. Make sure to return the 'coordinate' in the response to those in the ui list. 
             
             'goNext' is whether to go to the next page, 'score' is the accuracy score, 'coordinate' is the UI coordinate you need to click to go to the next page and 'title' is the UI title that you click.

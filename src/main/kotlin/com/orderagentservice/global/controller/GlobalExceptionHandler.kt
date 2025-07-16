@@ -54,4 +54,9 @@ class GlobalExceptionHandler {
     fun handleMenuInfoRequestException(e: MenuInfoRequestException): ApiResponse<*> {
         return ApiResponse.fail<MenuInfoRequestException>(e)
     }
+
+    @ExceptionHandler(LowScoreException::class)
+    fun handleLowScoreException(e: LowScoreException): ApiResponse<*> {
+        return ApiResponse.fail<LowScoreException>(e)
+    }
 }

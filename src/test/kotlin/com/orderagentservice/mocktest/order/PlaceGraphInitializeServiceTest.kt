@@ -3,6 +3,8 @@ package com.orderagentservice.mocktest.order
 import com.orderagentservice.agent.PlaceAgent
 import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.model.dto.LlmUiComponentDto
+import com.orderagentservice.mocktest.order.PaymentGraphInitializeServiceTest.Companion
+import com.orderagentservice.order.model.GraphInitializeContext
 import com.orderagentservice.order.model.NodeRelation
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.UiDto
@@ -94,16 +96,23 @@ class PlaceGraphInitializeServiceTest {
     @Test
     fun `포장_매장_UI가_발견되면_그래프_초기화가_성공한다`() {
         // given: 포장/매장 UI가 발견되는 상황
+        val context = GraphInitializeContext(
+            kioskId = TEST_KIOSK_ID,
+            isFindPlace = false,
+            lowScoreCount = 0,
+            lastNode = lastNode,
+            history = mutableListOf()
+        )
         whenever(placeAgent.determineAction(llmUiList)).thenReturn(successAgentActionList)
         whenever(utgService.saveNode(any<UiDto>())).thenReturn(uiEntity)
         doNothing().whenever(utgService).saveRel(TEST_LAST_NODE_ID, TEST_ENTITY_ID, NodeRelation.HAS_TO)
         whenever(notificationService.sendActionCommand(TEST_KIOSK_ID, TEST_COORDINATE)).thenReturn(actionResult)
 
         // when: 그래프 초기화 실행
-        val result = placeGraphInitializeService.initializeGraph(TEST_KIOSK_ID, lastNode, llmUiList)
+        placeGraphInitializeService.initializeGraph(context, llmUiList)
 
         // then: 히스토리가 정상적으로 반환되고 관련 메서드들이 호출된다
-        assertEquals(2, result.size)
+        assertEquals(2, context.history.size)
 
         verify(placeAgent).determineAction(llmUiList)
         verify(utgService, times(2)).saveNode(any())
@@ -114,13 +123,21 @@ class PlaceGraphInitializeServiceTest {
     @Test
     fun `포장_매장_UI가_발견되지_않으면_빈_히스토리를_반환한다`() {
         // given: 포장/매장 UI가 발견되지 않는 상황
+        val context = GraphInitializeContext(
+            kioskId = TEST_KIOSK_ID,
+            isFindPlace = false,
+            lowScoreCount = 0,
+            lastNode = lastNode,
+            history = mutableListOf()
+        )
         whenever(placeAgent.determineAction(llmUiList)).thenReturn(failAgentActionList)
+        whenever(utgService.saveNode(any<UiDto>())).thenReturn(uiEntity)
 
         // when: 그래프 초기화 실행
-        val result = placeGraphInitializeService.initializeGraph(TEST_KIOSK_ID, lastNode, llmUiList)
+        placeGraphInitializeService.initializeGraph(context, llmUiList)
 
         // then: 빈 히스토리가 반환되고 노드 생성 관련 메서드는 호출되지 않는다
-        assertTrue(result.isEmpty())
+        assertTrue(context.history.isEmpty())
 
         verify(placeAgent).determineAction(llmUiList)
         verify(utgService, never()).saveNode(any<UiDto>())

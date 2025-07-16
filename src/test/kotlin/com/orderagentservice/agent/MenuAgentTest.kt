@@ -66,9 +66,6 @@ class MenuAgentTest @Autowired constructor(
         val response1 = menuAgent.determineAction(menuDto1, uiList)
         val response2 = menuAgent.determineAction(menuDto2, uiList)
 
-        println(response1)
-        println(response2)
-
         //then: 올바른 액션을 반환한다.
         assertThat(response1.title).isEqualTo("BBQ 통모짜와퍼")
         assertThat(response1.goNext).isEqualTo(false)
