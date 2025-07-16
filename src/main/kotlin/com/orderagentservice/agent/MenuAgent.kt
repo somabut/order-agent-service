@@ -34,19 +34,29 @@ class MenuAgent @Autowired constructor(
             Here is ui list:${uiList}
 
             IMPORTANT NOTES:
-            1. It is determined that the string on the ui list must contain the string of input correctly to exist. [ex) If the input is '초코 케이크', if there is '딸기 케이크', '당근 케이크', '치즈 케이크', then exactly there is no '초코 케이크']
-            2. If it doesn't exist on the ui list, please let me know which ui exists on the ui list to go to the page where the input exists. 
-            In this case, the category should be put in the 'title' of the response, not the title found in the ui list.
-            3. For UI information that you need to interact with to move on to the next page, please refer to the 'category' in the given input. 
-            In other words, when you don't have a menu and need to go to a category, please make 'goNext' true
+            1. The input title must exist exactly in the ui list to be considered a match. [ex) If the input is '초코 케이크', if there is '딸기 케이크', '당근 케이크', '치즈 케이크', then exactly there is no '초코 케이크']
+            
+            2. If the exact input title does not exist in the ui list:
+               - Find a UI element that matches the input's category
+               - Put the INPUT'S CATEGORY VALUE in the 'title' of the response
+               - Set 'goNext' to true
+               - Use the coordinate of the matching category UI element
+            
+            3. If the exact input title exists in the ui list:
+               - Put the INPUT'S TITLE VALUE in the 'title' of the response  
+               - Set 'goNext' to false
+               - Use the coordinate of the matching title UI element
+            
             4. A category is a broad word that can include a specific menu, not a specific menu name. [ex) '콜라', '주스', '사이다' is '음료' category. '감자튀김', '만두' is '사이드' category]
-            5. Returns the category to 'title' only if the corresponding request input does not exist.
-            6. The response should be scored on what you judged on the input. This score is the accuracy of your response you think.
-            7. The score is between 0 and 1 and it's marked as a float.
-            8. Please let me know the 'coordinate' in the response as the UI I need to click to go to the page with the ui corresponding to the input. Please add coordinate information for 'coordinate'.
-            9. Make sure to return the 'coordinate' in the response to those in the ui list. 
-            10. The 'title' of the response like menu or category must be the value of the input not value of ui list.
-
+            
+            5. The response should be scored on what you judged on the input. This score is the accuracy of your response you think.
+            
+            6. The score is between 0 and 1 and it's marked as a float.
+            
+            7. Please let me know the 'coordinate' in the response as the UI I need to click to go to the page with the ui corresponding to the input. Please add coordinate information for 'coordinate'.
+            
+            8. Make sure to return the 'coordinate' in the response to those in the ui list. 
+            
             'goNext' is whether to go to the next page, 'score' is the accuracy score, 'coordinate' is the UI coordinate you need to click to go to the next page and 'title' is the UI title that you click.
             
             SCORE NOTES:
