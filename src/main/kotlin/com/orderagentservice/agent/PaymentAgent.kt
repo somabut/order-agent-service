@@ -15,6 +15,7 @@ class PaymentAgent @Autowired constructor(
     fun determineAction(uiList: List<LlmUiComponentDto>): AgentActionDto {
         val prompt = getPrompt(uiList)
         val json = llmManager.queryGemini(prompt)
+        println(json)
         val response: AgentActionDto = jsonMapper.readValue<AgentActionDto>(json)
         return response
     }

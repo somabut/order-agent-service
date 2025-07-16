@@ -37,6 +37,12 @@ class PlaceAgent @Autowired constructor(
             8. The score is between 0 and 1 and it's marked as a float.
             
             'goNext' is always false, 'score' is the accuracy score, 'coordinate' is the UI coordinate, 'title' is a string that follows Rule 5.
+            
+            The criteria for the 'score' are as follows. 
+                "I'm sure I got it right" → 1.0
+                "Meaning or context is correct, but not 100% sure" → 0.7~0.9
+                "Looks similar but uncertain" → 0.5~0.6
+                "Almost not sure" → 0~0.4
              
              One Example(
                 ui_list: [
