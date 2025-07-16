@@ -66,9 +66,9 @@ jobs:
             # compose 파일 위치로 이동 (예시: /home/ubuntu/deploy)
             cd /home/alike
 
-            # 전체 서비스 중단 후 재시작
-            docker stop ${{ env.IMAGE_NAME }}:latest
-            docker rm ${{ env.IMAGE_NAME }}:latest
+            # 서비스 중단 후 재시작
+            docker stop ${{ env.IMAGE_NAME }}
+            docker rm ${{ env.IMAGE_NAME }}
             docker compose up -d
 
             # 불필요한 도커 이미지 정리(옵션)
