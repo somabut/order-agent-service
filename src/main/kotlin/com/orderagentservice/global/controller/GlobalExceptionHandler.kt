@@ -59,4 +59,9 @@ class GlobalExceptionHandler {
     fun handleLowScoreException(e: LowScoreException): ApiResponse<*> {
         return ApiResponse.fail<LowScoreException>(e)
     }
+
+    @ExceptionHandler(UiExtractException::class)
+    fun handleUiExtractException(e: UiExtractException): ApiResponse<*> {
+        return ApiResponse.fail<UiExtractException>(e)
+    }
 }

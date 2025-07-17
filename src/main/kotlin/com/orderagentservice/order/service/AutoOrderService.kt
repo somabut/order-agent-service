@@ -39,6 +39,7 @@ class AutoOrderService @Autowired constructor(
         val endTime = System.nanoTime()
         val processingTime = (endTime - startTime) / 1000000
         logOrder(kioskId, "자동 주문 완료. 수행시간: ${processingTime}ms")
+        logOrder(kioskId, "최종 주문 정보: ${history}")
         globalLogger.loggingOrderResult(
             kioskId = kioskId, menuList = history,
             processingTime = processingTime, paymentMethod = orderRequest.payment,

@@ -2,6 +2,7 @@ package com.orderagentservice.order.util
 
 import com.orderagentservice.agent.model.dto.LlmUiComponentDto
 import com.orderagentservice.global.model.response.ApiResponse
+import com.orderagentservice.order.exception.UiExtractException
 import com.orderagentservice.order.model.dto.OmniUiComponentDto
 import com.orderagentservice.order.model.response.OmniResponse
 import org.springframework.beans.factory.annotation.Autowired
@@ -45,16 +46,20 @@ class UiExtractorManager @Autowired constructor(
         headers.setBearerAuth(UI_EXTRACTOR_API_KEY)
 
         //ui extractor service에게 UI 추출 요청
-        val requestEntity = HttpEntity(body, headers)
-        val responseEntity = restTemplate.exchange(
-            url,
-            HttpMethod.POST,
-            requestEntity,
-            object : ParameterizedTypeReference<ApiResponse<OmniResponse>>() {}
-        )
-        val response: ApiResponse<OmniResponse> = responseEntity.body!!
-        val uiComponents = response.data!!.uiComponents
-        return uiComponents
+        try {
+            val requestEntity = HttpEntity(body, headers)
+            val responseEntity = restTemplate.exchange(
+                url,
+                HttpMethod.POST,
+                requestEntity,
+                object : ParameterizedTypeReference<ApiResponse<OmniResponse>>() {}
+            )
+            val response: ApiResponse<OmniResponse> = responseEntity.body!!
+            val uiComponents = response.data!!.uiComponents
+            return uiComponents
+        } catch (e: RuntimeException) {
+            throw UiExtractException()
+        }
     }
 
     fun getUiComponents(image: File, kioskId: String): MutableList<LlmUiComponentDto> {
