@@ -17,6 +17,6 @@ class TestController @Autowired constructor(
 
     @GetMapping("/test/{kioskId}")
     fun sendMessageTest(@PathVariable kioskId: String) {
-        notificationService.sendMessage(kioskId, "test message from moodTRBL")
+        notificationService.sendMessage("[${kioskId}] test message from moodTRBL")
     }
 }

@@ -11,6 +11,9 @@ class NotificationRepository {
     private val kioskNotification = ConcurrentHashMap<String, SseEmitter>()
     private val captureCommandCompleteMap = ConcurrentHashMap<String, File>()
     private val actionCommandCompleteMap = ConcurrentHashMap<String, Pair<Int, Int>>()
+    private val onlySseEmitter = SseEmitter(60L * 1000 * 60)
+
+    fun getOnlyEmitter(): SseEmitter = onlySseEmitter
 
     fun saveEmitter(kioskId: String, sseEmitter: SseEmitter): SseEmitter {
         kioskNotification[kioskId] = sseEmitter
