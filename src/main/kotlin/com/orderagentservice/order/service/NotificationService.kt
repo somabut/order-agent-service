@@ -119,5 +119,4 @@ class NotificationService @Autowired constructor(
         }
         throw CommandTimeoutException()
     }
-
 }
