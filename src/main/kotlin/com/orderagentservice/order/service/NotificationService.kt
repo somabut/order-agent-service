@@ -25,9 +25,11 @@ class NotificationService @Autowired constructor(
     val CAPTURE_WAIT_TIMEOUT: Long = 10_000
     val ACTION_WAIT_TIMEOUT: Long = 4_000
 
-    fun connect(kioskId: String): SseEmitter {
-        val emitter = notificationRepository.saveEmitter(kioskId, SseEmitter(CONNECT_TIMEOUT))
-        emitter.onTimeout { notificationRepository.deleteByKioskId(kioskId) }
+    fun connect(): SseEmitter {
+        val emitter = notificationRepository.getOnlyEmitter()
+
+//        val emitter = notificationRepository.saveEmitter(kioskId, SseEmitter(CONNECT_TIMEOUT))
+//        emitter.onTimeout { notificationRepository.deleteByKioskId(kioskId) }
         emitter.send("[order agent service]: 연결 성공")
 
         return emitter
@@ -41,8 +43,8 @@ class NotificationService @Autowired constructor(
         notificationRepository.saveActionCommand(commandId, coordinate)
     }
 
-    fun sendMessage(kioskId: String, message: String) {
-        val emitter = notificationRepository.getEmitter(kioskId)
+    fun sendMessage(message: String) {
+        val emitter = notificationRepository.getOnlyEmitter()
         emitter.send(message)
     }
 

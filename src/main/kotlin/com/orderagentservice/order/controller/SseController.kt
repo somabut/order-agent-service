@@ -14,9 +14,9 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
 class SseController @Autowired constructor(
     private val notificationService: NotificationService
 ) {
-    @GetMapping("/sse/connect/{kioskId}", produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
-    fun connectSse(@PathVariable kioskId: String): SseEmitter {
-        val emitter = notificationService.connect(kioskId)
+    @GetMapping("/sse/connect", produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
+    fun connectSse(): SseEmitter {
+        val emitter = notificationService.connect()
         return emitter
     }
 }
