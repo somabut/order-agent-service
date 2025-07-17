@@ -65,7 +65,7 @@ class MenuAgent @Autowired constructor(
                 Judgment: The next step (move category) to find the menu is clear.
                 
             3. When semantic/contextual categories match (Score: 0.8 to 0.9)
-                Situation: neither input's title nor category is on the uiList, but when AI finds a top category on the ui list that is very similar in meaning to input's category or includes it.
+                Situation: neither input's title nor category is on the ui list, but when AI finds a top category on the ui list that is very similar in meaning to input's category or includes it.
                 Judgment: No direct information, but we used AI's knowledge to infer the most likely next steps.
                 
             4. Uncertain but most likely choice made (Score: 0.5 to 0.7)
