@@ -18,9 +18,8 @@ import java.util.UUID
 class OrderController @Autowired constructor(
     private val autoOrderService: AutoOrderService
 ) {
-    @PostMapping("/order/start/{kioskId}")
-    fun startOrder(@PathVariable kioskId: String, @RequestBody orderRequest: AutoOrderRequest): ApiResponse<*> {
-        val taskId = UUID.randomUUID().toString()
+    @PostMapping("/order/start/{kioskId}/{taskId}")
+    fun startOrder(@PathVariable kioskId: String, @PathVariable taskId: String, @RequestBody orderRequest: AutoOrderRequest): ApiResponse<*> {
         autoOrderService.proceed(kioskId, taskId, orderRequest)
         var count = 0
         orderRequest.autoOrderMenus.forEach { count += it.count }
