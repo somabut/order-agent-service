@@ -11,7 +11,6 @@ import com.orderagentservice.jsonMapper
 import com.orderagentservice.order.model.AutoOrderContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.util.UUID
 
 @Service
 class AutoOrderService @Autowired constructor(
@@ -150,6 +149,6 @@ class AutoOrderService @Autowired constructor(
             )
         )
         log.info(message)
-        notificationService.sendMessage(json)
+        notificationService.broadcastMessage(json)
     }
 }

@@ -5,19 +5,32 @@ import org.springframework.stereotype.Repository
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.CopyOnWriteArraySet
+import kotlin.math.log
 
 @Repository
 class NotificationRepository {
     private val kioskNotification = ConcurrentHashMap<String, SseEmitter>()
     private val captureCommandCompleteMap = ConcurrentHashMap<String, File>()
     private val actionCommandCompleteMap = ConcurrentHashMap<String, Pair<Int, Int>>()
-    private val onlySseEmitter = SseEmitter(60L * 1000 * 60)
+    private val logChannelSet = CopyOnWriteArraySet<SseEmitter>()
 
-    fun getLogEmitter(): SseEmitter = onlySseEmitter
+    fun getLogEmitters() = logChannelSet
+
+    fun saveEmitter(sseEmitter: SseEmitter) {
+        sseEmitter.onCompletion { logChannelSet.remove(sseEmitter) }
+        sseEmitter.onTimeout { logChannelSet.remove(sseEmitter) }
+        sseEmitter.onError { logChannelSet.remove(sseEmitter) }
+        logChannelSet.add(sseEmitter)
+    }
 
     fun saveEmitter(kioskId: String, sseEmitter: SseEmitter): SseEmitter {
         kioskNotification[kioskId] = sseEmitter
         return sseEmitter
+    }
+
+    fun deleteLogEmitter(sseEmitter: SseEmitter) {
+        logChannelSet.remove(sseEmitter)
     }
 
     fun deleteByKioskId(kioskId: String) {

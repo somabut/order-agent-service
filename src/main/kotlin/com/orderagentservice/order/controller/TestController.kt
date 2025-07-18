@@ -17,7 +17,7 @@ class TestController @Autowired constructor(
 
     @GetMapping("/test")
     fun sendMessageTest() {
-        notificationService.sendMessage("test message from moodTRBL")
+        notificationService.broadcastMessage("test message from moodTRBL")
     }
 
     @GetMapping("/test/{kioskId}")

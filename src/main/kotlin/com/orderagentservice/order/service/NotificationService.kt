@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
 import java.io.File
+import java.io.IOException
 import java.util.UUID
 
 @Service
@@ -26,7 +27,8 @@ class NotificationService @Autowired constructor(
     val ACTION_WAIT_TIMEOUT: Long = 4_000
 
     fun connectLog(): SseEmitter {
-        val emitter = notificationRepository.getLogEmitter()
+        val emitter = SseEmitter(CONNECT_TIMEOUT)
+        notificationRepository.saveEmitter(emitter)
         emitter.send("[order agent service]: 연결 성공")
 
         return emitter
@@ -34,7 +36,6 @@ class NotificationService @Autowired constructor(
 
     fun connectAction(kioskId: String): SseEmitter {
         val emitter = notificationRepository.saveEmitter(kioskId, SseEmitter(CONNECT_TIMEOUT))
-        emitter.onTimeout { notificationRepository.deleteByKioskId(kioskId) }
         emitter.send("[order agent service]: 연결 성공")
 
         return emitter
@@ -48,15 +49,23 @@ class NotificationService @Autowired constructor(
         notificationRepository.saveActionCommand(commandId, coordinate)
     }
 
-    fun sendMessage(message: String) {
-        val emitter = notificationRepository.getLogEmitter()
-        log.info("테스트용 메시지 전송")
-        emitter.send(message)
+    fun broadcastMessage(message: String) {
+        val logChannel = notificationRepository.getLogEmitters()
+        for (emitter in logChannel) {
+            try {
+                emitter.send(message)
+            } catch (e: Exception) {
+                log.info("클라이언트 연결 끊김")
+                notificationRepository.deleteLogEmitter(emitter)
+            }
+        }
+
+        log.info("로그 메시지 전송. 클라이언트 수: ${logChannel.size}")
     }
 
     fun sendMessage(kioskId: String, message: String) {
         val emitter = notificationRepository.getEmitter(kioskId)
-        log.info("테스트용 메시지 전송 -> [${kioskId}]")
+        log.info("액션 메시지 전송 -> [${kioskId}]")
         emitter.send(message)
     }
 
@@ -102,6 +111,16 @@ class NotificationService @Autowired constructor(
 
         globalLogger.loggingActionResult(kioskId, commandId, "CLICK", true, coordinate)
         return coordinatePair
+    }
+
+    private fun isEmitterCompleted(emitter: SseEmitter): Boolean {
+        return try {
+            // 더미 데이터로 상태 확인
+            emitter.send(SseEmitter.event().name("heartbeat").data(""))
+            false
+        } catch (e: Exception) {
+            true
+        }
     }
 
     // 캡처 명령 대기
