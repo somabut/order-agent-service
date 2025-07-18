@@ -25,11 +25,16 @@ class NotificationService @Autowired constructor(
     val CAPTURE_WAIT_TIMEOUT: Long = 10_000
     val ACTION_WAIT_TIMEOUT: Long = 4_000
 
-    fun connect(): SseEmitter {
+    fun connectLog(): SseEmitter {
         val emitter = notificationRepository.getOnlyEmitter()
+        emitter.send("[order agent service]: 연결 성공")
 
-//        val emitter = notificationRepository.saveEmitter(kioskId, SseEmitter(CONNECT_TIMEOUT))
-//        emitter.onTimeout { notificationRepository.deleteByKioskId(kioskId) }
+        return emitter
+    }
+
+    fun connectAction(kioskId: String): SseEmitter {
+        val emitter = notificationRepository.saveEmitter(kioskId, SseEmitter(CONNECT_TIMEOUT))
+        emitter.onTimeout { notificationRepository.deleteByKioskId(kioskId) }
         emitter.send("[order agent service]: 연결 성공")
 
         return emitter

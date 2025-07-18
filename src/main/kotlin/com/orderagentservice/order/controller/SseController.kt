@@ -15,8 +15,14 @@ class SseController @Autowired constructor(
     private val notificationService: NotificationService
 ) {
     @GetMapping("/sse/connect", produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
-    fun connectSse(): SseEmitter {
-        val emitter = notificationService.connect()
+    fun connectSseLog(): SseEmitter {
+        val emitter = notificationService.connectLog()
+        return emitter
+    }
+
+    @GetMapping("/sse/connect/{kioskId}", produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
+    fun connectSseAction(@PathVariable kioskId: String): SseEmitter {
+        val emitter = notificationService.connectAction(kioskId)
         return emitter
     }
 }
