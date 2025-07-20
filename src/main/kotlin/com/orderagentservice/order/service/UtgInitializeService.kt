@@ -29,6 +29,7 @@ class UtgInitializeService @Autowired constructor(
         log.info("UTG 생성 시작")
         val startTime = System.nanoTime()
 
+        //관리자 페이지로부터 메뉴를 얻어온다
         val menuList = menuService.getMenus(kioskId, accessToken)
 
         val context = GraphInitializeContext(

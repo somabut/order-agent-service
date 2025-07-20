@@ -14,6 +14,7 @@ class MenuService @Autowired constructor(
     private val log = logger()
 
     fun getMenus(kioskId: String, accessToken: String): List<MenuInfoDto> {
+        log.info("메뉴 정보를 얻어옵니다. 키오스크 ID: ${kioskId}")
         val response = menuRepository.findAllMenus(kioskId, accessToken)
         val menuInfoList = mutableListOf<MenuInfoDto>()
 

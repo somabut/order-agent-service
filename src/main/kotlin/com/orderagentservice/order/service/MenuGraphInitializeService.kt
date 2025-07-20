@@ -153,14 +153,15 @@ class MenuGraphInitializeService @Autowired constructor(
         val image = notificationService.sendCaptureCommand(kioskId)
         val llmOptList = uiExtractorManager.getUiComponents(image, kioskId)
 
-        //감지되지 못한 옵션이 있을 수 있으므로 한번 더 탐색
-        val additionalList = missingComponentAgent.determineAction(image, menuDto.options, llmOptList)
-
-        //추가된거랑 겹치는게 있다는 말은 + 버튼이 아닌 것이므로 지워줘야함
-        removeDuplicate(additionalList, llmOptList)
-        for (addEle in additionalList) {
-            llmOptList.add(addEle)
-        }
+        //TODO(GPT 미신청으로 인한 일시적인 보류)
+//        //감지되지 못한 옵션이 있을 수 있으므로 한번 더 탐색
+//        val additionalList = missingComponentAgent.determineAction(image, menuDto.options, llmOptList)
+//
+//        //추가된거랑 겹치는게 있다는 말은 + 버튼이 아닌 것이므로 지워줘야함
+//        removeDuplicate(additionalList, llmOptList)
+//        for (addEle in additionalList) {
+//            llmOptList.add(addEle)
+//        }
 
         //다시 원래 페이지로 돌아가야 하므로 backAgent를 통해 이전 페이지로 돌아가기
         val backAction = backAgent.determineBack(llmOptList)
