@@ -29,6 +29,7 @@ class NotificationService @Autowired constructor(
     fun connectLog(): SseEmitter {
         val emitter = SseEmitter(CONNECT_TIMEOUT)
         notificationRepository.saveEmitter(emitter)
+        log.info("로그 SSE 연결성공")
         emitter.send("[order agent service]: 연결 성공")
 
         return emitter
@@ -36,6 +37,7 @@ class NotificationService @Autowired constructor(
 
     fun connectAction(kioskId: String): SseEmitter {
         val emitter = notificationRepository.saveEmitter(kioskId, SseEmitter(CONNECT_TIMEOUT))
+        log.info("액션 SSE 연결성공: ${kioskId}")
         emitter.send("[order agent service]: 연결 성공")
 
         return emitter
