@@ -8,11 +8,13 @@ import com.orderagentservice.order.model.response.OmniResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.core.env.Environment
+import org.springframework.core.io.FileSystemResource
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
+import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.client.RestTemplate
 import java.io.File
 import java.io.FileInputStream
@@ -31,15 +33,12 @@ class UiExtractorManager @Autowired constructor(
 
     fun queryUiExtractor(image: File): List<OmniUiComponentDto> {
         val restTemplate = RestTemplate()
-        val url = "$UI_EXCTRACTOR_HOST/v2/1p99bupisk41r7/runsync"
+        val url = "$UI_EXCTRACTOR_HOST/api/extract-ui"
 
-        val fileContent = FileInputStream(image).use { it.readBytes() }
-        val base64Encoded = Base64.getEncoder().encodeToString(fileContent)
+        val fileContent = FileSystemResource(image)
 
-        val input: MutableMap<String, Any> = HashMap()
-        val body: MutableMap<String, Any> = HashMap()
-        input["file"] = base64Encoded
-        body["input"] = input
+        val body = LinkedMultiValueMap<String, Any>()
+        body["file"] = fileContent
 
         val headers = HttpHeaders()
         headers.contentType = MediaType.MULTIPART_FORM_DATA
