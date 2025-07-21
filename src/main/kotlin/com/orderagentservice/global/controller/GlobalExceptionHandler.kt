@@ -4,15 +4,20 @@ import com.orderagentservice.agent.exception.AgentManyRequestException
 import com.orderagentservice.global.exception.S3NotSupportedType
 import com.orderagentservice.global.model.RootException
 import com.orderagentservice.global.model.response.ApiResponse
+import com.orderagentservice.logger
 import com.orderagentservice.order.exception.*
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
 @RestControllerAdvice
 class GlobalExceptionHandler {
+    private val log = logger()
+
     @ExceptionHandler(RuntimeException::class)
-    fun handleRuntimeException(e: RootException): ApiResponse<*> {
-        return ApiResponse.fail<RootException>(e)
+    fun handleRuntimeException(e: RuntimeException): ApiResponse<*> {
+        log.info("알 수 없는 에러 발생. ${e.stackTrace}")
+        val exception = RootException()
+        return ApiResponse.fail<RootException>(exception)
     }
 
     @ExceptionHandler(AgentManyRequestException::class)
