@@ -26,7 +26,10 @@ class MenuRepository @Autowired constructor(
 
     fun findAllMenus(kioskId: String, accessToken: String): MenuInfoResponse {
         val restTemplate = RestTemplate()
-        val url = "$KIOSK_ADMIN_HOST/v1/admin/kiosks/$kioskId/menu-data"
+
+        //TODO(테스트를 위한 일시적인 url)
+        val url = "$KIOSK_ADMIN_HOST/v1/admin/kiosks/kiosk-8f22eeb6-a920-44ed-af26-d800756fb283/menu-data"
+//        val url = "$KIOSK_ADMIN_HOST/v1/admin/kiosks/$kioskId/menu-data"
 
         val headers = HttpHeaders()
         headers.contentType = MediaType.APPLICATION_JSON
