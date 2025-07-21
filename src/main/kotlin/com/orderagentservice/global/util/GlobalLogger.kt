@@ -33,7 +33,7 @@ class GlobalLogger {
         MDC.put("success", success.toString())
         MDC.put("title", coordinate.title)
         MDC.put("coordinate", listOf(coordinate.x, coordinate.y).toString())
-        logger.info(LogType.ACTION_RESULT.message)
+        logger.info("${LogType.ACTION_RESULT.message} ${success}!! -> title: ${coordinate.title}, coordinate: ${coordinate.x} ${coordinate.y}")
         MDC.clear()
     }
 

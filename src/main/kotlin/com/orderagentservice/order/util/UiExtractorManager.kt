@@ -2,6 +2,7 @@ package com.orderagentservice.order.util
 
 import com.orderagentservice.agent.model.dto.LlmUiComponentDto
 import com.orderagentservice.global.model.response.ApiResponse
+import com.orderagentservice.logger
 import com.orderagentservice.order.exception.UiExtractException
 import com.orderagentservice.order.model.dto.OmniUiComponentDto
 import com.orderagentservice.order.model.response.OmniResponse
@@ -27,6 +28,8 @@ import kotlin.collections.HashMap
 class UiExtractorManager @Autowired constructor(
     private val env: Environment
 ) {
+    private val log = logger()
+
     private val UI_EXCTRACTOR_HOST = env.getProperty("ui-extractor.host")
     private val UI_EXCTRACTOR_PORT = env.getProperty("ui-extractor.port")
     private val UI_EXTRACTOR_API_KEY = env.getProperty("ui-extractor.api-key")!!

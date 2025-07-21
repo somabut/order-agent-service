@@ -24,7 +24,7 @@ class NotificationService @Autowired constructor(
 
     val CONNECT_TIMEOUT: Long = 60L * 1000 * 60
     val CAPTURE_WAIT_TIMEOUT: Long = 10_000
-    val ACTION_WAIT_TIMEOUT: Long = 4_000
+    val ACTION_WAIT_TIMEOUT: Long = 10_000
 
     fun connectLog(): SseEmitter {
         val emitter = SseEmitter(CONNECT_TIMEOUT)
