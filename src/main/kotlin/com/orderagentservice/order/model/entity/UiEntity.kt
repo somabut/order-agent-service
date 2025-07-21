@@ -1,5 +1,6 @@
 package com.orderagentservice.order.model.entity
 
+import org.springframework.data.annotation.Version
 import org.springframework.data.neo4j.core.schema.*
 import java.util.*
 
@@ -7,6 +8,9 @@ import java.util.*
 class UiEntity(
     @Id
     val id: String = UUID.randomUUID().toString(),
+
+    @Version
+    val version: Long? = null,
 
     @Property("is_next")
     val isNext: Boolean,

@@ -192,8 +192,8 @@ class PaymentGraphInitializeServiceTest {
             goNext = false,
             score = 0.95F
         )
-        val firstEntity = UiEntity(TEST_ENTITY_ID, true, 100, 200, "카드결제", TEST_KIOSK_ID)
-        val secondEntity = UiEntity("ENTITY_456", false, 200, 300, "결제완료", TEST_KIOSK_ID)
+        val firstEntity = UiEntity(TEST_ENTITY_ID, null, true, 100, 200, "카드결제", TEST_KIOSK_ID)
+        val secondEntity = UiEntity("ENTITY_456", null, false, 200, 300, "결제완료", TEST_KIOSK_ID)
 
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
         whenever(uiExtractorManager.getUiComponents(TEST_IMAGE_DATA, TEST_KIOSK_ID)).thenReturn(llmUiList)

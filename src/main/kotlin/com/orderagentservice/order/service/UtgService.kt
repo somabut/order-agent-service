@@ -1,5 +1,6 @@
 package com.orderagentservice.order.service
 
+import com.orderagentservice.logger
 import com.orderagentservice.order.exception.NodeNotFoundException
 import com.orderagentservice.order.exception.PathNotFoundException
 import com.orderagentservice.order.model.NodeRelation
@@ -10,19 +11,24 @@ import com.orderagentservice.order.repository.UtgRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import kotlin.math.log
 
 @Service
 class UtgService @Autowired constructor(
     private val utgRepository: UtgRepository
 ) {
+    private val log = logger()
+
     @Transactional
     fun saveNode(uiDto: UiDto): UiEntity {
+        log.info("노드 저장. ${uiDto.title}")
         val uiEntity = utgRepository.save(uiDto.toEntity())
         return uiEntity
     }
 
     @Transactional
     fun saveRel(sourceId: String, targetId: String, type: NodeRelation) {
+        log.info("관계 설정. ${sourceId} [${type.name}]-> ${targetId}")
         when(type) {
             NodeRelation.PATH_TO -> utgRepository.savePathRelation(sourceId, targetId)
             NodeRelation.HAS_TO -> utgRepository.saveHasRelation(sourceId, targetId)
