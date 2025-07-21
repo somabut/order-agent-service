@@ -101,6 +101,7 @@ class PlaceGraphInitializeServiceTest {
             isFindPlace = false,
             lowScoreCount = 0,
             lastNode = lastNode,
+            imageHash = null,
             history = mutableListOf()
         )
         whenever(placeAgent.determineAction(llmUiList)).thenReturn(successAgentActionList)
@@ -128,6 +129,7 @@ class PlaceGraphInitializeServiceTest {
             isFindPlace = false,
             lowScoreCount = 0,
             lastNode = lastNode,
+            imageHash = null,
             history = mutableListOf()
         )
         whenever(placeAgent.determineAction(llmUiList)).thenReturn(failAgentActionList)

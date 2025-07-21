@@ -20,6 +20,11 @@ data class AgentBackDto(
     )
 }
 
+data class AgentPageDto(
+    val score: Float,
+    val contain: Boolean
+)
+
 data class AgentStepDto(
     val steps: List<String>
 )
