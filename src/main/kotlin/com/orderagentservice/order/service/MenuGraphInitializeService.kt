@@ -32,15 +32,14 @@ class MenuGraphInitializeService @Autowired constructor(
 ) {
     private val log = logger()
 
+    private val MAX_MODAL_TO_MENU_COUNT = 3
+
     @Transactional
     fun initializeGraph(context: GraphInitializeContext, menuList: List<MenuInfoDto>) {
         log.info("메뉴 utg 생성 시작")
         val startTime = System.nanoTime()
 
-        var isNext = true
-        var isFirst = true
         val kioskId = context.kioskId
-
         val rootUiDto = UiDto(
             isNext = true,
             x = -1, y = -1,
@@ -48,6 +47,23 @@ class MenuGraphInitializeService @Autowired constructor(
             title = "root"
         )
         context.lastNode = utgService.saveNode(rootUiDto)
+
+        //루프를 돌며 메뉴들을 모두 탐색
+        val lastLlmUiList = processLoop(context, menuList)
+
+        //포장 매장 확인
+        if (context.isFindPlace == false) {
+            placeGraphInitializeService.initializeGraph(context, lastLlmUiList)
+        }
+
+        val endTime = System.nanoTime()
+        log.info("메뉴 utg 생성 완료. 수행시간: ${(endTime - startTime) / 1000000}ms")
+    }
+
+    private fun processLoop(context: GraphInitializeContext, menuList: List<MenuInfoDto>): List<LlmUiComponentDto> {
+        var isNext = true
+        var isFirst = true
+        val kioskId = context.kioskId
         var llmUiList = mutableListOf<LlmUiComponentDto>()
         var menuIndex = 0
         while (menuIndex < menuList.size) {
@@ -77,13 +93,7 @@ class MenuGraphInitializeService @Autowired constructor(
             }
         }
 
-        //포장 매장 확인
-        if (context.isFindPlace == false) {
-            placeGraphInitializeService.initializeGraph(context, llmUiList)
-        }
-
-        val endTime = System.nanoTime()
-        log.info("메뉴 utg 생성 완료. 수행시간: ${(endTime - startTime) / 1000000}ms")
+        return llmUiList
     }
 
     private fun handleFirstNode(context: GraphInitializeContext, firstMenu: MenuInfoDto, llmUiList: List<LlmUiComponentDto>) {
@@ -112,12 +122,8 @@ class MenuGraphInitializeService @Autowired constructor(
         val action = menuAgent.determineAction(menuDto, llmUiList)
         context.history.add(action)
 
-        val addCount = when {
-            action.score in 0.6..<0.7 -> 1
-            action.score <= 0.5 -> 3
-            else -> 0
-        }
-
+        //점수 평가
+        val addCount = evaluateActionScore(action.score)
         if (addCount > 0) {
             log.info("낮은 액션 정확도 점수: ${action.score}. 카운트를 추가하고 다음 메뉴로 넘어갑니다.")
             context.lowScoreCount += addCount
@@ -138,7 +144,7 @@ class MenuGraphInitializeService @Autowired constructor(
             notificationService.sendActionCommand(context.kioskId, CoordinateDto(action.coordinate[0], action.coordinate[1], action.title))
 
             //모달 처리
-            handelModal(
+            handleModal(
                 menuDto = menuDto,
                 menuNode = node,
                 context = context
@@ -157,7 +163,7 @@ class MenuGraphInitializeService @Autowired constructor(
         }
     }
 
-    private fun handelModal(menuDto: MenuInfoDto, menuNode: UiEntity, context: GraphInitializeContext) {
+    private fun handleModal(menuDto: MenuInfoDto, menuNode: UiEntity, context: GraphInitializeContext) {
         val kioskId = context.kioskId
 
         val image = notificationService.sendCaptureCommand(kioskId)
@@ -167,37 +173,14 @@ class MenuGraphInitializeService @Autowired constructor(
         //여기서 발생한 옴니파서 데이터를 바탕으로 모달 클릭해야함
         val pageAction = pageAgent.determineAction(menuDto.options, modalLlmUiList)
         if (pageAction.contain == false) {
-            log.info("모달로 집입합니다")
             //모달이 있는 경우 메뉴 다시 찾아서 클릭
-            val modalSelectAction = menuAgent.determineAction(menuDto, modalLlmUiList)
-            context.history.add(modalSelectAction)
-
-            notificationService.sendActionCommand(kioskId, CoordinateDto(modalSelectAction.coordinate[0], modalSelectAction.coordinate[1], modalSelectAction.title))
-            val modalNode = utgService.saveNode(UiDto(
-                isNext = modalSelectAction.goNext,
-                x = modalSelectAction.coordinate[0], y = modalSelectAction.coordinate[1],
-                title = modalSelectAction.title,
-                kioskId = context.kioskId
-            ))
-            utgService.saveRel(menuNode.id, modalNode.id, NodeRelation.PATH_TO)
-
-            //완료를 눌러 옵션으로 이동
-            val modalCompleteAction = backAgent.determineBack(modalLlmUiList)
-            notificationService.sendActionCommand(kioskId, CoordinateDto(modalCompleteAction.coordinate[0], modalCompleteAction.coordinate[1], modalCompleteAction.title))
-            val backNode = utgService.saveNode(UiDto(
-                isNext = false,
-                x = modalCompleteAction.coordinate[0], y = modalCompleteAction.coordinate[1],
-                title = modalCompleteAction.title,
-                kioskId = context.kioskId
-            ))
-            utgService.saveRel(modalNode.id, backNode.id, NodeRelation.BACK_TO)
-
-            //옵션이 있으면 back에서 옵션으로, 옵션이 없다면 원래 노드로 관계
-            if (menuDto.options.size > 0) {
-                context.lastNode = modalNode
-            } else {
-                utgService.saveRel(backNode.id, menuNode.id, NodeRelation.BACK_TO)
-            }
+            log.info("모달로 집입합니다")
+            navigateModal(
+                context = context,
+                menuNode = menuNode,
+                menuDto = menuDto,
+                modalLlmUiList = modalLlmUiList
+            )
         }
 
         //옵션 노드 초기화
@@ -210,6 +193,39 @@ class MenuGraphInitializeService @Autowired constructor(
             //되돌아 오는 관계 추가
             utgService.saveRel(context.lastNode!!.id, lastNode!!.id, NodeRelation.BACK_TO)
             context.lastNode = lastNode
+        }
+    }
+
+    private fun navigateModal(context: GraphInitializeContext, menuDto: MenuInfoDto, menuNode: UiEntity, modalLlmUiList: List<LlmUiComponentDto>) {
+        val kioskId = context.kioskId
+        val modalSelectAction = menuAgent.determineAction(menuDto, modalLlmUiList)
+        context.history.add(modalSelectAction)
+
+        notificationService.sendActionCommand(kioskId, CoordinateDto(modalSelectAction.coordinate[0], modalSelectAction.coordinate[1], modalSelectAction.title))
+        val modalNode = utgService.saveNode(UiDto(
+            isNext = modalSelectAction.goNext,
+            x = modalSelectAction.coordinate[0], y = modalSelectAction.coordinate[1],
+            title = modalSelectAction.title,
+            kioskId = context.kioskId
+        ))
+        utgService.saveRel(menuNode.id, modalNode.id, NodeRelation.PATH_TO)
+
+        //완료를 눌러 옵션으로 이동
+        val modalCompleteAction = backAgent.determineBack(modalLlmUiList)
+        notificationService.sendActionCommand(kioskId, CoordinateDto(modalCompleteAction.coordinate[0], modalCompleteAction.coordinate[1], modalCompleteAction.title))
+        val backNode = utgService.saveNode(UiDto(
+            isNext = false,
+            x = modalCompleteAction.coordinate[0], y = modalCompleteAction.coordinate[1],
+            title = modalCompleteAction.title,
+            kioskId = context.kioskId
+        ))
+        utgService.saveRel(modalNode.id, backNode.id, NodeRelation.BACK_TO)
+
+        //옵션이 있으면 back에서 옵션으로, 옵션이 없다면 원래 노드로 관계
+        if (menuDto.options.size > 0) {
+            context.lastNode = modalNode
+        } else {
+            utgService.saveRel(backNode.id, menuNode.id, NodeRelation.BACK_TO)
         }
     }
 
@@ -246,8 +262,14 @@ class MenuGraphInitializeService @Autowired constructor(
             utgService.saveRel(context.lastNode!!.id, optEntity.id, NodeRelation.OPT_TO)
         }
 
-        var startNode = context.lastNode
-        var targetNode: UiEntity?
+        //원래 페이지가 나올 때까지 돌아가는 UI 클릭
+        navigateBackToMenu(context, llmOptList)
+    }
+
+    private fun navigateBackToMenu(context: GraphInitializeContext, llmOptList: List<LlmUiComponentDto>) {
+        val kioskId = context.kioskId
+        var currentNode = context.lastNode
+        var count = 0
         //원래 페이지가 나올 때까지 돌아가는 UI 클릭
         do {
             //다시 원래 페이지로 돌아가야 하므로 backAgent를 통해 이전 페이지로 돌아가기
@@ -258,9 +280,8 @@ class MenuGraphInitializeService @Autowired constructor(
                 title = backAction.title,
                 kioskId = kioskId
             ))
-            targetNode = backEntity
 
-            utgService.saveRel(startNode!!.id, targetNode.id, NodeRelation.BACK_TO)
+            utgService.saveRel(currentNode!!.id, backEntity.id, NodeRelation.BACK_TO)
 
             //sse를 통해 클라이언트에게 원래 페이지로 돌아가는 좌표 클릭하도록 하기
             log.info("돌아가는 좌표를 클릭중입니다. 좌표: ${backAction.coordinate}")
@@ -271,8 +292,9 @@ class MenuGraphInitializeService @Autowired constructor(
             val nowPage = notificationService.sendCaptureCommand(kioskId)
             val hash = ImageUtils.imageToHash(nowPage)
 
-            startNode = targetNode
-        } while (hash != context.imageHash)
+            currentNode = backEntity
+            count++
+        } while (hash != context.imageHash && count < MAX_MODAL_TO_MENU_COUNT)
     }
 
     private fun removeDuplicate(sourceList: List<LlmUiComponentDto>, targetList: MutableList<LlmUiComponentDto>) {
@@ -284,6 +306,14 @@ class MenuGraphInitializeService @Autowired constructor(
                     targetList.remove(ele)
                 }
             }
+        }
+    }
+
+    private fun evaluateActionScore(score: Float): Int {
+        return when {
+            score in 0.6..<0.7 -> 1
+            score <= 0.5 -> 3
+            else -> 0
         }
     }
 }
