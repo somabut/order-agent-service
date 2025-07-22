@@ -33,25 +33,25 @@ class MenuAgent @Autowired constructor(
             Here is request input:${menuDto}
             Here is ui list:${uiList}
 
-            IMPORTANT NOTES:
-            1. The input title must exist exactly in the ui list to be considered a match. [ex) If the input is '초코 케이크', if there is '딸기 케이크', '당근 케이크', '치즈 케이크', then exactly there is no '초코 케이크']
+            Primary Goal: Your main goal is to find a specific menu item. Falling back to a category is a secondary option only when the specific menu cannot be found.
             
-            2. If the exact input title does not exist in the ui list:
-               - Find a UI element that matches the input's category
-               - Put the INPUT'S CATEGORY VALUE in the 'title' of the response
-               - Set 'goNext' to true
-               - Use the coordinate of the matching category UI element
-            
-            3. If the exact input title exists in the ui list:
-               - Put the INPUT'S TITLE VALUE in the 'title' of the response  
-               - Set 'goNext' to false
-               - Use the coordinate of the matching title UI element
-            
-            4. A category is a broad word that can include a specific menu, not a specific menu name. [ex) '콜라', '주스', '사이다' is '음료' category. '감자튀김', '만두' is '사이드' category]
-            5. The response should be scored on what you judged on the input. This score is the accuracy of your response you think.
-            6. The score is between 0 and 1 and it's marked as a float.
-            7. Please let me know the 'coordinate' in the response as the UI I need to click to go to the page with the ui corresponding to the input. Please add coordinate information for 'coordinate'.
-            8. Make sure to return the 'coordinate' in the response to those in the ui list. 
+            Decision Logic Flow (Follow these steps in order):
+            1. Prioritize Direct Menu Match (Flexible Matching):
+                First, iterate through the uiList. 
+                For each ui, check if the input.title (e.g., "크리스퍼 클래식") is the core starting text of the ui.title (e.g., "크리스퍼 클래식 5600원" or "크리스퍼 클래식 세트"). 
+                You must ignore trailing text like prices, weights, or simple options for this check.
+                    Example 1 (Single Item): If input.title is '크리스퍼 클래식' and a ui.title is '크리스퍼 클래식 5600원', this is a successful match.
+                    Example 2 (Set Menu): If input.title is '크리스퍼 클래식 세트' and a ui.title is '크리스퍼 클래식 세트 8900원', this is a successful match.
+                
+                Action for Match:
+                    If you find one or more matches, choose the one that most completely matches the input.title. For example, if the input is '치즈버거' and the list has '치즈버거' and '더블치즈버거', select '치즈버거'.
+                    Set the 'title' in your response to the input.title, Set 'goNext' to false. Use the 'coordinate' of the matched UI element.
+                    
+            2. Fallback to Category Match:
+                Condition: Execute this step ONLY IF no direct menu match was found in Step 1.
+                Action:
+                    Find a UI element from the uiList where the ui.title exactly matches the input.category.
+                    If a category match is found: Set the 'title' in your response to category of input not title of ui list, Set 'goNext to true, Use the 'coordinate' of the matched category UI element.
             
             'goNext' is whether to go to the next page, 'score' is the accuracy score, 'coordinate' is the UI coordinate you need to click to go to the next page and 'title' is the UI title that you click.
             
@@ -129,6 +129,25 @@ class MenuAgent @Autowired constructor(
                 "score": 0.9,
                 "coordinate": [68, 12],
                 "title": "에이드"
+            }
+            ```
+            
+            Another Example(
+                input: {"title": "몬스터 주니어 라지세트", "option": ["콜라", "사이다"], "category": "올데이킹&맥모닝"} 
+                ui_list: [
+                    {"coordinate": [210, 364], "contents": ["오믈렛킹모닝 5600-"]},
+                    {"coordinate": [67, 90], "contents": ["추천메뉴"]},
+                    {"coordinate": [79, 89], "contents": ["사이드"]},
+                    {"coordinate": [68, 12], "contents": ["몬스터 주니어6800-"]},
+                    {"coordinate": [90, 456], "contents": ["불맛 더블치즈 주니어6200-"]},
+                    {"coordinate": [120, 74], "contents": ["처음으로"]}
+                ]):
+            ```json
+            {
+                "goNext": "false",
+                "score": 0.8,
+                "coordinate": [68, 12],
+                "title": "몬스터 주니어 라지세트"
             }
             ```
         """.trimIndent()
