@@ -3,7 +3,6 @@ package com.orderagentservice.mocktest.order
 import com.orderagentservice.agent.PaymentAgent
 import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.model.dto.LlmUiComponentDto
-import com.orderagentservice.mocktest.order.MenuGraphInitializeServiceTest.Companion
 import com.orderagentservice.order.model.GraphInitializeContext
 import com.orderagentservice.order.model.NodeRelation
 import com.orderagentservice.order.model.dto.UiDto
