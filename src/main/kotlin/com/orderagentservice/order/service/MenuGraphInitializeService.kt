@@ -12,6 +12,7 @@ import com.orderagentservice.order.model.NodeRelation
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.dto.UiDto
+import com.orderagentservice.order.model.entity.UiEntity
 import com.orderagentservice.order.util.ImageUtils
 import com.orderagentservice.order.util.UiExtractorManager
 import org.springframework.beans.factory.annotation.Autowired
@@ -136,52 +137,12 @@ class MenuGraphInitializeService @Autowired constructor(
             //현재 메뉴 좌표 클릭
             notificationService.sendActionCommand(context.kioskId, CoordinateDto(action.coordinate[0], action.coordinate[1], action.title))
 
-            val image = notificationService.sendCaptureCommand(kioskId)
-            val modalLlmUiList = uiExtractorManager.getUiComponents(image, kioskId)
-            val lastNode = context.lastNode
-
-            //여기서 발생한 옴니파서 데이터를 바탕으로 모달 클릭해야함
-            val pageAction = pageAgent.determineAction(menuDto.options, modalLlmUiList)
-            if (pageAction.contain == false) {
-                //모달이 있는 경우 메뉴 다시 찾아서 클릭
-                val modalSelectAction = menuAgent.determineAction(menuDto, modalLlmUiList)
-                notificationService.sendActionCommand(kioskId, CoordinateDto(modalSelectAction.coordinate[0], modalSelectAction.coordinate[1], modalSelectAction.title))
-                val modalNode = utgService.saveNode(UiDto(
-                    isNext = modalSelectAction.goNext,
-                    x = modalSelectAction.coordinate[0], y = modalSelectAction.coordinate[1],
-                    title = modalSelectAction.title,
-                    kioskId = context.kioskId
-                ))
-                utgService.saveRel(node.id, modalNode.id, NodeRelation.PATH_TO)
-
-                //완료를 눌러 옵션으로 이동
-                val modalCompleteAction = backAgent.determineBack(modalLlmUiList)
-                notificationService.sendActionCommand(kioskId, CoordinateDto(modalCompleteAction.coordinate[0], modalCompleteAction.coordinate[1], modalCompleteAction.title))
-                val backNode = utgService.saveNode(UiDto(
-                    isNext = false,
-                    x = modalCompleteAction.coordinate[0], y = modalCompleteAction.coordinate[1],
-                    title = modalCompleteAction.title,
-                    kioskId = context.kioskId
-                ))
-                utgService.saveRel(modalNode.id, backNode.id, NodeRelation.BACK_TO)
-
-                //옵션이 있으면 back에서 옵션으로, 옵션이 없다면 원래 노드로 관계
-                if (menuDto.options.size > 0) {
-                    context.lastNode = modalNode
-                } else {
-                    utgService.saveRel(backNode.id, node.id, NodeRelation.BACK_TO)
-                }
-            }
-
-            //옵션 노드 초기화
-            if (menuDto.options.size > 0) {
-                processOptions(menuDto, context)
-            }
-
-            //원래 메뉴 노드로 복귀
-            if (pageAction.contain == false) {
-                context.lastNode = lastNode
-            }
+            //모달 처리
+            handelModal(
+                menuDto = menuDto,
+                menuNode = node,
+                context = context
+            )
 
             // 페이지 이동 여부에 따라 관계 설정
             if (action.goNext) {
@@ -193,6 +154,60 @@ class MenuGraphInitializeService @Autowired constructor(
                 utgService.saveRel(context.lastNode!!.id, node.id, NodeRelation.HAS_TO)
                 return false // 현재 페이지에 머무름
             }
+        }
+    }
+
+    private fun handelModal(menuDto: MenuInfoDto, menuNode: UiEntity, context: GraphInitializeContext) {
+        val kioskId = context.kioskId
+
+        val image = notificationService.sendCaptureCommand(kioskId)
+        val modalLlmUiList = uiExtractorManager.getUiComponents(image, kioskId)
+        val lastNode = context.lastNode
+
+        //여기서 발생한 옴니파서 데이터를 바탕으로 모달 클릭해야함
+        val pageAction = pageAgent.determineAction(menuDto.options, modalLlmUiList)
+        if (pageAction.contain == false) {
+            log.info("모달로 집입합니다")
+            //모달이 있는 경우 메뉴 다시 찾아서 클릭
+            val modalSelectAction = menuAgent.determineAction(menuDto, modalLlmUiList)
+            notificationService.sendActionCommand(kioskId, CoordinateDto(modalSelectAction.coordinate[0], modalSelectAction.coordinate[1], modalSelectAction.title))
+            val modalNode = utgService.saveNode(UiDto(
+                isNext = modalSelectAction.goNext,
+                x = modalSelectAction.coordinate[0], y = modalSelectAction.coordinate[1],
+                title = modalSelectAction.title,
+                kioskId = context.kioskId
+            ))
+            utgService.saveRel(menuNode.id, modalNode.id, NodeRelation.PATH_TO)
+
+            //완료를 눌러 옵션으로 이동
+            val modalCompleteAction = backAgent.determineBack(modalLlmUiList)
+            notificationService.sendActionCommand(kioskId, CoordinateDto(modalCompleteAction.coordinate[0], modalCompleteAction.coordinate[1], modalCompleteAction.title))
+            val backNode = utgService.saveNode(UiDto(
+                isNext = false,
+                x = modalCompleteAction.coordinate[0], y = modalCompleteAction.coordinate[1],
+                title = modalCompleteAction.title,
+                kioskId = context.kioskId
+            ))
+            utgService.saveRel(modalNode.id, backNode.id, NodeRelation.BACK_TO)
+
+            //옵션이 있으면 back에서 옵션으로, 옵션이 없다면 원래 노드로 관계
+            if (menuDto.options.size > 0) {
+                context.lastNode = modalNode
+            } else {
+                utgService.saveRel(backNode.id, menuNode.id, NodeRelation.BACK_TO)
+            }
+        }
+
+        //옵션 노드 초기화
+        if (menuDto.options.size > 0) {
+            processOptions(menuDto, context)
+        }
+
+        //원래 메뉴 노드로 복귀
+        if (pageAction.contain == false) {
+            //되돌아 오는 관계 추가
+            utgService.saveRel(context.lastNode!!.id, lastNode!!.id, NodeRelation.BACK_TO)
+            context.lastNode = lastNode
         }
     }
 
@@ -229,6 +244,8 @@ class MenuGraphInitializeService @Autowired constructor(
             utgService.saveRel(context.lastNode!!.id, optEntity.id, NodeRelation.OPT_TO)
         }
 
+        var startNode = context.lastNode
+        var targetNode: UiEntity?
         //원래 페이지가 나올 때까지 돌아가는 UI 클릭
         do {
             //다시 원래 페이지로 돌아가야 하므로 backAgent를 통해 이전 페이지로 돌아가기
@@ -239,18 +256,20 @@ class MenuGraphInitializeService @Autowired constructor(
                 title = backAction.title,
                 kioskId = kioskId
             ))
+            targetNode = backEntity
 
-            //TODO(관계 저장 제대로)
-            utgService.saveRel(context.lastNode!!.id, backEntity.id, NodeRelation.BACK_TO)
-            utgService.saveRel(backEntity.id, context.lastNode!!.id, NodeRelation.BACK_TO)
+            utgService.saveRel(startNode!!.id, targetNode.id, NodeRelation.BACK_TO)
 
             //sse를 통해 클라이언트에게 원래 페이지로 돌아가는 좌표 클릭하도록 하기
             log.info("돌아가는 좌표를 클릭중입니다. 좌표: ${backAction.coordinate}")
-            notificationService.sendActionCommand(kioskId,  CoordinateDto(backAction.coordinate[0], backAction.coordinate[1], backAction.title))
+            notificationService.sendActionCommand(kioskId, CoordinateDto(backAction.coordinate[0], backAction.coordinate[1], backAction.title))
             context.history.add(backAction.toActionDto())
 
+            //현재 페이지의 해시를 추출하여 메뉴화면으로 빠져나왔는지 확인
             val nowPage = notificationService.sendCaptureCommand(kioskId)
             val hash = ImageUtils.imageToHash(nowPage)
+
+            startNode = targetNode
         } while (hash != context.imageHash)
     }
 
