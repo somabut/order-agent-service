@@ -170,6 +170,8 @@ class MenuGraphInitializeService @Autowired constructor(
             log.info("모달로 집입합니다")
             //모달이 있는 경우 메뉴 다시 찾아서 클릭
             val modalSelectAction = menuAgent.determineAction(menuDto, modalLlmUiList)
+            context.history.add(modalSelectAction)
+
             notificationService.sendActionCommand(kioskId, CoordinateDto(modalSelectAction.coordinate[0], modalSelectAction.coordinate[1], modalSelectAction.title))
             val modalNode = utgService.saveNode(UiDto(
                 isNext = modalSelectAction.goNext,
