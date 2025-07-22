@@ -386,3 +386,12 @@
 {"@timestamp":"2025-07-22T15:39:08.3252666+09:00","level":"INFO","logger_name":"org.neo4j.driver.internal.DriverFactory","message":"Direct driver instance 551229951 created for server address 3.106.253.59:7687"}
 {"@timestamp":"2025-07-22T15:39:09.0718806+09:00","level":"INFO","logger_name":"com.orderagentservice.agent.MenuAgentTest","message":"Started MenuAgentTest in 3.135 seconds (process running for 4.099)"}
 {"@timestamp":"2025-07-22T15:39:11.2171173+09:00","level":"INFO","logger_name":"org.neo4j.driver.internal.InternalDriver","message":"Closing driver instance 551229951"}
+{"@timestamp":"2025-07-22T15:53:11.3921067+09:00","level":"INFO","logger_name":"com.orderagentservice.global.LogTest","message":"Starting LogTest using Java 21.0.6 with PID 1212332 (started by sunwoo in C:\\Users\\hachi\\IdeaProjects\\OrderAgentService)"}
+{"@timestamp":"2025-07-22T15:53:11.4016136+09:00","level":"INFO","logger_name":"com.orderagentservice.global.LogTest","message":"The following 1 profile is active: \"deploy\""}
+{"@timestamp":"2025-07-22T15:53:12.0254089+09:00","level":"INFO","logger_name":"org.springframework.data.repository.config.RepositoryConfigurationDelegate","message":"Bootstrapping Spring Data Neo4j repositories in DEFAULT mode."}
+{"@timestamp":"2025-07-22T15:53:12.1558144+09:00","level":"INFO","logger_name":"org.springframework.data.repository.config.RepositoryConfigurationDelegate","message":"Finished Spring Data repository scanning in 123 ms. Found 0 Neo4j repository interfaces."}
+{"@timestamp":"2025-07-22T15:53:12.1608877+09:00","level":"INFO","logger_name":"org.springframework.data.repository.config.RepositoryConfigurationDelegate","message":"Bootstrapping Spring Data Neo4j repositories in DEFAULT mode."}
+{"@timestamp":"2025-07-22T15:53:12.1942985+09:00","level":"INFO","logger_name":"org.springframework.data.repository.config.RepositoryConfigurationDelegate","message":"Finished Spring Data repository scanning in 31 ms. Found 1 Neo4j repository interface."}
+{"@timestamp":"2025-07-22T15:53:12.9814336+09:00","level":"INFO","logger_name":"org.neo4j.driver.internal.DriverFactory","message":"Direct driver instance 465499079 created for server address 3.106.253.59:7687"}
+{"@timestamp":"2025-07-22T15:53:13.7479868+09:00","level":"INFO","logger_name":"com.orderagentservice.global.LogTest","message":"Started LogTest in 3.067 seconds (process running for 4.148)"}
+{"@timestamp":"2025-07-22T15:53:14.632121+09:00","level":"INFO","logger_name":"org.neo4j.driver.internal.InternalDriver","message":"Closing driver instance 465499079"}
