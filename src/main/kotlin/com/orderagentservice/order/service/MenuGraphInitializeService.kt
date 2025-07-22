@@ -3,17 +3,17 @@ package com.orderagentservice.order.service
 import com.orderagentservice.agent.BackAgent
 import com.orderagentservice.agent.MenuAgent
 import com.orderagentservice.agent.MissingComponentAgent
-import com.orderagentservice.agent.model.dto.AgentActionDto
+import com.orderagentservice.agent.PageAgent
 import com.orderagentservice.agent.model.dto.LlmUiComponentDto
 import com.orderagentservice.logger
 import com.orderagentservice.order.exception.LowScoreException
 import com.orderagentservice.order.model.GraphInitializeContext
 import com.orderagentservice.order.model.NodeRelation
 import com.orderagentservice.order.model.dto.CoordinateDto
-import com.orderagentservice.order.model.dto.MenuGraphDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.entity.UiEntity
+import com.orderagentservice.order.util.ImageUtils
 import com.orderagentservice.order.util.UiExtractorManager
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional
 class MenuGraphInitializeService @Autowired constructor(
     private val menuAgent: MenuAgent,
     private val backAgent: BackAgent,
+    private val pageAgent: PageAgent,
     private val missingComponentAgent: MissingComponentAgent,
     private val placeGraphInitializeService: PlaceGraphInitializeService,
     private val uiExtractorManager: UiExtractorManager,
@@ -56,6 +57,7 @@ class MenuGraphInitializeService @Autowired constructor(
             if (isNext == true) {
                 val image = notificationService.sendCaptureCommand(kioskId)
                 llmUiList = uiExtractorManager.getUiComponents(image, kioskId)
+                context.imageHash = ImageUtils.imageToHash(image)
 
                 //첫 노드인 경우 따로 처리
                 if (isFirst == true) {
@@ -104,6 +106,7 @@ class MenuGraphInitializeService @Autowired constructor(
     }
 
     private fun processMenu(context: GraphInitializeContext, menuDto: MenuInfoDto, llmUiList: List<LlmUiComponentDto>): Boolean {
+        val kioskId = context.kioskId
         log.info("진행 중인 메뉴: ${menuDto.title}, 카테고리: ${menuDto.category}")
 
         val action = menuAgent.determineAction(menuDto, llmUiList)
@@ -131,11 +134,15 @@ class MenuGraphInitializeService @Autowired constructor(
                 kioskId = context.kioskId
             ))
 
-            // SSE를 통해 클라이언트에게 현재 메뉴 좌표 클릭하도록 하기
+            //현재 메뉴 좌표 클릭
             notificationService.sendActionCommand(context.kioskId, CoordinateDto(action.coordinate[0], action.coordinate[1], action.title))
 
-            // 옵션 노드 초기화
-            processOptions(menuDto, context)
+            //모달 처리
+            handelModal(
+                menuDto = menuDto,
+                menuNode = node,
+                context = context
+            )
 
             // 페이지 이동 여부에 따라 관계 설정
             if (action.goNext) {
@@ -147,6 +154,60 @@ class MenuGraphInitializeService @Autowired constructor(
                 utgService.saveRel(context.lastNode!!.id, node.id, NodeRelation.HAS_TO)
                 return false // 현재 페이지에 머무름
             }
+        }
+    }
+
+    private fun handelModal(menuDto: MenuInfoDto, menuNode: UiEntity, context: GraphInitializeContext) {
+        val kioskId = context.kioskId
+
+        val image = notificationService.sendCaptureCommand(kioskId)
+        val modalLlmUiList = uiExtractorManager.getUiComponents(image, kioskId)
+        val lastNode = context.lastNode
+
+        //여기서 발생한 옴니파서 데이터를 바탕으로 모달 클릭해야함
+        val pageAction = pageAgent.determineAction(menuDto.options, modalLlmUiList)
+        if (pageAction.contain == false) {
+            log.info("모달로 집입합니다")
+            //모달이 있는 경우 메뉴 다시 찾아서 클릭
+            val modalSelectAction = menuAgent.determineAction(menuDto, modalLlmUiList)
+            notificationService.sendActionCommand(kioskId, CoordinateDto(modalSelectAction.coordinate[0], modalSelectAction.coordinate[1], modalSelectAction.title))
+            val modalNode = utgService.saveNode(UiDto(
+                isNext = modalSelectAction.goNext,
+                x = modalSelectAction.coordinate[0], y = modalSelectAction.coordinate[1],
+                title = modalSelectAction.title,
+                kioskId = context.kioskId
+            ))
+            utgService.saveRel(menuNode.id, modalNode.id, NodeRelation.PATH_TO)
+
+            //완료를 눌러 옵션으로 이동
+            val modalCompleteAction = backAgent.determineBack(modalLlmUiList)
+            notificationService.sendActionCommand(kioskId, CoordinateDto(modalCompleteAction.coordinate[0], modalCompleteAction.coordinate[1], modalCompleteAction.title))
+            val backNode = utgService.saveNode(UiDto(
+                isNext = false,
+                x = modalCompleteAction.coordinate[0], y = modalCompleteAction.coordinate[1],
+                title = modalCompleteAction.title,
+                kioskId = context.kioskId
+            ))
+            utgService.saveRel(modalNode.id, backNode.id, NodeRelation.BACK_TO)
+
+            //옵션이 있으면 back에서 옵션으로, 옵션이 없다면 원래 노드로 관계
+            if (menuDto.options.size > 0) {
+                context.lastNode = modalNode
+            } else {
+                utgService.saveRel(backNode.id, menuNode.id, NodeRelation.BACK_TO)
+            }
+        }
+
+        //옵션 노드 초기화
+        if (menuDto.options.size > 0) {
+            processOptions(menuDto, context)
+        }
+
+        //원래 메뉴 노드로 복귀
+        if (pageAction.contain == false) {
+            //되돌아 오는 관계 추가
+            utgService.saveRel(context.lastNode!!.id, lastNode!!.id, NodeRelation.BACK_TO)
+            context.lastNode = lastNode
         }
     }
 
@@ -169,8 +230,6 @@ class MenuGraphInitializeService @Autowired constructor(
 //            llmOptList.add(addEle)
 //        }
 
-        //다시 원래 페이지로 돌아가야 하므로 backAgent를 통해 이전 페이지로 돌아가기
-        val backAction = backAgent.determineBack(llmOptList)
         for (opt in menuDto.options) {
             val optAction = menuAgent.determineAction(MenuInfoDto(opt, listOf(), menuDto.title), llmOptList)
             context.history.add(optAction)
@@ -185,22 +244,33 @@ class MenuGraphInitializeService @Autowired constructor(
             utgService.saveRel(context.lastNode!!.id, optEntity.id, NodeRelation.OPT_TO)
         }
 
-        //옵선을 선택해야
+        var startNode = context.lastNode
+        var targetNode: UiEntity?
+        //원래 페이지가 나올 때까지 돌아가는 UI 클릭
+        do {
+            //다시 원래 페이지로 돌아가야 하므로 backAgent를 통해 이전 페이지로 돌아가기
+            val backAction = backAgent.determineBack(llmOptList)
+            val backEntity = utgService.saveNode(UiDto(
+                isNext = false,
+                x = backAction.coordinate[0], y = backAction.coordinate[1],
+                title = backAction.title,
+                kioskId = kioskId
+            ))
+            targetNode = backEntity
 
-        val backEntity = utgService.saveNode(UiDto(
-            isNext = false,
-            x = backAction.coordinate[0], y = backAction.coordinate[1],
-            title = backAction.title,
-            kioskId = kioskId
-        ))
-        utgService.saveRel(context.lastNode!!.id, backEntity.id, NodeRelation.BACK_TO)
-        utgService.saveRel(backEntity.id, context.lastNode!!.id, NodeRelation.BACK_TO)
+            utgService.saveRel(startNode!!.id, targetNode.id, NodeRelation.BACK_TO)
 
-        //sse를 통해 클라이언트에게 원래 페이지로 돌아가는 좌표 클릭하도록 하기
-        log.info("돌아가는 좌표를 클릭중입니다. 좌표: ${backAction.coordinate}")
-        notificationService.sendActionCommand(kioskId,  CoordinateDto(backAction.coordinate[0], backAction.coordinate[1], backAction.title))
+            //sse를 통해 클라이언트에게 원래 페이지로 돌아가는 좌표 클릭하도록 하기
+            log.info("돌아가는 좌표를 클릭중입니다. 좌표: ${backAction.coordinate}")
+            notificationService.sendActionCommand(kioskId, CoordinateDto(backAction.coordinate[0], backAction.coordinate[1], backAction.title))
+            context.history.add(backAction.toActionDto())
 
-        context.history.add(backAction.toActionDto())
+            //현재 페이지의 해시를 추출하여 메뉴화면으로 빠져나왔는지 확인
+            val nowPage = notificationService.sendCaptureCommand(kioskId)
+            val hash = ImageUtils.imageToHash(nowPage)
+
+            startNode = targetNode
+        } while (hash != context.imageHash)
     }
 
     private fun removeDuplicate(sourceList: List<LlmUiComponentDto>, targetList: MutableList<LlmUiComponentDto>) {
@@ -215,19 +285,3 @@ class MenuGraphInitializeService @Autowired constructor(
         }
     }
 }
-
-//메뉴는 모달이 뜰 수도 있음
-//모달이 있는 경우 모달에서 메뉴를 누르고 또 완료를 눌러야함
-//메뉴클릭 -> 메뉴클릭 -> 완료 이 순서임
-//그러나 메뉴 두번클릭까지는 다른 키오스크에서 문제 없는데 마지막 완료는 다른 키오스크에서 문제가 발생함
-
-//즉, 메뉴를 클릭하고 옵션이 안나오면 완료를 누르고 옵션이 나오면 정상적으로 진행
-//옵션이 나오는지는 메뉴클릭 -> 옴니파서 -> 메타를 순회하며 옵션에 해당하는 단어가 있는 지 확인 (이때 메타는 오타가 많을 수 있으므로 agent이용)
-//모달은 뜨는데 옵션이 없는 경우가 있음. 이 경우 메뉴클릭 -> 메뉴클릭 -> 완료
-//메뉴는 모두 (메뉴클릭 -> 옴니파서 -> 메타검사 -> 메뉴클릭 -> 완료 -> 옵션)로 가야하고 유일하게 고려해야할 점은 모달이 안뜨는 경우
-//                                    ㄴ-> 옵션
-//모달이 없는 경우도 검사를 해야함. 즉 클릭하고 메타가 바뀌지 않았다면 모달이 없는 것임. 이는 캡쳐이미지 해싱을 통해 알아볼 수 있음.
-
-
-//옵션까지 선택하고 카드에 담기 전에 완료를 한번 더 눌러야할 수 있음
-//이것도 미리 메뉴창 이미지를 해싱해 두었다가 완료를 계속누르고 해싱한 이미지와 같아지면 그만

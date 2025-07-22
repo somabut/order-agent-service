@@ -65,7 +65,7 @@ class AutoOrderService @Autowired constructor(
             //포장/매장 클릭
             val optHistory = mutableListOf<String>()
             if (context.isPlace == false) {
-                context.isPlace = clickPlaceNode(context)
+                context.isPlace = clickPlace(context)
             }
 
             logOrder(kioskId, taskId, "메뉴를 담습니다. 메뉴: ${menu.title}")
@@ -121,7 +121,7 @@ class AutoOrderService @Autowired constructor(
         for (act in actionList) {
             //포장/매장 클릭
             if (context.isPlace == false) {
-                context.isPlace = clickPlaceNode(context)
+                context.isPlace = clickPlace(context)
             }
 
             logOrder(kioskId, taskId, "결제를 진행중입니다. 현재: ${act.title}")
@@ -129,7 +129,7 @@ class AutoOrderService @Autowired constructor(
         }
     }
 
-    private fun clickPlaceNode(context: AutoOrderContext): Boolean {
+    private fun clickPlace(context: AutoOrderContext): Boolean {
         //현재 노드에서 인접한 노드에 포장/매장이 있는지 확인
         val kioskId = context.kioskId
         val taskId = context.taskId

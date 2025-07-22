@@ -37,6 +37,7 @@ class UtgInitializeService @Autowired constructor(
             isFindPlace = false,
             lowScoreCount = 0,
             lastNode = null,
+            imageHash = null,
             history = mutableListOf<AgentActionDto>()
         )
 
