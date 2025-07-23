@@ -19,6 +19,7 @@ class MenuAgent @Autowired constructor(
     fun determineAction(menuDto: MenuInfoDto, uiList: List<LlmUiComponentDto>): AgentActionDto {
         val prompt = getPrompt(menuDto, uiList)
         val json = llmManager.queryGemini(prompt)
+        println(json)
         val response: AgentActionDto = jsonMapper.readValue<AgentActionDto>(json)
         return response
     }
@@ -148,6 +149,25 @@ class MenuAgent @Autowired constructor(
                 "score": 0.8,
                 "coordinate": [68, 12],
                 "title": "몬스터 주니어 라지세트"
+            }
+            ```
+            
+            Another Example(
+                input: {"title": "몬스터 주니어 세트", "option": ["콜라", "사이다"], "category": "올데이킹&맥모닝"} 
+                ui_list: [
+                    {"coordinate": [210, 364], "contents": ["몬스터 주니어"]},
+                    {"coordinate": [67, 90], "contents": ["몬스터 주니어 세트"]},
+                    {"coordinate": [79, 89], "contents": ["몬스터 주니어 라지세트"]},
+                    {"coordinate": [68, 12], "contents": ["완료"]},
+                    {"coordinate": [90, 456], "contents": ["취소"]},
+                    {"coordinate": [120, 74], "contents": ["처음으로"]}
+                ]):
+            ```json
+            {
+                "goNext": "false",
+                "score": 0.8,
+                "coordinate": [67, 90],
+                "title": "몬스터 주니어 세트"
             }
             ```
         """.trimIndent()
