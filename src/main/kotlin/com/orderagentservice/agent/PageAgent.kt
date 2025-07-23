@@ -30,10 +30,13 @@ class PageAgent @Autowired constructor(
             Here is page info list:${uiList}
             
             IMPORTANT NOTES:
-            1. If the ui text list means the current page, the information should be included in the 'title' of the page info list.
-            2. The 'title' of the page info list may have a typo, so you have to take that into account.
-            3. If most of the ui text list is included, it's the current page. If only part of it is included in page info list, it's not the current page.
-            5. The UI element match is to ask if the text matches, not like the relationship between the menu and the category. 
+            1. Overtake: There may be typos in the Titles in the page info list. (e.g. "프렌치 프라이" and "프렌치프라이" are treated the same) 
+            2. Allow partial matching: If the title contains an entry in the ui text list, it will be considered a match (e.g. "휘핑크림" and "휘핑크림추가")
+            3. Simple Text Comparison: Determine only if the text matches purely, not semantic relationships (e.g., menus vs. categories).
+            4. One-to-one matching: Each tile in the page info list can only match one item in the ui text list. Once used in a match, the Titles cannot be duplicated with another.
+            
+            score: The percentage of all items in the ui text list found in the page info list. It has a value between 0.0 (none at all) and 1.0 (all exist).
+            contain: true if all of the ui text list is included, or false.
             
             One Example(
                 ui text list: [
@@ -50,7 +53,7 @@ class PageAgent @Autowired constructor(
                 ]):
             ```json
             {
-                "score": 1.0,
+                "score": 0.0,
                 "contain": false
             }
             ```
@@ -95,7 +98,7 @@ class PageAgent @Autowired constructor(
             ```json
             {
                 "score": 0.8,
-                "contain": true
+                "contain": false
             }
             ```
         """.trimIndent()
