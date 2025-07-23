@@ -19,14 +19,45 @@ class LlmManager @Autowired constructor(
     private val llmRateLimiter: LlmRateLimiter
 ){
     private val GEMINI_MODEL_NAME = env.getProperty("agent.gemini.model-name")
-//    private val GEMINI_API_KEY = env.getProperty("agent.gemini.api-key")
+    private val GEMINI_API_KEY = env.getProperty("agent.gemini.api-key")
 
     private val GPT_MODEL_NAME = env.getProperty("agent.openai.model-name")
     private val GPT_API_KEY = env.getProperty("agent.openai.api-key")
 
     fun queryGemini(prompt: String): String {
-        return llmRateLimiter.executeWithLimit { apiKey ->
-            callGeminiApi(prompt, apiKey)
+        //TODO(gpt 사용 제한으로 인한 일시적인 변경)
+        return callOneGeminiApi(prompt)
+//        return llmRateLimiter.executeWithLimit { apiKey ->
+//            callGeminiApi(prompt, apiKey)
+//        }
+    }
+
+    fun callOneGeminiApi(prompt: String): String {
+        val request = GeminiRequest(
+            contents = listOf(
+                Content(
+                    parts = listOf(
+                        Part(text = prompt)
+                    )
+                )
+            ),
+            GenerationConfig(
+                temperature = 0.2,
+                topP = 1.0,
+                maxOutputTokens = 256
+            )
+        )
+
+        val restTemplate = RestTemplate()
+        val url = "https://generativelanguage.googleapis.com/v1beta/models/$GEMINI_MODEL_NAME:generateContent?key=$GEMINI_API_KEY"
+
+        try {
+            val response: GeminiResponse = restTemplate.postForObject(url, request, GeminiResponse::class.java)!!
+            val text = response.candidates[0].content.parts[0].text
+            val json = text.replace("```json", "").replace("```", "").trim()
+            return json
+        } catch (e: HttpClientErrorException.TooManyRequests) {
+            throw AgentManyRequestException()
         }
     }
 

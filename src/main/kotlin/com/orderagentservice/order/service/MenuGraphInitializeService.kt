@@ -145,7 +145,7 @@ class MenuGraphInitializeService @Autowired constructor(
         log.info("카테고리 노드를 생성합니다. go_next: ${action.goNext}, score: ${action.score}, title: ${action.title}")
 
         val node = utgService.saveNode(UiDto(
-            isNext = action.goNext,
+            isNext = true,
             x = action.coordinate[0], y = action.coordinate[1],
             title = action.title,
             kioskId = context.kioskId
