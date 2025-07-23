@@ -97,8 +97,6 @@ class MenuGraphInitializeServiceTest {
         notificationService = mock()
         utgService = mock()
 
-        // ← ImageUtils 모킹 완전 제거! 실제 파일을 사용
-
         menuGraphInitializeService = MenuGraphInitializeService(
             menuAgent, backAgent, pageAgent, missingComponentAgent, placeGraphInitializeService,
             uiExtractorManager, notificationService, utgService
@@ -342,45 +340,73 @@ class MenuGraphInitializeServiceTest {
     }
 
     @Test
-    fun `다음_페이지로_이동하는_메뉴는_PATH_TO_관계로_연결된다`() {
-        // given: 다음 페이지로 이동하는 메뉴 액션
-        val nextPageAction = AgentActionDto(
-            coordinate = listOf(TEST_X_COORDINATE, TEST_Y_COORDINATE),
-            title = "다음페이지",
+    fun `다른 카테고리로 이동 시 이전 카테고리 노드와 PATH_TO 관계로 연결된다`() {
+        // given: 서로 다른 카테고리를 가진 두 메뉴 리스트
+        val menuWithCategory1 = MenuInfoDto(title = "메뉴1", category = "카테고리1", options = listOf())
+        val menuWithCategory2 = MenuInfoDto(title = "메뉴2", category = "카테고리2", options = listOf())
+
+        // Agent가 반환할 액션들을 순서대로 정의
+        // 1. 첫 번째 메뉴의 카테고리 액션 (handleFirstNode에서 사용)
+        val category1Action = AgentActionDto(
+            coordinate = listOf(10, 20),
+            title = "카테고리1",
+            goNext = true, // 카테고리 버튼은 보통 다음 화면으로 이동
+            score = HIGH_SCORE
+        )
+        // 2. 첫 번째 메뉴 아이템 액션 (selectMenu에서 사용)
+        val menu1Action = AgentActionDto(
+            coordinate = listOf(30, 40),
+            title = "메뉴1",
+            goNext = false, // 메뉴 선택은 보통 현재 페이지에 머무름
+            score = HIGH_SCORE
+        )
+        // 3. 두 번째 메뉴의 카테고리 액션 (selectCategory에서 사용) -> 이 액션이 PATH_TO 관계를 만듦
+        val category2Action = AgentActionDto(
+            coordinate = listOf(50, 60),
+            title = "카테고리2",
             goNext = true,
             score = HIGH_SCORE
         )
-        val secondAction = AgentActionDto(
-            coordinate = listOf(TEST_X_COORDINATE, TEST_Y_COORDINATE),
-            title = "끝",
-            goNext = false,
-            score = HIGH_SCORE
-        )
-        val nextPageEntity = UiEntity(
-            id = "NEXT_PAGE_ENTITY",
-            isNext = true,
-            x = TEST_X_COORDINATE,
-            y = TEST_Y_COORDINATE,
-            title = "다음페이지",
-            kioskId = TEST_KIOSK_ID
-        )
-        val context = createTestContext()
 
-        whenever(utgService.saveNode(any<UiDto>())).thenReturn(rootNode, firstNode, nextPageEntity)
+        // utgService.saveNode가 반환할 엔티티들을 순서대로 정의
+        val category1Node = UiEntity(id = "CATEGORY_1_NODE_ID", isNext = true, x = 10, y = 20, title = "카테고리1", kioskId = TEST_KIOSK_ID)
+        val menu1Node = UiEntity(id = "MENU_1_NODE_ID", isNext = false, x = 30, y = 40, title = "메뉴1", kioskId = TEST_KIOSK_ID)
+        val category2Node = UiEntity(id = "CATEGORY_2_NODE_ID", isNext = true, x = 50, y = 60, title = "카테고리2", kioskId = TEST_KIOSK_ID)
+
+        val context = createTestContext() // lastNode가 null인 초기 컨텍스트
+
+        whenever(utgService.saveNode(any<UiDto>())).thenReturn(
+            rootNode,       // 1. initializeGraph의 루트 노드
+            category1Node,  // 2. handleFirstNode의 카테고리 노드
+            menu1Node,      // 3. selectMenu의 메뉴 노드
+            category2Node   // 4. selectCategory의 카테고리 노드
+        )
+        whenever(menuAgent.determineAction(any(), any())).thenReturn(
+            category1Action, // 1. handleFirstNode에서 호출
+            menu1Action,     // 2. selectMenu에서 호출
+            category2Action  // 3. selectCategory에서 호출
+        )
+
+        // 테스트에 필요한 기본적인 Mocking
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
         whenever(uiExtractorManager.getUiComponents(TEST_IMAGE_DATA, TEST_KIOSK_ID)).thenReturn(llmUiList)
-        whenever(placeGraphInitializeService.initializeGraph(any(), any())).thenAnswer { }
-        whenever(menuAgent.determineAction(any(), any())).thenReturn(firstAction, nextPageAction, secondAction)
-        whenever(pageAgent.determineAction(any(), any())).thenReturn(pageAction)
         whenever(notificationService.sendActionCommand(any(), any())).thenReturn(actionResult)
+        whenever(pageAgent.determineAction(any(), any())).thenReturn(pageAction) // handleModal 내부에서 사용될 수 있음
+        whenever(placeGraphInitializeService.initializeGraph(any(), any())).thenAnswer {
+            // 첫 handleFirstNode에서 호출되므로 Mocking 필요
+            context.isFindPlace = true
+            Unit
+        }
 
-        // when
-        menuGraphInitializeService.initializeGraph(context, listOf(menuInfoDto))
+        // when: 다른 카테고리의 메뉴들이 포함된 리스트로 그래프 초기화 실행
+        menuGraphInitializeService.initializeGraph(context, listOf(menuWithCategory1, menuWithCategory2))
 
-        // then: PATH_TO 관계로 양방향 연결된다
-        verify(utgService).saveRel(TEST_FIRST_NODE_ID, "NEXT_PAGE_ENTITY", NodeRelation.PATH_TO)
-        verify(utgService).saveRel("NEXT_PAGE_ENTITY", TEST_FIRST_NODE_ID, NodeRelation.PATH_TO)
-        assertEquals("NEXT_PAGE_ENTITY", context.lastNode!!.id)
+        // then: 카테고리1 노드와 카테고리2 노드가 PATH_TO 관계로 양방향 연결되는지 검증
+        verify(utgService).saveRel(category1Node.id, category2Node.id, NodeRelation.PATH_TO)
+        verify(utgService).saveRel(category2Node.id, category1Node.id, NodeRelation.PATH_TO)
+
+        // 그리고 context의 마지막 노드가 새로운 카테고리 노드로 업데이트되었는지 확인
+        assertEquals(category2Node.id, context.lastNode!!.id)
     }
 
     @Test
@@ -437,6 +463,7 @@ class MenuGraphInitializeServiceTest {
             isFindPlace = false,
             lowScoreCount = 0,
             lastNode = null,
+            nowCategory = null,
             imageHash = null,
             history = mutableListOf()
         )
@@ -504,6 +531,7 @@ class MenuGraphInitializeServiceTest {
             lowScoreCount = 0,
             lastNode = null,
             imageHash = null,
+            nowCategory = null,
             history = mutableListOf()
         )
         menuGraphInitializeService.initializeGraph(context, menuList)

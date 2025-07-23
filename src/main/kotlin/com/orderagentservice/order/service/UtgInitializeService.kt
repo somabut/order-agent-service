@@ -38,6 +38,7 @@ class UtgInitializeService @Autowired constructor(
             lowScoreCount = 0,
             lastNode = null,
             imageHash = null,
+            nowCategory = null,
             history = mutableListOf<AgentActionDto>()
         )
 
