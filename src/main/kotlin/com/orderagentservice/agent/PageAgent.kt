@@ -1,11 +1,13 @@
 package com.orderagentservice.agent
 
+import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.model.dto.AgentPageDto
 import com.orderagentservice.agent.model.dto.LlmUiComponentDto
 import com.orderagentservice.agent.util.LlmManager
 import com.orderagentservice.jsonMapper
+import com.orderagentservice.order.exception.LlmParseException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -16,8 +18,12 @@ class PageAgent @Autowired constructor(
     fun determineAction(metaList: List<String>, uiList: List<LlmUiComponentDto>): AgentPageDto {
         val prompt = getPrompt(metaList, uiList)
         val json = llmManager.queryGemini(prompt)
-        val response: AgentPageDto = jsonMapper.readValue<AgentPageDto>(json)
-        return response
+        try {
+            val response: AgentPageDto = jsonMapper.readValue<AgentPageDto>(json)
+            return response
+        } catch (e: JsonParseException) {
+            throw LlmParseException()
+        }
     }
 
     private fun getPrompt(metaList: List<String>, uiList: List<LlmUiComponentDto>): String {
@@ -101,6 +107,9 @@ class PageAgent @Autowired constructor(
                 "contain": false
             }
             ```
+            
+            CRITICAL OUTPUT INSTRUCTION:
+            Your final response MUST be a single, raw JSON object. Do NOT include any introductory text, explanations, or markdown formatting like \\\json ... \\\ around the JSON object.
         """.trimIndent()
 
         return prompt
