@@ -15,7 +15,10 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException::class)
     fun handleRuntimeException(e: RuntimeException): ApiResponse<*> {
-        log.info("알 수 없는 에러 발생. ${e.stackTrace}")
+        log.info("알 수 없는 에러 발생.")
+        for (ele in e.stackTrace) {
+            println(ele)
+        }
         val exception = RootException()
         return ApiResponse.fail<RootException>(exception)
     }

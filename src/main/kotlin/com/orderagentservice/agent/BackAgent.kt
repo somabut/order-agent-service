@@ -23,7 +23,7 @@ class BackAgent @Autowired constructor(
         try {
             val response: AgentBackDto = jsonMapper.readValue<AgentBackDto>(json)
             return response
-        } catch (e: JsonParseException) {
+        } catch (e: Exception) {
             throw LlmParseException()
         }
     }
