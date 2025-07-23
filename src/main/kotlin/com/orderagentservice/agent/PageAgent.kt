@@ -21,7 +21,7 @@ class PageAgent @Autowired constructor(
         try {
             val response: AgentPageDto = jsonMapper.readValue<AgentPageDto>(json)
             return response
-        } catch (e: JsonParseException) {
+        } catch (e: Exception) {
             throw LlmParseException()
         }
     }
