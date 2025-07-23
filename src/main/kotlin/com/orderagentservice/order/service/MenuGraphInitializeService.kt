@@ -150,6 +150,10 @@ class MenuGraphInitializeService @Autowired constructor(
             title = action.title,
             kioskId = context.kioskId
         ))
+
+        //현재 카테고리 좌표 클릭
+        notificationService.sendActionCommand(context.kioskId, CoordinateDto(action.coordinate[0], action.coordinate[1], action.title))
+
         utgService.saveRel(context.lastNode!!.id, node.id, NodeRelation.PATH_TO)
         utgService.saveRel(node.id, context.lastNode!!.id, NodeRelation.PATH_TO)
 
