@@ -30,30 +30,45 @@ class BackAgent @Autowired constructor(
             
             Here is ui list:${uiList}
             
-            IMPORTANT NOTES:
-            1. To complete what you put in your cart, you need to interact with the following UI: '담기', '완료', '계속', '추기', and '다음'
-            2. The UI to complete what you put in your shopping cart means moving on or completing the current action.
-            3. The response should be scored on what you judged on the input. This score is the accuracy of your response you think.
-            4. The score is between 0 and 1 and it's marked as a float. 
-            5. Make sure to return the 'coordinate' and 'title' in the response to those in the ui list.
-            
-            SCORE NOTES:
-            1. UI which clearly means 'to put in the shopping cart (Score: 1.0)
-                Situation: When there is a UI that directly indicates the action of adding the currently selected menu (and options) to your shopping cart. This action is 'Exit screen after selection'.
-                Judgment: The most accurate command that matches 100% of the goal of 'completed and returned' that the user wants.
-            
-            2. Comprehensive UI meaning 'completed/next' (Score: 0.9)
-                Situation: There's no direct expression for '담기', but when there's a UI that means "getting on" with the current stage.
-                Judgment: '완료' or '다음' means finishing your current option selection and moving on to the next process (mainly checking your shopping cart), so it's almost in line with your intentions.
+            Decision Algorithm:
+            The AI must select only one UI according to the following algorithm.
+
+            Step 1: Classifying UI Elements
+                First, classify all items in the given uiList into four grades below.
+                * Grade 1 (most obvious choice): direct addition to your shopping cart, such as putting, adding, ordering, etc. (e.g. "담기", "카트담기" "주문")
+                * Grade 2 (Progress to the next step): the act of completing the current step, such as completing, next, and continuing (e.g., "완료", "다음")
+                * Grade 3 (Conservative Choice): '확인'
+                * Grade 4 (inadequate selection): '취소', '뒤로가기', etc
+
+            Step 2: Select the final UI
+                Based on the classified results, select the final UI according to the rules below. The rules apply only once in order from the top.
+                Rule A: When multiple grades are mixed (most important)
+                * Condition: Are there more than 2 UI of different grades in the list: 1, 2, or 3?
+                * Action: If so, unconditionally select the UI with the largest rating number. (Choice priority: Grade 3 > Grade 2 > Grade 1 )
+                * Score: 0.8
+                * Absolute example:
+                * ["주문" (Grade 1), "완료" (Grade 2)] If there is, you must select "완료".
+                * ["담기" (Grade 1) and "확인" (Grade 3)] If there is, you must select "확인".
+                    
+                Rule B: When there is only Grade 1
+                * Condition: Not in Rule A, is there only a Grade 1 UI in the list?
+                * Action: Select one of the Grade 1 UIs.
+                * Score: 1.0
                 
-            3. UI to close the current window through '확인' (Score: 0.7 to 0.8)
-                Situation: When the above keywords are missing, only the '확인' button. This confirmation is likely to serve to confirm the option selection and close the window.
-                Judgment: Confirmation can also mean other actions (e.g., simple notification confirmation), which makes it somewhat ambiguous rather than complete or contain it. 
-                          However, it is the most likely 'return after completion' means of choice.
-                          
-            4. UI meaning 'back/cancel' or Noting exists (Score: 0 to 0.6)
-                Situation: when there is UI such as '뒤로', '취소', etc.
-                Judgment: According to the user's description, this is the wrong behavior of 'dismissing' and going back, not 'dismissing', which means you will fail to achieve your goal.
+                Rule C: When there is only Grade 2
+                * Condition: Does it not fall under rules A, B, only grade 2 UI in the list?
+                * Action: Select one of the Grade 2 UI.
+                * Score: 0.9
+                
+                Rule D: When there is only grade 3
+                * Condition: Not for all of the above rules, is there only a Grade 3 UI in the list?
+                * Action: Select one of the Grade 3 UIs.
+                * Score: 0.7 to 0.8
+                
+                Rule E: Unselectable
+                * Condition: Does it not fall under any of the above rules?
+                * Action: Give up your choice.
+                * Score: 0.0  
             
             One Example(
                 ui list: [
@@ -101,6 +116,22 @@ class BackAgent @Autowired constructor(
                 "score": 0.9,
                 "coordinate": [120, 74],
                 "title": "다음으로"
+            }
+            ```
+            
+            Another Example(
+                ui list: [
+                    {"coordinate": [210, 364], "title": "감자튀김 5000원-"},
+                    {"coordinate": [67, 90], "title": "제로콜라 5400원-"},
+                    {"coordinate": [123, 87], "title": "주문하기"},
+                    {"coordinate": [120, 74], "title": "다음으로"}
+                    {"coordinate": [21, 78], "title": "확인"}
+                ]):
+            ```json
+            {
+                "score": 0.8,
+                "coordinate": [21, 78],
+                "title": "확인"
             }
             ```
             
