@@ -124,6 +124,7 @@ class PaymentGraphInitializeServiceTest {
             lowScoreCount = 0,
             lastNode = lastNode,
             imageHash = null,
+            nowCategory = null,
             history = mutableListOf()
         )
         paymentGraphInitializeService.initializeGraph(context)
@@ -149,6 +150,7 @@ class PaymentGraphInitializeServiceTest {
             lowScoreCount = 0,
             lastNode = lastNode,
             imageHash = null,
+            nowCategory = null,
             history = mutableListOf()
         )
         whenever(placeGraphInitializeService.initializeGraph(any(), anyList())).thenAnswer {
@@ -212,6 +214,7 @@ class PaymentGraphInitializeServiceTest {
             lowScoreCount = 0,
             lastNode = lastNode,
             imageHash = null,
+            nowCategory = null,
             history = mutableListOf()
         )
         paymentGraphInitializeService.initializeGraph(context)
@@ -244,6 +247,7 @@ class PaymentGraphInitializeServiceTest {
             lowScoreCount = 0,
             lastNode = lastNode,
             imageHash = null,
+            nowCategory = null,
             history = mutableListOf()
         )
         paymentGraphInitializeService.initializeGraph(context)

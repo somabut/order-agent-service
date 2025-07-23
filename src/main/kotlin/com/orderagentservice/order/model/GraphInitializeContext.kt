@@ -8,6 +8,7 @@ data class GraphInitializeContext(
     var isFindPlace: Boolean,
     var lowScoreCount: Int,
     var lastNode: UiEntity?,
+    var nowCategory: String?,
     var imageHash: String?,
     val history: MutableList<AgentActionDto>
 )

@@ -113,55 +113,93 @@ class MenuGraphInitializeService @Autowired constructor(
 
         utgService.saveRel(context.lastNode!!.id, categoryNode.id, NodeRelation.PATH_TO)
         context.lastNode = categoryNode
+        context.nowCategory = firstMenu.category
         context.history.add(categoryAction)
     }
 
     private fun processMenu(context: GraphInitializeContext, menuDto: MenuInfoDto, llmUiList: List<LlmUiComponentDto>): Boolean {
-        val kioskId = context.kioskId
         log.info("진행 중인 메뉴: ${menuDto.title}, 카테고리: ${menuDto.category}")
 
+        if (context.nowCategory != menuDto.category) {
+            //만약 현재 카테고리랑 찾는 메뉴의 카테고리가 다르면 카테고리 노드 찾고 true반환
+            return selectCategory(context, menuDto, llmUiList)
+        } else {
+            //찾는 메뉴의 카테고리라면 메뉴 찾기
+            return selectMenu(context, menuDto, llmUiList)
+        }
+    }
+
+    private fun selectCategory(context: GraphInitializeContext, menuDto: MenuInfoDto, llmUiList: List<LlmUiComponentDto>): Boolean {
+        val categoryDto = MenuInfoDto(
+            title = menuDto.category,
+            options = listOf(),
+            category = menuDto.category
+        )
+        val action = menuAgent.determineAction(categoryDto, llmUiList)
+
+        //점수 평가
+        if (handleLowScore(context, action.score) == false) {
+            return false
+        }
+
+        log.info("카테고리 노드를 생성합니다. go_next: ${action.goNext}, score: ${action.score}, title: ${action.title}")
+
+        val node = utgService.saveNode(UiDto(
+            isNext = action.goNext,
+            x = action.coordinate[0], y = action.coordinate[1],
+            title = action.title,
+            kioskId = context.kioskId
+        ))
+        utgService.saveRel(context.lastNode!!.id, node.id, NodeRelation.PATH_TO)
+        utgService.saveRel(node.id, context.lastNode!!.id, NodeRelation.PATH_TO)
+
+        context.nowCategory = menuDto.category
+        context.lastNode = node
+        return true     //다음 페이지로 이동
+    }
+
+    private fun selectMenu(context: GraphInitializeContext, menuDto: MenuInfoDto, llmUiList: List<LlmUiComponentDto>): Boolean {
         val action = menuAgent.determineAction(menuDto, llmUiList)
         context.history.add(action)
 
         //점수 평가
-        val addCount = evaluateActionScore(action.score)
+        if (handleLowScore(context, action.score) == false) {
+            return false
+        }
+
+        log.info("메뉴 노드를 생성합니다. go_next: ${action.goNext}, score: ${action.score}, title: ${action.title}")
+        val node = utgService.saveNode(UiDto(
+            isNext = action.goNext,
+            x = action.coordinate[0], y = action.coordinate[1],
+            title = action.title,
+            kioskId = context.kioskId
+        ))
+
+        //현재 메뉴 좌표 클릭
+        notificationService.sendActionCommand(context.kioskId, CoordinateDto(action.coordinate[0], action.coordinate[1], action.title))
+
+        //모달 처리
+        handleModal(
+            menuDto = menuDto,
+            menuNode = node,
+            context = context
+        )
+
+        utgService.saveRel(context.lastNode!!.id, node.id, NodeRelation.HAS_TO)
+        return false // 현재 페이지에 머무름
+    }
+
+    private fun handleLowScore(context: GraphInitializeContext, score: Float): Boolean {
+        val addCount = evaluateActionScore(score)
         if (addCount > 0) {
-            log.info("낮은 액션 정확도 점수: ${action.score}. 카운트를 추가하고 다음 메뉴로 넘어갑니다.")
+            log.info("낮은 액션 정확도 점수: $score. 카운트를 추가하고 현재 액션을 중단합니다.")
             context.lowScoreCount += addCount
             if (context.lowScoreCount >= 5) {
                 throw LowScoreException()
             }
-            return false // 현재 페이지에 머무름
-        } else {
-            log.info("메뉴 노드를 생성합니다. go_next: ${action.goNext}, score: ${action.score}, title: ${action.title}")
-            val node = utgService.saveNode(UiDto(
-                isNext = action.goNext,
-                x = action.coordinate[0], y = action.coordinate[1],
-                title = action.title,
-                kioskId = context.kioskId
-            ))
-
-            //현재 메뉴 좌표 클릭
-            notificationService.sendActionCommand(context.kioskId, CoordinateDto(action.coordinate[0], action.coordinate[1], action.title))
-
-            //모달 처리
-            handleModal(
-                menuDto = menuDto,
-                menuNode = node,
-                context = context
-            )
-
-            // 페이지 이동 여부에 따라 관계 설정
-            if (action.goNext) {
-                utgService.saveRel(context.lastNode!!.id, node.id, NodeRelation.PATH_TO)
-                utgService.saveRel(node.id, context.lastNode!!.id, NodeRelation.PATH_TO)
-                context.lastNode = node
-                return true // 다음 페이지로 이동
-            } else {
-                utgService.saveRel(context.lastNode!!.id, node.id, NodeRelation.HAS_TO)
-                return false // 현재 페이지에 머무름
-            }
+            return false
         }
+        return true
     }
 
     private fun handleModal(menuDto: MenuInfoDto, menuNode: UiEntity, context: GraphInitializeContext) {
@@ -319,7 +357,7 @@ class MenuGraphInitializeService @Autowired constructor(
 
     private fun evaluateActionScore(score: Float): Int {
         return when {
-            score in 0.6..<0.7 -> 1
+            score > 0.5 && score <= 0.6 -> 1
             score <= 0.5 -> 3
             else -> 0
         }
