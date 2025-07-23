@@ -69,4 +69,9 @@ class GlobalExceptionHandler {
     fun handleUiExtractException(e: UiExtractException): ApiResponse<*> {
         return ApiResponse.fail<UiExtractException>(e)
     }
+
+    @ExceptionHandler(LlmParseException::class)
+    fun handleLlmParseException(e: LlmParseException): ApiResponse<*> {
+        return ApiResponse.fail<LlmParseException>(e)
+    }
 }

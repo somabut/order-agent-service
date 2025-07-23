@@ -20,5 +20,6 @@ enum class ErrorCode(
     ORDER_ADMIN_LOGIN_FAIL(205, "키오스크 어드민 인증에 실패하였습니다.", HttpStatus.UNAUTHORIZED),
     ORDER_MENU_REQUEST_FAIL(206, "키오크스의 메뉴 정보를 얻어오지 못했습니다.", HttpStatus.BAD_REQUEST),
     ORDER_SCORE_TOO_LOW(207, "agent의 응답 점수가 너무 낮습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
-    ORDER_UI_EXTRACT_FAIL(208, "UI Extractor Service로 요청중 에러가 발생하였습니다.", HttpStatus.BAD_REQUEST)
+    ORDER_UI_EXTRACT_FAIL(208, "UI Extractor Service로 요청중 에러가 발생하였습니다.", HttpStatus.BAD_REQUEST),
+    ORDER_LLM_RESPONSE_PARSE_FAIL(209, "llm의 응답이 json형식이 아니여서 파싱 에러가 발생하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR)
 }

@@ -1,11 +1,13 @@
 package com.orderagentservice.agent
 
+import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.orderagentservice.agent.model.dto.LlmUiComponentDto
 import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.util.LlmManager
 import com.orderagentservice.jsonMapper
 import com.orderagentservice.logger
+import com.orderagentservice.order.exception.LlmParseException
 import com.orderagentservice.order.model.dto.MenuInfoDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -19,8 +21,12 @@ class MenuAgent @Autowired constructor(
     fun determineAction(menuDto: MenuInfoDto, uiList: List<LlmUiComponentDto>): AgentActionDto {
         val prompt = getPrompt(menuDto, uiList)
         val json = llmManager.queryGemini(prompt)
-        val response: AgentActionDto = jsonMapper.readValue<AgentActionDto>(json)
-        return response
+        try {
+            val response: AgentActionDto = jsonMapper.readValue<AgentActionDto>(json)
+            return response
+        } catch (e: JsonParseException) {
+            throw LlmParseException()
+        }
     }
 
     private fun getPrompt(menuDto: MenuInfoDto, uiList: List<LlmUiComponentDto>): String {
@@ -169,8 +175,9 @@ class MenuAgent @Autowired constructor(
                 "title": "몬스터 주니어 세트"
             }
             ```
+            CRITICAL OUTPUT INSTRUCTION:
+            Your final response MUST be a single, raw JSON object. Do NOT include any introductory text, explanations, or markdown formatting like \\\json ... \\\ around the JSON object.
             
-            !Your response MUST be a single, raw JSON object!
         """.trimIndent()
 
         return prompt
