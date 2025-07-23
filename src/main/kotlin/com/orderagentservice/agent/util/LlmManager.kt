@@ -38,6 +38,11 @@ class LlmManager @Autowired constructor(
                         Part(text = prompt)
                     )
                 )
+            ),
+            GenerationConfig(
+                temperature = 0.2,
+                topP = 1.0,
+                maxOutputTokens = 256
             )
         )
 
