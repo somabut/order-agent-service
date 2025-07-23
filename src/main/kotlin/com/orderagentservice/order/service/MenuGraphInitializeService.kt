@@ -242,6 +242,7 @@ class MenuGraphInitializeService @Autowired constructor(
     private fun navigateModal(context: GraphInitializeContext, menuDto: MenuInfoDto, menuNode: UiEntity, modalLlmUiList: List<LlmUiComponentDto>) {
         val kioskId = context.kioskId
         val modalSelectAction = menuAgent.determineAction(menuDto, modalLlmUiList)
+        log.info("모달 내부에서 처리중입니다. go_next: ${modalSelectAction.goNext}, score: ${modalSelectAction.score}, title: ${modalSelectAction.title}")
         context.history.add(modalSelectAction)
 
         notificationService.sendActionCommand(kioskId, CoordinateDto(modalSelectAction.coordinate[0], modalSelectAction.coordinate[1], modalSelectAction.title))
@@ -256,6 +257,8 @@ class MenuGraphInitializeService @Autowired constructor(
         //완료를 눌러 옵션으로 이동
         val modalCompleteAction = backAgent.determineBack(modalLlmUiList)
         notificationService.sendActionCommand(kioskId, CoordinateDto(modalCompleteAction.coordinate[0], modalCompleteAction.coordinate[1], modalCompleteAction.title))
+        log.info("모달에서 빠져나옵니다. score: ${modalCompleteAction.score}, title: ${modalCompleteAction.title}")
+
         val backNode = utgService.saveNode(UiDto(
             isNext = false,
             x = modalCompleteAction.coordinate[0], y = modalCompleteAction.coordinate[1],
