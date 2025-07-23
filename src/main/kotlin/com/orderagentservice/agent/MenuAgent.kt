@@ -169,6 +169,8 @@ class MenuAgent @Autowired constructor(
                 "title": "몬스터 주니어 세트"
             }
             ```
+            
+            !Your response MUST be a single, raw JSON object!
         """.trimIndent()
 
         return prompt
