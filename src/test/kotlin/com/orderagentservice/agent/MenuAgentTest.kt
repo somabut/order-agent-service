@@ -132,7 +132,7 @@ class MenuAgentTest @Autowired constructor(
         )
 
         //when: llm에게 질의한다
-        val response = menuAgent.determineAction(menuDto, uiList)
+        val response = menuAgent.determineAction(menuDto, optUiList)
         println(response)
     }
 }

@@ -19,7 +19,6 @@ class MenuAgent @Autowired constructor(
     fun determineAction(menuDto: MenuInfoDto, uiList: List<LlmUiComponentDto>): AgentActionDto {
         val prompt = getPrompt(menuDto, uiList)
         val json = llmManager.queryGemini(prompt)
-        println(json)
         val response: AgentActionDto = jsonMapper.readValue<AgentActionDto>(json)
         return response
     }
@@ -29,7 +28,7 @@ class MenuAgent @Autowired constructor(
             You are an expert who looks at the UI list and determines if there is a UI for a given input.
             input is information that you need to click to order food.
             The ui list has a list of currently clickable ui.
-            The response should be in Json format.
+            You only respond to the JSON object below. No words, no code block markdowns should be added before and after JSON.
 
             Here is request input:${menuDto}
             Here is ui list:${uiList}
