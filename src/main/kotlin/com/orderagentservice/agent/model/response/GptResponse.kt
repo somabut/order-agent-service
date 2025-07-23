@@ -6,7 +6,7 @@ data class GptResponse(
 
 data class Choice(
     val index: Int,
-    val messages: List<Message>
+    val message: Message
 )
 
 data class Message(

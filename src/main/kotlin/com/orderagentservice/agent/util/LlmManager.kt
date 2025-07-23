@@ -26,7 +26,8 @@ class LlmManager @Autowired constructor(
 
     fun queryGemini(prompt: String): String {
         //TODO(gpt 사용 제한으로 인한 일시적인 변경)
-        return callOneGeminiApi(prompt)
+        return queryGpt(prompt)
+//        return callOneGeminiApi(prompt)
 //        return llmRateLimiter.executeWithLimit { apiKey ->
 //            callGeminiApi(prompt, apiKey)
 //        }
@@ -112,7 +113,7 @@ class LlmManager @Autowired constructor(
         val httpEntity = HttpEntity(request, headers)
 
         val response: GptResponse = restTemplate.postForObject(url, httpEntity, GptResponse::class.java)!!
-        val text = response.choices[0].messages[0].content
+        val text = response.choices[0].message.content
         val json = text.replace("```json", "").replace("```", "").trim()
         return json
     }
