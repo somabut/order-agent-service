@@ -75,4 +75,34 @@ class MenuAgentTest @Autowired constructor(
         assertThat(response.coordinate[0]).isEqualTo(145)
         assertThat(response.coordinate[1]).isEqualTo(310)
     }
+
+    @Test
+    fun `옵션을 선택한다`() {
+        val optUiList = listOf(
+            LlmUiComponentDto(x = 42, y = 31, title = "사이드"),
+            LlmUiComponentDto(x = 73, y = 31, title = "메뉴"),
+            LlmUiComponentDto(x = 76, y = 142, title = "프렌치프라이R"),
+            LlmUiComponentDto(x = 197, y = 142, title = "프렌치프라이니"),
+            LlmUiComponentDto(x = 317, y = 142, title = "21치즈스틱"),
+            LlmUiComponentDto(x = 197, y = 163, title = "+800원"),
+            LlmUiComponentDto(x = 319, y = 163, title = "+300뭔"),
+            LlmUiComponentDto(x = 34, y = 432, title = "음료"),
+            LlmUiComponentDto(x = 75, y = 543, title = "코카콜라R"),
+            LlmUiComponentDto(x = 196, y = 543, title = "스프라이트R"),
+            LlmUiComponentDto(x = 198, y = 564, title = "100원"),
+            LlmUiComponentDto(x = 56, y = 835, title = "총주문금액"),
+            LlmUiComponentDto(x = 464, y = 835, title = "13500원"),
+            LlmUiComponentDto(x = 138, y = 884, title = "취소"),
+            LlmUiComponentDto(x = 383, y = 884, title = "완료")
+        )
+        val menuDto = MenuInfoDto(
+            title = "21치즈 스틱",
+            options = listOf(),
+            category = "크리스퍼 클래식 세트"
+        )
+
+        //when: llm에게 질의한다
+        val response = menuAgent.determineAction(menuDto, uiList)
+        println(response)
+    }
 }

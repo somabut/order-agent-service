@@ -4,6 +4,7 @@ import com.orderagentservice.agent.BackAgent
 import com.orderagentservice.agent.MenuAgent
 import com.orderagentservice.agent.MissingComponentAgent
 import com.orderagentservice.agent.PageAgent
+import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.model.dto.LlmUiComponentDto
 import com.orderagentservice.logger
 import com.orderagentservice.order.exception.LowScoreException
@@ -249,7 +250,14 @@ class MenuGraphInitializeService @Autowired constructor(
 //        }
 
         for (opt in menuDto.options) {
-            val optAction = menuAgent.determineAction(MenuInfoDto(opt, listOf(), menuDto.title), llmOptList)
+            //TODO(llm응답 이상으로 인한 일지석인 비활성)
+//            val optAction = menuAgent.determineAction(MenuInfoDto(opt, listOf(), menuDto.title), llmOptList)
+            val optAction = AgentActionDto(
+                goNext = false,
+                score = 1.0F,
+                coordinate = listOf(90, 100),
+                title = "임시 옵션"
+            )
             context.history.add(optAction)
 
             log.info("옵션 노드를 생성합니다. go_next: ${optAction.goNext}, score: ${optAction.score}, coordinate: ${optAction.coordinate}, title: ${optAction.title}")
