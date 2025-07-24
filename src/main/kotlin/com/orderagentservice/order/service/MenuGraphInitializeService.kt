@@ -182,13 +182,16 @@ class MenuGraphInitializeService @Autowired constructor(
         //현재 메뉴 좌표 클릭
         notificationService.sendActionCommand(context.kioskId, CoordinateDto(action.coordinate[0], action.coordinate[1], action.title))
 
-        //TODO(모달&옵션은 다음에)
+        //TODO(모달은 다음에)
 //        //모달 처리
 //        handleModal(
 //            menuDto = menuDto,
 //            menuNode = node,
 //            context = context
 //        )
+
+        //옵션 노드 초기화
+        processOptions(menuDto, context)
 
         utgService.saveRel(context.lastNode!!.id, node.id, NodeRelation.HAS_TO)
         return false // 현재 페이지에 머무름
@@ -320,6 +323,9 @@ class MenuGraphInitializeService @Autowired constructor(
         var currentNode = context.lastNode
         var count = 0
         //원래 페이지가 나올 때까지 돌아가는 UI 클릭
+
+
+        //TODO(모달 비활성으로 인한 해당 로직 비활성)
         do {
             //다시 원래 페이지로 돌아가야 하므로 backAgent를 통해 이전 페이지로 돌아가기
             val backAction = backAgent.determineBack(llmOptList)
