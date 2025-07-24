@@ -41,10 +41,10 @@ class BackAgent @Autowired constructor(
 
             Step 1: Classifying UI Elements
                 First, classify all items in the given uiList into four grades below.
-                * Grade 1 (most obvious choice): direct addition to your shopping cart, such as putting, adding, ordering, etc. (e.g. "담기", "카트담기" "주문")
-                * Grade 2 (Progress to the next step): the act of completing the current step, such as completing, next, and continuing (e.g., "완료", "다음")
-                * Grade 3 (Conservative Choice): '확인'
-                * Grade 4 (inadequate selection): '취소', '뒤로가기', etc
+                * Grade 1 (most obvious choice): direct addition to ordering, etc. (e.g. "주문하기" "주문")
+                * Grade 2 (obvious choice): direct addition to your shopping cart, such as putting, adding etc. (e.g. "담기", "카트담기")
+                * Grade 3 (Progress to the next step): the act of completing the current step, such as completing, next, and continuing (e.g., "완료", "다음", "확인")
+                * Grade 5 (inadequate selection): '취소', '뒤로가기', etc
 
             Step 2: Select the final UI
                 Based on the classified results, select the final UI according to the rules below. The rules apply only once in order from the top.
@@ -53,8 +53,8 @@ class BackAgent @Autowired constructor(
                 * Action: If so, unconditionally select the UI with the largest rating number. (Choice priority: Grade 3 > Grade 2 > Grade 1 )
                 * Score: 0.8
                 * Absolute example:
-                * ["주문" (Grade 1), "완료" (Grade 2)] If there is, you must select "완료".
-                * ["담기" (Grade 1) and "확인" (Grade 3)] If there is, you must select "확인".
+                * ["주문" (Grade 1), "카드 담기" (Grade 2)] If there is, you must select "카트 담기".
+                * ["카트담기" (Grade 2) and "확인" (Grade 3)] If there is, you must select "확인".
                     
                 Rule B: When there is only Grade 1
                 * Condition: Not in Rule A, is there only a Grade 1 UI in the list?
