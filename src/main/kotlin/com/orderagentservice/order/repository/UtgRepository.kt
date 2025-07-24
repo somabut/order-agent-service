@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param
 
 interface UtgRepository : Neo4jRepository<UiEntity, String> {
     @Query(
-        "MATCH path = (start:UI {kioskId: \$kioskId, title: \$sourceId})-[*..5]->(target:UI {kioskId: \$kioskId})\n " +
+        "MATCH path = (start:UI {kioskId: \$kioskId, id: \$sourceId})-[*..5]->(target:UI {kioskId: \$kioskId})\n " +
         "WHERE target.title CONTAINS \$targetTitle\n" +
         "RETURN nodes(path) AS nodes\n" +
         "ORDER BY length(path) ASC\n" +
