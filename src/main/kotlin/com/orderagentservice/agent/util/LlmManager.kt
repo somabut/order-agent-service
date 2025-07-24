@@ -128,7 +128,7 @@ class LlmManager @Autowired constructor(
                 handleRateLimitError(e)
                 return queryGpt(prompt)
             }
-            throw LlmParseException()
+            throw e
         }
     }
 
