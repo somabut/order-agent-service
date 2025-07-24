@@ -182,12 +182,13 @@ class MenuGraphInitializeService @Autowired constructor(
         //현재 메뉴 좌표 클릭
         notificationService.sendActionCommand(context.kioskId, CoordinateDto(action.coordinate[0], action.coordinate[1], action.title))
 
-        //모달 처리
-        handleModal(
-            menuDto = menuDto,
-            menuNode = node,
-            context = context
-        )
+        //TODO(모달&옵션은 다음에)
+//        //모달 처리
+//        handleModal(
+//            menuDto = menuDto,
+//            menuNode = node,
+//            context = context
+//        )
 
         utgService.saveRel(context.lastNode!!.id, node.id, NodeRelation.HAS_TO)
         return false // 현재 페이지에 머무름
