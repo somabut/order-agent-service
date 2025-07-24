@@ -14,7 +14,7 @@ class LlmRateLimiter @Autowired constructor(
 ) {
     private val log = logger()
 
-    private val apiKeys = listOf(
+    private val geminiApiKeys = listOf(
         env.getProperty("agent.gemini.api-key-1")!!,
         env.getProperty("agent.gemini.api-key-2")!!,
         env.getProperty("agent.gemini.api-key-3")!!,
@@ -30,7 +30,7 @@ class LlmRateLimiter @Autowired constructor(
 
     init {
         // 각 API 키별 요청 시간 리스트 초기화
-        apiKeys.forEach { key ->
+        geminiApiKeys.forEach { key ->
             keyRequestTimes[key] = Collections.synchronizedList(mutableListOf())
         }
     }
@@ -53,9 +53,9 @@ class LlmRateLimiter @Autowired constructor(
         val currentTime = System.currentTimeMillis()
 
         // 라운드 로빈 방식으로 키 선택
-        repeat(apiKeys.size) {
-            val keyIndex = currentKeyIndex.getAndIncrement() % apiKeys.size
-            val key = apiKeys[keyIndex]
+        repeat(geminiApiKeys.size) {
+            val keyIndex = currentKeyIndex.getAndIncrement() % geminiApiKeys.size
+            val key = geminiApiKeys[keyIndex]
             val requestTimes = keyRequestTimes[key] ?: return null
 
             // 1분 이전 요청 기록 제거
@@ -75,7 +75,7 @@ class LlmRateLimiter @Autowired constructor(
         var minWaitTime = Long.MAX_VALUE
 
         //최소 대기 시간 계산
-        apiKeys.forEach { key ->
+        geminiApiKeys.forEach { key ->
             val requestTimes = keyRequestTimes[key] ?: return@forEach
             if (requestTimes.size >= MAX_REQUEST_PER_MINUITE) {
                 val oldestRequest = requestTimes.minOrNull()
