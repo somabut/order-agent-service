@@ -55,6 +55,7 @@ class BackAgent @Autowired constructor(
                 * Absolute example:
                 * ["주문" (Grade 1), "카드 담기" (Grade 2)] If there is, you must select "카트 담기".
                 * ["카트담기" (Grade 2) and "확인" (Grade 3)] If there is, you must select "확인".
+                * ["주문" (Grade 1) and "확인" (Grade 3)] If there is, you must select "확인".
                     
                 Rule B: When there is only Grade 1
                 * Condition: Not in Rule A, is there only a Grade 1 UI in the list?
