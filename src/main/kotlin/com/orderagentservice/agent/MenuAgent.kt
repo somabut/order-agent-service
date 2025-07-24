@@ -101,7 +101,7 @@ class MenuAgent @Autowired constructor(
             ```
 
             Another Example(
-                input: {"title": "초콜릿 케이크", "option": [], "category": "디저트"} 
+                input: {"title": "디저트", "option": [], "category": "디저트"} 
                 ui_list: [
                     {"coordinate": [210, 364], "contents": ["아메라카노 5000원-"]},
                     {"coordinate": [67, 90], "contents": ["카페라떼 5400원-"]},
@@ -120,7 +120,7 @@ class MenuAgent @Autowired constructor(
             ```
 
             Another Example(
-                input: {"title": "딸기 에이드", "option": ["라지", "휘핑크림"], "category": "에이드"} 
+                input: {"title": "에이드", "option": ["라지", "휘핑크림"], "category": "에이드"} 
                 ui_list: [
                     {"coordinate": [210, 364], "contents": ["블루베리 스무디 7000원-"]},
                     {"coordinate": [67, 90], "contents": ["딸기 요거트 스무디 5400원-"]},
