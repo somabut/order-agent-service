@@ -65,6 +65,20 @@ class LlmRateLimiterTest @Autowired constructor(
         }
     }
 
+    @Test
+    fun `gpt rate limit에 걸리는 경우 대기 시간을 정확히 추출한다`() {
+        // given
+        val message = "Rate limit reached for gpt-4-0613 in organization org-53KmE07Lhp6JYsn71TCeMbjq on tokens per min (TPM): Limit 10000, Used 9348, Requested 1472. Please try again in 4.92s. Visit https://platform.openai.com/account/rate-limits to learn more."
+        val method = LlmManager::class.java.getDeclaredMethod("extractRetryAfterSeconds", String::class.java)
+        method.isAccessible = true
+
+        // when
+        val result = method.invoke(llmManager, message) as Double
+
+        // then
+        assertThat(result).isEqualTo(4.92)
+    }
+
 //    15 RPM – 분당 최대 15회 요청 가능
 //    1,500 RPD – 하루 1,500회 요청 가능
 //    TPM: 분당 최대 토큰 1,000,000 토큰
