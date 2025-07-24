@@ -295,15 +295,6 @@ class MenuGraphInitializeService @Autowired constructor(
 //        }
 
         for (opt in menuDto.options) {
-//            val optAction = AgentActionDto(
-//                goNext = false,
-//                score = 1.0F,
-//                coordinate = listOf(90, 100),
-//                title = "임시 옵션"
-//            )
-//
-//            //TODO(llm응답 이상으로 인한 일지석인 비활성)
-
             val optAction = menuAgent.determineAction(MenuInfoDto(opt, listOf(), menuDto.title), llmOptList)
             context.history.add(optAction)
 

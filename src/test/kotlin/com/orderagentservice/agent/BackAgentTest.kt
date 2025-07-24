@@ -43,8 +43,8 @@ class BackAgentTest @Autowired constructor(
             LlmUiComponentDto(x = 145, y = 310, title = "프렌치 프라이 5600원"),
             LlmUiComponentDto(x = 212, y = 485, title = "너겟킹 7900원"),
             LlmUiComponentDto(x = 398, y = 605, title = "리얼 어니언링 8200원"),
-            LlmUiComponentDto(x = 125, y = 732, title = "카트담기"),
-            LlmUiComponentDto(x = 67, y = 99, title = "주문"),
+            LlmUiComponentDto(x = 125, y = 732, title = "확인"),
+            LlmUiComponentDto(x = 67, y = 99, title = "주둔"),
             LlmUiComponentDto(x = 362, y = 298, title = "코카콜라 7500원"),
             LlmUiComponentDto(x = 274, y = 847, title = "코카콜라 제로 9500원"),
             LlmUiComponentDto(x = 458, y = 415, title = "취소"),
@@ -55,7 +55,7 @@ class BackAgentTest @Autowired constructor(
         //when: llm에게 질의
         val response = backAgent.determineBack(uiList)
 
-        assertThat(response.title).isEqualTo("카트담기")
+        assertThat(response.title).isEqualTo("확인")
         assertThat(response.coordinate[0]).isEqualTo(125)
         assertThat(response.coordinate[1]).isEqualTo(732)
     }
