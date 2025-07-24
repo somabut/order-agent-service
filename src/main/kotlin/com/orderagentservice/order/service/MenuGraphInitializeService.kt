@@ -191,9 +191,7 @@ class MenuGraphInitializeService @Autowired constructor(
 //        )
 
         //옵션 노드 초기화
-        if (menuDto.options.size > 0) {
-            processOptions(menuDto, context)
-        }
+        processOptions(menuDto, context)
 
         utgService.saveRel(context.lastNode!!.id, node.id, NodeRelation.HAS_TO)
         return false // 현재 페이지에 머무름
