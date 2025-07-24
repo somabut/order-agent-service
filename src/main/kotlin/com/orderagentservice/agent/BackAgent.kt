@@ -41,7 +41,7 @@ class BackAgent @Autowired constructor(
 
             Step 1: Classifying UI Elements
                 First, classify all items in the given uiList into four grades below.
-                * Grade 1 (most obvious choice): direct addition to ordering, etc. (e.g. "주문하기" "주문")
+                * Grade 1 (most obvious choice): direct addition to ordering, etc. (e.g. "주문하기" "주문", "결제")
                 * Grade 2 (obvious choice): direct addition to your shopping cart, such as putting, adding etc. (e.g. "담기", "카트담기")
                 * Grade 3 (Progress to the next step): the act of completing the current step, such as completing, next, and continuing (e.g., "완료", "다음", "확인")
                 * Grade 5 (inadequate selection): '취소', '뒤로가기', etc
@@ -56,6 +56,7 @@ class BackAgent @Autowired constructor(
                 * ["주문" (Grade 1), "카드 담기" (Grade 2)] If there is, you must select "카트 담기".
                 * ["카트담기" (Grade 2) and "확인" (Grade 3)] If there is, you must select "확인".
                 * ["주문" (Grade 1) and "확인" (Grade 3)] If there is, you must select "확인".
+                * ["결제하기" (Grade 1) and "선택완료" (Grade 3)] If there is, you must select "선택완료".
                     
                 Rule B: When there is only Grade 1
                 * Condition: Not in Rule A, is there only a Grade 1 UI in the list?
