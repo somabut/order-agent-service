@@ -7,6 +7,7 @@ import com.orderagentservice.logger
 import com.orderagentservice.order.exception.LowScoreException
 import com.orderagentservice.order.model.GraphInitializeContext
 import com.orderagentservice.order.model.NodeRelation
+import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.entity.UiEntity
 import com.orderagentservice.order.util.UiExtractorManager
@@ -60,6 +61,9 @@ class PaymentGraphInitializeService @Autowired constructor(
             if (context.lowScoreCount >= 5) {
                 throw LowScoreException()
             }
+
+            //클릭 액션 요청
+            notificationService.sendActionCommand(kioskId, CoordinateDto(x = action.coordinate[0], y = action.coordinate[1], title = action.title))
 
             log.info("결제 노드를 생성합니다. go_next: ${action.goNext}, score: ${action.score}, coordinate: ${action.coordinate}, title: ${action.title}")
             isNext = action.goNext
