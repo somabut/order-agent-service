@@ -16,7 +16,7 @@ class UtgRepositoryTest @Autowired constructor(
         val kioskId = "kiosk-8f22eeb6-a920-44ed-af26-d800756fb283"
         val nowNode = utgService.findRootNodeId(kioskId)
 
-        val path = utgService.findMenuPath(kioskId, nowNode.id, "불끈버거 맥시멈")
+        val path = utgService.findMenuPath(kioskId, nowNode.id, "complete")
         println(path)
     }
 }
