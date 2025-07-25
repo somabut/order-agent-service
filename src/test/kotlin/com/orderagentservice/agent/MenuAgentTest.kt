@@ -45,7 +45,7 @@ class MenuAgentTest @Autowired constructor(
     @Test
     fun `카테고리를 고려하여 메뉴를 선택한다`() {
         val menuDto = MenuInfoDto(
-            title = "불끈버거 맥시멈",
+            title = "오리지널스&맥시멈",
             options = listOf(),
             category = "오리지널스&맥시멈"
         )
@@ -117,7 +117,7 @@ class MenuAgentTest @Autowired constructor(
             LlmUiComponentDto(x = 197, y = 163, title = "+800원"),
             LlmUiComponentDto(x = 319, y = 163, title = "+300뭔"),
             LlmUiComponentDto(x = 34, y = 432, title = "음료"),
-            LlmUiComponentDto(x = 75, y = 543, title = "코카콜라R"),
+            LlmUiComponentDto(x = 75, y = 543, title = "고카콜라R"),
             LlmUiComponentDto(x = 196, y = 543, title = "스프라이트R"),
             LlmUiComponentDto(x = 198, y = 564, title = "100원"),
             LlmUiComponentDto(x = 56, y = 835, title = "총주문금액"),
@@ -126,13 +126,15 @@ class MenuAgentTest @Autowired constructor(
             LlmUiComponentDto(x = 383, y = 884, title = "완료")
         )
         val menuDto = MenuInfoDto(
-            title = "21치즈 스틱",
+            title = "코카콜라(R)",
             options = listOf(),
             category = "사이드"
         )
 
         //when: llm에게 질의한다
         val response = menuAgent.determineAction(menuDto, optUiList)
+
+        assertThat(response.title).isEqualTo("코카콜라(R)")
         println(response)
     }
 }

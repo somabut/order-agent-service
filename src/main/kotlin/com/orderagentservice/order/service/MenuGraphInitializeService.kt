@@ -139,7 +139,7 @@ class MenuGraphInitializeService @Autowired constructor(
 
         //점수 평가
         if (handleLowScore(context, action.score) == false) {
-            return false
+            return true
         }
 
         log.info("카테고리 노드를 생성합니다. go_next: ${action.goNext}, score: ${action.score}, title: ${action.title}")
@@ -168,7 +168,7 @@ class MenuGraphInitializeService @Autowired constructor(
 
         //점수 평가
         if (handleLowScore(context, action.score) == false) {
-            return false
+            return true
         }
 
         log.info("메뉴 노드를 생성합니다. go_next: ${action.goNext}, score: ${action.score}, title: ${action.title}")
