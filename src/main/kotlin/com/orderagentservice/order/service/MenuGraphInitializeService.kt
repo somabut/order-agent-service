@@ -322,34 +322,48 @@ class MenuGraphInitializeService @Autowired constructor(
         val kioskId = context.kioskId
         var currentNode = context.lastNode
         var count = 0
-        //원래 페이지가 나올 때까지 돌아가는 UI 클릭
 
+        //다시 원래 페이지로 돌아가야 하므로 backAgent를 통해 이전 페이지로 돌아가기
+        val backAction = backAgent.determineBack(llmOptList)
+
+        val backEntity = utgService.saveNode(UiDto(
+            isNext = false,
+            x = backAction.coordinate[0], y = backAction.coordinate[1],
+            title = backAction.title,
+            kioskId = kioskId
+        ))
+        utgService.saveRel(currentNode!!.id, backEntity.id, NodeRelation.BACK_TO)
+
+        //sse를 통해 클라이언트에게 원래 페이지로 돌아가는 좌표 클릭하도록 하기
+        log.info("돌아가는 좌표를 클릭중입니다. 좌표: ${backAction.coordinate}")
+        notificationService.sendActionCommand(kioskId, CoordinateDto(backAction.coordinate[0], backAction.coordinate[1], backAction.title))
+        context.history.add(backAction.toActionDto())
 
         //TODO(모달 비활성으로 인한 해당 로직 비활성)
-        do {
-            //다시 원래 페이지로 돌아가야 하므로 backAgent를 통해 이전 페이지로 돌아가기
-            val backAction = backAgent.determineBack(llmOptList)
-            val backEntity = utgService.saveNode(UiDto(
-                isNext = false,
-                x = backAction.coordinate[0], y = backAction.coordinate[1],
-                title = backAction.title,
-                kioskId = kioskId
-            ))
-
-            utgService.saveRel(currentNode!!.id, backEntity.id, NodeRelation.BACK_TO)
-
-            //sse를 통해 클라이언트에게 원래 페이지로 돌아가는 좌표 클릭하도록 하기
-            log.info("돌아가는 좌표를 클릭중입니다. 좌표: ${backAction.coordinate}")
-            notificationService.sendActionCommand(kioskId, CoordinateDto(backAction.coordinate[0], backAction.coordinate[1], backAction.title))
-            context.history.add(backAction.toActionDto())
-
-            //현재 페이지의 해시를 추출하여 메뉴화면으로 빠져나왔는지 확인
-            val nowPage = notificationService.sendCaptureCommand(kioskId)
-            val hash = ImageUtils.imageToHash(nowPage)
-
-            currentNode = backEntity
-            count++
-        } while (hash != context.imageHash && count < MAX_MODAL_TO_MENU_COUNT)
+//        do {
+//            //다시 원래 페이지로 돌아가야 하므로 backAgent를 통해 이전 페이지로 돌아가기
+//            val backAction = backAgent.determineBack(llmOptList)
+//            val backEntity = utgService.saveNode(UiDto(
+//                isNext = false,
+//                x = backAction.coordinate[0], y = backAction.coordinate[1],
+//                title = backAction.title,
+//                kioskId = kioskId
+//            ))
+//
+//            utgService.saveRel(currentNode!!.id, backEntity.id, NodeRelation.BACK_TO)
+//
+//            //sse를 통해 클라이언트에게 원래 페이지로 돌아가는 좌표 클릭하도록 하기
+//            log.info("돌아가는 좌표를 클릭중입니다. 좌표: ${backAction.coordinate}")
+//            notificationService.sendActionCommand(kioskId, CoordinateDto(backAction.coordinate[0], backAction.coordinate[1], backAction.title))
+//            context.history.add(backAction.toActionDto())
+//
+//            //현재 페이지의 해시를 추출하여 메뉴화면으로 빠져나왔는지 확인
+//            val nowPage = notificationService.sendCaptureCommand(kioskId)
+//            val hash = ImageUtils.imageToHash(nowPage)
+//
+//            currentNode = backEntity
+//            count++
+//        } while (hash != context.imageHash && count < MAX_MODAL_TO_MENU_COUNT)
     }
 
     private fun removeDuplicate(sourceList: List<LlmUiComponentDto>, targetList: MutableList<LlmUiComponentDto>) {
