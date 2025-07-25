@@ -99,7 +99,8 @@ class BackAgent @Autowired constructor(
                 ui list: [
                     {"coordinate": [210, 364], "title": "면 추가 5000원-"},
                     {"coordinate": [67, 90], "title": "밥 추가 5400원-"},
-                    {"coordinate": [123, 87], "title": "완료"},
+                    {"coordinate": [123, 87], "title": "선택완료"},
+                    {"coordinate": [123, 87], "title": "결제하기"},
                     {"coordinate": [788, 43], "title": "취소"},
                     {"coordinate": [129, 74], "title": "차슈 추가 5000원-"}
                 ]):
@@ -107,7 +108,7 @@ class BackAgent @Autowired constructor(
             {
                 "score": 0.9,
                 "coordinate": [123, 87],
-                "title": "완료"
+                "title": "선택완료"
             }
             ```
             
@@ -116,7 +117,7 @@ class BackAgent @Autowired constructor(
                     {"coordinate": [210, 364], "title": "감자튀김 5000원-"},
                     {"coordinate": [67, 90], "title": "제로콜라 5400원-"},
                     {"coordinate": [123, 87], "title": "사이다 5000원-"},
-                    {"coordinate": [120, 74], "title": "다음으로"}
+                    {"coordinate": [120, 74], "title": "다음으로"},
                     {"coordinate": [21, 78], "title": "취소"}
                 ]):
             ```json
