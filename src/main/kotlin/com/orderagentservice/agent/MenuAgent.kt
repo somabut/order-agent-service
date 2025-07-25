@@ -25,6 +25,9 @@ class MenuAgent @Autowired constructor(
             val response: AgentActionDto = jsonMapper.readValue<AgentActionDto>(json)
             return response
         } catch (e: Exception) {
+            for (ele in e.stackTrace) {
+                println(ele)
+            }
             throw LlmParseException()
         }
     }
