@@ -32,11 +32,11 @@ class LlmManager @Autowired constructor(
 
     fun queryGemini(prompt: String): String {
         //TODO(gpt 사용 제한으로 인한 일시적인 변경)
-        return queryGpt(prompt)
+//        return queryGpt(prompt)
 //        return callOneGeminiApi(prompt)
-//        return llmRateLimiter.executeWithLimit { apiKey ->
-//            callGeminiApi(prompt, apiKey)
-//        }
+        return llmRateLimiter.executeWithLimit { apiKey ->
+            callGeminiApi(prompt, apiKey)
+        }
     }
 
     fun callOneGeminiApi(prompt: String): String {
