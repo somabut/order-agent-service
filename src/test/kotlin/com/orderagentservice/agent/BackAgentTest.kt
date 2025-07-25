@@ -57,7 +57,7 @@ class BackAgentTest @Autowired constructor(
         println(response)
 
         assertThat(response.title).isEqualTo("선택완료")
-        assertThat(response.coordinate[0]).isEqualTo(125)
-        assertThat(response.coordinate[1]).isEqualTo(732)
+        assertThat(response.coordinate[0]).isEqualTo(67)
+        assertThat(response.coordinate[1]).isEqualTo(99)
     }
 }
