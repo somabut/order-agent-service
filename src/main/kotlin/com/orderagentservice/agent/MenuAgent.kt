@@ -25,6 +25,7 @@ class MenuAgent @Autowired constructor(
             val response: AgentActionDto = jsonMapper.readValue<AgentActionDto>(json)
             return response
         } catch (e: Exception) {
+            println(e.message)
             for (ele in e.stackTrace) {
                 println(ele)
             }
@@ -45,9 +46,11 @@ class MenuAgent @Autowired constructor(
             Primary Goal: Your main goal is to find a specific menu item. Falling back to an exact title match (menu or category) is the secondary option.
             
             Decision Logic Flow (Follow these steps in order):
-            1. Prioritize Direct Menu Match (Flexible Matching):
+            1. Prioritize Direct String Match (Flexible Matching):
                 First, iterate through the uiList. 
-                For each ui, check if the input.title (e.g., "크리스퍼 클래식") is the core starting text of the ui.title (e.g., "크리스퍼 클래식 5600원" or "크리스퍼 클래식 세트"). 
+                Iterate through the uiList to find the best possible match for input.title. Evaluate all UIs and choose the one that fits the highest priority rule below. 
+                This includes checking for minor typos.
+                For each ui, check if the title of input (e.g., "크리스퍼 클래식") is the core starting text of the title of ui list (e.g., "크리스퍼 클래식 5600원" or "크리스퍼 클래식 세트"). 
                 You must ignore trailing text like prices, weights, or simple options for this check.
                     Example 1 (Single Item): If input.title is '크리스퍼 클래식' and a ui.title is '크리스퍼 클래식 5600원', this is a successful match.
                     Example 2 (Set Menu): If input.title is '크리스퍼 클래식 세트' and a ui.title is '크리스퍼 클래식 세트 8900원', this is a successful match.
@@ -55,13 +58,7 @@ class MenuAgent @Autowired constructor(
                 Action for Match:
                     If you find one or more matches, choose the one that most completely matches the input.title. For example, if the input is '치즈버거' and the list has '치즈버거' and '더블치즈버거', select '치즈버거'.
                     Set the 'title' in your response to the input.title, Set 'goNext' to false. Use the 'coordinate' of the matched UI element.
-                    At this time, I'll take into account some typos (one or two spacing errors).
             
-            2. Fallback to Category Match:
-                Condition: Execute this step ONLY IF no direct menu match was found in Step 1.
-                Action: Find a UI element from the uiList where the ui.title exactly matches the input.title. This case typically represents clicking a category button.
-                Example: If input.title is '버거' and a ui.title is also '버거', this is a successful match.
-                         At this time, I'll take into account some typos (one or two spacing errors).
             
             'goNext' is whether to go to the next page, 'score' is the accuracy score, 'coordinate' is the UI coordinate you need to click to go to the next page and 'title' is the UI title that you click.
             The title of the response must contain the title of the input not title of ui list.
@@ -76,11 +73,11 @@ class MenuAgent @Autowired constructor(
                 Judgment: A likely match was found despite a minor error.
                 
             3. Uncertain but most likely choice made (Score: 0.5 to 0.7)
-                Situation: When there is no matching menu or clear category at all. But when ui list has a general UI to continue navigating, such as "모든 메뉴 보기", "다음", "더보기".
+                Situation: When there is no matching menu at all. But when ui list has a general UI to continue navigating, such as "모든 메뉴 보기", "다음", "더보기".
                 Judgment: I can't find the answer on the current page, but I can suggest a way to continue my quest.
                 
             4. If no action can be proposed (Score: 0.0 to 0.4)
-                Situation: When matching menus, categories, and even general navigation UI like "다음" are not on ui list.
+                Situation: When matching menus, and even general navigation UI like "다음" are not on ui list.
                 Judgment: There is no valid click action that AI can do in the current state.
 
             One Example(
@@ -121,12 +118,12 @@ class MenuAgent @Autowired constructor(
             ```
 
             Another Example(
-                input: {"title": "에이드", "option": ["라지", "휘핑크림"], "category": "에이드"} 
+                input: {"title": "스무디", "option": ["라지", "휘핑크림"], "category": "스무디"} 
                 ui_list: [
                     {"coordinate": [210, 364], "contents": ["블루베리 스무디 7000원-"]},
                     {"coordinate": [67, 90], "contents": ["딸기 요거트 스무디 5400원-"]},
                     {"coordinate": [79, 89], "contents": ["결제"]},
-                    {"coordinate": [68, 12], "contents": ["에이드류"]},
+                    {"coordinate": [68, 12], "contents": ["스무디"]},
                     {"coordinate": [90, 456], "contents": ["키위&망고 블렌더 7000원-"]},
                     {"coordinate": [120, 74], "contents": ["패션후르트&파인애플 스무디 7000원-"]}
                 ]):
@@ -135,7 +132,7 @@ class MenuAgent @Autowired constructor(
                 "goNext": "true",
                 "score": 0.9,
                 "coordinate": [68, 12],
-                "title": "에이드"
+                "title": "스무디"
             }
             ```
             
@@ -164,6 +161,7 @@ class MenuAgent @Autowired constructor(
                     {"coordinate": [210, 364], "contents": ["몬스터 주니어"]},
                     {"coordinate": [67, 90], "contents": ["몬스터 주니어 세트"]},
                     {"coordinate": [79, 89], "contents": ["몬스터 주니어 라지세트"]},
+                    {"coordinate": [55, 765], "contents": ["올데이킹&맥모닝"]},
                     {"coordinate": [68, 12], "contents": ["완료"]},
                     {"coordinate": [90, 456], "contents": ["취소"]},
                     {"coordinate": [120, 74], "contents": ["처음으로"]}

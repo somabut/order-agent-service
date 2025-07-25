@@ -111,10 +111,10 @@ class MenuAgentTest @Autowired constructor(
         val optUiList = listOf(
             LlmUiComponentDto(x = 42, y = 31, title = "사이드"),
             LlmUiComponentDto(x = 73, y = 31, title = "메뉴"),
-            LlmUiComponentDto(x = 76, y = 142, title = "프렌치프라이R"),
-            LlmUiComponentDto(x = 197, y = 142, title = "프렌치프라이니"),
-            LlmUiComponentDto(x = 317, y = 142, title = "21치즈스틱"),
-            LlmUiComponentDto(x = 197, y = 163, title = "+800원"),
+            LlmUiComponentDto(x = 76, y = 142, title = "빽스치노"),
+            LlmUiComponentDto(x = 197, y = 142, title = "딸기빽스치노"),
+            LlmUiComponentDto(x = 317, y = 142, title = "녹차빽스치노"),
+            LlmUiComponentDto(x = 197, y = 163, title = "초코빽스치노"),
             LlmUiComponentDto(x = 319, y = 163, title = "+300뭔"),
             LlmUiComponentDto(x = 34, y = 432, title = "음료"),
             LlmUiComponentDto(x = 75, y = 543, title = "고카콜라R"),
@@ -126,15 +126,15 @@ class MenuAgentTest @Autowired constructor(
             LlmUiComponentDto(x = 383, y = 884, title = "완료")
         )
         val menuDto = MenuInfoDto(
-            title = "코카콜라(R)",
+            title = "빽스치노",
             options = listOf(),
-            category = "사이드"
+            category = "빽스치노"
         )
 
         //when: llm에게 질의한다
         val response = menuAgent.determineAction(menuDto, optUiList)
 
-        assertThat(response.title).isEqualTo("코카콜라(R)")
+        assertThat(response.title).isEqualTo("빽스치노")
         println(response)
     }
 }
