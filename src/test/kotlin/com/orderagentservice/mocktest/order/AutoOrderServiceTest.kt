@@ -2,6 +2,7 @@ package com.orderagentservice.mocktest.order
 
 import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.model.dto.AgentBackDto
+import com.orderagentservice.global.service.LogService
 import com.orderagentservice.global.util.GlobalLogger
 import com.orderagentservice.order.model.dto.ActionPathDto
 import com.orderagentservice.order.model.dto.CoordinateDto
@@ -65,6 +66,9 @@ class AutoOrderServiceTest {
     private lateinit var notificationService: NotificationService
 
     @Mock
+    private lateinit var logService: LogService
+
+    @Mock
     private lateinit var utgService: UtgService
 
     @Mock
@@ -87,7 +91,7 @@ class AutoOrderServiceTest {
 
     @BeforeEach
     fun setUp() {
-        autoOrderService = AutoOrderService(notificationService, utgService, globalLogger)
+        autoOrderService = AutoOrderService(notificationService, logService, utgService, globalLogger)
 
         orderRequest = AutoOrderRequest(
             place = TEST_PLACE_STORE,
