@@ -1,6 +1,7 @@
 package com.orderagentservice.order.service
 
 import com.orderagentservice.global.model.dto.LogDto
+import com.orderagentservice.global.service.LogService
 import com.orderagentservice.logger
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.OrderResultDto
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service
 @Service
 class AutoOrderService @Autowired constructor(
     private val notificationService: NotificationService,
+    private val logService: LogService,
     private val utgService: UtgService,
     private val globalLogger: GlobalLogger
 ) {
@@ -142,14 +144,15 @@ class AutoOrderService @Autowired constructor(
     }
 
     private fun logOrder(kioskId: String, taskId: String, message: String) {
-        val json = jsonMapper.writeValueAsString(
-            LogDto(
-                kioskId = kioskId,
-                taskId = taskId,
-                message = message
-            )
+        val logDto = LogDto(
+            kioskId = kioskId,
+            taskId = taskId,
+            message = message
         )
+        val json = jsonMapper.writeValueAsString(logDto)
+
         log.info(message)
-        notificationService.broadcastMessage(json)
+        logService.sendLog(logDto)
+//        notificationService.broadcastMessage(json)
     }
 }

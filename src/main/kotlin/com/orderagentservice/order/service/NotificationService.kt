@@ -26,6 +26,7 @@ class NotificationService @Autowired constructor(
     val CAPTURE_WAIT_TIMEOUT: Long = 10_000
     val ACTION_WAIT_TIMEOUT: Long = 10_000
 
+    @Deprecated("주문 로그 전송 변동으로 인한 비활성화")
     fun connectLog(): SseEmitter {
         val emitter = SseEmitter(CONNECT_TIMEOUT)
         notificationRepository.saveEmitter(emitter)
