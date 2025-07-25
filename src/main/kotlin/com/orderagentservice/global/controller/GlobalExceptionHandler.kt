@@ -1,6 +1,7 @@
 package com.orderagentservice.global.controller
 
 import com.orderagentservice.agent.exception.AgentManyRequestException
+import com.orderagentservice.global.exception.InvalidSessionException
 import com.orderagentservice.global.exception.S3NotSupportedType
 import com.orderagentservice.global.model.RootException
 import com.orderagentservice.global.model.response.ApiResponse
@@ -75,6 +76,11 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(LlmParseException::class)
     fun handleLlmParseException(e: LlmParseException): ApiResponse<*> {
+        return ApiResponse.fail<LlmParseException>(e)
+    }
+
+    @ExceptionHandler(InvalidSessionException::class)
+    fun handleInvalidSessionException(e: InvalidSessionException): ApiResponse<*> {
         return ApiResponse.fail<LlmParseException>(e)
     }
 }
