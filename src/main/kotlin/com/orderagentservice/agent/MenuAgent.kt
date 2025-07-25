@@ -42,7 +42,7 @@ class MenuAgent @Autowired constructor(
             Here is request input:${menuDto}
             Here is ui list:${uiList}
 
-            Primary Goal: Your main goal is to find a specific menu item. Falling back to a category is a secondary option only when the specific menu cannot be found.
+            Primary Goal: Your main goal is to find a specific menu item. Falling back to an exact title match (menu or category) is the secondary option.
             
             Decision Logic Flow (Follow these steps in order):
             1. Prioritize Direct Menu Match (Flexible Matching):
@@ -55,33 +55,31 @@ class MenuAgent @Autowired constructor(
                 Action for Match:
                     If you find one or more matches, choose the one that most completely matches the input.title. For example, if the input is '치즈버거' and the list has '치즈버거' and '더블치즈버거', select '치즈버거'.
                     Set the 'title' in your response to the input.title, Set 'goNext' to false. Use the 'coordinate' of the matched UI element.
-                    
+                    At this time, I'll take into account some typos (one or two spacing errors).
+            
             2. Fallback to Category Match:
                 Condition: Execute this step ONLY IF no direct menu match was found in Step 1.
-                Action:
-                    Find a UI element from the uiList where the ui.title exactly matches the input.category.
-                    If a category match is found: Set the 'title' in your response to category of input not title of ui list, Set 'goNext to true, Use the 'coordinate' of the matched category UI element.
+                Action: Find a UI element from the uiList where the ui.title exactly matches the input.title. This case typically represents clicking a category button.
+                Example: If input.title is '버거' and a ui.title is also '버거', this is a successful match.
+                         At this time, I'll take into account some typos (one or two spacing errors).
             
             'goNext' is whether to go to the next page, 'score' is the accuracy score, 'coordinate' is the UI coordinate you need to click to go to the next page and 'title' is the UI title that you click.
+            The title of the response must contain the title of the input not title of ui list.
             
             SCORE NOTES:
             1. Perfect match (Score: 1.0)
                 Situation: When the title of input matches exactly the title of the UI in the uiList.
                 Judgment: the most ideal situation where no further exploration is needed.
-            
-            2. If the categories match perfectly (Score: 1.0)
-                Situation: Title is not on the ui list, but when the category that came with input matches exactly the Title on the UI on the uiList.
-                Judgment: The next step (move category) to find the menu is clear.
                 
-            3. When semantic/contextual categories match (Score: 0.8 to 0.9)
-                Situation: neither input's title nor category is on the ui list, but when AI finds a top category on the ui list that is very similar in meaning to input's category or includes it.
-                Judgment: No direct information, but we used AI's knowledge to infer the most likely next steps.
+            2. Typo-Tolerant Match Found (Score: 0.8 to 0.9)
+                Situation: No perfect match, but title of the UI in the uiList is found that is highly similar to the input title, suggesting a typo.
+                Judgment: A likely match was found despite a minor error.
                 
-            4. Uncertain but most likely choice made (Score: 0.5 to 0.7)
+            3. Uncertain but most likely choice made (Score: 0.5 to 0.7)
                 Situation: When there is no matching menu or clear category at all. But when ui list has a general UI to continue navigating, such as "모든 메뉴 보기", "다음", "더보기".
                 Judgment: I can't find the answer on the current page, but I can suggest a way to continue my quest.
                 
-            5. If no action can be proposed (Score: 0.0 to 0.4)
+            4. If no action can be proposed (Score: 0.0 to 0.4)
                 Situation: When matching menus, categories, and even general navigation UI like "다음" are not on ui list.
                 Judgment: There is no valid click action that AI can do in the current state.
 
