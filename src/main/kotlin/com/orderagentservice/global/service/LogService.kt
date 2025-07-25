@@ -1,5 +1,6 @@
 package com.orderagentservice.global.service
 
+import com.orderagentservice.global.exception.InvalidSessionException
 import com.orderagentservice.global.model.dto.LogDto
 import com.orderagentservice.global.model.response.ApiResponse
 import com.orderagentservice.order.model.response.MenuInfoResponse
@@ -33,7 +34,7 @@ class LogService @Autowired constructor(
             ).body!!
             return response
         } catch (e: HttpClientErrorException) {
-            throw
+            throw InvalidSessionException()
         }
     }
 }
