@@ -80,6 +80,7 @@ class MenuGraphInitializeService @Autowired constructor(
                 if (isFirst == true) {
                     handleFirstNode(context, menuDto, llmUiList)
                     isFirst = false
+                    continue
                 }
                 isNext = false
             } else {
