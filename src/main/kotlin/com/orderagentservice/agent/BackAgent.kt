@@ -106,7 +106,7 @@ class BackAgent @Autowired constructor(
                 ]):
             ```json
             {
-                "score": 0.9,
+                "score": 1.0,
                 "coordinate": [123, 87],
                 "title": "선택완료"
             }
