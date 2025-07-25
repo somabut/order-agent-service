@@ -67,6 +67,7 @@ class UiExtractorManager @Autowired constructor(
     fun getUiComponents(image: File, kioskId: String): MutableList<LlmUiComponentDto> {
         //ui extractor에게 이미지 파싱 요청
         val uiComponents = queryUiExtractor(image)
+        println(uiComponents)
 
         //옴니파서에게 받은 이미지 적절히 변환
         val llmUiList = mutableListOf<LlmUiComponentDto>()
