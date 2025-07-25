@@ -12,6 +12,7 @@ enum class ErrorCode(
     AGENT_MANY_REQUEST(101, "llm 모델에게 너무 많은 요청을 했습니다.", HttpStatus.TOO_MANY_REQUESTS),
 
     GLOBAL_S3_TYPE_ERROR(1, "지원하지 않는 이미지 타입입니다.", HttpStatus.UNSUPPORTED_MEDIA_TYPE),
+    GLOBAL_SESSION_LOG_ERROR(2, "올바르지 않은 세션 ID입니다", HttpStatus.BAD_REQUEST),
 
     ORDER_NO_SUCH_KIOSK(201,"존재하지 않는 키오스크에게 sse를 보냈습니다.", HttpStatus.BAD_REQUEST),
     ORDER_COMMAND_TIMEOUT(202, "클라이언트의 명령 응답시간이 초과되었습니다.", HttpStatus.REQUEST_TIMEOUT),
