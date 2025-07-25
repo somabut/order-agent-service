@@ -98,6 +98,7 @@ class MenuGraphInitializeService @Autowired constructor(
     }
 
     private fun handleFirstNode(context: GraphInitializeContext, firstMenu: MenuInfoDto, llmUiList: List<LlmUiComponentDto>) {
+        val kioskId = context.kioskId
         // 포장/매장 UI 확인
         placeGraphInitializeService.initializeGraph(context, llmUiList)
 
@@ -110,8 +111,10 @@ class MenuGraphInitializeService @Autowired constructor(
             title = categoryAction.title,
             kioskId = context.kioskId
         ))
-
         utgService.saveRel(context.lastNode!!.id, categoryNode.id, NodeRelation.PATH_TO)
+
+        notificationService.sendActionCommand(kioskId, CoordinateDto(x = categoryAction.coordinate[0], y = categoryAction.coordinate[1], title = categoryAction.title))
+
         context.lastNode = categoryNode
         context.nowCategory = firstMenu.category
         context.history.add(categoryAction)
