@@ -1,7 +1,6 @@
 package com.orderagentservice.order.service
 
 import com.orderagentservice.agent.PaymentAgent
-import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.model.dto.LlmUiComponentDto
 import com.orderagentservice.logger
 import com.orderagentservice.order.exception.LowScoreException
@@ -9,7 +8,6 @@ import com.orderagentservice.order.model.GraphInitializeContext
 import com.orderagentservice.order.model.NodeRelation
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.UiDto
-import com.orderagentservice.order.model.entity.UiEntity
 import com.orderagentservice.order.util.UiExtractorManager
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -39,7 +37,7 @@ class PaymentGraphInitializeService @Autowired constructor(
             llmUiList = uiExtractorManager.getUiComponents(image, kioskId)
 
             //포장/매장 UI 확인
-            if (context.isFindPlace == false) {
+            if (context.determinePlace == false) {
                 placeGraphInitializeService.initializeGraph(context, llmUiList)
             }
 

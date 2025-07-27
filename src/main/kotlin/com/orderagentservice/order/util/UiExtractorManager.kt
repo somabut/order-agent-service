@@ -6,6 +6,7 @@ import com.orderagentservice.logger
 import com.orderagentservice.order.exception.UiExtractException
 import com.orderagentservice.order.model.dto.OmniUiComponentDto
 import com.orderagentservice.order.model.response.OmniResponse
+import com.orderagentservice.order.service.NotificationService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.core.env.Environment
@@ -26,7 +27,8 @@ import kotlin.collections.HashMap
 
 @Component
 class UiExtractorManager @Autowired constructor(
-    private val env: Environment
+    private val env: Environment,
+    private val notificationService: NotificationService
 ) {
     private val log = logger()
 
@@ -64,10 +66,10 @@ class UiExtractorManager @Autowired constructor(
         }
     }
 
-    fun getUiComponents(image: File, kioskId: String): MutableList<LlmUiComponentDto> {
+    fun getUiComponents(kioskId: String): MutableList<LlmUiComponentDto> {
         //ui extractor에게 이미지 파싱 요청
+        val image = notificationService.sendCaptureCommand(kioskId)
         val uiComponents = queryUiExtractor(image)
-        println(uiComponents)
 
         //옴니파서에게 받은 이미지 적절히 변환
         val llmUiList = mutableListOf<LlmUiComponentDto>()

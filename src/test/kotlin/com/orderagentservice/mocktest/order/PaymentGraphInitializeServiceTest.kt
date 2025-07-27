@@ -120,7 +120,7 @@ class PaymentGraphInitializeServiceTest {
         // when: 결제 그래프 초기화 실행
         val context = GraphInitializeContext(
             kioskId = TEST_KIOSK_ID,
-            isFindPlace = true,
+            determinePlace = true,
             lowScoreCount = 0,
             lastNode = lastNode,
             imageHash = null,
@@ -146,7 +146,7 @@ class PaymentGraphInitializeServiceTest {
         // given: 포장/매장 UI를 찾지 못한 상태
         val context = GraphInitializeContext(
             kioskId = TEST_KIOSK_ID,
-            isFindPlace = false,
+            determinePlace = false,
             lowScoreCount = 0,
             lastNode = lastNode,
             imageHash = null,
@@ -210,7 +210,7 @@ class PaymentGraphInitializeServiceTest {
         // when: 결제 그래프 초기화 실행
         val context = GraphInitializeContext(
             kioskId = TEST_KIOSK_ID,
-            isFindPlace = true,
+            determinePlace = true,
             lowScoreCount = 0,
             lastNode = lastNode,
             imageHash = null,
@@ -243,7 +243,7 @@ class PaymentGraphInitializeServiceTest {
         // when: 결제 그래프 초기화 실행
         val context = GraphInitializeContext(
             kioskId = TEST_KIOSK_ID,
-            isFindPlace = true,
+            determinePlace = true,
             lowScoreCount = 0,
             lastNode = lastNode,
             imageHash = null,

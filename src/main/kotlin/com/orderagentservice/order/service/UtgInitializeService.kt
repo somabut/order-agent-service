@@ -1,17 +1,8 @@
 package com.orderagentservice.order.service
 
-import com.orderagentservice.agent.BackAgent
-import com.orderagentservice.agent.MenuAgent
-import com.orderagentservice.agent.PaymentAgent
-import com.orderagentservice.agent.model.dto.LlmUiComponentDto
 import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.logger
 import com.orderagentservice.order.model.GraphInitializeContext
-import com.orderagentservice.order.model.NodeRelation
-import com.orderagentservice.order.model.dto.MenuInfoDto
-import com.orderagentservice.order.model.dto.PaymentInfoDto
-import com.orderagentservice.order.model.dto.UiDto
-import com.orderagentservice.order.util.UiExtractorManager
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -34,7 +25,7 @@ class UtgInitializeService @Autowired constructor(
 
         val context = GraphInitializeContext(
             kioskId = kioskId,
-            isFindPlace = false,
+            determinePlace = false,
             lowScoreCount = 0,
             lastNode = null,
             imageHash = null,
