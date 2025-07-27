@@ -152,7 +152,7 @@ class AutoOrderService @Autowired constructor(
         val json = jsonMapper.writeValueAsString(logDto)
 
         log.info(message)
-        logService.sendLog(logDto)
+        logService.sendLog(json)
 //        notificationService.broadcastMessage(json)
     }
 }
