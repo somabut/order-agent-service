@@ -17,13 +17,6 @@ class NotificationRepository {
 
     fun getLogEmitters() = logChannelSet
 
-    fun saveEmitter(sseEmitter: SseEmitter) {
-        sseEmitter.onCompletion { logChannelSet.remove(sseEmitter) }
-        sseEmitter.onTimeout { logChannelSet.remove(sseEmitter) }
-        sseEmitter.onError { logChannelSet.remove(sseEmitter) }
-        logChannelSet.add(sseEmitter)
-    }
-
     fun saveEmitter(kioskId: String, sseEmitter: SseEmitter): SseEmitter {
         kioskNotification[kioskId] = sseEmitter
         return sseEmitter

@@ -14,13 +14,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
 class SseController @Autowired constructor(
     private val notificationService: NotificationService
 ) {
-    @Deprecated("주문 로그 전송 변동으로 인한 비활성화")
-    @GetMapping("/sse/connect", produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
-    fun connectSseLog(): SseEmitter {
-        val emitter = notificationService.connectLog()
-        return emitter
-    }
-
     @GetMapping("/sse/connect/{kioskId}", produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
     fun connectSseAction(@PathVariable kioskId: String): SseEmitter {
         val emitter = notificationService.connectAction(kioskId)

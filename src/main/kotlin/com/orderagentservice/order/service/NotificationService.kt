@@ -26,16 +26,6 @@ class NotificationService @Autowired constructor(
     val CAPTURE_WAIT_TIMEOUT: Long = 10_000
     val ACTION_WAIT_TIMEOUT: Long = 10_000
 
-    @Deprecated("주문 로그 전송 변동으로 인한 비활성화")
-    fun connectLog(): SseEmitter {
-        val emitter = SseEmitter(CONNECT_TIMEOUT)
-        notificationRepository.saveEmitter(emitter)
-        log.info("로그 SSE 연결성공")
-        emitter.send("[order agent service]: 연결 성공")
-
-        return emitter
-    }
-
     fun connectAction(kioskId: String): SseEmitter {
         val emitter = notificationRepository.saveEmitter(kioskId, SseEmitter(CONNECT_TIMEOUT))
         log.info("액션 SSE 연결성공: ${kioskId}")

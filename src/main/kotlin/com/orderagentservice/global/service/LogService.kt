@@ -19,13 +19,13 @@ class LogService @Autowired constructor(
 ) {
     private val ORDER_CHAT_HOST = env.getProperty("order-chat.host")
 
-    fun sendLog(logDto: LogDto): ApiResponse<*> {
+    fun sendLog(message: String): ApiResponse<*> {
         val url = "$ORDER_CHAT_HOST/v1/task/"
 
         val restTemplate = RestTemplate()
         val headers = HttpHeaders()
         headers.contentType = MediaType.APPLICATION_JSON
-        val entity = HttpEntity<LogDto>(logDto, headers)
+        val entity = HttpEntity<String>(message, headers)
 
         try {
             val response = restTemplate.exchange(
