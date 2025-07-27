@@ -4,6 +4,8 @@ import com.orderagentservice.agent.BackAgent
 import com.orderagentservice.agent.MenuAgent
 import com.orderagentservice.agent.MissingComponentAgent
 import com.orderagentservice.agent.PageAgent
+import com.orderagentservice.agent.model.dto.AgentActionDto
+import com.orderagentservice.agent.model.dto.AgentBackDto
 import com.orderagentservice.agent.model.dto.LlmUiComponentDto
 import com.orderagentservice.logger
 import com.orderagentservice.order.exception.LowScoreException
@@ -66,23 +68,23 @@ class MenuGraphInitializeService @Autowired constructor(
         for (menuDto in menuList) {
             if (menuDto.category != context.nowCategory) {
                 //카테고리가 다르다면 해당 카테고리로 이동
-                selectCategory(context, menuDto)
+                val uiList = uiExtractorManager.getUiComponents(context.kioskId)
+                selectCategory(context, menuDto, uiList)
             }
 
             log.info("진행 중인 메뉴: ${menuDto.title}, 카테고리: ${menuDto.category}")
-            selectMenu(context, menuDto)
+            val uiList = uiExtractorManager.getUiComponents(context.kioskId)
+            val node = selectMenu(context, menuDto, uiList)
 
             //옵션 선택
-            if (menuDto.category.isNotEmpty()) {
+            if (menuDto.options.isNotEmpty()) {
                 selectOption(menuDto, context)
-                selectComplete(context)
+                selectBack(node, context)
             }
         }
     }
 
-    private fun selectCategory(context: GraphInitializeContext, menuDto: MenuInfoDto) {
-        val llmUiList = uiExtractorManager.getUiComponents(context.kioskId)
-
+    private fun selectCategory(context: GraphInitializeContext, menuDto: MenuInfoDto, llmUiList: List<LlmUiComponentDto>) {
         val categoryDto = MenuInfoDto(
             title = menuDto.category,
             options = listOf(),
@@ -95,59 +97,25 @@ class MenuGraphInitializeService @Autowired constructor(
             return
         }
 
-        log.info("카테고리 노드를 생성합니다. go_next: ${action.goNext}, score: ${action.score}, title: ${action.title}")
-
-        val node = utgService.saveNode(UiDto(
-            isNext = true,
-            x = action.coordinate[0], y = action.coordinate[1],
-            title = action.title,
-            kioskId = context.kioskId
-        ))
+        //노드 생성
+        val node = createCategoryNode(action, context)
+        context.lastNode = node
 
         //현재 카테고리 좌표 클릭
         notificationService.sendActionCommand(context.kioskId, CoordinateDto(action.coordinate[0], action.coordinate[1], action.title))
-
-        utgService.saveRel(context.lastNode!!.id, node.id, NodeRelation.PATH_TO)
-        utgService.saveRel(node.id, context.lastNode!!.id, NodeRelation.PATH_TO)
-
-        context.nowCategory = menuDto.category
-        context.lastNode = node
     }
 
-    private fun selectMenu(context: GraphInitializeContext, menuDto: MenuInfoDto) {
-        val llmUiList = uiExtractorManager.getUiComponents(context.kioskId)
-
+    private fun selectMenu(context: GraphInitializeContext, menuDto: MenuInfoDto, llmUiList: List<LlmUiComponentDto>): UiEntity {
         val action = menuAgent.determineAction(menuDto, llmUiList)
         context.history.add(action)
 
-        //점수 평가
-        if (handleLowScore(context, action.score) == false) {
-            return
-        }
-
-        log.info("메뉴 노드를 생성합니다. go_next: ${action.goNext}, score: ${action.score}, title: ${action.title}")
-        val node = utgService.saveNode(UiDto(
-            isNext = action.goNext,
-            x = action.coordinate[0], y = action.coordinate[1],
-            title = action.title,
-            kioskId = context.kioskId
-        ))
+        //노드 생성
+        val node = createMenuNode(action, context)
 
         //현재 메뉴 좌표 클릭
         notificationService.sendActionCommand(context.kioskId, CoordinateDto(action.coordinate[0], action.coordinate[1], action.title))
 
-        //TODO(모달은 다음에)
-//        //모달 처리
-//        handleModal(
-//            menuDto = menuDto,
-//            menuNode = node,
-//            context = context
-//        )
-
-        //옵션 노드 초기화
-        selectOption(menuDto, context)
-
-        utgService.saveRel(context.lastNode!!.id, node.id, NodeRelation.HAS_TO)
+        return node
     }
 
     private fun selectOption(
@@ -172,36 +140,75 @@ class MenuGraphInitializeService @Autowired constructor(
             val optAction = menuAgent.determineAction(MenuInfoDto(opt, listOf(), menuDto.title), llmOptList)
             context.history.add(optAction)
 
-            log.info("옵션 노드를 생성합니다. go_next: ${optAction.goNext}, score: ${optAction.score}, coordinate: ${optAction.coordinate}, title: ${optAction.title}")
-            val optEntity = utgService.saveNode(UiDto(
-                isNext = optAction.goNext,
-                x = optAction.coordinate[0], y = optAction.coordinate[1],
-                title = optAction.title,
-                kioskId = kioskId
-            ))
-            utgService.saveRel(context.lastNode!!.id, optEntity.id, NodeRelation.OPT_TO)
+            //노드 생성
+            createOptionNode(optAction, context)
         }
     }
 
-    private fun selectComplete(context: GraphInitializeContext) {
+    private fun selectBack(menuNode: UiEntity, context: GraphInitializeContext) {
         val kioskId = context.kioskId
         val llmOptList = uiExtractorManager.getUiComponents(kioskId)
 
         //다시 원래 페이지로 돌아가야 하므로 backAgent를 통해 이전 페이지로 돌아가기
         val backAction = backAgent.determineBack(llmOptList)
 
-        val backEntity = utgService.saveNode(UiDto(
-            isNext = false,
-            x = backAction.coordinate[0], y = backAction.coordinate[1],
-            title = backAction.title,
-            kioskId = kioskId
-        ))
-        utgService.saveRel(context.lastNode!!.id, backEntity.id, NodeRelation.BACK_TO)
+        //노드 생성
+        createBackNode(backAction, menuNode, context)
+        context.history.add(backAction.toActionDto())
 
         //sse를 통해 클라이언트에게 원래 페이지로 돌아가는 좌표 클릭하도록 하기
         log.info("돌아가는 좌표를 클릭중입니다. 좌표: ${backAction.coordinate}")
         notificationService.sendActionCommand(kioskId, CoordinateDto(backAction.coordinate[0], backAction.coordinate[1], backAction.title))
-        context.history.add(backAction.toActionDto())
+    }
+
+    private fun createCategoryNode(action: AgentActionDto, context: GraphInitializeContext): UiEntity {
+        log.info("카테고리 노드를 생성합니다. go_next: ${action.goNext}, score: ${action.score}, title: ${action.title}")
+
+        val node = utgService.saveNode(UiDto(
+            isNext = true,
+            x = action.coordinate[0], y = action.coordinate[1],
+            title = action.title,
+            kioskId = context.kioskId
+        ))
+        utgService.saveRel(context.lastNode!!.id, node.id, NodeRelation.PATH_TO)
+        utgService.saveRel(node.id, context.lastNode!!.id, NodeRelation.PATH_TO)
+
+        return node
+    }
+
+    private fun createMenuNode(action: AgentActionDto, context: GraphInitializeContext): UiEntity {
+        log.info("메뉴 노드를 생성합니다. go_next: ${action.goNext}, score: ${action.score}, title: ${action.title}")
+        val node = utgService.saveNode(UiDto(
+            isNext = action.goNext,
+            x = action.coordinate[0], y = action.coordinate[1],
+            title = action.title,
+            kioskId = context.kioskId
+        ))
+        utgService.saveRel(context.lastNode!!.id, node.id, NodeRelation.HAS_TO)
+
+        return node
+    }
+
+    private fun createOptionNode(action: AgentActionDto, context: GraphInitializeContext) {
+        log.info("옵션 노드를 생성합니다. go_next: ${action.goNext}, score: ${action.score}, coordinate: ${action.coordinate}, title: ${action.title}")
+        val optEntity = utgService.saveNode(UiDto(
+            isNext = action.goNext,
+            x = action.coordinate[0], y = action.coordinate[1],
+            title = action.title,
+            kioskId = context.kioskId
+        ))
+        utgService.saveRel(context.lastNode!!.id, optEntity.id, NodeRelation.OPT_TO)
+    }
+
+    private fun createBackNode(action: AgentBackDto, menuNode: UiEntity, context: GraphInitializeContext) {
+        val backEntity = utgService.saveNode(UiDto(
+            isNext = false,
+            x = action.coordinate[0], y = action.coordinate[1],
+            title = action.title,
+            kioskId = context.kioskId
+        ))
+        utgService.saveRel(menuNode.id, backEntity.id, NodeRelation.BACK_TO)
+        utgService.saveRel(backEntity.id, context.lastNode!!.id, NodeRelation.BACK_TO)
     }
 
     private fun handleLowScore(context: GraphInitializeContext, score: Float): Boolean {

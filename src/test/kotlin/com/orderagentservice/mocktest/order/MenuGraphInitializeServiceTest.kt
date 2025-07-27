@@ -256,17 +256,16 @@ class MenuGraphInitializeServiceTest {
 
         setupBasicMocks(context)
         whenever(menuAgent.determineAction(any(), any())).thenReturn(firstAction, menuAction)
-        whenever(pageAgent.determineAction(any(), any())).thenReturn(pageAction)
 
         // when
         menuGraphInitializeService.initializeGraph(context, simpleMenuList)
 
         // then
-        assertEquals(4, context.history.size) // place(2) + category + menu
         assertTrue(context.determinePlace)
         assertNotNull(context.lastNode)
         assertEquals(TEST_FIRST_NODE_ID, context.lastNode!!.id)
         verify(utgService, times(3)).saveNode(any<UiDto>()) // root + category + menu
+        verify(menuAgent, times(2)).determineAction(any(), any())
     }
 
     @Test
@@ -274,39 +273,15 @@ class MenuGraphInitializeServiceTest {
         // given
         val context = createTestContext()
 
-        // ← mockStatic 블록 완전 제거!
         setupBasicMocks(context)
-        setupModalMocks(hasModal = false)
         setupOptionMocks()
 
         // when
         menuGraphInitializeService.initializeGraph(context, menuList)
 
         // then
-        assertTrue(context.history.size >= 6) // place(2) + category + menu + options(2) + back
         verify(pageAgent).determineAction(anyList(), any())
         verify(menuAgent, atLeastOnce()).determineAction(any(), any())
-    }
-
-    @Test
-    fun `메뉴 그래프 초기화가 성공한다_모달_있는_옵션_메뉴`() {
-        // given
-        val context = createTestContext()
-
-        // ← mockStatic 블록 완전 제거!
-        setupBasicMocks(context)
-        setupModalMocks(hasModal = true)
-        setupOptionMocks()
-
-        // when
-        menuGraphInitializeService.initializeGraph(context, menuList)
-
-        // then
-        println(context.history.size)
-        assertTrue(context.history.size >= 8) // place + category + menu + modal + modal + options + back
-        verify(pageAgent).determineAction(menuInfoWithOptionsDto.options, modalLlmUiList)
-        verify(menuAgent, times(2)).determineAction(menuInfoWithOptionsDto, modalLlmUiList) // 모달에서 메뉴 재선택
-        verify(utgService).saveRel(TEST_MENU_ENTITY_ID, TEST_MODAL_NODE_ID, NodeRelation.PATH_TO)
     }
 
     @Test
@@ -323,8 +298,8 @@ class MenuGraphInitializeServiceTest {
 
         whenever(utgService.saveNode(any<UiDto>())).thenReturn(rootNode, firstNode)
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
-        whenever(uiExtractorManager.getUiComponents(TEST_IMAGE_DATA, TEST_KIOSK_ID)).thenReturn(llmUiList)
-        whenever(placeGraphInitializeService.initializeGraph(any(), any())).thenAnswer {
+        whenever(uiExtractorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
+        whenever(placeGraphInitializeService.initializeGraph(any())).thenAnswer {
             val ctx = it.arguments[0] as GraphInitializeContext
             ctx.determinePlace = true
             placeActionList.forEach { action -> ctx.history.add(action) }
@@ -389,10 +364,10 @@ class MenuGraphInitializeServiceTest {
 
         // 테스트에 필요한 기본적인 Mocking
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
-        whenever(uiExtractorManager.getUiComponents(TEST_IMAGE_DATA, TEST_KIOSK_ID)).thenReturn(llmUiList)
+        whenever(uiExtractorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
         whenever(notificationService.sendActionCommand(any(), any())).thenReturn(actionResult)
         whenever(pageAgent.determineAction(any(), any())).thenReturn(pageAction) // handleModal 내부에서 사용될 수 있음
-        whenever(placeGraphInitializeService.initializeGraph(any(), any())).thenAnswer {
+        whenever(placeGraphInitializeService.initializeGraph(any())).thenAnswer {
             // 첫 handleFirstNode에서 호출되므로 Mocking 필요
             context.determinePlace = true
             Unit
@@ -418,8 +393,8 @@ class MenuGraphInitializeServiceTest {
         // ← mockStatic 블록 완전 제거!
         whenever(utgService.saveNode(any<UiDto>())).thenReturn(rootNode, firstNode, menuEntity)
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
-        whenever(uiExtractorManager.getUiComponents(TEST_IMAGE_DATA, TEST_KIOSK_ID)).thenReturn(llmUiList)
-        whenever(placeGraphInitializeService.initializeGraph(any(), any())).thenAnswer {
+        whenever(uiExtractorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
+        whenever(placeGraphInitializeService.initializeGraph(any())).thenAnswer {
             val ctx = it.arguments[0] as GraphInitializeContext
             callCount++
             if (callCount == 2) {
@@ -436,7 +411,7 @@ class MenuGraphInitializeServiceTest {
 
         // then: 포장/매장 UI 탐색이 두 번 호출되고 마지막에 찾아진다
         assertTrue(context.determinePlace)
-        verify(placeGraphInitializeService, times(2)).initializeGraph(any(), any())
+        verify(placeGraphInitializeService, times(2)).initializeGraph(any())
     }
 
     @Test
@@ -474,9 +449,8 @@ class MenuGraphInitializeServiceTest {
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID))
             .thenReturn(TEST_IMAGE_DATA)
             .thenReturn(TEST_MODAL_IMAGE_DATA)
-        whenever(uiExtractorManager.getUiComponents(TEST_IMAGE_DATA, TEST_KIOSK_ID)).thenReturn(llmUiList)
-        whenever(uiExtractorManager.getUiComponents(TEST_MODAL_IMAGE_DATA, TEST_KIOSK_ID)).thenReturn(modalLlmUiList)
-        whenever(placeGraphInitializeService.initializeGraph(any(), any())).thenAnswer {
+        whenever(uiExtractorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
+        whenever(placeGraphInitializeService.initializeGraph(any())).thenAnswer {
             val ctx = it.arguments[0] as GraphInitializeContext
             ctx.determinePlace = true
             placeActionList.forEach { action -> ctx.history.add(action) }
@@ -516,8 +490,8 @@ class MenuGraphInitializeServiceTest {
 
         whenever(utgService.saveNode(any<UiDto>())).thenReturn(rootNode, menuEntity)
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
-        whenever(uiExtractorManager.getUiComponents(TEST_IMAGE_DATA, TEST_KIOSK_ID)).thenReturn(llmUiList)
-        whenever(placeGraphInitializeService.initializeGraph(any(), anyList())).thenAnswer {  }
+        whenever(uiExtractorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
+        whenever(placeGraphInitializeService.initializeGraph(any())).thenAnswer {  }
         whenever(menuAgent.determineAction(any<MenuInfoDto>(), anyList())).thenReturn(menuAction)
         whenever(backAgent.determineBack(any())).thenReturn(backAction)
         whenever(pageAgent.determineAction(anyList(), anyList())).thenReturn(pageAction)

@@ -33,12 +33,11 @@ class PaymentGraphInitializeService @Autowired constructor(
         var isNext = true
         var llmUiList = mutableListOf<LlmUiComponentDto>()
         while (true) {
-            val image = notificationService.sendCaptureCommand(kioskId)
-            llmUiList = uiExtractorManager.getUiComponents(image, kioskId)
+            llmUiList = uiExtractorManager.getUiComponents(kioskId)
 
             //포장/매장 UI 확인
             if (context.determinePlace == false) {
-                placeGraphInitializeService.initializeGraph(context, llmUiList)
+                placeGraphInitializeService.initializeGraph(context)
             }
 
             val action = paymentAgent.determineAction(llmUiList)

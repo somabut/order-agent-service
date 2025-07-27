@@ -36,7 +36,7 @@ class UiExtractorManager @Autowired constructor(
     private val UI_EXCTRACTOR_PORT = env.getProperty("ui-extractor.port")
     private val UI_EXTRACTOR_API_KEY = env.getProperty("ui-extractor.api-key")!!
 
-    fun queryUiExtractor(image: File): List<OmniUiComponentDto> {
+    private fun queryUiExtractor(image: File): List<OmniUiComponentDto> {
         val restTemplate = RestTemplate()
         val url = "$UI_EXCTRACTOR_HOST/api/extract-ui"
 

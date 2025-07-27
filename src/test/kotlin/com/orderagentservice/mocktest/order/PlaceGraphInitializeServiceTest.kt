@@ -11,6 +11,7 @@ import com.orderagentservice.order.model.entity.UiEntity
 import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.PlaceGraphInitializeService
 import com.orderagentservice.order.service.UtgService
+import com.orderagentservice.order.util.UiExtractorManager
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -37,6 +38,7 @@ class PlaceGraphInitializeServiceTest {
     private lateinit var notificationService: NotificationService
     private lateinit var utgService: UtgService
     private lateinit var placeGraphInitializeService: PlaceGraphInitializeService
+    private lateinit var uiExtractorManager: UiExtractorManager
 
     private lateinit var lastNode: UiEntity
     private lateinit var llmUiList: List<LlmUiComponentDto>
@@ -50,7 +52,8 @@ class PlaceGraphInitializeServiceTest {
         placeAgent = mock()
         notificationService = mock()
         utgService = mock()
-        placeGraphInitializeService = PlaceGraphInitializeService(placeAgent, notificationService, utgService)
+        uiExtractorManager = mock()
+        placeGraphInitializeService = PlaceGraphInitializeService(placeAgent, notificationService, uiExtractorManager, utgService)
 
         lastNode = UiEntity(
             id = TEST_LAST_NODE_ID,
@@ -110,7 +113,7 @@ class PlaceGraphInitializeServiceTest {
         whenever(notificationService.sendActionCommand(TEST_KIOSK_ID, TEST_COORDINATE)).thenReturn(actionResult)
 
         // when: 그래프 초기화 실행
-        placeGraphInitializeService.initializeGraph(context, llmUiList)
+        placeGraphInitializeService.initializeGraph(context)
 
         // then: 히스토리가 정상적으로 반환되고 관련 메서드들이 호출된다
         assertEquals(2, context.history.size)
@@ -137,7 +140,7 @@ class PlaceGraphInitializeServiceTest {
         whenever(utgService.saveNode(any<UiDto>())).thenReturn(uiEntity)
 
         // when: 그래프 초기화 실행
-        placeGraphInitializeService.initializeGraph(context, llmUiList)
+        placeGraphInitializeService.initializeGraph(context)
 
         // then: 빈 히스토리가 반환되고 노드 생성 관련 메서드는 호출되지 않는다
         assertTrue(context.history.isEmpty())
