@@ -101,7 +101,6 @@ class PlaceGraphInitializeServiceTest {
         val context = GraphInitializeContext(
             kioskId = TEST_KIOSK_ID,
             determinePlace = false,
-            lowScoreCount = 0,
             lastNode = lastNode,
             imageHash = null,
             nowCategory = null,
@@ -130,7 +129,6 @@ class PlaceGraphInitializeServiceTest {
         val context = GraphInitializeContext(
             kioskId = TEST_KIOSK_ID,
             determinePlace = false,
-            lowScoreCount = 0,
             lastNode = lastNode,
             imageHash = null,
             nowCategory = null,

@@ -96,11 +96,6 @@ class MenuGraphInitializeService @Autowired constructor(
         )
         val action = menuAgent.determineAction(categoryDto, llmUiList)
 
-        //점수 평가
-        if (handleLowScore(context, action.score) == false) {
-            return
-        }
-
         //노드 생성
         val node = createCategoryNode(action, context)
         context.lastNode = node
@@ -228,19 +223,6 @@ class MenuGraphInitializeService @Autowired constructor(
         utgService.saveRel(backEntity.id, context.lastNode!!.id, NodeRelation.BACK_TO)
     }
 
-    private fun handleLowScore(context: GraphInitializeContext, score: Float): Boolean {
-        val addCount = evaluateActionScore(score)
-        if (addCount > 0) {
-            log.info("낮은 액션 정확도 점수: $score. 카운트를 추가하고 현재 액션을 중단합니다.")
-            context.lowScoreCount += addCount
-            if (context.lowScoreCount >= 5) {
-                throw LowScoreException()
-            }
-            return false
-        }
-        return true
-    }
-
     //TODO(모달 로직 임시 비활성화)
 //    private fun handleModal(menuDto: MenuInfoDto, menuNode: UiEntity, context: GraphInitializeContext) {
 //        val kioskId = context.kioskId
@@ -321,14 +303,6 @@ class MenuGraphInitializeService @Autowired constructor(
                     targetList.remove(ele)
                 }
             }
-        }
-    }
-
-    private fun evaluateActionScore(score: Float): Int {
-        return when {
-            score > 0.5 && score <= 0.6 -> 1
-            score <= 0.5 -> 3
-            else -> 0
         }
     }
 }

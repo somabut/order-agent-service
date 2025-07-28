@@ -43,22 +43,6 @@ class PaymentGraphInitializeService @Autowired constructor(
             val action = paymentAgent.determineAction(llmUiList)
             context.history.add(action)
 
-            val addCount = when {
-                action.score in 0.6..<0.7 -> 1
-                action.score <= 0.5 -> 3
-                else -> 0
-            }
-            if (addCount > 0) {
-                log.info("낮은 액션 정확도 점수: ${action.score}")
-                context.lowScoreCount += addCount
-                continue
-            }
-
-            //낮은 점수가 쌓이면 예외
-            if (context.lowScoreCount >= 5) {
-                throw LowScoreException()
-            }
-
             //클릭 액션 요청
             notificationService.sendActionCommand(kioskId, CoordinateDto(x = action.coordinate[0], y = action.coordinate[1], title = action.title))
 

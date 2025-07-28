@@ -44,23 +44,6 @@ class PaymentAgent @Autowired constructor(
             'goNext' is whether to go to the next page, 'score' is the accuracy score, 
             'coordinate' is the UI coordinate you need to click to go to the next page and 'title' is the UI title that you click.
             
-            SCORE NOTES:
-            1. Perfect match - Card insertion UI found (Score: 1.0)
-               Situation: When the ui list containers exit card insertion messages like '카드를 삽입해 주세요', '카드를 삽입해 주세요', '카드를 삽입해 주세요'.
-               Judgment: The final step is reached where the user can insert their card, requiring no further navigation.
-            
-            2. Perfect match - Payment progression UI found (Score: 1.0)
-               Situation: When the ui list contains exact card payment options like '카드', '체크카드', '카드결제' or payment progression buttons like '결제하기', '다음', '계속'.
-               Judgment: Clear identification of the required payment method selection or progression UI to proceed toward card insertion.
-            
-            3. Semantic/contextual payment match (Score: 0.7 to 0.8)
-               Situation: When UI elements are found that semantically relate to payment progression but don't use exact keywords (e.g., '진행', '확인').
-               Judgment: Moderate confidence based on context interpretation, but requires assumption about UI functionality.
-            
-            4. Uncertain identification (Score: 0 to 0.6)
-               Situation: Found UI elements that might be related to payment but the connection is ambiguous or requires significant assumption.
-               Judgment: Low confidence due to unclear UI labeling or unconventional payment flow terminology.
-            
             One Example(
                 ui_list: [
                     {"coordinate": [210, 364], "title": "결제하기"},

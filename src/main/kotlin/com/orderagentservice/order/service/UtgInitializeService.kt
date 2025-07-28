@@ -26,7 +26,6 @@ class UtgInitializeService @Autowired constructor(
         val context = GraphInitializeContext(
             kioskId = kioskId,
             determinePlace = false,
-            lowScoreCount = 0,
             lastNode = null,
             imageHash = null,
             nowCategory = null,

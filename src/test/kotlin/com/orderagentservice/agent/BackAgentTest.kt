@@ -30,7 +30,6 @@ class BackAgentTest @Autowired constructor(
         val response = backAgent.determineBack(uiList)
 
         //then: 올바른 액션 반환
-//        assertThat(response.score).isGreaterThan(0.8F)
         assertThat(response.title).isEqualTo("다음으로")
         assertThat(response.coordinate[0]).isEqualTo(125)
         assertThat(response.coordinate[1]).isEqualTo(732)

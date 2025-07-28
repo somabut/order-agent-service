@@ -310,8 +310,6 @@ class MenuGraphInitializeServiceTest {
         assertThrows<LowScoreException> {
             menuGraphInitializeService.initializeGraph(context, lowScoreMenuList)
         }
-
-        assertTrue(context.lowScoreCount >= 5)
     }
 
     @Test
@@ -436,7 +434,6 @@ class MenuGraphInitializeServiceTest {
         return GraphInitializeContext(
             kioskId = TEST_KIOSK_ID,
             determinePlace = false,
-            lowScoreCount = 0,
             lastNode = null,
             nowCategory = null,
             imageHash = null,
@@ -502,7 +499,6 @@ class MenuGraphInitializeServiceTest {
         val context = GraphInitializeContext(
             kioskId = TEST_KIOSK_ID,
             determinePlace = false,
-            lowScoreCount = 0,
             lastNode = null,
             imageHash = null,
             nowCategory = null,
