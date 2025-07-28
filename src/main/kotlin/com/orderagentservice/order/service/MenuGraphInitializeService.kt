@@ -78,13 +78,17 @@ class MenuGraphInitializeService @Autowired constructor(
 
             //옵션 선택
             if (menuDto.options.isNotEmpty()) {
-                selectOption(menuDto, context)
+                selectOption(menuDto, node, context)
                 selectBack(node, context)
             }
         }
     }
 
-    private fun selectCategory(context: GraphInitializeContext, menuDto: MenuInfoDto, llmUiList: List<LlmUiComponentDto>) {
+    private fun selectCategory(
+        context: GraphInitializeContext,
+        menuDto: MenuInfoDto, llmUiList:
+        List<LlmUiComponentDto>
+    ) {
         val categoryDto = MenuInfoDto(
             title = menuDto.category,
             options = listOf(),
@@ -105,7 +109,11 @@ class MenuGraphInitializeService @Autowired constructor(
         notificationService.sendActionCommand(context.kioskId, CoordinateDto(action.coordinate[0], action.coordinate[1], action.title))
     }
 
-    private fun selectMenu(context: GraphInitializeContext, menuDto: MenuInfoDto, llmUiList: List<LlmUiComponentDto>): UiEntity {
+    private fun selectMenu(
+        context: GraphInitializeContext,
+        menuDto: MenuInfoDto,
+        llmUiList: List<LlmUiComponentDto>
+    ): UiEntity {
         val action = menuAgent.determineAction(menuDto, llmUiList)
         context.history.add(action)
 
@@ -120,6 +128,7 @@ class MenuGraphInitializeService @Autowired constructor(
 
     private fun selectOption(
         menuDto: MenuInfoDto,
+        menuNode: UiEntity,
         context: GraphInitializeContext
     ) {
         //메뉴의 옵션 노드 추가
@@ -141,7 +150,7 @@ class MenuGraphInitializeService @Autowired constructor(
             context.history.add(optAction)
 
             //노드 생성
-            createOptionNode(optAction, context)
+            createOptionNode(optAction, menuNode, context)
         }
     }
 
@@ -189,7 +198,11 @@ class MenuGraphInitializeService @Autowired constructor(
         return node
     }
 
-    private fun createOptionNode(action: AgentActionDto, context: GraphInitializeContext) {
+    private fun createOptionNode(
+        action: AgentActionDto,
+        menuNode: UiEntity,
+        context: GraphInitializeContext
+    ) {
         log.info("옵션 노드를 생성합니다. go_next: ${action.goNext}, score: ${action.score}, coordinate: ${action.coordinate}, title: ${action.title}")
         val optEntity = utgService.saveNode(UiDto(
             isNext = action.goNext,
@@ -197,10 +210,14 @@ class MenuGraphInitializeService @Autowired constructor(
             title = action.title,
             kioskId = context.kioskId
         ))
-        utgService.saveRel(context.lastNode!!.id, optEntity.id, NodeRelation.OPT_TO)
+        utgService.saveRel(menuNode.id, optEntity.id, NodeRelation.OPT_TO)
     }
 
-    private fun createBackNode(action: AgentBackDto, menuNode: UiEntity, context: GraphInitializeContext) {
+    private fun createBackNode(
+        action: AgentBackDto,
+        menuNode: UiEntity,
+        context: GraphInitializeContext
+    ) {
         val backEntity = utgService.saveNode(UiDto(
             isNext = false,
             x = action.coordinate[0], y = action.coordinate[1],
@@ -224,75 +241,76 @@ class MenuGraphInitializeService @Autowired constructor(
         return true
     }
 
-    private fun handleModal(menuDto: MenuInfoDto, menuNode: UiEntity, context: GraphInitializeContext) {
-        val kioskId = context.kioskId
-
-        val modalLlmUiList = uiExtractorManager.getUiComponents(kioskId)
-        val lastNode = context.lastNode
-
-        //여기서 발생한 옴니파서 데이터를 바탕으로 모달 클릭해야함
-        val pageAction = pageAgent.determineAction(menuDto.options, modalLlmUiList)
-        if (pageAction.contain == false) {
-            //모달이 있는 경우 메뉴 다시 찾아서 클릭
-            log.info("모달로 집입합니다")
-            navigateModal(
-                context = context,
-                menuNode = menuNode,
-                menuDto = menuDto,
-                modalLlmUiList = modalLlmUiList
-            )
-        }
-
-        //옵션 노드 초기화
-        if (menuDto.options.size > 0) {
-            selectOption(menuDto, context)
-        }
-
-        //원래 메뉴 노드로 복귀
-        if (pageAction.contain == false) {
-            //되돌아 오는 관계 추가
-            utgService.saveRel(context.lastNode!!.id, lastNode!!.id, NodeRelation.BACK_TO)
-            context.lastNode = lastNode
-        }
-    }
-
-    private fun navigateModal(context: GraphInitializeContext, menuDto: MenuInfoDto, menuNode: UiEntity, modalLlmUiList: List<LlmUiComponentDto>) {
-        val kioskId = context.kioskId
-
-        val modalSelectAction = menuAgent.determineAction(menuDto, modalLlmUiList)
-        log.info("모달 내부에서 처리중입니다. go_next: ${modalSelectAction.goNext}, score: ${modalSelectAction.score}, title: ${modalSelectAction.title}")
-        context.history.add(modalSelectAction)
-
-        notificationService.sendActionCommand(kioskId, CoordinateDto(modalSelectAction.coordinate[0], modalSelectAction.coordinate[1], modalSelectAction.title))
-        val modalNode = utgService.saveNode(UiDto(
-            isNext = modalSelectAction.goNext,
-            x = modalSelectAction.coordinate[0], y = modalSelectAction.coordinate[1],
-            title = modalSelectAction.title,
-            kioskId = context.kioskId
-        ))
-        utgService.saveRel(menuNode.id, modalNode.id, NodeRelation.PATH_TO)
-
-        //완료를 눌러 옵션으로 이동
-        val modalCompleteAction = backAgent.determineBack(modalLlmUiList)
-        notificationService.sendActionCommand(kioskId, CoordinateDto(modalCompleteAction.coordinate[0], modalCompleteAction.coordinate[1], modalCompleteAction.title))
-        log.info("모달에서 빠져나옵니다. score: ${modalCompleteAction.score}, title: ${modalCompleteAction.title}")
-        log.info("UI 목록: \n ${modalLlmUiList}")
-
-        val backNode = utgService.saveNode(UiDto(
-            isNext = false,
-            x = modalCompleteAction.coordinate[0], y = modalCompleteAction.coordinate[1],
-            title = modalCompleteAction.title,
-            kioskId = context.kioskId
-        ))
-        utgService.saveRel(modalNode.id, backNode.id, NodeRelation.BACK_TO)
-
-        //옵션이 있으면 back에서 옵션으로, 옵션이 없다면 원래 노드로 관계
-        if (menuDto.options.size > 0) {
-            context.lastNode = modalNode
-        } else {
-            utgService.saveRel(backNode.id, menuNode.id, NodeRelation.BACK_TO)
-        }
-    }
+    //TODO(모달 로직 임시 비활성화)
+//    private fun handleModal(menuDto: MenuInfoDto, menuNode: UiEntity, context: GraphInitializeContext) {
+//        val kioskId = context.kioskId
+//
+//        val modalLlmUiList = uiExtractorManager.getUiComponents(kioskId)
+//        val lastNode = context.lastNode
+//
+//        //여기서 발생한 옴니파서 데이터를 바탕으로 모달 클릭해야함
+//        val pageAction = pageAgent.determineAction(menuDto.options, modalLlmUiList)
+//        if (pageAction.contain == false) {
+//            //모달이 있는 경우 메뉴 다시 찾아서 클릭
+//            log.info("모달로 집입합니다")
+//            navigateModal(
+//                context = context,
+//                menuNode = menuNode,
+//                menuDto = menuDto,
+//                modalLlmUiList = modalLlmUiList
+//            )
+//        }
+//
+//        //옵션 노드 초기화
+//        if (menuDto.options.size > 0) {
+//            selectOption(menuDto, context)
+//        }
+//
+//        //원래 메뉴 노드로 복귀
+//        if (pageAction.contain == false) {
+//            //되돌아 오는 관계 추가
+//            utgService.saveRel(context.lastNode!!.id, lastNode!!.id, NodeRelation.BACK_TO)
+//            context.lastNode = lastNode
+//        }
+//    }
+//
+//    private fun navigateModal(context: GraphInitializeContext, menuDto: MenuInfoDto, menuNode: UiEntity, modalLlmUiList: List<LlmUiComponentDto>) {
+//        val kioskId = context.kioskId
+//
+//        val modalSelectAction = menuAgent.determineAction(menuDto, modalLlmUiList)
+//        log.info("모달 내부에서 처리중입니다. go_next: ${modalSelectAction.goNext}, score: ${modalSelectAction.score}, title: ${modalSelectAction.title}")
+//        context.history.add(modalSelectAction)
+//
+//        notificationService.sendActionCommand(kioskId, CoordinateDto(modalSelectAction.coordinate[0], modalSelectAction.coordinate[1], modalSelectAction.title))
+//        val modalNode = utgService.saveNode(UiDto(
+//            isNext = modalSelectAction.goNext,
+//            x = modalSelectAction.coordinate[0], y = modalSelectAction.coordinate[1],
+//            title = modalSelectAction.title,
+//            kioskId = context.kioskId
+//        ))
+//        utgService.saveRel(menuNode.id, modalNode.id, NodeRelation.PATH_TO)
+//
+//        //완료를 눌러 옵션으로 이동
+//        val modalCompleteAction = backAgent.determineBack(modalLlmUiList)
+//        notificationService.sendActionCommand(kioskId, CoordinateDto(modalCompleteAction.coordinate[0], modalCompleteAction.coordinate[1], modalCompleteAction.title))
+//        log.info("모달에서 빠져나옵니다. score: ${modalCompleteAction.score}, title: ${modalCompleteAction.title}")
+//        log.info("UI 목록: \n ${modalLlmUiList}")
+//
+//        val backNode = utgService.saveNode(UiDto(
+//            isNext = false,
+//            x = modalCompleteAction.coordinate[0], y = modalCompleteAction.coordinate[1],
+//            title = modalCompleteAction.title,
+//            kioskId = context.kioskId
+//        ))
+//        utgService.saveRel(modalNode.id, backNode.id, NodeRelation.BACK_TO)
+//
+//        //옵션이 있으면 back에서 옵션으로, 옵션이 없다면 원래 노드로 관계
+//        if (menuDto.options.size > 0) {
+//            context.lastNode = modalNode
+//        } else {
+//            utgService.saveRel(backNode.id, menuNode.id, NodeRelation.BACK_TO)
+//        }
+//    }
 
     private fun removeDuplicate(sourceList: List<LlmUiComponentDto>, targetList: MutableList<LlmUiComponentDto>) {
         for (addEle in sourceList) {

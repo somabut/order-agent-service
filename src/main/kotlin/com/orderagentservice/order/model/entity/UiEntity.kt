@@ -1,7 +1,9 @@
 package com.orderagentservice.order.model.entity
 
+import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.Version
 import org.springframework.data.neo4j.core.schema.*
+import java.time.LocalDateTime
 import java.util.*
 
 @Node("UI")
@@ -26,6 +28,10 @@ class UiEntity(
 
     @Property("kioskId")
     val kioskId: String,
+
+    @CreatedDate
+    @Property("created_at")
+    val createdAt: LocalDateTime? = null,
 
     @Relationship(type = "PATH_TO", direction = Relationship.Direction.OUTGOING)
     val connectedTo: Set<UiEntity>? = null,
