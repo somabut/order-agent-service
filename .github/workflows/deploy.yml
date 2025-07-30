@@ -34,7 +34,7 @@ jobs:
       # 3. Gradle 빌드 (Spring 프로젝트인 경우)
       - run: |
           chmod +x gradlew
-          ./gradlew build -x test
+          ./gradlew clean build -x test
 
       # 4. 도커 빌드셋업
       - uses: docker/setup-buildx-action@v3
