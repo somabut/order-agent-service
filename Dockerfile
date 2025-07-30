@@ -2,6 +2,8 @@ FROM openjdk:21-jdk-bookworm
 
 ARG JAR_FILE=build/libs/*.jar
 
+WORKDIR /
+
 COPY ${JAR_FILE} app.jar
 
 RUN mkdir -p /loki-data \
