@@ -34,14 +34,16 @@ class PaymentAgentTest @Autowired constructor(
         Thread.sleep(1000)
 
         uiList.add(LlmUiComponentDto(x = 220, y = 200, title = "결제하기"))
+        uiList.add(LlmUiComponentDto(x = 330, y = 300, title = "다음"))
 
         //when-2: llm에게 질의 한다
         val response2 = paymentAgent.determineAction(uiList)
         println(response2)
 
         //then-2: 올바른 액션을 반환한다
-        assertThat(response2.title).isEqualTo("결제하기")
+        assertThat(response2.title).isEqualTo("다음")
         assertThat(response2.goNext).isEqualTo(true)
+        uiList.removeLast()
         uiList.removeLast()
         Thread.sleep(1000)
 
@@ -58,6 +60,7 @@ class PaymentAgentTest @Autowired constructor(
         Thread.sleep(1000)
 
         uiList.add(LlmUiComponentDto(x = 220, y = 200, title = "신용/체크카드"))
+        uiList.add(LlmUiComponentDto(x = 330, y = 300, title = "결제"))
 
         //when-4: llm에게 질의 한다
         val response4 = paymentAgent.determineAction(uiList)
@@ -66,6 +69,19 @@ class PaymentAgentTest @Autowired constructor(
         //then-4: 올바른 액션을 반환한다
         assertThat(response4.title).isEqualTo("신용/체크카드")
         assertThat(response4.goNext).isEqualTo(true)
+        uiList.removeLast()
+        uiList.removeLast()
+        Thread.sleep(1000)
+
+        uiList.add(LlmUiComponentDto(x = 330, y = 300, title = "결제"))
+
+        //when-4: llm에게 질의 한다
+        val response5 = paymentAgent.determineAction(uiList)
+        println(response4)
+
+        //then-4: 올바른 액션을 반환한다
+        assertThat(response5.title).isEqualTo("결제")
+        assertThat(response5.goNext).isEqualTo(true)
         uiList.removeLast()
         Thread.sleep(1000)
     }

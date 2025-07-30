@@ -90,18 +90,13 @@ class MenuGraphInitializeService @Autowired constructor(
         menuDto: MenuInfoDto,
         llmUiList: List<LlmUiComponentDto>
     ) {
-        val categoryDto = MenuInfoDto(
-            title = menuDto.category,
-            options = listOf(),
-            category = menuDto.category
-        )
-//        val action = menuAgent.determineAction(categoryDto, llmUiList)
         val coordinate = wordSimilarityService.findBestMatch(menuDto.category, llmUiList)
             .toCoordinateDto(menuDto.category)
 
         //노드 생성
         val node = createCategoryNode(coordinate, context)
         context.lastNode = node
+        context.nowCategory = node.title
 
         //현재 카테고리 좌표 클릭
         notificationService.sendActionCommand(context.kioskId, CoordinateDto(coordinate.x, coordinate.y, coordinate.title))

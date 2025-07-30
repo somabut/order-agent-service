@@ -28,10 +28,22 @@ class PaymentAgent @Autowired constructor(
             Here is ui list:${uiList}
             
             IMPORTANT NOTES:
-            1. Please let me know the 'coordinate' in the response as the UI I need to click to go to the page with the ui corresponding to the input. 
-            Please add coordinate information for 'coordinate'.
-            2. To reach card insertion, select payment methods like '카드', '체크카드', '카드결제'. 
-            3. Card insertion page contains phrases like '카드를 넣어주세요', '카드를 삽입해주세요'.
+            Please let me know the 'coordinate' in the response as the UI I need to click to go to the page with the ui corresponding to the input. Please add coordinate information for 'coordinate'.
+            To select the correct UI, you must follow this strict priority order:
+            
+                Priority 1 (Highest): Direct Card Payment
+                    First, search for UI elements containing the most specific keywords: '신용카드', '체크카드', '카드결제'.
+                    If you find any of these, you must select one of them and ignore all other options below.
+
+                Priority 2 (Middle): General Progression
+                    Only if no Priority 1 keywords are found, search for UI elements with general progression keywords like '다음', '확인', '완료'.
+                    If you find any of these, select one and ignore the Priority 3 options.
+
+                Priority 3 (Lowest): Generic Payment
+                    Only if no Priority 1 or 2 keywords are found, search for UI elements with generic payment keywords like '결제하기', '결제', '결제수단 선택'.
+                    Crucial Rule: Always choose the option with the highest priority. For example, if '확인'(Priority 2) and '결제하기'(Priority 3) are both visible, you must choose '확인'.
+
+            The final goal is to reach a page that contains phrases like '카드를 넣어주세요' or '카드를 삽입해주세요'.
             
             Respond in JSON: {'coordinate': [x, y], 'title': 'UI Title', 'goNext': bool, 'score': float}. 
             'goNext' is always true. 'coordinate' and 'title' must be from 'uiList'.
