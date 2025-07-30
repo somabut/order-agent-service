@@ -19,7 +19,7 @@ data class CartData(
 data class Changes(
     val type: String,
     val description: String,
-    val details: Details
+    val details: List<Details>
 )
 
 data class Details(
