@@ -3,8 +3,8 @@ package com.orderagentservice.order.model.request
 data class ActionReplyRequest(
     val x: Int,
     val y: Int,
-    val cartData: CartData,
-    val changes: Changes
+    val cartData: CartData?,
+    val changes: Changes?
 )
 
 data class CartData(
@@ -24,7 +24,7 @@ data class Changes(
 
 data class Details(
     val action: String,
-    val item: Item
+    val item: Item?
 )
 
 data class Item(
