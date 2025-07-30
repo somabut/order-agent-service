@@ -5,8 +5,7 @@ import com.orderagentservice.order.model.entity.UiEntity
 
 data class GraphInitializeContext(
     val kioskId: String,
-    var isFindPlace: Boolean,
-    var lowScoreCount: Int,
+    var determinePlace: Boolean,
     var lastNode: UiEntity?,
     var nowCategory: String?,
     var imageHash: String?,

@@ -112,7 +112,7 @@ class PaymentGraphInitializeServiceTest {
     fun `포장_매장_UI를_찾은_상태에서_결제_그래프_초기화가_성공한다`() {
         // given: 포장/매장 UI를 이미 찾은 상태
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
-        whenever(uiExtractorManager.getUiComponents(TEST_IMAGE_DATA, TEST_KIOSK_ID)).thenReturn(llmUiList)
+        whenever(uiExtractorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
         whenever(paymentAgent.determineAction(llmUiList)).thenReturn(agentActionDto)
         whenever(utgService.saveNode(any<UiDto>())).thenReturn(uiEntity).thenReturn(completeEntity)
         doNothing().whenever(utgService).saveRel(anyString(), anyString(), any())
@@ -120,8 +120,7 @@ class PaymentGraphInitializeServiceTest {
         // when: 결제 그래프 초기화 실행
         val context = GraphInitializeContext(
             kioskId = TEST_KIOSK_ID,
-            isFindPlace = true,
-            lowScoreCount = 0,
+            determinePlace = true,
             lastNode = lastNode,
             imageHash = null,
             nowCategory = null,
@@ -133,9 +132,9 @@ class PaymentGraphInitializeServiceTest {
         assertEquals(1, context.history.size)
         assertEquals(agentActionDto, context.history[0])
 
-        verify(placeGraphInitializeService, never()).initializeGraph(any(), anyList())
+        verify(placeGraphInitializeService, never()).initializeGraph(any())
         verify(notificationService).sendCaptureCommand(TEST_KIOSK_ID)
-        verify(uiExtractorManager).getUiComponents(TEST_IMAGE_DATA, TEST_KIOSK_ID)
+        verify(uiExtractorManager).getUiComponents(TEST_KIOSK_ID)
         verify(paymentAgent).determineAction(llmUiList)
         verify(utgService, times(2)).saveNode(any<UiDto>())
         verify(utgService, times(2)).saveRel(anyString(), anyString(), any<NodeRelation>())
@@ -146,18 +145,17 @@ class PaymentGraphInitializeServiceTest {
         // given: 포장/매장 UI를 찾지 못한 상태
         val context = GraphInitializeContext(
             kioskId = TEST_KIOSK_ID,
-            isFindPlace = false,
-            lowScoreCount = 0,
+            determinePlace = false,
             lastNode = lastNode,
             imageHash = null,
             nowCategory = null,
             history = mutableListOf()
         )
-        whenever(placeGraphInitializeService.initializeGraph(any(), anyList())).thenAnswer {
+        whenever(placeGraphInitializeService.initializeGraph(any())).thenAnswer {
             placeActionList.forEach { context.history.add(it) }
         }
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
-        whenever(uiExtractorManager.getUiComponents(TEST_IMAGE_DATA, TEST_KIOSK_ID)).thenReturn(llmUiList)
+        whenever(uiExtractorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
         whenever(paymentAgent.determineAction(llmUiList)).thenReturn(agentActionDto)
         whenever(utgService.saveNode(any<UiDto>())).thenReturn(uiEntity).thenReturn(completeEntity)
         doNothing().whenever(utgService).saveRel(anyString(), anyString(), any())
@@ -171,9 +169,9 @@ class PaymentGraphInitializeServiceTest {
         assertEquals(placeActionList[1], context.history[1])
         assertEquals(agentActionDto, context.history[2])
 
-        verify(placeGraphInitializeService).initializeGraph(any(), anyList())
+        verify(placeGraphInitializeService).initializeGraph(any())
         verify(notificationService).sendCaptureCommand(TEST_KIOSK_ID)
-        verify(uiExtractorManager).getUiComponents(TEST_IMAGE_DATA, TEST_KIOSK_ID)
+        verify(uiExtractorManager).getUiComponents(TEST_KIOSK_ID)
         verify(paymentAgent).determineAction(llmUiList)
         verify(utgService, times(2)).saveNode(any<UiDto>())
         verify(utgService, times(2)).saveRel(anyString(), anyString(), any<NodeRelation>())
@@ -199,7 +197,7 @@ class PaymentGraphInitializeServiceTest {
         val secondEntity = UiEntity("ENTITY_456", null, false, 200, 300, "결제완료", TEST_KIOSK_ID)
 
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
-        whenever(uiExtractorManager.getUiComponents(TEST_IMAGE_DATA, TEST_KIOSK_ID)).thenReturn(llmUiList)
+        whenever(uiExtractorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
         whenever(paymentAgent.determineAction(llmUiList)).thenReturn(firstAction).thenReturn(secondAction)
         whenever(utgService.saveNode(any<UiDto>()))
             .thenReturn(firstEntity)
@@ -210,8 +208,7 @@ class PaymentGraphInitializeServiceTest {
         // when: 결제 그래프 초기화 실행
         val context = GraphInitializeContext(
             kioskId = TEST_KIOSK_ID,
-            isFindPlace = true,
-            lowScoreCount = 0,
+            determinePlace = true,
             lastNode = lastNode,
             imageHash = null,
             nowCategory = null,
@@ -225,7 +222,7 @@ class PaymentGraphInitializeServiceTest {
         assertEquals(secondAction, context.history[1])
 
         verify(notificationService, times(2)).sendCaptureCommand(TEST_KIOSK_ID)
-        verify(uiExtractorManager, times(2)).getUiComponents(TEST_IMAGE_DATA, TEST_KIOSK_ID)
+        verify(uiExtractorManager, times(2)).getUiComponents(TEST_KIOSK_ID)
         verify(paymentAgent, times(2)).determineAction(llmUiList)
         verify(utgService, times(3)).saveNode(any<UiDto>())
         verify(utgService, times(3)).saveRel(anyString(), anyString(), any<NodeRelation>())
@@ -235,7 +232,7 @@ class PaymentGraphInitializeServiceTest {
     fun 완료_노드가_올바르게_생성된다() {
         // given: 결제 과정이 완료되는 상황
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
-        whenever(uiExtractorManager.getUiComponents(TEST_IMAGE_DATA, TEST_KIOSK_ID)).thenReturn(llmUiList)
+        whenever(uiExtractorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
         whenever(paymentAgent.determineAction(llmUiList)).thenReturn(agentActionDto)
         whenever(utgService.saveNode(any<UiDto>())).thenReturn(uiEntity).thenReturn(completeEntity)
         doNothing().whenever(utgService).saveRel(anyString(), anyString(), any())
@@ -243,8 +240,7 @@ class PaymentGraphInitializeServiceTest {
         // when: 결제 그래프 초기화 실행
         val context = GraphInitializeContext(
             kioskId = TEST_KIOSK_ID,
-            isFindPlace = true,
-            lowScoreCount = 0,
+            determinePlace = true,
             lastNode = lastNode,
             imageHash = null,
             nowCategory = null,

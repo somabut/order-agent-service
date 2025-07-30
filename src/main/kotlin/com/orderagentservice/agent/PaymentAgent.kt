@@ -20,46 +20,22 @@ class PaymentAgent @Autowired constructor(
     }
 
     private fun getPrompt(uiList: List<LlmUiComponentDto>): String {
-        val prompt = """
-            You are an expert at judging the UI you need to physically insert a card in a kiosk order.
+        val prompt = """            
+            You are a kiosk payment expert. Items are in cart, payment remains. Identify UI to click, leading to card insertion page.
             The ui list has a list of currently clickable ui.
             The response should be in Json format.
             
             Here is ui list:${uiList}
             
             IMPORTANT NOTES:
-            1. All the items have been added to the cart, and only the payment is left.
-            2. You just need to let me know what UI to interact with until you put the card in.
-            3. You may have to go through multiple pages before you put the card in, 
-            so you can look at the given list and let me know which UIs you need to interact with to get to the page where you put the card in.
-            4. Please let me know the 'coordinate' in the response as the UI I need to click to go to the page with the ui corresponding to the input. 
+            1. Please let me know the 'coordinate' in the response as the UI I need to click to go to the page with the ui corresponding to the input. 
             Please add coordinate information for 'coordinate'.
-            5. Make sure to return the 'coordinate' and 'title' in the response to those in the ui list.
-            6. If it means to insert a card, put false in the 'goNext' in the response. If not, put true to 'goNext'.
-            7. The response should be scored on what you judged on the input. This score is the accuracy of your response you think.
-            8. The score is between 0 and 1 and it's marked as a float.
-            9. In order to get to the page with the sentence to ask for a card, you have to choose the payment method as a '카드' or '체크카드' or '카드결제' in the middle.
-            10. The following is an example of a sentence that means to put a card in. [ex) '카드를 넣어주세요', '카드를 삽입해주세요', '카드 넣어'... etc]
+            2. To reach card insertion, select payment methods like '카드', '체크카드', '카드결제'. 
+            3. Card insertion page contains phrases like '카드를 넣어주세요', '카드를 삽입해주세요'.
             
-            'goNext' is whether to go to the next page, 'score' is the accuracy score, 
-            'coordinate' is the UI coordinate you need to click to go to the next page and 'title' is the UI title that you click.
-            
-            SCORE NOTES:
-            1. Perfect match - Card insertion UI found (Score: 1.0)
-               Situation: When the ui list containers exit card insertion messages like '카드를 삽입해 주세요', '카드를 삽입해 주세요', '카드를 삽입해 주세요'.
-               Judgment: The final step is reached where the user can insert their card, requiring no further navigation.
-            
-            2. Perfect match - Payment progression UI found (Score: 1.0)
-               Situation: When the ui list contains exact card payment options like '카드', '체크카드', '카드결제' or payment progression buttons like '결제하기', '다음', '계속'.
-               Judgment: Clear identification of the required payment method selection or progression UI to proceed toward card insertion.
-            
-            3. Semantic/contextual payment match (Score: 0.7 to 0.8)
-               Situation: When UI elements are found that semantically relate to payment progression but don't use exact keywords (e.g., '진행', '확인').
-               Judgment: Moderate confidence based on context interpretation, but requires assumption about UI functionality.
-            
-            4. Uncertain identification (Score: 0 to 0.6)
-               Situation: Found UI elements that might be related to payment but the connection is ambiguous or requires significant assumption.
-               Judgment: Low confidence due to unclear UI labeling or unconventional payment flow terminology.
+            Respond in JSON: {'coordinate': [x, y], 'title': 'UI Title', 'goNext': bool, 'score': float}. 
+            'goNext' is always true. 'coordinate' and 'title' must be from 'uiList'.
+            Assign a score (0.0-1.0) for response accuracy.
             
             One Example(
                 ui_list: [
@@ -139,7 +115,7 @@ class PaymentAgent @Autowired constructor(
                 ]):
             ```json
             {
-                "goNext": "false",
+                "goNext": "true",
                 "score": 0.9,
                 "coordinate": [67, 90],
                 "title": "카드를 넣어주세요"

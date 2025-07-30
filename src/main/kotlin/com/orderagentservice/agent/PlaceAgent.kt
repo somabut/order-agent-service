@@ -42,27 +42,6 @@ class PlaceAgent @Autowired constructor(
                - Not found: [{"title": "", "coordinate": [-1, -1]}] (See the example below for more detailed formatting)
             
             'goNext' is always false, 'score' is the accuracy score, 'coordinate' is the UI coordinate, 'title' is a string that follows Rule 5.
-            
-            SCORE NOTES:
-            1. Perfect match (Score: 1.0)
-               Situation: When both dine-in and take-out UI elements are clearly found in the ui list with exact keyword matches.
-               Judgment: The most ideal situation where both options are explicitly available and easily identifiable.
-            
-            2. Partial match (Score: 0.8 to 0.9)
-               Situation: Only one type (dine-in OR take-out) is found in the uiList with exact keyword matches, or both are found but with slight variations in wording.
-               Judgment: Clear identification of available option(s) with minor uncertainty due to incomplete options or slight keyword differences.
-            
-            3. Semantic/contextual match (Score: 0.6 to 0.7)
-               Situation: UI elements are found that semantically imply dine-in or take-out options but don't use exact keywords (e.g., '여기서', '가져가세요').
-               Judgment: Reasonable inference based on context and meaning, but requires interpretation of implicit UI text.
-            
-            4. Uncertain identification (Score: 0 to 0.5)
-               Situation: Found UI elements that might be related to dine-in/take-out but the connection is ambiguous or requires significant assumption.
-               Judgment: Low confidence due to unclear UI labeling or unconventional terminology.
-            
-            5. Correct absence detection (Score: 0.9 to 1.0)
-               Situation: No dine-in/take-out UI elements exist in the uiList, and this is correctly identified and reported.
-               Judgment: High confidence in correctly determining that no relevant UI elements are present on this screen.
              
              One Example(
                 ui_list: [

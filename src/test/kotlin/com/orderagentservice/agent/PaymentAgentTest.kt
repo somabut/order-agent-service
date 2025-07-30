@@ -53,7 +53,7 @@ class PaymentAgentTest @Autowired constructor(
 
         //then-3: 올바른 액션을 반환한다
         assertThat(response3.title).isEqualTo("카드를 삽입해주세요")
-        assertThat(response3.goNext).isEqualTo(false)
+        assertThat(response3.goNext).isEqualTo(true)
         uiList.removeLast()
         Thread.sleep(1000)
 

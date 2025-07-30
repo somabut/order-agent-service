@@ -1,6 +1,7 @@
 package com.orderagentservice.order.repository
 
 import com.orderagentservice.order.exception.NoSuchKioskException
+import com.orderagentservice.order.model.dto.CoordinateDto
 import org.springframework.stereotype.Repository
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
 import java.io.File
@@ -12,7 +13,7 @@ import kotlin.math.log
 class NotificationRepository {
     private val kioskNotification = ConcurrentHashMap<String, SseEmitter>()
     private val captureCommandCompleteMap = ConcurrentHashMap<String, File>()
-    private val actionCommandCompleteMap = ConcurrentHashMap<String, Pair<Int, Int>>()
+    private val actionCommandCompleteMap = ConcurrentHashMap<String, CoordinateDto>()
     private val logChannelSet = CopyOnWriteArraySet<SseEmitter>()
 
     fun getLogEmitters() = logChannelSet
@@ -39,9 +40,9 @@ class NotificationRepository {
 
     fun removeCaptureCommand(commandId: String): File? = captureCommandCompleteMap.remove(commandId)
 
-    fun saveActionCommand(commandId: String, coordinate: Pair<Int, Int>) {
+    fun saveActionCommand(commandId: String, coordinate: CoordinateDto) {
         actionCommandCompleteMap[commandId] = coordinate
     }
 
-    fun removeActionCommand(commandId: String): Pair<Int, Int>? = actionCommandCompleteMap.remove(commandId)
+    fun removeActionCommand(commandId: String): CoordinateDto? = actionCommandCompleteMap.remove(commandId)
 }

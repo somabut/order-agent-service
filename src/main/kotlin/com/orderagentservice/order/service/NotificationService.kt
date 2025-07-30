@@ -38,7 +38,7 @@ class NotificationService @Autowired constructor(
         notificationRepository.saveCaptureCommand(commandId, image)
     }
 
-    fun registerActionCommand(commandId: String, coordinate: Pair<Int, Int>) {
+    fun registerActionCommand(commandId: String, coordinate: CoordinateDto) {
         notificationRepository.saveActionCommand(commandId, coordinate)
     }
 
@@ -80,7 +80,7 @@ class NotificationService @Autowired constructor(
         return file
     }
 
-    fun sendActionCommand(kioskId: String, coordinate: CoordinateDto): Pair<Int, Int> {
+    fun sendActionCommand(kioskId: String, coordinate: CoordinateDto): CoordinateDto {
         log.info("클라이언트에게 액션 요청을 보냅니다.")
         val commandId = UUID.randomUUID().toString()
         val request = jsonMapper.writeValueAsString(
@@ -94,7 +94,7 @@ class NotificationService @Autowired constructor(
 
         //클라이언트는 여기서 보내진 commandId로 응답을 해야함
         emitter.send(request)
-        val coordinatePair: Pair<Int, Int>
+        val coordinatePair: CoordinateDto
         try {
             coordinatePair = waitActionCommand(commandId)
         } catch (e: CommandTimeoutException) {
@@ -124,7 +124,7 @@ class NotificationService @Autowired constructor(
     }
 
     // 액션 명령 대기
-    private fun waitActionCommand(commandId: String): Pair<Int, Int> {
+    private fun waitActionCommand(commandId: String): CoordinateDto {
         return waitForCommand(commandId, ACTION_WAIT_TIMEOUT) { id ->
             notificationRepository.removeActionCommand(id)
         }
