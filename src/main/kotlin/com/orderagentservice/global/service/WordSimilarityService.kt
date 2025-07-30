@@ -12,6 +12,7 @@ class WordSimilarityService {
     private val jep: SharedInterpreter by lazy {
         val config = JepConfig()
             .addIncludePaths("/venv/lib/python3.11/site-packages")
+            .addIncludePaths("/")
         SharedInterpreter.setConfig(config)
 
         SharedInterpreter().apply {
@@ -19,7 +20,6 @@ class WordSimilarityService {
             eval("import numpy")
             eval("import sklearn")
 
-            eval("sys.path.append('.')")
             eval("sys.path.append('/')")
             eval("from word_compare import KoreanSimilarityCalculator")
             eval("calculator = KoreanSimilarityCalculator()")
