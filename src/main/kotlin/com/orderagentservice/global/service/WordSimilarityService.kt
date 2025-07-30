@@ -9,41 +9,31 @@ import org.springframework.stereotype.Service
 
 @Service
 class WordSimilarityService {
-    private val jep: SharedInterpreter by lazy {
+    fun findBestMatch(targetWord: String, uiList: List<LlmUiComponentDto>): WordMatchDto {
         val config = JepConfig()
             .addIncludePaths("/venv/lib/python3.11/site-packages")
             .addIncludePaths("/")
         SharedInterpreter.setConfig(config)
 
-        SharedInterpreter().apply {
-            eval("import sys")
-            eval("import numpy")
-            eval("import sklearn")
+        SharedInterpreter().use { jep ->
+            jep.eval("import sys")
+            jep.eval("sys.path.append('/')")
+            jep.eval("import numpy")
+            jep.eval("import sklearn")
+            jep.eval("from word_compare import KoreanSimilarityCalculator")
+            jep.eval("calculator = KoreanSimilarityCalculator()")
 
-            eval("sys.path.append('/')")
-            eval("from word_compare import KoreanSimilarityCalculator")
-            eval("calculator = KoreanSimilarityCalculator()")
+            val candidates = uiList.map { listOf(it.x, it.y, it.title) }
+            jep.set("candidates", candidates)
+            jep.eval("result = calculator.find_best_match('$targetWord', candidates)")
+
+            val resultMap = jep.getValue("result", Map::class.java) as Map<String, Any>
+            val x = (resultMap["x"] as Number).toInt()
+            val y = (resultMap["y"] as Number).toInt()
+            val word = resultMap["word"] as String
+            val score = (resultMap["score"] as Number).toDouble()
+
+            return WordMatchDto(x, y, word, score)
         }
-    }
-
-    fun findBestMatch(targetWord: String, uiList: List<LlmUiComponentDto>): WordMatchDto {
-        val candidates = uiList.map { listOf(it.x, it.y, it.title) }
-
-        jep.set("candidates", candidates)
-        jep.eval("result = calculator.find_best_match('$targetWord', candidates)")
-
-        val resultMap = jep.getValue("result", Map::class.java) as Map<String, Any>
-
-        val x = (resultMap["x"] as Number).toInt()
-        val y = (resultMap["y"] as Number).toInt()
-        val word = resultMap["word"] as String
-        val score = (resultMap["score"] as Number).toDouble()
-
-        return WordMatchDto(x, y, word, score)
-    }
-
-    @PreDestroy
-    fun cleanup() {
-        jep.close()
     }
 }
