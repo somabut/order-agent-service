@@ -9,11 +9,18 @@ import org.springframework.stereotype.Service
 
 @Service
 class WordSimilarityService {
-    fun findBestMatch(targetWord: String, uiList: List<LlmUiComponentDto>): WordMatchDto {
+    init {
         val config = JepConfig()
             .addIncludePaths("/venv/lib/python3.11/site-packages")
             .addIncludePaths("/")
         SharedInterpreter.setConfig(config)
+    }
+
+    fun findBestMatch(targetWord: String, uiList: List<LlmUiComponentDto>): WordMatchDto {
+//        val config = JepConfig()
+//            .addIncludePaths("/venv/lib/python3.11/site-packages")
+//            .addIncludePaths("/")
+//        SharedInterpreter.setConfig(config)
 
         SharedInterpreter().use { jep ->
             jep.eval("import sys")

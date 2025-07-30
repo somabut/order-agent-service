@@ -47,7 +47,7 @@ class ReplyController @Autowired constructor(
             CoordinateDto(
                 x = actionReplyRequest.x,
                 y = actionReplyRequest.y,
-                title = actionReplyRequest.changes!!.details[0].item?.toString() ?: ""
+                title = ""
             )
         )
         return ApiResponse.success(CommandResponse(commandId))
