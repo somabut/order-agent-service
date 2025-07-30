@@ -55,7 +55,7 @@ class PaymentAgentTest @Autowired constructor(
 
         //then-3: 올바른 액션을 반환한다
         assertThat(response3.title).isEqualTo("카드를 삽입해주세요")
-        assertThat(response3.goNext).isEqualTo(true)
+        assertThat(response3.goNext).isEqualTo(false)
         uiList.removeLast()
         Thread.sleep(1000)
 
@@ -77,7 +77,7 @@ class PaymentAgentTest @Autowired constructor(
 
         //when-4: llm에게 질의 한다
         val response5 = paymentAgent.determineAction(uiList)
-        println(response4)
+        println(response5)
 
         //then-4: 올바른 액션을 반환한다
         assertThat(response5.title).isEqualTo("결제")

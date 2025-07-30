@@ -43,10 +43,11 @@ class PaymentAgent @Autowired constructor(
                     Only if no Priority 1 or 2 keywords are found, search for UI elements with generic payment keywords like '결제하기', '결제', '결제수단 선택'.
                     Crucial Rule: Always choose the option with the highest priority. For example, if '확인'(Priority 2) and '결제하기'(Priority 3) are both visible, you must choose '확인'.
 
-            The final goal is to reach a page that contains phrases like '카드를 넣어주세요' or '카드를 삽입해주세요'.
+            The final goal is to reach a page that contains phrases like '카드를 넣어주세요' or '카드를 삽입해주세요'. 
             
             Respond in JSON: {'coordinate': [x, y], 'title': 'UI Title', 'goNext': bool, 'score': float}. 
-            'goNext' is always true. 'coordinate' and 'title' must be from 'uiList'.
+            if you get a sentence that means to put a card in like '카드를 넣어주세요' or '카드를 삽입해주세요', write response of 'isNext' false, or true. 
+            'coordinate' and 'title' must be from 'uiList'.
             Assign a score (0.0-1.0) for response accuracy.
             
             One Example(
@@ -127,7 +128,7 @@ class PaymentAgent @Autowired constructor(
                 ]):
             ```json
             {
-                "goNext": "true",
+                "goNext": "false",
                 "score": 0.9,
                 "coordinate": [67, 90],
                 "title": "카드를 넣어주세요"
