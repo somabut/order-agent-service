@@ -40,6 +40,9 @@ dependencies {
     //aws
     implementation("org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE")
 
+    //jep
+    implementation("black.ninia:jep:4.2.0")
+
     //logging
     implementation ("com.github.loki4j:loki-logback-appender:1.5.1")
     implementation ("net.logstash.logback:logstash-logback-encoder:7.4")
@@ -79,4 +82,14 @@ tasks.jar {
             "Main-Class" to "com.orderagentservice.OrderAgentServiceApplication.kt"
         )
     }
+}
+
+tasks.test {
+    jvmArgs = listOf(
+        "-Djava.library.path=C:\\Users\\hachi\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\jep"
+    )
+}
+
+tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
+    requiresUnpack("**/jep-*.jar")
 }

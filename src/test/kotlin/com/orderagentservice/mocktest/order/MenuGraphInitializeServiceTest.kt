@@ -5,6 +5,7 @@ import com.orderagentservice.agent.MenuAgent
 import com.orderagentservice.agent.MissingComponentAgent
 import com.orderagentservice.agent.PageAgent
 import com.orderagentservice.agent.model.dto.*
+import com.orderagentservice.global.service.WordSimilarityService
 import com.orderagentservice.order.exception.LowScoreException
 import com.orderagentservice.order.model.GraphInitializeContext
 import com.orderagentservice.order.model.NodeRelation
@@ -62,6 +63,7 @@ class MenuGraphInitializeServiceTest {
     private lateinit var notificationService: NotificationService
     private lateinit var utgService: UtgService
     private lateinit var menuGraphInitializeService: MenuGraphInitializeService
+    private lateinit var wordSimilarityService: WordSimilarityService
 
     private lateinit var menuList: List<MenuInfoDto>
     private lateinit var menuInfoDto: MenuInfoDto
@@ -84,7 +86,7 @@ class MenuGraphInitializeServiceTest {
     private lateinit var pageAction: AgentPageDto
     private lateinit var modalPageAction: AgentPageDto
     private lateinit var placeActionList: List<AgentActionDto>
-    private lateinit var actionResult: Pair<Int, Int>
+    private lateinit var actionResult: CoordinateDto
 
     @BeforeEach
     fun setUp() {
@@ -96,9 +98,10 @@ class MenuGraphInitializeServiceTest {
         uiExtractorManager = mock()
         notificationService = mock()
         utgService = mock()
+        wordSimilarityService = mock()
 
         menuGraphInitializeService = MenuGraphInitializeService(
-            menuAgent, backAgent, pageAgent, missingComponentAgent, placeGraphInitializeService,
+            menuAgent, backAgent, wordSimilarityService, pageAgent, missingComponentAgent, placeGraphInitializeService,
             uiExtractorManager, notificationService, utgService
         )
 
@@ -241,8 +244,6 @@ class MenuGraphInitializeServiceTest {
             AgentActionDto(false, 0.9F, listOf(150, 250), "포장"),
             AgentActionDto(false, 0.8F, listOf(100, 200), "매장")
         )
-
-        actionResult = Pair(TEST_X_COORDINATE, TEST_Y_COORDINATE)
 
         reset(menuAgent, backAgent, pageAgent, missingComponentAgent, placeGraphInitializeService,
             uiExtractorManager, notificationService, utgService)

@@ -1,36 +1,17 @@
-package com.orderagentservice.order.controller
+package com.orderagentservice.global
 
 import com.orderagentservice.agent.model.dto.LlmUiComponentDto
-import com.orderagentservice.global.model.dto.WordMatchDto
 import com.orderagentservice.global.service.WordSimilarityService
-import com.orderagentservice.order.service.NotificationService
+import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.boot.test.context.SpringBootTest
 
-@RestController
-class TestController @Autowired constructor(
-    private val notificationService: NotificationService,
+@SpringBootTest
+class WordSimilarityService @Autowired constructor(
     private val wordSimilarityService: WordSimilarityService
 ) {
-    @GetMapping("/")
-    fun test(): String {
-        return "ok"
-    }
-
-    @GetMapping("/test")
-    fun sendMessageTest() {
-        notificationService.broadcastMessage("test message from moodTRBL")
-    }
-
-    @GetMapping("/test/{kioskId}")
-    fun sendMessageTest(@PathVariable kioskId: String) {
-        notificationService.sendMessage(kioskId, "[${kioskId}] test message from moodTRBL")
-    }
-
-    @GetMapping("/test/compare")
-    fun compareWord(): WordMatchDto {
+    @Test
+    fun `유사도 검색으로 단어를 찾는다`() {
         val optUiList = listOf(
             LlmUiComponentDto(x = 42, y = 31, title = "사이드"),
             LlmUiComponentDto(x = 73, y = 31, title = "메뉴"),
@@ -50,6 +31,8 @@ class TestController @Autowired constructor(
         )
         val target = "녹차 빽스치노"
 
-        return wordSimilarityService.findBestMatch(target, optUiList)
+        val result = wordSimilarityService.findBestMatch(target, optUiList)
+
+        println(result)
     }
 }

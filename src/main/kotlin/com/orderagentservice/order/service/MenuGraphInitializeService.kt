@@ -7,6 +7,8 @@ import com.orderagentservice.agent.PageAgent
 import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.model.dto.AgentBackDto
 import com.orderagentservice.agent.model.dto.LlmUiComponentDto
+import com.orderagentservice.global.model.dto.WordMatchDto
+import com.orderagentservice.global.service.WordSimilarityService
 import com.orderagentservice.logger
 import com.orderagentservice.order.exception.LowScoreException
 import com.orderagentservice.order.model.GraphInitializeContext
@@ -24,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional
 class MenuGraphInitializeService @Autowired constructor(
     private val menuAgent: MenuAgent,
     private val backAgent: BackAgent,
+    private val wordSimilarityService: WordSimilarityService,
     private val pageAgent: PageAgent,
     private val missingComponentAgent: MissingComponentAgent,
     private val placeGraphInitializeService: PlaceGraphInitializeService,
@@ -86,22 +89,23 @@ class MenuGraphInitializeService @Autowired constructor(
 
     private fun selectCategory(
         context: GraphInitializeContext,
-        menuDto: MenuInfoDto, llmUiList:
-        List<LlmUiComponentDto>
+        menuDto: MenuInfoDto,
+        llmUiList: List<LlmUiComponentDto>
     ) {
         val categoryDto = MenuInfoDto(
             title = menuDto.category,
             options = listOf(),
             category = menuDto.category
         )
-        val action = menuAgent.determineAction(categoryDto, llmUiList)
+//        val action = menuAgent.determineAction(categoryDto, llmUiList)
+        val action = wordSimilarityService.findBestMatch(menuDto.category, llmUiList)
 
         //노드 생성
         val node = createCategoryNode(action, context)
         context.lastNode = node
 
         //현재 카테고리 좌표 클릭
-        notificationService.sendActionCommand(context.kioskId, CoordinateDto(action.coordinate[0], action.coordinate[1], action.title))
+        notificationService.sendActionCommand(context.kioskId, CoordinateDto(action.x, action.y, action.title))
     }
 
     private fun selectMenu(
@@ -109,14 +113,14 @@ class MenuGraphInitializeService @Autowired constructor(
         menuDto: MenuInfoDto,
         llmUiList: List<LlmUiComponentDto>
     ): UiEntity {
-        val action = menuAgent.determineAction(menuDto, llmUiList)
-        context.history.add(action)
+        val action = wordSimilarityService.findBestMatch(menuDto.title, llmUiList)
+//        val action = menuAgent.determineAction(menuDto, llmUiList)
 
         //노드 생성
         val node = createMenuNode(action, context)
 
         //현재 메뉴 좌표 클릭
-        notificationService.sendActionCommand(context.kioskId, CoordinateDto(action.coordinate[0], action.coordinate[1], action.title))
+        notificationService.sendActionCommand(context.kioskId, CoordinateDto(action.x, action.y, action.title))
 
         return node
     }
@@ -141,8 +145,8 @@ class MenuGraphInitializeService @Autowired constructor(
 //        }
 
         for (opt in menuDto.options) {
-            val optAction = menuAgent.determineAction(MenuInfoDto(opt, listOf(), menuDto.title), llmOptList)
-            context.history.add(optAction)
+            val optAction = wordSimilarityService.findBestMatch(opt, llmOptList)
+//            val optAction = menuAgent.determineAction(MenuInfoDto(opt, listOf(), menuDto.title), llmOptList)
 
             //노드 생성
             createOptionNode(optAction, menuNode, context)
@@ -165,12 +169,12 @@ class MenuGraphInitializeService @Autowired constructor(
         notificationService.sendActionCommand(kioskId, CoordinateDto(backAction.coordinate[0], backAction.coordinate[1], backAction.title))
     }
 
-    private fun createCategoryNode(action: AgentActionDto, context: GraphInitializeContext): UiEntity {
-        log.info("카테고리 노드를 생성합니다. go_next: ${action.goNext}, score: ${action.score}, title: ${action.title}")
+    private fun createCategoryNode(action: WordMatchDto, context: GraphInitializeContext): UiEntity {
+        log.info("카테고리 노드를 생성합니다. go_next: true, score: ${action.score}, coordinate: [${action.x}, ${action.y}], title: ${action.title}")
 
         val node = utgService.saveNode(UiDto(
             isNext = true,
-            x = action.coordinate[0], y = action.coordinate[1],
+            x = action.x, y = action.y,
             title = action.title,
             kioskId = context.kioskId
         ))
@@ -180,11 +184,11 @@ class MenuGraphInitializeService @Autowired constructor(
         return node
     }
 
-    private fun createMenuNode(action: AgentActionDto, context: GraphInitializeContext): UiEntity {
-        log.info("메뉴 노드를 생성합니다. go_next: ${action.goNext}, score: ${action.score}, title: ${action.title}")
+    private fun createMenuNode(action: WordMatchDto, context: GraphInitializeContext): UiEntity {
+        log.info("메뉴 노드를 생성합니다. go_next: false, score: ${action.score}, coordinate: [${action.x}, ${action.y}], title: ${action.title}")
         val node = utgService.saveNode(UiDto(
-            isNext = action.goNext,
-            x = action.coordinate[0], y = action.coordinate[1],
+            isNext = false,
+            x = action.x, y = action.y,
             title = action.title,
             kioskId = context.kioskId
         ))
@@ -194,14 +198,14 @@ class MenuGraphInitializeService @Autowired constructor(
     }
 
     private fun createOptionNode(
-        action: AgentActionDto,
+        action: WordMatchDto,
         menuNode: UiEntity,
         context: GraphInitializeContext
     ) {
-        log.info("옵션 노드를 생성합니다. go_next: ${action.goNext}, score: ${action.score}, coordinate: ${action.coordinate}, title: ${action.title}")
+        log.info("옵션 노드를 생성합니다. go_next: false, score: ${action.score}, coordinate: [${action.x}, ${action.y}], title: ${action.title}")
         val optEntity = utgService.saveNode(UiDto(
-            isNext = action.goNext,
-            x = action.coordinate[0], y = action.coordinate[1],
+            isNext = false,
+            x = action.x, y = action.y,
             title = action.title,
             kioskId = context.kioskId
         ))

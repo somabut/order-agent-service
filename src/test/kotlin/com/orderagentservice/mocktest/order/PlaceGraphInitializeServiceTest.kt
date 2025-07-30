@@ -45,7 +45,7 @@ class PlaceGraphInitializeServiceTest {
     private lateinit var uiEntity: UiEntity
     private lateinit var successAgentActionList: List<AgentActionDto>
     private lateinit var failAgentActionList: List<AgentActionDto>
-    private lateinit var actionResult: Pair<Int, Int>
+    private lateinit var actionResult: CoordinateDto
 
     @BeforeEach
     fun setUp() {
@@ -89,8 +89,6 @@ class PlaceGraphInitializeServiceTest {
             title = TEST_TITLE,
             kioskId = TEST_KIOSK_ID
         )
-
-        actionResult = Pair(TEST_X_COORDINATE, TEST_Y_COORDINATE)
 
         reset(placeAgent, notificationService, utgService)
     }
