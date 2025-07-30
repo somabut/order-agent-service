@@ -1,5 +1,6 @@
 package com.orderagentservice.order
 
+import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.repository.UtgRepository
 import com.orderagentservice.order.service.UtgService
 import org.junit.jupiter.api.Test
@@ -18,5 +19,18 @@ class UtgRepositoryTest @Autowired constructor(
 
         val path = utgService.findMenuPath(kioskId, nowNode.id, "불끈버거 맥시멈")
         println(path)
+    }
+
+    @Test
+    fun `노드를 저장한다`() {
+        val kioskId = "test"
+        val entity = utgService.saveNode(
+            UiDto(
+                isNext = false,
+                x = -1, y = -1,
+                title = "test", kioskId = kioskId
+            )
+        )
+        println(entity)
     }
 }

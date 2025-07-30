@@ -4,13 +4,11 @@ import com.orderagentservice.agent.BackAgent
 import com.orderagentservice.agent.MenuAgent
 import com.orderagentservice.agent.MissingComponentAgent
 import com.orderagentservice.agent.PageAgent
-import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.model.dto.AgentBackDto
 import com.orderagentservice.agent.model.dto.LlmUiComponentDto
 import com.orderagentservice.global.model.dto.WordMatchDto
 import com.orderagentservice.global.service.WordSimilarityService
 import com.orderagentservice.logger
-import com.orderagentservice.order.exception.LowScoreException
 import com.orderagentservice.order.model.GraphInitializeContext
 import com.orderagentservice.order.model.NodeRelation
 import com.orderagentservice.order.model.dto.CoordinateDto
@@ -82,8 +80,8 @@ class MenuGraphInitializeService @Autowired constructor(
             //옵션 선택
             if (menuDto.options.isNotEmpty()) {
                 selectOption(menuDto, node, context)
-                selectBack(node, context)
             }
+            selectBack(node, context)
         }
     }
 
@@ -98,14 +96,15 @@ class MenuGraphInitializeService @Autowired constructor(
             category = menuDto.category
         )
 //        val action = menuAgent.determineAction(categoryDto, llmUiList)
-        val action = wordSimilarityService.findBestMatch(menuDto.category, llmUiList)
+        val coordinate = wordSimilarityService.findBestMatch(menuDto.category, llmUiList)
+            .toCoordinateDto(menuDto.category)
 
         //노드 생성
-        val node = createCategoryNode(action, context)
+        val node = createCategoryNode(coordinate, context)
         context.lastNode = node
 
         //현재 카테고리 좌표 클릭
-        notificationService.sendActionCommand(context.kioskId, CoordinateDto(action.x, action.y, action.title))
+        notificationService.sendActionCommand(context.kioskId, CoordinateDto(coordinate.x, coordinate.y, coordinate.title))
     }
 
     private fun selectMenu(
@@ -113,14 +112,15 @@ class MenuGraphInitializeService @Autowired constructor(
         menuDto: MenuInfoDto,
         llmUiList: List<LlmUiComponentDto>
     ): UiEntity {
-        val action = wordSimilarityService.findBestMatch(menuDto.title, llmUiList)
+        val coordinate = wordSimilarityService.findBestMatch(menuDto.title, llmUiList)
+            .toCoordinateDto(menuDto.title)
 //        val action = menuAgent.determineAction(menuDto, llmUiList)
 
         //노드 생성
-        val node = createMenuNode(action, context)
+        val node = createMenuNode(coordinate, context)
 
         //현재 메뉴 좌표 클릭
-        notificationService.sendActionCommand(context.kioskId, CoordinateDto(action.x, action.y, action.title))
+        notificationService.sendActionCommand(context.kioskId, CoordinateDto(coordinate.x, coordinate.y, coordinate.title))
 
         return node
     }
@@ -145,11 +145,12 @@ class MenuGraphInitializeService @Autowired constructor(
 //        }
 
         for (opt in menuDto.options) {
-            val optAction = wordSimilarityService.findBestMatch(opt, llmOptList)
+            val coordinate = wordSimilarityService.findBestMatch(opt, llmOptList)
+                .toCoordinateDto(opt)
 //            val optAction = menuAgent.determineAction(MenuInfoDto(opt, listOf(), menuDto.title), llmOptList)
 
             //노드 생성
-            createOptionNode(optAction, menuNode, context)
+            createOptionNode(coordinate, menuNode, context)
         }
     }
 
@@ -169,13 +170,13 @@ class MenuGraphInitializeService @Autowired constructor(
         notificationService.sendActionCommand(kioskId, CoordinateDto(backAction.coordinate[0], backAction.coordinate[1], backAction.title))
     }
 
-    private fun createCategoryNode(action: WordMatchDto, context: GraphInitializeContext): UiEntity {
-        log.info("카테고리 노드를 생성합니다. go_next: true, score: ${action.score}, coordinate: [${action.x}, ${action.y}], title: ${action.title}")
+    private fun createCategoryNode(coordinate: CoordinateDto, context: GraphInitializeContext): UiEntity {
+        log.info("카테고리 노드를 생성합니다. go_next: true, coordinate: [${coordinate.x}, ${coordinate.y}], title: ${coordinate.title}")
 
         val node = utgService.saveNode(UiDto(
             isNext = true,
-            x = action.x, y = action.y,
-            title = action.title,
+            x = coordinate.x, y = coordinate.y,
+            title = coordinate.title,
             kioskId = context.kioskId
         ))
         utgService.saveRel(context.lastNode!!.id, node.id, NodeRelation.PATH_TO)
@@ -184,12 +185,12 @@ class MenuGraphInitializeService @Autowired constructor(
         return node
     }
 
-    private fun createMenuNode(action: WordMatchDto, context: GraphInitializeContext): UiEntity {
-        log.info("메뉴 노드를 생성합니다. go_next: false, score: ${action.score}, coordinate: [${action.x}, ${action.y}], title: ${action.title}")
+    private fun createMenuNode(coordinate: CoordinateDto, context: GraphInitializeContext): UiEntity {
+        log.info("메뉴 노드를 생성합니다. go_next: false, coordinate: [${coordinate.x}, ${coordinate.y}], title: ${coordinate.title}")
         val node = utgService.saveNode(UiDto(
             isNext = false,
-            x = action.x, y = action.y,
-            title = action.title,
+            x = coordinate.x, y = coordinate.y,
+            title = coordinate.title,
             kioskId = context.kioskId
         ))
         utgService.saveRel(context.lastNode!!.id, node.id, NodeRelation.HAS_TO)
@@ -198,15 +199,15 @@ class MenuGraphInitializeService @Autowired constructor(
     }
 
     private fun createOptionNode(
-        action: WordMatchDto,
+        coordinate: CoordinateDto,
         menuNode: UiEntity,
         context: GraphInitializeContext
     ) {
-        log.info("옵션 노드를 생성합니다. go_next: false, score: ${action.score}, coordinate: [${action.x}, ${action.y}], title: ${action.title}")
+        log.info("옵션 노드를 생성합니다. go_next: false, coordinate: [${coordinate.x}, ${coordinate.y}], title: ${coordinate.title}")
         val optEntity = utgService.saveNode(UiDto(
             isNext = false,
-            x = action.x, y = action.y,
-            title = action.title,
+            x = coordinate.x, y = coordinate.y,
+            title = coordinate.title,
             kioskId = context.kioskId
         ))
         utgService.saveRel(menuNode.id, optEntity.id, NodeRelation.OPT_TO)
