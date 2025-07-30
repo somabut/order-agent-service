@@ -19,11 +19,8 @@ class WordSimilarityService {
             eval("import numpy")
             eval("import sklearn")
 
-            val scriptPath = this@WordSimilarityService::class.java.classLoader
-                .getResource("word_compare.py")?.path
-                ?: throw RuntimeException("word_compare.py not found in classpath")
-
             eval("sys.path.append('.')")
+            eval("sys.path.append('/')")
             eval("from word_compare import KoreanSimilarityCalculator")
             eval("calculator = KoreanSimilarityCalculator()")
         }
