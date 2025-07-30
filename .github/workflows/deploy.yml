@@ -52,9 +52,8 @@ jobs:
           context: .
           push: true
           tags: ${{ env.IMAGE_NAME }}:latest
-          no-cache: true
-          # cache-from: type=gha
-          # cache-to: type=gha,mode=max
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       # 7. AWS 서버에 SSH 접속해서 compose 실행
       - name: Deploy via Compose (Server)
@@ -69,6 +68,7 @@ jobs:
 
             # 서비스 중단 후 재시작
             docker compose down
+            docker rmi moodtrbl/order-agent-service:latest
             docker compose pull
             docker compose up -d
 
