@@ -1,8 +1,6 @@
 package com.orderagentservice.agent
 
 import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.module.kotlin.readValue
-import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.model.dto.LlmUiComponentDto
 import com.orderagentservice.agent.util.LlmManager
 import com.orderagentservice.jsonMapper
@@ -16,7 +14,7 @@ class MissingComponentAgent@Autowired constructor(
 ) {
     fun determineAction(image: File, titleList: List<String>, uiList: List<LlmUiComponentDto>): List<LlmUiComponentDto> {
         val prompt = getPrompt(image, titleList, uiList)
-        val json = llmManager.queryGemini(prompt)
+        val json = llmManager.query(prompt)
         val response: List<LlmUiComponentDto> = jsonMapper.readValue(
             json,
             object : TypeReference<List<LlmUiComponentDto>>() {}

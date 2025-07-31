@@ -8,7 +8,7 @@ abstract class AbstractAgent (
 ) {
     protected inline fun <reified T> determineWithType(vararg args: Any): T {
         val prompt = getPrompt(*args)
-        val json = llmManager.queryGemini(prompt)
+        val json = llmManager.query(prompt)
         return jsonMapper.readValue(json, T::class.java)
     }
 

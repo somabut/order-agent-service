@@ -1,8 +1,6 @@
 package com.orderagentservice.agent
 
-import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.model.dto.AgentPageDto
 import com.orderagentservice.agent.model.dto.LlmUiComponentDto
 import com.orderagentservice.agent.util.LlmManager
@@ -17,7 +15,7 @@ class PageAgent @Autowired constructor(
 ) {
     fun determineAction(metaList: List<String>, uiList: List<LlmUiComponentDto>): AgentPageDto {
         val prompt = getPrompt(metaList, uiList)
-        val json = llmManager.queryGemini(prompt)
+        val json = llmManager.query(prompt)
         try {
             val response: AgentPageDto = jsonMapper.readValue<AgentPageDto>(json)
             return response

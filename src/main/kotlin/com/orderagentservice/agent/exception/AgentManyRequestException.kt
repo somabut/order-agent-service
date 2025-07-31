@@ -1,9 +1,8 @@
 package com.orderagentservice.agent.exception
 
 import com.orderagentservice.global.model.ErrorCode
-import com.orderagentservice.global.model.RootException
-import kotlin.math.E
+import com.orderagentservice.global.model.OrderAgentException
 
 class AgentManyRequestException(
     override val errorCode: ErrorCode = ErrorCode.AGENT_MANY_REQUEST
-) : RootException(errorCode)
+) : OrderAgentException(errorCode)

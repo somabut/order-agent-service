@@ -16,7 +16,7 @@ class StepAgent @Autowired constructor(
 
     fun determineAction(input: String): AgentStepDto {
         val prompt = getPrompt(input)
-        val json = llmManager.queryGemini(prompt)
+        val json = llmManager.query(prompt)
         val steps: AgentStepDto = jsonMapper.readValue<AgentStepDto>(json)
         return steps
     }

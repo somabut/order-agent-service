@@ -1,6 +1,5 @@
 package com.orderagentservice.agent
 
-import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.orderagentservice.agent.model.dto.LlmUiComponentDto
 import com.orderagentservice.agent.model.dto.AgentBackDto
@@ -19,7 +18,7 @@ class BackAgent @Autowired constructor(
 
     fun determineBack(uiList: List<LlmUiComponentDto>): AgentBackDto {
         val prompt = getPrompt(uiList)
-        val json = llmManager.queryGemini(prompt)
+        val json = llmManager.query(prompt)
         try {
             val response: AgentBackDto = jsonMapper.readValue<AgentBackDto>(json)
             return response
