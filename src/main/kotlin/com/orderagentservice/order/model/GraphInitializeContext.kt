@@ -6,8 +6,8 @@ import com.orderagentservice.order.model.entity.UiEntity
 data class GraphInitializeContext(
     val kioskId: String,
     var determinePlace: Boolean,
-    var lastNode: UiEntity?,
-    var stationNode: UiEntity?,
+    var lastNodeId: String?,
+    var stationNodeId: String?,
     var nowCategory: String?,
     val history: MutableList<AgentActionDto>
 )

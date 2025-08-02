@@ -69,9 +69,9 @@ class PaymentGraphInitializeService @Autowired constructor(
             title = action.title,
             kioskId = context.kioskId
         ))
-        utgService.saveRel(context.lastNode!!.id, entity.id, NodeRelation.PATH_TO)
+        utgService.saveRel(context.lastNodeId!!, entity.id, NodeRelation.PATH_TO)
 
-        context.lastNode = entity
+        context.lastNodeId = entity.id
     }
 
     private fun createCompleteNode(context: GraphInitializeContext) {
@@ -83,6 +83,6 @@ class PaymentGraphInitializeService @Autowired constructor(
             title = "complete",
             kioskId = context.kioskId
         ))
-        utgService.saveRel(context.lastNode!!.id, completeEntity.id, NodeRelation.PATH_TO)
+        utgService.saveRel(context.lastNodeId!!, completeEntity.id, NodeRelation.PATH_TO)
     }
 }

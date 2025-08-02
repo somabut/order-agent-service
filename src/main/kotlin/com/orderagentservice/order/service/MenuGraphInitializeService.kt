@@ -25,8 +25,6 @@ class MenuGraphInitializeService @Autowired constructor(
     private val menuAgent: MenuAgent,
     private val backAgent: BackAgent,
     private val wordSimilarityService: WordSimilarityService,
-    private val pageAgent: PageAgent,
-    private val missingComponentAgent: MissingComponentAgent,
     private val placeGraphInitializeService: PlaceGraphInitializeService,
     private val uiExtractorManager: UiExtractorManager,
     private val notificationService: NotificationService,
@@ -41,7 +39,7 @@ class MenuGraphInitializeService @Autowired constructor(
         log.info("메뉴 utg 생성 시작")
         val startTime = System.nanoTime()
 
-        // 루트, 카테고리 중앙노드 초기화
+        // root, station노드 초기화
         setupNode(context)
 
         //포장/매장 찾기
@@ -68,7 +66,7 @@ class MenuGraphInitializeService @Autowired constructor(
             kioskId = kioskId,
             title = "root"
         )
-        context.lastNode = utgService.saveNode(rootUiDto)
+        context.lastNodeId = utgService.saveNode(rootUiDto).id
         val stationNode = UiDto(
             isNext = true,
             x = -1, y = -1,
@@ -96,6 +94,9 @@ class MenuGraphInitializeService @Autowired constructor(
             }
             selectBack(node, context)
         }
+
+        //마지막 노드를 station으로 변경
+        context.lastNodeId = context.stationNodeId
     }
 
     private fun selectCategory(
@@ -108,7 +109,7 @@ class MenuGraphInitializeService @Autowired constructor(
 
         //노드 생성
         val node = createCategoryNode(coordinate, context)
-        context.lastNode = node
+        context.lastNodeId = node.id
         context.nowCategory = node.title
 
         //현재 카테고리 좌표 클릭
@@ -177,8 +178,8 @@ class MenuGraphInitializeService @Autowired constructor(
 //        utgService.saveRel(context.lastNode!!.id, node.id, NodeRelation.PATH_TO)
 //        utgService.saveRel(node.id, context.lastNode!!.id, NodeRelation.PATH_TO)
 
-        utgService.saveRel(context.stationNode!!.id, node.id, NodeRelation.PATH_TO)
-        utgService.saveRel(node.id, context.stationNode!!.id, NodeRelation.PATH_TO)
+        utgService.saveRel(context.stationNodeId!!, node.id, NodeRelation.PATH_TO)
+        utgService.saveRel(node.id, context.stationNodeId!!, NodeRelation.PATH_TO)
 
         return node
     }
@@ -191,7 +192,7 @@ class MenuGraphInitializeService @Autowired constructor(
             title = coordinate.title,
             kioskId = context.kioskId
         ))
-        utgService.saveRel(context.lastNode!!.id, node.id, NodeRelation.HAS_TO)
+        utgService.saveRel(context.lastNodeId!!, node.id, NodeRelation.HAS_TO)
 
         return node
     }
@@ -223,7 +224,7 @@ class MenuGraphInitializeService @Autowired constructor(
             kioskId = context.kioskId
         ))
         utgService.saveRel(menuNode.id, backEntity.id, NodeRelation.BACK_TO)
-        utgService.saveRel(backEntity.id, context.lastNode!!.id, NodeRelation.BACK_TO)
+        utgService.saveRel(backEntity.id, context.lastNodeId!!, NodeRelation.BACK_TO)
     }
 
     //TODO(모달 로직 임시 비활성화)

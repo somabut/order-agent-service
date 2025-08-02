@@ -29,7 +29,7 @@ class AutoOrderService @Autowired constructor(
         val startTime = System.nanoTime()
 
         //루트 노드 가져오기
-        val nowNodeId = utgService.findRootNodeId(kioskId).id
+        val nowNodeId = utgService.findRootNode(kioskId).id
 
         val context = AutoOrderContext(
             kioskId = kioskId,
@@ -100,17 +100,17 @@ class AutoOrderService @Autowired constructor(
             )
 
             //메뉴 페이지로 돌아가기
-            if (menu.autoOrderOptions.isNotEmpty()) {
-                val backList = utgService.findBackPath(kioskId, last.id)
-                for (back in backList) {
-                    notificationService.sendActionCommand(kioskId, CoordinateDto(back.x, back.y, back.title))
-                }
+            val backList = utgService.findBackPath(kioskId, last.id)
+            for (back in backList) {
+                notificationService.sendActionCommand(kioskId, CoordinateDto(back.x, back.y, back.title))
             }
 
             //현재 노드 갱신
             val categoryId = utgService.findCategoryNodeId(kioskId, last.id)
             context.nodeId = categoryId
         }
+        val stationId = utgService.findStationNode(kioskId).id
+        context.nodeId = stationId
         return history
     }
 
@@ -136,7 +136,7 @@ class AutoOrderService @Autowired constructor(
         //현재 노드에서 인접한 노드에 포장/매장이 있는지 확인
         val kioskId = context.kioskId
         val taskId = context.taskId
-        val action = utgService.findPlaceNodeId(kioskId, context.nodeId, context.place!!) ?: return false
+        val action = utgService.findPlaceNode(kioskId, context.nodeId, context.place!!) ?: return false
 
         logOrder(kioskId, taskId,"포장/매장을 선택합니다. ${context.place}")
         notificationService.sendActionCommand(kioskId, CoordinateDto(action.x, action.y, action.title))
