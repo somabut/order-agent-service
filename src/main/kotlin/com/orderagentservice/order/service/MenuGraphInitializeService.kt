@@ -67,12 +67,14 @@ class MenuGraphInitializeService @Autowired constructor(
             title = "root"
         )
         context.lastNodeId = utgService.saveNode(rootUiDto).id
+
         val stationNode = UiDto(
             isNext = true,
             x = -1, y = -1,
             kioskId = kioskId,
             title = "station"
         )
+        context.stationNodeId = utgService.saveNode(stationNode).id
         utgService.saveNode(stationNode)
     }
 
