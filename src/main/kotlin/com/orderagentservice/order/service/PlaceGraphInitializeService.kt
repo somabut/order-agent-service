@@ -40,7 +40,7 @@ class PlaceGraphInitializeService @Autowired constructor(
                     title = act.title,
                     kioskId = kioskId
                 ))
-            utgService.saveRel(context.lastNode!!.id, entity.id, NodeRelation.HAS_TO)
+            utgService.saveRel(context.lastNodeId!!, entity.id, NodeRelation.HAS_TO)
             context.history.add(act)
             log.info("포장/매장 노드를 생성합니다. go_next: ${act.goNext}, score: ${act.score}, coordinate: $x $y, title: ${act.title}")
         }

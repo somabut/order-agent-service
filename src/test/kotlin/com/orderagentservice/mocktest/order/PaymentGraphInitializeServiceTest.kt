@@ -122,7 +122,7 @@ class PaymentGraphInitializeServiceTest {
             kioskId = TEST_KIOSK_ID,
             determinePlace = true,
             lastNode = lastNode,
-            imageHash = null,
+            stationNode = null,
             nowCategory = null,
             history = mutableListOf()
         )
@@ -147,7 +147,7 @@ class PaymentGraphInitializeServiceTest {
             kioskId = TEST_KIOSK_ID,
             determinePlace = false,
             lastNode = lastNode,
-            imageHash = null,
+            stationNode = null,
             nowCategory = null,
             history = mutableListOf()
         )
@@ -210,7 +210,7 @@ class PaymentGraphInitializeServiceTest {
             kioskId = TEST_KIOSK_ID,
             determinePlace = true,
             lastNode = lastNode,
-            imageHash = null,
+            stationNode = null,
             nowCategory = null,
             history = mutableListOf()
         )
@@ -242,7 +242,7 @@ class PaymentGraphInitializeServiceTest {
             kioskId = TEST_KIOSK_ID,
             determinePlace = true,
             lastNode = lastNode,
-            imageHash = null,
+            stationNode = null,
             nowCategory = null,
             history = mutableListOf()
         )

@@ -3,7 +3,7 @@ package com.orderagentservice.global.controller
 import com.orderagentservice.agent.exception.AgentManyRequestException
 import com.orderagentservice.global.exception.InvalidSessionException
 import com.orderagentservice.global.exception.S3NotSupportedType
-import com.orderagentservice.global.model.RootException
+import com.orderagentservice.global.model.OrderAgentException
 import com.orderagentservice.global.model.response.ApiResponse
 import com.orderagentservice.logger
 import com.orderagentservice.order.exception.*
@@ -20,8 +20,8 @@ class GlobalExceptionHandler {
         for (ele in e.stackTrace) {
             println(ele)
         }
-        val exception = RootException()
-        return ApiResponse.fail<RootException>(exception)
+        val exception = OrderAgentException()
+        return ApiResponse.fail<OrderAgentException>(exception)
     }
 
     @ExceptionHandler(AgentManyRequestException::class)

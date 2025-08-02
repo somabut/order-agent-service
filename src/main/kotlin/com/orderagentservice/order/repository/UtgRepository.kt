@@ -70,6 +70,16 @@ interface UtgRepository : Neo4jRepository<UiEntity, String> {
         @Param("title") title: String = "root",
     ): UiEntity?
 
+    @Query(
+        "MATCH (n:UI {kioskId: \$kioskId, title: \$title})\n" +
+        "RETURN n\n" +
+        "LIMIT 1"
+    )
+    fun findStationNode(
+        @Param("kioskId") kioskId: String,
+        @Param("title") title: String = "station",
+    ): UiEntity?
+
     @Query("MATCH (a:UI {id: \$sourceId}), (b:UI {id: \$targetId}) MERGE (a)-[:PATH_TO]->(b)")
     fun savePathRelation(sourceId: String, targetId: String)
 

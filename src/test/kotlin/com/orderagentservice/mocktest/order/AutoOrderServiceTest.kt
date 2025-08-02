@@ -142,7 +142,7 @@ class AutoOrderServiceTest {
         whenever(utgService.findBackPath(TEST_KIOSK_ID, TEST_MENU_ID)).thenReturn(mockBackPathList)
         whenever(utgService.findCategoryNodeId(TEST_KIOSK_ID, TEST_MENU_ID)).thenReturn(TEST_CATEGORY_ID)
         whenever(utgService.findMenuPath(TEST_KIOSK_ID, TEST_CATEGORY_ID, TEST_COMPLETE_TITLE)).thenReturn(mockPathList)
-        whenever(utgService.findRootNodeId(TEST_KIOSK_ID)).thenReturn(mockRoot)
+        whenever(utgService.findRootNode(TEST_KIOSK_ID)).thenReturn(mockRoot)
         doNothing().whenever(globalLogger).loggingOrderStart(TEST_KIOSK_ID, TEST_TASK_ID)
         doNothing().whenever(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), any(), any(), eq(TEST_PAYMENT_CARD), eq(TEST_TASK_ID))
 
@@ -187,12 +187,12 @@ class AutoOrderServiceTest {
         )
 
         whenever(utgService.findMenuPath(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_MENU_TITLE_2)).thenReturn(mockTakeoutActionList)
-        whenever(utgService.findPlaceNodeId(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_PLACE_TAKEOUT)).thenReturn(mockTakePlace)
+        whenever(utgService.findPlaceNode(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_PLACE_TAKEOUT)).thenReturn(mockTakePlace)
         whenever(utgService.findCategoryNodeId(TEST_KIOSK_ID, TEST_MENU_ID)).thenReturn(TEST_CATEGORY_ID)
         whenever(utgService.findMenuPath(TEST_KIOSK_ID, TEST_CATEGORY_ID, TEST_COMPLETE_TITLE)).thenReturn(
             listOf(ActionPathDto(id = TEST_COMPLETE_ID, x = TEST_X_COORDINATE_3, y = TEST_Y_COORDINATE_3, title = TEST_COMPLETE_TITLE))
         )
-        whenever(utgService.findRootNodeId(TEST_KIOSK_ID)).thenReturn(mockRoot)
+        whenever(utgService.findRootNode(TEST_KIOSK_ID)).thenReturn(mockRoot)
         doNothing().whenever(globalLogger).loggingOrderStart(TEST_KIOSK_ID, TEST_TASK_ID)
         doNothing().whenever(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), any(), any(), eq(TEST_PAYMENT_CASH), eq(TEST_TASK_ID))
 
@@ -200,7 +200,7 @@ class AutoOrderServiceTest {
         autoOrderService.proceed(TEST_KIOSK_ID, TEST_TASK_ID, takeoutOrderRequest)
 
         // then: 포장 노드 클릭이 정상적으로 수행된다
-        verify(utgService).findPlaceNodeId(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_PLACE_TAKEOUT)
+        verify(utgService).findPlaceNode(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_PLACE_TAKEOUT)
         verify(notificationService).sendActionCommand(TEST_KIOSK_ID, CoordinateDto(TEST_X_COORDINATE, TEST_Y_COORDINATE, TEST_PLACE_TAKEOUT))
         verify(globalLogger).loggingOrderStart(TEST_KIOSK_ID, TEST_TASK_ID)
         verify(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), any(), any(), eq(TEST_PAYMENT_CASH), eq(TEST_TASK_ID))
@@ -238,7 +238,7 @@ class AutoOrderServiceTest {
         whenever(utgService.findMenuPath(TEST_KIOSK_ID, TEST_CATEGORY_ID_2, TEST_COMPLETE_TITLE)).thenReturn(
             listOf(ActionPathDto(id = TEST_COMPLETE_ID, x = TEST_X_COORDINATE_3, y = TEST_Y_COORDINATE_3, title = TEST_COMPLETE_TITLE))
         )
-        whenever(utgService.findRootNodeId(TEST_KIOSK_ID)).thenReturn(mockRoot)
+        whenever(utgService.findRootNode(TEST_KIOSK_ID)).thenReturn(mockRoot)
         doNothing().whenever(globalLogger).loggingOrderStart(TEST_KIOSK_ID, TEST_TASK_ID)
         doNothing().whenever(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), any(), any(), eq(TEST_PAYMENT_CARD), eq(TEST_TASK_ID))
 
@@ -268,7 +268,7 @@ class AutoOrderServiceTest {
         whenever(utgService.findMenuPath(TEST_KIOSK_ID, TEST_CATEGORY_ID, TEST_COMPLETE_TITLE)).thenReturn(
             listOf(ActionPathDto(id = TEST_COMPLETE_ID, x = TEST_X_COORDINATE_3, y = TEST_Y_COORDINATE_3, title = TEST_COMPLETE_TITLE))
         )
-        whenever(utgService.findRootNodeId(TEST_KIOSK_ID)).thenReturn(mockRoot)
+        whenever(utgService.findRootNode(TEST_KIOSK_ID)).thenReturn(mockRoot)
         doNothing().whenever(globalLogger).loggingOrderStart(TEST_KIOSK_ID, TEST_TASK_ID)
         doNothing().whenever(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), any(), any(), eq(TEST_PAYMENT_CARD), eq(TEST_TASK_ID))
 

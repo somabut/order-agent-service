@@ -11,7 +11,6 @@ import com.orderagentservice.order.repository.UtgRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import kotlin.math.log
 
 @Service
 class UtgService @Autowired constructor(
@@ -43,6 +42,7 @@ class UtgService @Autowired constructor(
             .ifEmpty { throw PathNotFoundException() }
 
         return nodesList
+            .filter { node -> node["title"].toString() != "station" }
             .map { node -> ActionPathDto(
                 node["id"].toString(), node["title"].toString(),
                 x = (node["x"] as Number).toInt(), y = (node["y"] as Number).toInt()
@@ -79,7 +79,7 @@ class UtgService @Autowired constructor(
         return entity.id
     }
 
-    fun findPlaceNodeId(kioskId: String, id: String, place: String): ActionPathDto? {
+    fun findPlaceNode(kioskId: String, id: String, place: String): ActionPathDto? {
         val entity = utgRepository.findPlaceByTitle(kioskId, id, place) ?: return null
 
         return ActionPathDto(
@@ -88,8 +88,17 @@ class UtgService @Autowired constructor(
         )
     }
 
-    fun findRootNodeId(kioskId: String): ActionPathDto {
+    fun findRootNode(kioskId: String): ActionPathDto {
         val entity = utgRepository.findRootNode(kioskId) ?: throw NodeNotFoundException()
+
+        return ActionPathDto(
+            id = entity.id, title = entity.title,
+            x = entity.x, y = entity.y
+        )
+    }
+
+    fun findStationNode(kioskId: String): ActionPathDto {
+        val entity = utgRepository.findStationNode(kioskId) ?: throw NodeNotFoundException()
 
         return ActionPathDto(
             id = entity.id, title = entity.title,

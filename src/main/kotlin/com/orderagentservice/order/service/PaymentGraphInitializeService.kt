@@ -1,6 +1,7 @@
 package com.orderagentservice.order.service
 
 import com.orderagentservice.agent.PaymentAgent
+import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.model.dto.LlmUiComponentDto
 import com.orderagentservice.logger
 import com.orderagentservice.order.exception.LowScoreException
@@ -27,49 +28,61 @@ class PaymentGraphInitializeService @Autowired constructor(
     fun initializeGraph(context: GraphInitializeContext) {
         log.info("결제 utg 생성 시작")
         val startTime = System.nanoTime()
-        val kioskId = context.kioskId
 
-        //존재하는 모든 메뉴에 대해 그래프를 그렸으니 결제까지 가는 노드를 만들어야함
-        var isNext = true
-        var llmUiList = mutableListOf<LlmUiComponentDto>()
+        processPayments(context)
+        createCompleteNode(context)
+
+        val endTime = System.nanoTime()
+        log.info("결제 utg 생성 완료. 수행시간: ${(endTime - startTime) / 1000000}ms")
+    }
+
+    private fun processPayments(context: GraphInitializeContext) {
         while (true) {
-            llmUiList = uiExtractorManager.getUiComponents(kioskId)
-
             //포장/매장 UI 확인
             if (context.determinePlace == false) {
                 placeGraphInitializeService.initializeGraph(context)
             }
-
-            val action = paymentAgent.determineAction(llmUiList)
-            context.history.add(action)
-
-            //클릭 액션 요청
-            notificationService.sendActionCommand(kioskId, CoordinateDto(x = action.coordinate[0], y = action.coordinate[1], title = action.title))
-
-            log.info("결제 노드를 생성합니다. go_next: ${action.goNext}, score: ${action.score}, coordinate: ${action.coordinate}, title: ${action.title}")
-            isNext = action.goNext
-            val entity = utgService.saveNode(UiDto(
-                isNext = isNext,
-                x = action.coordinate[0], y = action.coordinate[1],
-                title = action.title,
-                kioskId = kioskId
-            ))
-            utgService.saveRel(context.lastNode!!.id, entity.id, NodeRelation.PATH_TO)
-
-            context.lastNode = entity
-            if (isNext == false) break
+            val paymentEnd = selectPayments(context)
+            if (paymentEnd == false) break
         }
+    }
 
-        //완료 노드를 추가하여 UTG의 끝을 알리기
+    private fun selectPayments(context: GraphInitializeContext): Boolean {
+        val llmUiList = uiExtractorManager.getUiComponents(context.kioskId)
+        val action = paymentAgent.determineAction(llmUiList)
+
+        //노드 저장
+        createPaymentNode(action, context)
+
+        //클릭 액션 요청
+        notificationService.sendActionCommand(context.kioskId, CoordinateDto(x = action.coordinate[0], y = action.coordinate[1], title = action.title))
+
+        return action.goNext
+    }
+
+    private fun createPaymentNode(action: AgentActionDto, context: GraphInitializeContext) {
+        log.info("결제 노드를 생성합니다. go_next: ${action.goNext}, score: ${action.score}, coordinate: ${action.coordinate}, title: ${action.title}")
+
+        val entity = utgService.saveNode(UiDto(
+            isNext = action.goNext,
+            x = action.coordinate[0], y = action.coordinate[1],
+            title = action.title,
+            kioskId = context.kioskId
+        ))
+        utgService.saveRel(context.lastNodeId!!, entity.id, NodeRelation.PATH_TO)
+
+        context.lastNodeId = entity.id
+    }
+
+    private fun createCompleteNode(context: GraphInitializeContext) {
+        log.info("완료 노드를 생성합니다.")
+
         val completeEntity =  utgService.saveNode(UiDto(
             isNext = false,
             x = -1, y = -1,
             title = "complete",
-            kioskId = kioskId
+            kioskId = context.kioskId
         ))
-        utgService.saveRel(context.lastNode!!.id, completeEntity.id, NodeRelation.PATH_TO)
-
-        val endTime = System.nanoTime()
-        log.info("결제 utg 생성 완료. 수행시간: ${(endTime - startTime) / 1000000}ms")
+        utgService.saveRel(context.lastNodeId!!, completeEntity.id, NodeRelation.PATH_TO)
     }
 }

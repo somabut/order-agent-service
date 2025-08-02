@@ -1,8 +1,8 @@
 package com.orderagentservice.order.exception
 
 import com.orderagentservice.global.model.ErrorCode
-import com.orderagentservice.global.model.RootException
+import com.orderagentservice.global.model.OrderAgentException
 
 class NodeNotFoundException(
     override val errorCode: ErrorCode = ErrorCode.ORDER_NO_NODE
-) : RootException(errorCode)
+) : OrderAgentException(errorCode)

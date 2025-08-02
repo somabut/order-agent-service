@@ -25,8 +25,6 @@ class MenuGraphInitializeService @Autowired constructor(
     private val menuAgent: MenuAgent,
     private val backAgent: BackAgent,
     private val wordSimilarityService: WordSimilarityService,
-    private val pageAgent: PageAgent,
-    private val missingComponentAgent: MissingComponentAgent,
     private val placeGraphInitializeService: PlaceGraphInitializeService,
     private val uiExtractorManager: UiExtractorManager,
     private val notificationService: NotificationService,
@@ -41,14 +39,8 @@ class MenuGraphInitializeService @Autowired constructor(
         log.info("메뉴 utg 생성 시작")
         val startTime = System.nanoTime()
 
-        val kioskId = context.kioskId
-        val rootUiDto = UiDto(
-            isNext = true,
-            x = -1, y = -1,
-            kioskId = kioskId,
-            title = "root"
-        )
-        context.lastNode = utgService.saveNode(rootUiDto)
+        // root, station노드 초기화
+        setupNode(context)
 
         //포장/매장 찾기
         placeGraphInitializeService.initializeGraph(context)
@@ -65,16 +57,35 @@ class MenuGraphInitializeService @Autowired constructor(
         log.info("메뉴 utg 생성 완료. 수행시간: ${(endTime - startTime) / 1000000}ms")
     }
 
+    private fun setupNode(context: GraphInitializeContext) {
+        log.info("root노드와 station노드를 초기화합니다.")
+        val kioskId = context.kioskId
+        val rootUiDto = UiDto(
+            isNext = true,
+            x = -1, y = -1,
+            kioskId = kioskId,
+            title = "root"
+        )
+        context.lastNodeId = utgService.saveNode(rootUiDto).id
+        val stationNode = UiDto(
+            isNext = true,
+            x = -1, y = -1,
+            kioskId = kioskId,
+            title = "station"
+        )
+        utgService.saveNode(stationNode)
+    }
+
     private fun navigateMenus(context: GraphInitializeContext, menuList: List<MenuInfoDto>) {
         for (menuDto in menuList) {
+            var uiList: List<LlmUiComponentDto> = listOf()
             if (menuDto.category != context.nowCategory) {
                 //카테고리가 다르다면 해당 카테고리로 이동
-                val uiList = uiExtractorManager.getUiComponents(context.kioskId)
+                uiList = uiExtractorManager.getUiComponents(context.kioskId)
                 selectCategory(context, menuDto, uiList)
             }
 
             log.info("진행 중인 메뉴: ${menuDto.title}, 카테고리: ${menuDto.category}")
-            val uiList = uiExtractorManager.getUiComponents(context.kioskId)
             val node = selectMenu(context, menuDto, uiList)
 
             //옵션 선택
@@ -83,6 +94,9 @@ class MenuGraphInitializeService @Autowired constructor(
             }
             selectBack(node, context)
         }
+
+        //마지막 노드를 station으로 변경
+        context.lastNodeId = context.stationNodeId
     }
 
     private fun selectCategory(
@@ -95,7 +109,7 @@ class MenuGraphInitializeService @Autowired constructor(
 
         //노드 생성
         val node = createCategoryNode(coordinate, context)
-        context.lastNode = node
+        context.lastNodeId = node.id
         context.nowCategory = node.title
 
         //현재 카테고리 좌표 클릭
@@ -109,7 +123,6 @@ class MenuGraphInitializeService @Autowired constructor(
     ): UiEntity {
         val coordinate = wordSimilarityService.findBestMatch(menuDto.title, llmUiList)
             .toCoordinateDto(menuDto.title)
-//        val action = menuAgent.determineAction(menuDto, llmUiList)
 
         //노드 생성
         val node = createMenuNode(coordinate, context)
@@ -129,20 +142,9 @@ class MenuGraphInitializeService @Autowired constructor(
         val kioskId = context.kioskId
         val llmOptList = uiExtractorManager.getUiComponents(kioskId)
 
-        //TODO(GPT 미신청으로 인한 일시적인 보류)
-//        //감지되지 못한 옵션이 있을 수 있으므로 한번 더 탐색
-//        val additionalList = missingComponentAgent.determineAction(image, menuDto.options, llmOptList)
-//
-//        //추가된거랑 겹치는게 있다는 말은 + 버튼이 아닌 것이므로 지워줘야함
-//        removeDuplicate(additionalList, llmOptList)
-//        for (addEle in additionalList) {
-//            llmOptList.add(addEle)
-//        }
-
         for (opt in menuDto.options) {
             val coordinate = wordSimilarityService.findBestMatch(opt, llmOptList)
                 .toCoordinateDto(opt)
-//            val optAction = menuAgent.determineAction(MenuInfoDto(opt, listOf(), menuDto.title), llmOptList)
 
             //노드 생성
             createOptionNode(coordinate, menuNode, context)
@@ -158,7 +160,6 @@ class MenuGraphInitializeService @Autowired constructor(
 
         //노드 생성
         createBackNode(backAction, menuNode, context)
-        context.history.add(backAction.toActionDto())
 
         //sse를 통해 클라이언트에게 원래 페이지로 돌아가는 좌표 클릭하도록 하기
         log.info("돌아가는 좌표를 클릭중입니다. 좌표: ${backAction.coordinate}")
@@ -174,8 +175,11 @@ class MenuGraphInitializeService @Autowired constructor(
             title = coordinate.title,
             kioskId = context.kioskId
         ))
-        utgService.saveRel(context.lastNode!!.id, node.id, NodeRelation.PATH_TO)
-        utgService.saveRel(node.id, context.lastNode!!.id, NodeRelation.PATH_TO)
+//        utgService.saveRel(context.lastNode!!.id, node.id, NodeRelation.PATH_TO)
+//        utgService.saveRel(node.id, context.lastNode!!.id, NodeRelation.PATH_TO)
+
+        utgService.saveRel(context.stationNodeId!!, node.id, NodeRelation.PATH_TO)
+        utgService.saveRel(node.id, context.stationNodeId!!, NodeRelation.PATH_TO)
 
         return node
     }
@@ -188,7 +192,7 @@ class MenuGraphInitializeService @Autowired constructor(
             title = coordinate.title,
             kioskId = context.kioskId
         ))
-        utgService.saveRel(context.lastNode!!.id, node.id, NodeRelation.HAS_TO)
+        utgService.saveRel(context.lastNodeId!!, node.id, NodeRelation.HAS_TO)
 
         return node
     }
@@ -220,7 +224,7 @@ class MenuGraphInitializeService @Autowired constructor(
             kioskId = context.kioskId
         ))
         utgService.saveRel(menuNode.id, backEntity.id, NodeRelation.BACK_TO)
-        utgService.saveRel(backEntity.id, context.lastNode!!.id, NodeRelation.BACK_TO)
+        utgService.saveRel(backEntity.id, context.lastNodeId!!, NodeRelation.BACK_TO)
     }
 
     //TODO(모달 로직 임시 비활성화)

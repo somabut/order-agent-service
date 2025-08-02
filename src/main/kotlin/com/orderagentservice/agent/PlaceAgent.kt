@@ -14,7 +14,7 @@ class PlaceAgent @Autowired constructor(
 ) {
     fun determineAction(uiList: List<LlmUiComponentDto>): List<AgentActionDto> {
         val prompt = getPrompt(uiList)
-        val json = llmManager.queryGemini(prompt)
+        val json = llmManager.query(prompt)
         val response: List<AgentActionDto> = jsonMapper.readValue<List<AgentActionDto>>(json)
         return response
     }

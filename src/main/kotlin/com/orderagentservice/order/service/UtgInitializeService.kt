@@ -26,8 +26,8 @@ class UtgInitializeService @Autowired constructor(
         val context = GraphInitializeContext(
             kioskId = kioskId,
             determinePlace = false,
-            lastNode = null,
-            imageHash = null,
+            lastNodeId = null,
+            stationNodeId = null,
             nowCategory = null,
             history = mutableListOf<AgentActionDto>()
         )

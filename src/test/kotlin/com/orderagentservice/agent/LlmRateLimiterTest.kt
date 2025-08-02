@@ -1,15 +1,13 @@
 package com.orderagentservice.agent
 
+import com.orderagentservice.agent.model.LlmProvider
 import com.orderagentservice.agent.util.LlmManager
 import com.orderagentservice.agent.util.LlmRateLimiter
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import java.io.File
 import java.util.*
-import java.util.concurrent.ConcurrentHashMap
 
 @SpringBootTest
 class LlmRateLimiterTest @Autowired constructor(
@@ -25,7 +23,7 @@ class LlmRateLimiterTest @Autowired constructor(
 
         // when: llm에게 질의 한다
         repeat(requestCount) { index ->
-            val result = llmRateLimiter.executeWithLimit { apiKey ->
+            val result = llmRateLimiter.executeWithLimit(LlmProvider.GEMINI) { apiKey ->
                 "Request $index with $apiKey"
             }
             results.add(result)
@@ -46,7 +44,7 @@ class LlmRateLimiterTest @Autowired constructor(
 
         for (i in 1..10) {
             // when
-            llmRateLimiter.executeWithLimit { apiKey ->
+            llmRateLimiter.executeWithLimit(LlmProvider.GEMINI) { apiKey ->
                 usedKeys.add(apiKey)
                 "moodTRBL"
             }
@@ -59,7 +57,7 @@ class LlmRateLimiterTest @Autowired constructor(
     @Test
     fun `llm에게 실제로 질의하여 Too Many Request 에러가 발생하지 않는다`() {
         for (i in 1..50) {
-            val result = llmManager.queryGemini("안녕 응답이 잘 갔으면 정확하게 'moodTRBL'이라고만 답해")
+            val result = llmManager.query("안녕 응답이 잘 갔으면 정확하게 'moodTRBL'이라고만 답해")
             assertThat(result).isEqualTo("moodTRBL")
             println(i)
         }

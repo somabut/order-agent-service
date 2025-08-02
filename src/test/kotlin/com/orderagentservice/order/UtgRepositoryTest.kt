@@ -15,7 +15,7 @@ class UtgRepositoryTest @Autowired constructor(
     @Test
     fun `원하는 메뉴의 경로를 찾는다`() {
         val kioskId = "kiosk-8f22eeb6-a920-44ed-af26-d800756fb283"
-        val nowNode = utgService.findRootNodeId(kioskId)
+        val nowNode = utgService.findRootNode(kioskId)
 
         val path = utgService.findMenuPath(kioskId, nowNode.id, "불끈버거 맥시멈")
         println(path)
