@@ -79,12 +79,12 @@ class MenuGraphInitializeService @Autowired constructor(
     }
 
     private fun navigateMenus(context: GraphInitializeContext, menuList: List<MenuInfoDto>) {
+        var uiList = uiExtractorManager.getUiComponents(context.kioskId)
         for (menuDto in menuList) {
-            var uiList: List<LlmUiComponentDto> = listOf()
             if (menuDto.category != context.nowCategory) {
                 //카테고리가 다르다면 해당 카테고리로 이동
-                uiList = uiExtractorManager.getUiComponents(context.kioskId)
                 selectCategory(context, menuDto, uiList)
+                uiList = uiExtractorManager.getUiComponents(context.kioskId)
             }
 
             log.info("진행 중인 메뉴: ${menuDto.title}, 카테고리: ${menuDto.category}")
