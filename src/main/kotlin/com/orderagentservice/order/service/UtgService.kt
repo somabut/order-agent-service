@@ -43,6 +43,7 @@ class UtgService @Autowired constructor(
             .ifEmpty { throw PathNotFoundException() }
 
         return nodesList
+            .filter { node -> node["title"].toString() != "station" }
             .map { node -> ActionPathDto(
                 node["id"].toString(), node["title"].toString(),
                 x = (node["x"] as Number).toInt(), y = (node["y"] as Number).toInt()

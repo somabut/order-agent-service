@@ -7,7 +7,7 @@ data class GraphInitializeContext(
     val kioskId: String,
     var determinePlace: Boolean,
     var lastNode: UiEntity?,
+    var stationNode: UiEntity?,
     var nowCategory: String?,
-    var imageHash: String?,
     val history: MutableList<AgentActionDto>
 )

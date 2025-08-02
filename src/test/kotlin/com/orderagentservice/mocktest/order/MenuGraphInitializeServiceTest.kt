@@ -437,7 +437,7 @@ class MenuGraphInitializeServiceTest {
             determinePlace = false,
             lastNode = null,
             nowCategory = null,
-            imageHash = null,
+            stationNode = null,
             history = mutableListOf()
         )
     }
@@ -501,7 +501,7 @@ class MenuGraphInitializeServiceTest {
             kioskId = TEST_KIOSK_ID,
             determinePlace = false,
             lastNode = null,
-            imageHash = null,
+            stationNode = null,
             nowCategory = null,
             history = mutableListOf()
         )

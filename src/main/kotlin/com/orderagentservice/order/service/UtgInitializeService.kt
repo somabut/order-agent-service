@@ -27,7 +27,7 @@ class UtgInitializeService @Autowired constructor(
             kioskId = kioskId,
             determinePlace = false,
             lastNode = null,
-            imageHash = null,
+            stationNode = null,
             nowCategory = null,
             history = mutableListOf<AgentActionDto>()
         )
