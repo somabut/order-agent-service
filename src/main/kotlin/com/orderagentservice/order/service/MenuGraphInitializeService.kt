@@ -75,7 +75,6 @@ class MenuGraphInitializeService @Autowired constructor(
             title = "station"
         )
         context.stationNodeId = utgService.saveNode(stationNode).id
-        utgService.saveNode(stationNode)
     }
 
     private fun navigateMenus(context: GraphInitializeContext, menuList: List<MenuInfoDto>) {
