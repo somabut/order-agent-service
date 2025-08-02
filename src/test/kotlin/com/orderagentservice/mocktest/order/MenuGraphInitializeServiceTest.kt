@@ -101,7 +101,7 @@ class MenuGraphInitializeServiceTest {
         wordSimilarityService = mock()
 
         menuGraphInitializeService = MenuGraphInitializeService(
-            menuAgent, backAgent, wordSimilarityService, pageAgent, missingComponentAgent, placeGraphInitializeService,
+            menuAgent, backAgent, wordSimilarityService, placeGraphInitializeService,
             uiExtractorManager, notificationService, utgService
         )
 
@@ -263,8 +263,8 @@ class MenuGraphInitializeServiceTest {
 
         // then
         assertTrue(context.determinePlace)
-        assertNotNull(context.lastNode)
-        assertEquals(TEST_FIRST_NODE_ID, context.lastNode!!.id)
+        assertNotNull(context.lastNodeId)
+        assertEquals(TEST_FIRST_NODE_ID, context.lastNodeId)
         verify(utgService, times(3)).saveNode(any<UiDto>()) // root + category + menu
         verify(menuAgent, times(2)).determineAction(any(), any())
     }
@@ -380,7 +380,7 @@ class MenuGraphInitializeServiceTest {
         verify(utgService).saveRel(category2Node.id, category1Node.id, NodeRelation.PATH_TO)
 
         // 그리고 context의 마지막 노드가 새로운 카테고리 노드로 업데이트되었는지 확인
-        assertEquals(category2Node.id, context.lastNode!!.id)
+        assertEquals(category2Node.id, context.lastNodeId)
     }
 
     @Test
@@ -435,9 +435,9 @@ class MenuGraphInitializeServiceTest {
         return GraphInitializeContext(
             kioskId = TEST_KIOSK_ID,
             determinePlace = false,
-            lastNode = null,
             nowCategory = null,
-            stationNode = null,
+            stationNodeId = null,
+            lastNodeId = null,
             history = mutableListOf()
         )
     }
@@ -500,8 +500,8 @@ class MenuGraphInitializeServiceTest {
         val context = GraphInitializeContext(
             kioskId = TEST_KIOSK_ID,
             determinePlace = false,
-            lastNode = null,
-            stationNode = null,
+            stationNodeId = null,
+            lastNodeId = null,
             nowCategory = null,
             history = mutableListOf()
         )
