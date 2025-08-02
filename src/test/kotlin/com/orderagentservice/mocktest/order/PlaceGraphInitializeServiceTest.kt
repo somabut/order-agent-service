@@ -99,8 +99,8 @@ class PlaceGraphInitializeServiceTest {
         val context = GraphInitializeContext(
             kioskId = TEST_KIOSK_ID,
             determinePlace = false,
-            lastNode = lastNode,
-            stationNode = null,
+            stationNodeId = null,
+            lastNodeId = lastNode.id,
             nowCategory = null,
             history = mutableListOf()
         )
@@ -127,8 +127,8 @@ class PlaceGraphInitializeServiceTest {
         val context = GraphInitializeContext(
             kioskId = TEST_KIOSK_ID,
             determinePlace = false,
-            lastNode = lastNode,
-            stationNode = null,
+            lastNodeId = lastNode.id,
+            stationNodeId = null,
             nowCategory = null,
             history = mutableListOf()
         )
