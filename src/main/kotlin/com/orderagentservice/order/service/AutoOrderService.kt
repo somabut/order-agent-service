@@ -14,6 +14,7 @@ import com.orderagentservice.order.model.dto.ActionPathDto
 import com.orderagentservice.order.model.request.AutoOrderOption
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import javax.swing.Action
 
 @Service
 class AutoOrderService @Autowired constructor(
@@ -123,8 +124,23 @@ class AutoOrderService @Autowired constructor(
     }
 
     private fun proceedPayment(context: AutoOrderContext) {
-        //결제는 complete 노드까지만 찾으면 됨
-        clickPayment(context)
+        val actionList = utgService.findMenuPath(context.kioskId, context.nodeId, "complete").toMutableList()
+        actionList.removeLast()
+
+        for (act in actionList) {
+            //포장/매장 클릭
+            if (context.isPlace == false) {
+                context.isPlace = clickPlace(context)
+            }
+
+            //결제 클릭
+            clickPayment(act, context)
+        }
+    }
+
+    private fun clickPayment(paymentNode: ActionPathDto, context: AutoOrderContext) {
+        logOrder(context.kioskId, context.taskId, "결제를 진행중입니다. 현재: ${paymentNode.title}")
+        notificationService.sendActionCommand(context.kioskId, CoordinateDto(paymentNode.x, paymentNode.y, paymentNode.title))
     }
 
     private fun clickPlace(context: AutoOrderContext): Boolean {
@@ -138,21 +154,6 @@ class AutoOrderService @Autowired constructor(
         return true
     }
 
-    private fun clickPayment(context: AutoOrderContext) {
-        val actionList = utgService.findMenuPath(context.kioskId, context.nodeId, "complete").toMutableList()
-        actionList.removeLast()
-
-        for (act in actionList) {
-            //포장/매장 클릭
-            if (context.isPlace == false) {
-                context.isPlace = clickPlace(context)
-            }
-
-            logOrder(context.kioskId, context.taskId, "결제를 진행중입니다. 현재: ${act.title}")
-            notificationService.sendActionCommand(context.kioskId, CoordinateDto(act.x, act.y, act.title))
-        }
-    }
-
     private fun logOrder(kioskId: String, taskId: String, message: String) {
         val logDto = LogDto(
             kioskId = kioskId,
@@ -163,6 +164,5 @@ class AutoOrderService @Autowired constructor(
 
         log.info(message)
         logService.sendLog(json)
-//        notificationService.broadcastMessage(json)
     }
 }
