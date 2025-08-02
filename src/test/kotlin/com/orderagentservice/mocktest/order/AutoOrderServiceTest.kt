@@ -147,7 +147,7 @@ class AutoOrderServiceTest {
         doNothing().whenever(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), any(), any(), eq(TEST_PAYMENT_CARD), eq(TEST_TASK_ID))
 
         // when: 자동주문 진행
-        autoOrderService.proceed(TEST_KIOSK_ID, TEST_TASK_ID, orderRequest)
+        autoOrderService.order(TEST_KIOSK_ID, TEST_TASK_ID, orderRequest)
 
         // then: 로그 기록 및 서비스 호출이 정상적으로 수행된다
         verify(globalLogger).loggingOrderStart(TEST_KIOSK_ID, TEST_TASK_ID)
@@ -197,7 +197,7 @@ class AutoOrderServiceTest {
         doNothing().whenever(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), any(), any(), eq(TEST_PAYMENT_CASH), eq(TEST_TASK_ID))
 
         // when: 자동주문 진행
-        autoOrderService.proceed(TEST_KIOSK_ID, TEST_TASK_ID, takeoutOrderRequest)
+        autoOrderService.order(TEST_KIOSK_ID, TEST_TASK_ID, takeoutOrderRequest)
 
         // then: 포장 노드 클릭이 정상적으로 수행된다
         verify(utgService).findPlaceNode(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_PLACE_TAKEOUT)
@@ -243,7 +243,7 @@ class AutoOrderServiceTest {
         doNothing().whenever(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), any(), any(), eq(TEST_PAYMENT_CARD), eq(TEST_TASK_ID))
 
         // when: 자동주문 진행
-        autoOrderService.proceed(TEST_KIOSK_ID, TEST_TASK_ID, multiMenuOrderRequest)
+        autoOrderService.order(TEST_KIOSK_ID, TEST_TASK_ID, multiMenuOrderRequest)
 
         // then: 각 메뉴가 개별적으로 처리되고 결과에 2개 메뉴가 포함된다
         verify(utgService).findMenuPath(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_MENU_TITLE)
@@ -273,7 +273,7 @@ class AutoOrderServiceTest {
         doNothing().whenever(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), any(), any(), eq(TEST_PAYMENT_CARD), eq(TEST_TASK_ID))
 
         // when: 자동주문 진행
-        autoOrderService.proceed(TEST_KIOSK_ID, TEST_TASK_ID, orderRequest)
+        autoOrderService.order(TEST_KIOSK_ID, TEST_TASK_ID, orderRequest)
 
         // then: 옵션 선택 후 뒤로가기가 정상적으로 수행된다
         verify(utgService).findOptionNode(TEST_KIOSK_ID, TEST_MENU_ID, TEST_OPTION_TITLE)

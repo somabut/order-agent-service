@@ -5,13 +5,11 @@ import com.orderagentservice.order.model.request.AutoOrderRequest
 import com.orderagentservice.order.model.response.AutoOrderResponse
 import com.orderagentservice.order.service.AutoOrderService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.util.UUID
 
 @RestController
 @RequestMapping("/v1")
@@ -20,7 +18,7 @@ class OrderController @Autowired constructor(
 ) {
     @PostMapping("/order/start/{kioskId}/{taskId}")
     fun startOrder(@PathVariable kioskId: String, @PathVariable taskId: String, @RequestBody orderRequest: AutoOrderRequest): ApiResponse<*> {
-        autoOrderService.proceed(kioskId, taskId, orderRequest)
+        autoOrderService.order(kioskId, taskId, orderRequest)
         var count = 0
         orderRequest.autoOrderMenus.forEach { count += it.count }
         return ApiResponse.success(

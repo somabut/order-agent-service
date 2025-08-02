@@ -10,6 +10,8 @@ import com.orderagentservice.order.model.request.AutoOrderRequest
 import com.orderagentservice.global.util.GlobalLogger
 import com.orderagentservice.jsonMapper
 import com.orderagentservice.order.model.AutoOrderContext
+import com.orderagentservice.order.model.dto.ActionPathDto
+import com.orderagentservice.order.model.request.AutoOrderOption
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -22,7 +24,7 @@ class AutoOrderService @Autowired constructor(
 ) {
     private val log = logger()
 
-    fun proceed(kioskId: String, taskId: String, orderRequest: AutoOrderRequest) {
+    fun order(kioskId: String, taskId: String, orderRequest: AutoOrderRequest) {
         val requestJson = jsonMapper.writeValueAsString(orderRequest)
         logOrder(kioskId, taskId, "자동 주문을 시작합니다. 주문: ${requestJson}")
         globalLogger.loggingOrderStart(kioskId, taskId)
@@ -40,7 +42,7 @@ class AutoOrderService @Autowired constructor(
         )
 
         //메뉴 담기
-        val history = proceedMenu(
+        val history = putMenus(
             context = context,
             menuList = orderRequest.autoOrderMenus
         )
@@ -59,77 +61,70 @@ class AutoOrderService @Autowired constructor(
         )
     }
 
-    private fun proceedMenu(context: AutoOrderContext, menuList: List<AutoOrderMenu>): List<OrderResultDto> {
-        //메뉴 담기
+    private fun putMenus(context: AutoOrderContext, menuList: List<AutoOrderMenu>): List<OrderResultDto> {
         val kioskId = context.kioskId
-        val taskId = context.taskId
         val history = mutableListOf<OrderResultDto>()
         for (menu in menuList) {
             //포장/매장 클릭
-            val optHistory = mutableListOf<String>()
             if (context.isPlace == false) {
                 context.isPlace = clickPlace(context)
             }
 
-            logOrder(kioskId, taskId, "메뉴를 담습니다. 메뉴: ${menu.title}")
-            val actionList = utgService.findMenuPath(context.kioskId, context.nodeId, menu.title)
+            //메뉴 클릭
+            val last = clickMenu(menu, context)
 
-            //메뉴를 담기 위해 메뉴 노드까지 이동후 필요한 만큼 클릭
-            val last = actionList.last()
-            for (act in actionList) {
-                notificationService.sendActionCommand(kioskId, CoordinateDto(act.x, act.y, act.title))
-            }
-            repeat(menu.count - 1) {
-                notificationService.sendActionCommand(kioskId, CoordinateDto(last.x, last.y, last.title))
-            }
+            //옵션 클릭
+            clickOption(menu.autoOrderOptions, last, context)
 
-            //옵션 선택
-            for (opt in menu.autoOrderOptions) {
-                logOrder(kioskId, taskId, "옵션을 선택합니다. 옵션: ${opt.title}")
-                val dto = utgService.findOptionNode(kioskId, last.id, opt.title)
-                repeat(opt.count) {
-                    notificationService.sendActionCommand(kioskId, CoordinateDto(dto.x, dto.y, dto.title))
-                }
-                optHistory.add(opt.title)
-            }
-            history.add(
-                OrderResultDto(
-                    title = menu.title, category = menu.category,
-                    options = optHistory, quantity = menu.count
-                )
-            )
-
-            //메뉴 페이지로 돌아가기
-            val backList = utgService.findBackPath(kioskId, last.id)
-            for (back in backList) {
-                notificationService.sendActionCommand(kioskId, CoordinateDto(back.x, back.y, back.title))
-            }
+            //돌아가는 UI 클릭
+            clickBack(last, context)
 
             //현재 노드 갱신
-            val categoryId = utgService.findCategoryNodeId(kioskId, last.id)
-            context.nodeId = categoryId
+            context.nodeId = utgService.findCategoryNodeId(kioskId, last.id)
         }
+
         val stationId = utgService.findStationNode(kioskId).id
         context.nodeId = stationId
+
         return history
+    }
+
+    private fun clickMenu(menu: AutoOrderMenu, context: AutoOrderContext): ActionPathDto {
+        logOrder(context.kioskId, context.taskId, "메뉴를 담습니다. 메뉴: ${menu.title}")
+        val actionList = utgService.findMenuPath(context.kioskId, context.nodeId, menu.title)
+
+        //메뉴를 담기 위해 메뉴 노드까지 이동후 필요한 만큼 클릭
+        val last = actionList.last()
+        for (act in actionList) {
+            notificationService.sendActionCommand(context.kioskId, CoordinateDto(act.x, act.y, act.title))
+        }
+        repeat(menu.count - 1) {
+            notificationService.sendActionCommand(context.kioskId, CoordinateDto(last.x, last.y, last.title))
+        }
+
+        return last
+    }
+
+    private fun clickOption(options: List<AutoOrderOption>, menuNode: ActionPathDto, context: AutoOrderContext) {
+        for (opt in options) {
+            logOrder(context.kioskId, context.taskId, "옵션을 선택합니다. 옵션: ${opt.title}")
+            val dto = utgService.findOptionNode(context.kioskId, menuNode.id, opt.title)
+            repeat(opt.count) {
+                notificationService.sendActionCommand(context.kioskId, CoordinateDto(dto.x, dto.y, dto.title))
+            }
+        }
+    }
+
+    private fun clickBack(menuNode: ActionPathDto, context: AutoOrderContext) {
+        val backList = utgService.findBackPath(context.kioskId, menuNode.id)
+        for (back in backList) {
+            notificationService.sendActionCommand(context.kioskId, CoordinateDto(back.x, back.y, back.title))
+        }
     }
 
     private fun proceedPayment(context: AutoOrderContext) {
         //결제는 complete 노드까지만 찾으면 됨
-        val kioskId = context.kioskId
-        val taskId = context.taskId
-        val actionList = utgService.findMenuPath(kioskId, context.nodeId, "complete").toMutableList()
-        actionList.removeLast()
-
-        for (act in actionList) {
-            //포장/매장 클릭
-            if (context.isPlace == false) {
-                context.isPlace = clickPlace(context)
-            }
-
-            logOrder(kioskId, taskId, "결제를 진행중입니다. 현재: ${act.title}")
-            notificationService.sendActionCommand(kioskId, CoordinateDto(act.x, act.y, act.title))
-        }
+        clickPayment(context)
     }
 
     private fun clickPlace(context: AutoOrderContext): Boolean {
@@ -141,6 +136,21 @@ class AutoOrderService @Autowired constructor(
         logOrder(kioskId, taskId,"포장/매장을 선택합니다. ${context.place}")
         notificationService.sendActionCommand(kioskId, CoordinateDto(action.x, action.y, action.title))
         return true
+    }
+
+    private fun clickPayment(context: AutoOrderContext) {
+        val actionList = utgService.findMenuPath(context.kioskId, context.nodeId, "complete").toMutableList()
+        actionList.removeLast()
+
+        for (act in actionList) {
+            //포장/매장 클릭
+            if (context.isPlace == false) {
+                context.isPlace = clickPlace(context)
+            }
+
+            logOrder(context.kioskId, context.taskId, "결제를 진행중입니다. 현재: ${act.title}")
+            notificationService.sendActionCommand(context.kioskId, CoordinateDto(act.x, act.y, act.title))
+        }
     }
 
     private fun logOrder(kioskId: String, taskId: String, message: String) {
