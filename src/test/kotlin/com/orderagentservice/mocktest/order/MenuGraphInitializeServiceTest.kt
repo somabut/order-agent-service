@@ -262,7 +262,7 @@ class MenuGraphInitializeServiceTest {
         menuGraphInitializeService.initializeGraph(context, simpleMenuList)
 
         // then
-        assertTrue(context.determinePlace)
+        assertTrue(context.isPlaceDetermined)
         assertNotNull(context.lastNodeId)
         assertEquals(TEST_FIRST_NODE_ID, context.lastNodeId)
         verify(utgService, times(3)).saveNode(any<UiDto>()) // root + category + menu
@@ -302,7 +302,7 @@ class MenuGraphInitializeServiceTest {
         whenever(uiExtractorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
         whenever(placeGraphInitializeService.initializeGraph(any())).thenAnswer {
             val ctx = it.arguments[0] as GraphInitializeContext
-            ctx.determinePlace = true
+            ctx.isPlaceDetermined = true
             placeActionList.forEach { action -> ctx.history.add(action) }
         }
         whenever(menuAgent.determineAction(any(), any())).thenReturn(firstAction, veryLowScoreAction)
@@ -368,7 +368,7 @@ class MenuGraphInitializeServiceTest {
         whenever(pageAgent.determineAction(any(), any())).thenReturn(pageAction) // handleModal 내부에서 사용될 수 있음
         whenever(placeGraphInitializeService.initializeGraph(any())).thenAnswer {
             // 첫 handleFirstNode에서 호출되므로 Mocking 필요
-            context.determinePlace = true
+            context.isPlaceDetermined = true
             Unit
         }
 
@@ -397,7 +397,7 @@ class MenuGraphInitializeServiceTest {
             val ctx = it.arguments[0] as GraphInitializeContext
             callCount++
             if (callCount == 2) {
-                ctx.determinePlace = true
+                ctx.isPlaceDetermined = true
                 placeActionList.forEach { action -> ctx.history.add(action) }
             }
         }
@@ -409,7 +409,7 @@ class MenuGraphInitializeServiceTest {
         menuGraphInitializeService.initializeGraph(context, listOf(menuInfoDto))
 
         // then: 포장/매장 UI 탐색이 두 번 호출되고 마지막에 찾아진다
-        assertTrue(context.determinePlace)
+        assertTrue(context.isPlaceDetermined)
         verify(placeGraphInitializeService, times(2)).initializeGraph(any())
     }
 
@@ -434,8 +434,8 @@ class MenuGraphInitializeServiceTest {
     private fun createTestContext(): GraphInitializeContext {
         return GraphInitializeContext(
             kioskId = TEST_KIOSK_ID,
-            determinePlace = false,
-            nowCategory = null,
+            isPlaceDetermined = false,
+            currentCategory = null,
             stationNodeId = null,
             lastNodeId = null,
             history = mutableListOf()
@@ -450,7 +450,7 @@ class MenuGraphInitializeServiceTest {
         whenever(uiExtractorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
         whenever(placeGraphInitializeService.initializeGraph(any())).thenAnswer {
             val ctx = it.arguments[0] as GraphInitializeContext
-            ctx.determinePlace = true
+            ctx.isPlaceDetermined = true
             placeActionList.forEach { action -> ctx.history.add(action) }
         }
         whenever(notificationService.sendActionCommand(any(), any())).thenReturn(actionResult)
@@ -499,10 +499,10 @@ class MenuGraphInitializeServiceTest {
         // when: 메뉴 그래프 초기화 실행
         val context = GraphInitializeContext(
             kioskId = TEST_KIOSK_ID,
-            determinePlace = false,
+            isPlaceDetermined = false,
             stationNodeId = null,
             lastNodeId = null,
-            nowCategory = null,
+            currentCategory = null,
             history = mutableListOf()
         )
         menuGraphInitializeService.initializeGraph(context, menuList)

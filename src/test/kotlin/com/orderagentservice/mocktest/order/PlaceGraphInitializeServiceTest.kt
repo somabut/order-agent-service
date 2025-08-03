@@ -98,10 +98,10 @@ class PlaceGraphInitializeServiceTest {
         // given: 포장/매장 UI가 발견되는 상황
         val context = GraphInitializeContext(
             kioskId = TEST_KIOSK_ID,
-            determinePlace = false,
+            isPlaceDetermined = false,
             stationNodeId = null,
             lastNodeId = lastNode.id,
-            nowCategory = null,
+            currentCategory = null,
             history = mutableListOf()
         )
         whenever(placeAgent.determineAction(llmUiList)).thenReturn(successAgentActionList)
@@ -126,10 +126,10 @@ class PlaceGraphInitializeServiceTest {
         // given: 포장/매장 UI가 발견되지 않는 상황
         val context = GraphInitializeContext(
             kioskId = TEST_KIOSK_ID,
-            determinePlace = false,
+            isPlaceDetermined = false,
             lastNodeId = lastNode.id,
             stationNodeId = null,
-            nowCategory = null,
+            currentCategory = null,
             history = mutableListOf()
         )
         whenever(placeAgent.determineAction(llmUiList)).thenReturn(failAgentActionList)

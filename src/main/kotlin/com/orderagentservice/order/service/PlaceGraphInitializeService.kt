@@ -44,7 +44,7 @@ class PlaceGraphInitializeService @Autowired constructor(
             context.history.add(act)
             log.info("포장/매장 노드를 생성합니다. go_next: ${act.goNext}, score: ${act.score}, coordinate: $x $y, title: ${act.title}")
         }
-        context.determinePlace = true
+        context.isPlaceDetermined = true
 
         //키오스크에 따라 버튼을 클릭해야 넘어가는 경우가 있으므로 클릭
         notificationService.sendActionCommand(kioskId, CoordinateDto(action[0].coordinate[0], action[0].coordinate[1], action[0].title))

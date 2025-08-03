@@ -2,9 +2,7 @@ package com.orderagentservice.order.service
 
 import com.orderagentservice.agent.PaymentAgent
 import com.orderagentservice.agent.model.dto.AgentActionDto
-import com.orderagentservice.agent.model.dto.LlmUiComponentDto
 import com.orderagentservice.logger
-import com.orderagentservice.order.exception.LowScoreException
 import com.orderagentservice.order.model.GraphInitializeContext
 import com.orderagentservice.order.model.NodeRelation
 import com.orderagentservice.order.model.dto.CoordinateDto
@@ -39,7 +37,7 @@ class PaymentGraphInitializeService @Autowired constructor(
     private fun processPayments(context: GraphInitializeContext) {
         while (true) {
             //포장/매장 UI 확인
-            if (context.determinePlace == false) {
+            if (context.isPlaceDetermined == false) {
                 placeGraphInitializeService.initializeGraph(context)
             }
             val paymentEnd = selectPayments(context)

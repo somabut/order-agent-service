@@ -14,7 +14,6 @@ import com.orderagentservice.order.model.dto.ActionPathDto
 import com.orderagentservice.order.model.request.AutoOrderOption
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import javax.swing.Action
 
 @Service
 class AutoOrderService @Autowired constructor(
@@ -39,7 +38,7 @@ class AutoOrderService @Autowired constructor(
             taskId = taskId,
             nodeId = nowNodeId,
             place = orderRequest.place,
-            isPlace = (orderRequest.place == null)
+            isPlaceSelected = (orderRequest.place == null)
         )
 
         //메뉴 담기
@@ -67,8 +66,8 @@ class AutoOrderService @Autowired constructor(
         val history = mutableListOf<OrderResultDto>()
         for (menu in menuList) {
             //포장/매장 클릭
-            if (context.isPlace == false) {
-                context.isPlace = clickPlace(context)
+            if (context.isPlaceSelected == false) {
+                context.isPlaceSelected = clickPlace(context)
             }
 
             //메뉴 클릭
@@ -129,8 +128,8 @@ class AutoOrderService @Autowired constructor(
 
         for (act in actionList) {
             //포장/매장 클릭
-            if (context.isPlace == false) {
-                context.isPlace = clickPlace(context)
+            if (context.isPlaceSelected == false) {
+                context.isPlaceSelected = clickPlace(context)
             }
 
             //결제 클릭

@@ -120,10 +120,10 @@ class PaymentGraphInitializeServiceTest {
         // when: 결제 그래프 초기화 실행
         val context = GraphInitializeContext(
             kioskId = TEST_KIOSK_ID,
-            determinePlace = true,
+            isPlaceDetermined = true,
             lastNodeId = lastNode.id,
             stationNodeId = null,
-            nowCategory = null,
+            currentCategory = null,
             history = mutableListOf()
         )
         paymentGraphInitializeService.initializeGraph(context)
@@ -145,10 +145,10 @@ class PaymentGraphInitializeServiceTest {
         // given: 포장/매장 UI를 찾지 못한 상태
         val context = GraphInitializeContext(
             kioskId = TEST_KIOSK_ID,
-            determinePlace = false,
+            isPlaceDetermined = false,
             stationNodeId = lastNode.id,
             lastNodeId = null,
-            nowCategory = null,
+            currentCategory = null,
             history = mutableListOf()
         )
         whenever(placeGraphInitializeService.initializeGraph(any())).thenAnswer {
@@ -208,10 +208,10 @@ class PaymentGraphInitializeServiceTest {
         // when: 결제 그래프 초기화 실행
         val context = GraphInitializeContext(
             kioskId = TEST_KIOSK_ID,
-            determinePlace = true,
+            isPlaceDetermined = true,
             stationNodeId = null,
             lastNodeId = lastNode.id,
-            nowCategory = null,
+            currentCategory = null,
             history = mutableListOf()
         )
         paymentGraphInitializeService.initializeGraph(context)
@@ -240,10 +240,10 @@ class PaymentGraphInitializeServiceTest {
         // when: 결제 그래프 초기화 실행
         val context = GraphInitializeContext(
             kioskId = TEST_KIOSK_ID,
-            determinePlace = true,
+            isPlaceDetermined = true,
             stationNodeId = null,
             lastNodeId = lastNode.id,
-            nowCategory = null,
+            currentCategory = null,
             history = mutableListOf()
         )
         paymentGraphInitializeService.initializeGraph(context)

@@ -2,11 +2,8 @@ package com.orderagentservice.order.service
 
 import com.orderagentservice.agent.BackAgent
 import com.orderagentservice.agent.MenuAgent
-import com.orderagentservice.agent.MissingComponentAgent
-import com.orderagentservice.agent.PageAgent
 import com.orderagentservice.agent.model.dto.AgentBackDto
 import com.orderagentservice.agent.model.dto.LlmUiComponentDto
-import com.orderagentservice.global.model.dto.WordMatchDto
 import com.orderagentservice.global.service.WordSimilarityService
 import com.orderagentservice.logger
 import com.orderagentservice.order.model.GraphInitializeContext
@@ -49,7 +46,7 @@ class MenuGraphInitializeService @Autowired constructor(
         navigateMenus(context, menuList)
 
         //포장/매장 찾기
-        if (context.determinePlace == false) {
+        if (context.isPlaceDetermined == false) {
             placeGraphInitializeService.initializeGraph(context)
         }
 
@@ -82,7 +79,7 @@ class MenuGraphInitializeService @Autowired constructor(
     private fun navigateMenus(context: GraphInitializeContext, menuList: List<MenuInfoDto>) {
         var uiList = uiExtractorManager.getUiComponents(context.kioskId)
         for (menuDto in menuList) {
-            if (menuDto.category != context.nowCategory) {
+            if (menuDto.category != context.currentCategory) {
                 //카테고리가 다르다면 해당 카테고리로 이동
                 selectCategory(context, menuDto, uiList)
                 uiList = uiExtractorManager.getUiComponents(context.kioskId)
@@ -113,7 +110,7 @@ class MenuGraphInitializeService @Autowired constructor(
         //노드 생성
         val node = createCategoryNode(coordinate, context)
         context.lastNodeId = node.id
-        context.nowCategory = node.title
+        context.currentCategory = node.title
 
         //현재 카테고리 좌표 클릭
         notificationService.sendActionCommand(context.kioskId, CoordinateDto(coordinate.x, coordinate.y, coordinate.title))

@@ -5,5 +5,5 @@ data class AutoOrderContext(
     val taskId: String,
     var nodeId: String,
     val place: String?,
-    var isPlace: Boolean
+    var isPlaceSelected: Boolean
 )
