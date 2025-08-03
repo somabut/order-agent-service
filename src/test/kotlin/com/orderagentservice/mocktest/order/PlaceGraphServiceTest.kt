@@ -3,14 +3,14 @@ package com.orderagentservice.mocktest.order
 import com.orderagentservice.agent.PlaceAgent
 import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.model.dto.LlmUiComponentDto
-import com.orderagentservice.order.model.GraphInitializeContext
+import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.NodeRelation
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.entity.UiEntity
 import com.orderagentservice.order.service.NotificationService
-import com.orderagentservice.order.service.PlaceGraphInitializeService
-import com.orderagentservice.order.service.UtgService
+import com.orderagentservice.order.service.PlaceGraphService
+import com.orderagentservice.order.service.UtgDataService
 import com.orderagentservice.order.util.UiExtractorManager
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -23,7 +23,7 @@ import org.mockito.kotlin.*
 import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
-class PlaceGraphInitializeServiceTest {
+class PlaceGraphServiceTest {
     companion object {
         private const val TEST_KIOSK_ID = "KIOSK_123123"
         private const val TEST_LAST_NODE_ID = "NODE_123"
@@ -36,8 +36,8 @@ class PlaceGraphInitializeServiceTest {
 
     private lateinit var placeAgent: PlaceAgent
     private lateinit var notificationService: NotificationService
-    private lateinit var utgService: UtgService
-    private lateinit var placeGraphInitializeService: PlaceGraphInitializeService
+    private lateinit var utgDataService: UtgDataService
+    private lateinit var placeGraphService: PlaceGraphService
     private lateinit var uiExtractorManager: UiExtractorManager
 
     private lateinit var lastNode: UiEntity
@@ -51,9 +51,9 @@ class PlaceGraphInitializeServiceTest {
     fun setUp() {
         placeAgent = mock()
         notificationService = mock()
-        utgService = mock()
+        utgDataService = mock()
         uiExtractorManager = mock()
-        placeGraphInitializeService = PlaceGraphInitializeService(placeAgent, notificationService, uiExtractorManager, utgService)
+        placeGraphService = PlaceGraphService(placeAgent, notificationService, uiExtractorManager, utgDataService)
 
         lastNode = UiEntity(
             id = TEST_LAST_NODE_ID,
@@ -90,13 +90,13 @@ class PlaceGraphInitializeServiceTest {
             kioskId = TEST_KIOSK_ID
         )
 
-        reset(placeAgent, notificationService, utgService)
+        reset(placeAgent, notificationService, utgDataService)
     }
 
     @Test
     fun `포장_매장_UI가_발견되면_그래프_초기화가_성공한다`() {
         // given: 포장/매장 UI가 발견되는 상황
-        val context = GraphInitializeContext(
+        val context = GraphContext(
             kioskId = TEST_KIOSK_ID,
             isPlaceDetermined = false,
             stationNodeId = null,
@@ -105,26 +105,26 @@ class PlaceGraphInitializeServiceTest {
             history = mutableListOf()
         )
         whenever(placeAgent.determineAction(llmUiList)).thenReturn(successAgentActionList)
-        whenever(utgService.saveNode(any<UiDto>())).thenReturn(uiEntity)
-        doNothing().whenever(utgService).saveRel(TEST_LAST_NODE_ID, TEST_ENTITY_ID, NodeRelation.HAS_TO)
+        whenever(utgDataService.saveNode(any<UiDto>())).thenReturn(uiEntity)
+        doNothing().whenever(utgDataService).saveRel(TEST_LAST_NODE_ID, TEST_ENTITY_ID, NodeRelation.HAS_TO)
         whenever(notificationService.sendActionCommand(TEST_KIOSK_ID, TEST_COORDINATE)).thenReturn(actionResult)
 
         // when: 그래프 초기화 실행
-        placeGraphInitializeService.initializeGraph(context)
+        placeGraphService.initializeGraph(context)
 
         // then: 히스토리가 정상적으로 반환되고 관련 메서드들이 호출된다
         assertEquals(2, context.history.size)
 
         verify(placeAgent).determineAction(llmUiList)
-        verify(utgService, times(2)).saveNode(any())
-        verify(utgService, times(2)).saveRel(TEST_LAST_NODE_ID, TEST_ENTITY_ID, NodeRelation.HAS_TO)
+        verify(utgDataService, times(2)).saveNode(any())
+        verify(utgDataService, times(2)).saveRel(TEST_LAST_NODE_ID, TEST_ENTITY_ID, NodeRelation.HAS_TO)
         verify(notificationService).sendActionCommand(anyString(), any<CoordinateDto>())
     }
 
     @Test
     fun `포장_매장_UI가_발견되지_않으면_빈_히스토리를_반환한다`() {
         // given: 포장/매장 UI가 발견되지 않는 상황
-        val context = GraphInitializeContext(
+        val context = GraphContext(
             kioskId = TEST_KIOSK_ID,
             isPlaceDetermined = false,
             lastNodeId = lastNode.id,
@@ -133,17 +133,17 @@ class PlaceGraphInitializeServiceTest {
             history = mutableListOf()
         )
         whenever(placeAgent.determineAction(llmUiList)).thenReturn(failAgentActionList)
-        whenever(utgService.saveNode(any<UiDto>())).thenReturn(uiEntity)
+        whenever(utgDataService.saveNode(any<UiDto>())).thenReturn(uiEntity)
 
         // when: 그래프 초기화 실행
-        placeGraphInitializeService.initializeGraph(context)
+        placeGraphService.initializeGraph(context)
 
         // then: 빈 히스토리가 반환되고 노드 생성 관련 메서드는 호출되지 않는다
         assertTrue(context.history.isEmpty())
 
         verify(placeAgent).determineAction(llmUiList)
-        verify(utgService, never()).saveNode(any<UiDto>())
-        verify(utgService, never()).saveRel(anyString(), anyString(), any())
+        verify(utgDataService, never()).saveNode(any<UiDto>())
+        verify(utgDataService, never()).saveRel(anyString(), anyString(), any())
         verify(notificationService, never()).sendActionCommand(anyString(), any<CoordinateDto>())
     }
 }

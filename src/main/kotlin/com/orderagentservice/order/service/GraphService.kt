@@ -2,16 +2,16 @@ package com.orderagentservice.order.service
 
 import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.logger
-import com.orderagentservice.order.model.GraphInitializeContext
+import com.orderagentservice.order.model.GraphContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-class UtgInitializeService @Autowired constructor(
+class GraphService @Autowired constructor(
     private val menuService: MenuService,
-    private val menuGraphInitializeService: MenuGraphInitializeService,
-    private val paymentGraphInitializeService: PaymentGraphInitializeService
+    private val menuGraphService: MenuGraphService,
+    private val paymentGraphService: PaymentGraphService
 ) {
     private val log = logger()
 
@@ -23,24 +23,27 @@ class UtgInitializeService @Autowired constructor(
         //관리자 페이지로부터 메뉴를 얻어온다
         val menuList = menuService.getMenus(kioskId, accessToken)
 
-        val context = GraphInitializeContext(
-            kioskId = kioskId,
-            isPlaceDetermined = false,
-            lastNodeId = null,
-            stationNodeId = null,
-            currentCategory = null,
-            history = mutableListOf<AgentActionDto>()
-        )
+        val context = GraphContext.toBasicContext(kioskId)
 
-        menuGraphInitializeService.initializeGraph(
+        menuGraphService.initializeGraph(
             context = context,
             menuList = menuList
         )
-        paymentGraphInitializeService.initializeGraph(context = context)
+        paymentGraphService.initializeGraph(context = context)
 
         val endTime = System.nanoTime()
         log.info("모든 utg 생성 완료. 수행시간: ${(endTime - startTime) / 1000000}ms")
 
         return context.history
+    }
+
+    @Transactional
+    fun updateGraph(kioskId: String, editCategories: List<String>, accessToken: String) {
+        val context = GraphContext.toBasicContext(kioskId)
+
+        for (category in editCategories) {
+            val menuList = menuService.getMenusByCategory(kioskId, category, accessToken)
+            menuGraphService.updateGraph(context, menuList)
+        }
     }
 }

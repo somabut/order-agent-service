@@ -7,21 +7,21 @@ import com.orderagentservice.order.model.NodeRelation
 import com.orderagentservice.order.model.dto.ActionPathDto
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.entity.UiEntity
-import com.orderagentservice.order.repository.UtgRepository
+import com.orderagentservice.order.repository.UtgDataRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-class UtgService @Autowired constructor(
-    private val utgRepository: UtgRepository
+class UtgDataService @Autowired constructor(
+    private val utgDataRepository: UtgDataRepository
 ) {
     private val log = logger()
 
     @Transactional
     fun saveNode(uiDto: UiDto): UiEntity {
         log.info("노드 저장. ${uiDto.title}")
-        val uiEntity = utgRepository.save(uiDto.toEntity())
+        val uiEntity = utgDataRepository.save(uiDto.toEntity())
         return uiEntity
     }
 
@@ -29,16 +29,16 @@ class UtgService @Autowired constructor(
     fun saveRel(sourceId: String, targetId: String, type: NodeRelation) {
         log.info("관계 설정. ${sourceId} [${type.name}]-> ${targetId}")
         when(type) {
-            NodeRelation.PATH_TO -> utgRepository.savePathRelation(sourceId, targetId)
-            NodeRelation.HAS_TO -> utgRepository.saveHasRelation(sourceId, targetId)
-            NodeRelation.OPT_TO -> utgRepository.saveOptRelation(sourceId, targetId)
-            NodeRelation.BACK_TO -> utgRepository.saveBackRelation(sourceId, targetId)
+            NodeRelation.PATH_TO -> utgDataRepository.savePathRelation(sourceId, targetId)
+            NodeRelation.HAS_TO -> utgDataRepository.saveHasRelation(sourceId, targetId)
+            NodeRelation.OPT_TO -> utgDataRepository.saveOptRelation(sourceId, targetId)
+            NodeRelation.BACK_TO -> utgDataRepository.saveBackRelation(sourceId, targetId)
             else -> NodeRelation.NONE
         }
     }
 
     fun findMenuPath(kioskId: String, sourceId: String, targetTitle: String): List<ActionPathDto> {
-        val nodesList = utgRepository.findPathByTitle(kioskId, sourceId, targetTitle)
+        val nodesList = utgDataRepository.findPathByTitle(kioskId, sourceId, targetTitle)
             .ifEmpty { throw PathNotFoundException() }
 
         return nodesList
@@ -50,8 +50,8 @@ class UtgService @Autowired constructor(
             .drop(1)
     }
 
-    fun findOptionNode(kioskId: String, menuId: String, optKeyword: String): ActionPathDto {
-        val entity = utgRepository.findOptionByTitle(kioskId, menuId, optKeyword)
+    fun findOption(kioskId: String, menuId: String, optKeyword: String): ActionPathDto {
+        val entity = utgDataRepository.findOptionByTitle(kioskId, menuId, optKeyword)
             ?: throw NodeNotFoundException()
 
         return ActionPathDto(
@@ -61,7 +61,7 @@ class UtgService @Autowired constructor(
     }
 
     fun findBackPath(kioskId: String, sourceId: String): List<ActionPathDto> {
-        val nodesList = utgRepository.findBackPathByTitle(kioskId, sourceId)
+        val nodesList = utgDataRepository.findBackPathByTitle(kioskId, sourceId)
             .ifEmpty { throw PathNotFoundException() }
 
         return nodesList
@@ -73,14 +73,14 @@ class UtgService @Autowired constructor(
     }
 
     fun findCategoryNodeId(kioskId: String, id: String): String {
-        val entity = utgRepository.findIncomingHasTo(kioskId, id)
+        val entity = utgDataRepository.findIncomingHasTo(kioskId, id)
             ?: throw NodeNotFoundException()
 
         return entity.id
     }
 
-    fun findPlaceNode(kioskId: String, id: String, place: String): ActionPathDto? {
-        val entity = utgRepository.findPlaceByTitle(kioskId, id, place) ?: return null
+    fun findPlace(kioskId: String, id: String, place: String): ActionPathDto? {
+        val entity = utgDataRepository.findPlaceByTitle(kioskId, id, place) ?: return null
 
         return ActionPathDto(
             id = entity.id, title = entity.title,
@@ -88,8 +88,8 @@ class UtgService @Autowired constructor(
         )
     }
 
-    fun findRootNode(kioskId: String): ActionPathDto {
-        val entity = utgRepository.findRootNode(kioskId) ?: throw NodeNotFoundException()
+    fun findRoot(kioskId: String): ActionPathDto {
+        val entity = utgDataRepository.findRootNode(kioskId) ?: throw NodeNotFoundException()
 
         return ActionPathDto(
             id = entity.id, title = entity.title,
@@ -97,12 +97,16 @@ class UtgService @Autowired constructor(
         )
     }
 
-    fun findStationNode(kioskId: String): ActionPathDto {
-        val entity = utgRepository.findStationNode(kioskId) ?: throw NodeNotFoundException()
+    fun findStation(kioskId: String): ActionPathDto {
+        val entity = utgDataRepository.findStationNode(kioskId) ?: throw NodeNotFoundException()
 
         return ActionPathDto(
             id = entity.id, title = entity.title,
             x = entity.x, y = entity.y
         )
+    }
+
+    fun deleteMenusByCategory(kioskId: String, id: String) {
+        utgDataRepository.deleteMenuNode(id, kioskId)
     }
 }
