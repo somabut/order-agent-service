@@ -5,7 +5,7 @@ import org.springframework.data.neo4j.repository.Neo4jRepository
 import org.springframework.data.neo4j.repository.query.Query
 import org.springframework.data.repository.query.Param
 
-interface UtgRepository : Neo4jRepository<UiEntity, String> {
+interface UtgDataRepository : Neo4jRepository<UiEntity, String> {
     @Query(
         "MATCH path = (start:UI {kioskId: \$kioskId, id: \$sourceId})-[*]->(target:UI {kioskId: \$kioskId, title: \$targetTitle})\n " +
         "RETURN nodes(path) AS nodes\n" +
@@ -79,6 +79,26 @@ interface UtgRepository : Neo4jRepository<UiEntity, String> {
         @Param("kioskId") kioskId: String,
         @Param("title") title: String = "station",
     ): UiEntity?
+
+    @Query(
+        "MATCH (prev:UI)-[:BACK_TO]->(current:UI {kioskId: \$kioskId, id: \$id})\n" +
+        "RETURN prev\n" +
+        "LIMIT 1"
+    )
+    fun findIncomingBackTo(
+        @Param("kioskId") kioskId: String,
+        @Param("id") id: String
+    ): UiEntity?
+
+    @Query(
+        "MATCH (n {id: \$sourceId, kioskId: \$kioskId})-[r:HAS_TO]->(m)\n" +
+        "OPTIONAL MATCH (m)-[:opt_TO]->(x)\n" +
+        "DETACH DELETE m, x"
+    )
+    fun deleteMenuNode(
+        @Param("sourceId") sourceId: String,
+        @Param("kioskId") kioskId: String,
+    )
 
     @Query("MATCH (a:UI {id: \$sourceId}), (b:UI {id: \$targetId}) MERGE (a)-[:PATH_TO]->(b)")
     fun savePathRelation(sourceId: String, targetId: String)

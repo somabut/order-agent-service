@@ -2,7 +2,7 @@ package com.orderagentservice.order.service
 
 import com.orderagentservice.agent.PlaceAgent
 import com.orderagentservice.logger
-import com.orderagentservice.order.model.GraphInitializeContext
+import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.NodeRelation
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.UiDto
@@ -12,16 +12,16 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-class PlaceGraphInitializeService @Autowired constructor(
+class PlaceGraphService @Autowired constructor(
     private val placeAgent: PlaceAgent,
     private val notificationService: NotificationService,
     private val uiExtractorManager: UiExtractorManager,
-    private val utgService: UtgService
+    private val utgDataService: UtgDataService
 ) {
     private val log = logger()
 
     @Transactional
-    fun initializeGraph(context: GraphInitializeContext) {
+    fun initializeGraph(context: GraphContext) {
         val kioskId = context.kioskId
         val uiList = uiExtractorManager.getUiComponents(context.kioskId)
         val action = placeAgent.determineAction(uiList)
@@ -34,17 +34,17 @@ class PlaceGraphInitializeService @Autowired constructor(
         for (act in action) {
             val x = act.coordinate[0]
             val y = act.coordinate[1]
-            val entity = utgService.saveNode(UiDto(
+            val entity = utgDataService.saveNode(UiDto(
                     isNext = false,
                     x = x, y = y,
                     title = act.title,
                     kioskId = kioskId
                 ))
-            utgService.saveRel(context.lastNodeId!!, entity.id, NodeRelation.HAS_TO)
+            utgDataService.saveRel(context.lastNodeId!!, entity.id, NodeRelation.HAS_TO)
             context.history.add(act)
             log.info("포장/매장 노드를 생성합니다. go_next: ${act.goNext}, score: ${act.score}, coordinate: $x $y, title: ${act.title}")
         }
-        context.determinePlace = true
+        context.isPlaceDetermined = true
 
         //키오스크에 따라 버튼을 클릭해야 넘어가는 경우가 있으므로 클릭
         notificationService.sendActionCommand(kioskId, CoordinateDto(action[0].coordinate[0], action[0].coordinate[1], action[0].title))

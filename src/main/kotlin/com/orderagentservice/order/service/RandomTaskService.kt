@@ -20,7 +20,7 @@ class RandomTaskService @Autowired constructor(
             val menuCount = Random.nextInt(1, 6)
             val request = generate(menuCount, kioskId, accessToken)
 
-            autoOrderService.proceed(kioskId, taskId, request)
+            autoOrderService.order(kioskId, taskId, request)
             taskList.add(taskId)
         }
         return taskList

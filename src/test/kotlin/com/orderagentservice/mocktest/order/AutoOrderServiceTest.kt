@@ -12,7 +12,7 @@ import com.orderagentservice.order.model.request.AutoOrderOption
 import com.orderagentservice.order.model.request.AutoOrderRequest
 import com.orderagentservice.order.service.AutoOrderService
 import com.orderagentservice.order.service.NotificationService
-import com.orderagentservice.order.service.UtgService
+import com.orderagentservice.order.service.UtgDataService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -69,7 +69,7 @@ class AutoOrderServiceTest {
     private lateinit var logService: LogService
 
     @Mock
-    private lateinit var utgService: UtgService
+    private lateinit var utgDataService: UtgDataService
 
     @Mock
     private lateinit var globalLogger: GlobalLogger
@@ -91,7 +91,7 @@ class AutoOrderServiceTest {
 
     @BeforeEach
     fun setUp() {
-        autoOrderService = AutoOrderService(notificationService, logService, utgService, globalLogger)
+        autoOrderService = AutoOrderService(notificationService, logService, utgDataService, globalLogger)
 
         orderRequest = AutoOrderRequest(
             place = TEST_PLACE_STORE,
@@ -137,17 +137,17 @@ class AutoOrderServiceTest {
     @Test
     fun `자동주문이_정상적으로_완료된다`() {
         // given: 정상적인 주문 요청과 Mock 설정
-        whenever(utgService.findMenuPath(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_MENU_TITLE)).thenReturn(mockPathList)
-        whenever(utgService.findOptionNode(TEST_KIOSK_ID, TEST_MENU_ID, TEST_OPTION_TITLE)).thenReturn(mockOpt)
-        whenever(utgService.findBackPath(TEST_KIOSK_ID, TEST_MENU_ID)).thenReturn(mockBackPathList)
-        whenever(utgService.findCategoryNodeId(TEST_KIOSK_ID, TEST_MENU_ID)).thenReturn(TEST_CATEGORY_ID)
-        whenever(utgService.findMenuPath(TEST_KIOSK_ID, TEST_CATEGORY_ID, TEST_COMPLETE_TITLE)).thenReturn(mockPathList)
-        whenever(utgService.findRootNode(TEST_KIOSK_ID)).thenReturn(mockRoot)
+        whenever(utgDataService.findMenuPath(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_MENU_TITLE)).thenReturn(mockPathList)
+        whenever(utgDataService.findOption(TEST_KIOSK_ID, TEST_MENU_ID, TEST_OPTION_TITLE)).thenReturn(mockOpt)
+        whenever(utgDataService.findBackPath(TEST_KIOSK_ID, TEST_MENU_ID)).thenReturn(mockBackPathList)
+        whenever(utgDataService.findCategoryNodeId(TEST_KIOSK_ID, TEST_MENU_ID)).thenReturn(TEST_CATEGORY_ID)
+        whenever(utgDataService.findMenuPath(TEST_KIOSK_ID, TEST_CATEGORY_ID, TEST_COMPLETE_TITLE)).thenReturn(mockPathList)
+        whenever(utgDataService.findRoot(TEST_KIOSK_ID)).thenReturn(mockRoot)
         doNothing().whenever(globalLogger).loggingOrderStart(TEST_KIOSK_ID, TEST_TASK_ID)
         doNothing().whenever(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), any(), any(), eq(TEST_PAYMENT_CARD), eq(TEST_TASK_ID))
 
         // when: 자동주문 진행
-        autoOrderService.proceed(TEST_KIOSK_ID, TEST_TASK_ID, orderRequest)
+        autoOrderService.order(TEST_KIOSK_ID, TEST_TASK_ID, orderRequest)
 
         // then: 로그 기록 및 서비스 호출이 정상적으로 수행된다
         verify(globalLogger).loggingOrderStart(TEST_KIOSK_ID, TEST_TASK_ID)
@@ -161,9 +161,9 @@ class AutoOrderServiceTest {
         assertEquals(TEST_MENU_TITLE, capturedCoordinates[0].title)
         assertEquals(TEST_OPTION_TITLE, capturedCoordinates[2].title)
 
-        verify(utgService).findMenuPath(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_MENU_TITLE)
-        verify(utgService).findOptionNode(TEST_KIOSK_ID, TEST_MENU_ID, TEST_OPTION_TITLE)
-        verify(utgService).findBackPath(TEST_KIOSK_ID, TEST_MENU_ID)
+        verify(utgDataService).findMenuPath(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_MENU_TITLE)
+        verify(utgDataService).findOption(TEST_KIOSK_ID, TEST_MENU_ID, TEST_OPTION_TITLE)
+        verify(utgDataService).findBackPath(TEST_KIOSK_ID, TEST_MENU_ID)
     }
 
     @Test
@@ -186,21 +186,21 @@ class AutoOrderServiceTest {
             ActionPathDto(title = TEST_MENU_TITLE_2, id = TEST_MENU_ID, x = TEST_X_COORDINATE, y = TEST_Y_COORDINATE),
         )
 
-        whenever(utgService.findMenuPath(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_MENU_TITLE_2)).thenReturn(mockTakeoutActionList)
-        whenever(utgService.findPlaceNode(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_PLACE_TAKEOUT)).thenReturn(mockTakePlace)
-        whenever(utgService.findCategoryNodeId(TEST_KIOSK_ID, TEST_MENU_ID)).thenReturn(TEST_CATEGORY_ID)
-        whenever(utgService.findMenuPath(TEST_KIOSK_ID, TEST_CATEGORY_ID, TEST_COMPLETE_TITLE)).thenReturn(
+        whenever(utgDataService.findMenuPath(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_MENU_TITLE_2)).thenReturn(mockTakeoutActionList)
+        whenever(utgDataService.findPlace(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_PLACE_TAKEOUT)).thenReturn(mockTakePlace)
+        whenever(utgDataService.findCategoryNodeId(TEST_KIOSK_ID, TEST_MENU_ID)).thenReturn(TEST_CATEGORY_ID)
+        whenever(utgDataService.findMenuPath(TEST_KIOSK_ID, TEST_CATEGORY_ID, TEST_COMPLETE_TITLE)).thenReturn(
             listOf(ActionPathDto(id = TEST_COMPLETE_ID, x = TEST_X_COORDINATE_3, y = TEST_Y_COORDINATE_3, title = TEST_COMPLETE_TITLE))
         )
-        whenever(utgService.findRootNode(TEST_KIOSK_ID)).thenReturn(mockRoot)
+        whenever(utgDataService.findRoot(TEST_KIOSK_ID)).thenReturn(mockRoot)
         doNothing().whenever(globalLogger).loggingOrderStart(TEST_KIOSK_ID, TEST_TASK_ID)
         doNothing().whenever(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), any(), any(), eq(TEST_PAYMENT_CASH), eq(TEST_TASK_ID))
 
         // when: 자동주문 진행
-        autoOrderService.proceed(TEST_KIOSK_ID, TEST_TASK_ID, takeoutOrderRequest)
+        autoOrderService.order(TEST_KIOSK_ID, TEST_TASK_ID, takeoutOrderRequest)
 
         // then: 포장 노드 클릭이 정상적으로 수행된다
-        verify(utgService).findPlaceNode(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_PLACE_TAKEOUT)
+        verify(utgDataService).findPlace(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_PLACE_TAKEOUT)
         verify(notificationService).sendActionCommand(TEST_KIOSK_ID, CoordinateDto(TEST_X_COORDINATE, TEST_Y_COORDINATE, TEST_PLACE_TAKEOUT))
         verify(globalLogger).loggingOrderStart(TEST_KIOSK_ID, TEST_TASK_ID)
         verify(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), any(), any(), eq(TEST_PAYMENT_CASH), eq(TEST_TASK_ID))
@@ -231,23 +231,23 @@ class AutoOrderServiceTest {
         val mockActionList1 = listOf(ActionPathDto(id = TEST_MENU_ID, x = TEST_X_COORDINATE, y = TEST_Y_COORDINATE, title = TEST_MENU_TITLE))
         val mockActionList2 = listOf(ActionPathDto(id = TEST_MENU_ID_2, x = TEST_X_COORDINATE_2, y = TEST_Y_COORDINATE_2, title = TEST_MENU_TITLE_3))
 
-        whenever(utgService.findMenuPath(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_MENU_TITLE)).thenReturn(mockActionList1)
-        whenever(utgService.findMenuPath(TEST_KIOSK_ID, TEST_CATEGORY_ID, TEST_MENU_TITLE_3)).thenReturn(mockActionList2)
-        whenever(utgService.findCategoryNodeId(TEST_KIOSK_ID, TEST_MENU_ID)).thenReturn(TEST_CATEGORY_ID)
-        whenever(utgService.findCategoryNodeId(TEST_KIOSK_ID, TEST_MENU_ID_2)).thenReturn(TEST_CATEGORY_ID_2)
-        whenever(utgService.findMenuPath(TEST_KIOSK_ID, TEST_CATEGORY_ID_2, TEST_COMPLETE_TITLE)).thenReturn(
+        whenever(utgDataService.findMenuPath(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_MENU_TITLE)).thenReturn(mockActionList1)
+        whenever(utgDataService.findMenuPath(TEST_KIOSK_ID, TEST_CATEGORY_ID, TEST_MENU_TITLE_3)).thenReturn(mockActionList2)
+        whenever(utgDataService.findCategoryNodeId(TEST_KIOSK_ID, TEST_MENU_ID)).thenReturn(TEST_CATEGORY_ID)
+        whenever(utgDataService.findCategoryNodeId(TEST_KIOSK_ID, TEST_MENU_ID_2)).thenReturn(TEST_CATEGORY_ID_2)
+        whenever(utgDataService.findMenuPath(TEST_KIOSK_ID, TEST_CATEGORY_ID_2, TEST_COMPLETE_TITLE)).thenReturn(
             listOf(ActionPathDto(id = TEST_COMPLETE_ID, x = TEST_X_COORDINATE_3, y = TEST_Y_COORDINATE_3, title = TEST_COMPLETE_TITLE))
         )
-        whenever(utgService.findRootNode(TEST_KIOSK_ID)).thenReturn(mockRoot)
+        whenever(utgDataService.findRoot(TEST_KIOSK_ID)).thenReturn(mockRoot)
         doNothing().whenever(globalLogger).loggingOrderStart(TEST_KIOSK_ID, TEST_TASK_ID)
         doNothing().whenever(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), any(), any(), eq(TEST_PAYMENT_CARD), eq(TEST_TASK_ID))
 
         // when: 자동주문 진행
-        autoOrderService.proceed(TEST_KIOSK_ID, TEST_TASK_ID, multiMenuOrderRequest)
+        autoOrderService.order(TEST_KIOSK_ID, TEST_TASK_ID, multiMenuOrderRequest)
 
         // then: 각 메뉴가 개별적으로 처리되고 결과에 2개 메뉴가 포함된다
-        verify(utgService).findMenuPath(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_MENU_TITLE)
-        verify(utgService).findMenuPath(TEST_KIOSK_ID, TEST_CATEGORY_ID, TEST_MENU_TITLE_3)
+        verify(utgDataService).findMenuPath(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_MENU_TITLE)
+        verify(utgDataService).findMenuPath(TEST_KIOSK_ID, TEST_CATEGORY_ID, TEST_MENU_TITLE_3)
         verify(notificationService).sendActionCommand(TEST_KIOSK_ID, CoordinateDto(TEST_X_COORDINATE, TEST_Y_COORDINATE, TEST_MENU_TITLE))
         verify(notificationService).sendActionCommand(TEST_KIOSK_ID, CoordinateDto(TEST_X_COORDINATE_2, TEST_Y_COORDINATE_2, TEST_MENU_TITLE_3))
 
@@ -261,23 +261,23 @@ class AutoOrderServiceTest {
     @Test
     fun `옵션이_있는_메뉴_주문시_옵션_선택_후_뒤로가기한다`() {
         // given: 옵션이 있는 메뉴 주문 요청
-        whenever(utgService.findMenuPath(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_MENU_TITLE)).thenReturn(mockPathList)
-        whenever(utgService.findOptionNode(TEST_KIOSK_ID, TEST_MENU_ID, TEST_OPTION_TITLE)).thenReturn(mockOpt)
-        whenever(utgService.findBackPath(TEST_KIOSK_ID, TEST_MENU_ID)).thenReturn(mockBackPathList)
-        whenever(utgService.findCategoryNodeId(TEST_KIOSK_ID, TEST_MENU_ID)).thenReturn(TEST_CATEGORY_ID)
-        whenever(utgService.findMenuPath(TEST_KIOSK_ID, TEST_CATEGORY_ID, TEST_COMPLETE_TITLE)).thenReturn(
+        whenever(utgDataService.findMenuPath(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_MENU_TITLE)).thenReturn(mockPathList)
+        whenever(utgDataService.findOption(TEST_KIOSK_ID, TEST_MENU_ID, TEST_OPTION_TITLE)).thenReturn(mockOpt)
+        whenever(utgDataService.findBackPath(TEST_KIOSK_ID, TEST_MENU_ID)).thenReturn(mockBackPathList)
+        whenever(utgDataService.findCategoryNodeId(TEST_KIOSK_ID, TEST_MENU_ID)).thenReturn(TEST_CATEGORY_ID)
+        whenever(utgDataService.findMenuPath(TEST_KIOSK_ID, TEST_CATEGORY_ID, TEST_COMPLETE_TITLE)).thenReturn(
             listOf(ActionPathDto(id = TEST_COMPLETE_ID, x = TEST_X_COORDINATE_3, y = TEST_Y_COORDINATE_3, title = TEST_COMPLETE_TITLE))
         )
-        whenever(utgService.findRootNode(TEST_KIOSK_ID)).thenReturn(mockRoot)
+        whenever(utgDataService.findRoot(TEST_KIOSK_ID)).thenReturn(mockRoot)
         doNothing().whenever(globalLogger).loggingOrderStart(TEST_KIOSK_ID, TEST_TASK_ID)
         doNothing().whenever(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), any(), any(), eq(TEST_PAYMENT_CARD), eq(TEST_TASK_ID))
 
         // when: 자동주문 진행
-        autoOrderService.proceed(TEST_KIOSK_ID, TEST_TASK_ID, orderRequest)
+        autoOrderService.order(TEST_KIOSK_ID, TEST_TASK_ID, orderRequest)
 
         // then: 옵션 선택 후 뒤로가기가 정상적으로 수행된다
-        verify(utgService).findOptionNode(TEST_KIOSK_ID, TEST_MENU_ID, TEST_OPTION_TITLE)
-        verify(utgService).findBackPath(TEST_KIOSK_ID, TEST_MENU_ID)
+        verify(utgDataService).findOption(TEST_KIOSK_ID, TEST_MENU_ID, TEST_OPTION_TITLE)
+        verify(utgDataService).findBackPath(TEST_KIOSK_ID, TEST_MENU_ID)
         verify(notificationService).sendActionCommand(TEST_KIOSK_ID, CoordinateDto(TEST_X_COORDINATE, TEST_Y_COORDINATE, TEST_OPTION_TITLE))
         verify(notificationService).sendActionCommand(TEST_KIOSK_ID, CoordinateDto(TEST_X_COORDINATE, TEST_Y_COORDINATE, TEST_BACK_TITLE))
 

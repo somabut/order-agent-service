@@ -33,4 +33,16 @@ class MenuService @Autowired constructor(
         }
         return menuInfoList
     }
+
+    fun getMenusByCategory(kioskId: String, category: String, accessToken: String): List<MenuInfoDto> {
+        val allMenuList = getMenus(kioskId, accessToken)
+        val menuList = mutableListOf<MenuInfoDto>()
+
+        for (menu in allMenuList) {
+            if (menu.category == category) {
+                menuList.add(menu)
+            }
+        }
+        return menuList
+    }
 }
