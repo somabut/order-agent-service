@@ -94,15 +94,15 @@ class AutoOrderService @Autowired constructor(
         val actionList = utgDataService.findMenuPath(context.kioskId, context.nodeId, menu.title)
 
         //메뉴를 담기 위해 메뉴 노드까지 이동후 필요한 만큼 클릭
-        val last = actionList.last()
+        val lastMenu = actionList.last()
         for (act in actionList) {
             notificationService.sendActionCommand(context.kioskId, CoordinateDto(act.x, act.y, act.title))
         }
         repeat(menu.count - 1) {
-            notificationService.sendActionCommand(context.kioskId, CoordinateDto(last.x, last.y, last.title))
+            notificationService.sendActionCommand(context.kioskId, CoordinateDto(lastMenu.x, lastMenu.y, lastMenu.title))
         }
 
-        return last
+        return lastMenu
     }
 
     private fun clickOption(options: List<AutoOrderOption>, menuNode: ActionPathDto, context: AutoOrderContext) {
@@ -123,7 +123,7 @@ class AutoOrderService @Autowired constructor(
     }
 
     private fun proceedPayment(context: AutoOrderContext) {
-        val actionList = utgDataService.findMenuPath(context.kioskId, context.nodeId, "complete").toMutableList()
+        val actionList = utgDataService.findPaymentPath(context.kioskId, context.nodeId).toMutableList()
         actionList.removeLast()
 
         for (act in actionList) {

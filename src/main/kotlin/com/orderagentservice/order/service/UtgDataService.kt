@@ -40,14 +40,18 @@ class UtgDataService @Autowired constructor(
     fun findMenuPath(kioskId: String, sourceId: String, targetTitle: String): List<ActionPathDto> {
         val nodesList = utgDataRepository.findPathByTitle(kioskId, sourceId, targetTitle)
             .ifEmpty { throw PathNotFoundException() }
-
-        return nodesList
             .filter { node -> node["title"].toString() != "station" }
-            .map { node -> ActionPathDto(
-                node["id"].toString(), node["title"].toString(),
-                x = (node["x"] as Number).toInt(), y = (node["y"] as Number).toInt()
-            ) }
             .drop(1)
+
+        return ActionPathDto.toPathDtoList(nodesList)
+    }
+
+    fun findPaymentPath(kioskId: String, sourceId: String): List<ActionPathDto> {
+        val nodesList = utgDataRepository.findPathByTitle(kioskId, sourceId, "complete")
+            .ifEmpty { throw PathNotFoundException() }
+            .filter { node -> node["title"].toString() != "station" }
+
+        return ActionPathDto.toPathDtoList(nodesList)
     }
 
     fun findOption(kioskId: String, menuId: String, optKeyword: String): ActionPathDto {
@@ -63,13 +67,9 @@ class UtgDataService @Autowired constructor(
     fun findBackPath(kioskId: String, sourceId: String): List<ActionPathDto> {
         val nodesList = utgDataRepository.findBackPathByTitle(kioskId, sourceId)
             .ifEmpty { throw PathNotFoundException() }
-
-        return nodesList
-            .map { node -> ActionPathDto(
-                node["id"].toString(), node["title"].toString(),
-                x = (node["x"] as Number).toInt(), y = (node["y"] as Number).toInt()
-            ) }
             .drop(1)
+
+        return ActionPathDto.toPathDtoList(nodesList)
     }
 
     fun findCategoryNodeId(kioskId: String, id: String): String {
