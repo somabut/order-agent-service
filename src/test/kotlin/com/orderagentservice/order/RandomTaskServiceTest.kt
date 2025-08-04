@@ -11,9 +11,9 @@ class RandomTaskServiceTest @Autowired constructor(
 ) {
     @Test
     fun `adfafsd`() {
-        val accessToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbl8wMDIiLCJpYXQiOjE3NTI1ODU1OTQsImV4cCI6MTc1MjY3MTk5NH0.WW5GTPDmd8sV6aECd_MbIytT4snwRJqw5Oy05Dg9jDMtfxRWmrf4_hA6e9XCD5Hh6RudlpqhK1lxPI3wRXdTKw"
-        val kioskId = "kiosk-8f22eeb6-a920-44ed-af26-d800756fb283"
-        val response = randomTaskService.generate(3, kioskId, accessToken)
+        val accessToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJxd2UxMjMiLCJpYXQiOjE3NTQyODkzNDksImV4cCI6MTc1NDM3NTc0OX0.CW0Mfd_HNK2nij_Mdleimj8YeJbiFXvWy-EciL6fxDHNkChcriEdT2sHlrlhhoMrJyxN3gB9mGNGod60i_Foxg"
+        val kioskId = "kiosk-d89e07fa-4361-4b6a-a550-ac580a1ba195"
+        val response = randomTaskService.generate(5, kioskId, accessToken)
         for (ele in response.autoOrderMenus) {
             println(ele)
             println(ele.autoOrderOptions)

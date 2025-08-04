@@ -1,5 +1,6 @@
 package com.orderagentservice.order.service
 
+import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.request.AutoOrderMenu
 import com.orderagentservice.order.model.request.AutoOrderOption
 import com.orderagentservice.order.model.request.AutoOrderRequest
@@ -13,59 +14,68 @@ class RandomTaskService @Autowired constructor(
     private val autoOrderService: AutoOrderService,
     private val menuService: MenuService
 ) {
-    fun proceed(count: Int, kioskId: String, accessToken: String): List<String> {
-        val taskList = mutableListOf<String>()
-        repeat(count) {
-            val taskId = UUID.randomUUID().toString()
-            val menuCount = Random.nextInt(1, 6)
-            val request = generate(menuCount, kioskId, accessToken)
+    private val TEST_TASK_ID = "test-session-bag-coffee-1"
 
-            autoOrderService.order(kioskId, taskId, request)
-            taskList.add(taskId)
+    fun proceed(count: Int, kioskId: String, accessToken: String): List<String> {
+        repeat(count) {
+            val request = generate(count, kioskId, accessToken)
+            autoOrderService.order(kioskId, TEST_TASK_ID, request)
         }
-        return taskList
+        return listOf()
     }
 
     fun generate(count: Int, kioskId: String, accessToken: String): AutoOrderRequest {
         val menuList = menuService.getMenus(kioskId, accessToken)
 
+        //메뉴 생성
         val selectMenuList = mutableListOf<AutoOrderMenu>()
-        val menuIndexList = getRandomValue(menuList.size, count)
-
-        for (menuIndex in menuIndexList) {
-            val selectOptionList = mutableListOf<AutoOrderOption>()
-            val options = menuList[menuIndex].options
-
-            if (options.size > 0) {
-                val optionCount = Random.nextInt(0, options.size + 1)
-                val optionIndexList = getRandomValue(options.size, optionCount)
-                for (optIndex in optionIndexList) {
-                    selectOptionList.add(
-                        AutoOrderOption(
-                            title = options[optIndex],
-                            count = 1
-                        )
-                    )
-                }
-            }
-
-            val title = menuList[menuIndex].title
-            val category = menuList[menuIndex].category
-            selectMenuList.add(
-                AutoOrderMenu(
-                    category = category,
-                    title = title,
-                    count = Random.nextInt(1, 4),
-                    autoOrderOptions = selectOptionList
-                )
-            )
+        repeat(count) {
+            val orderMenu = generateMenu(menuList)
+            selectMenuList.add(orderMenu)
         }
+
+        //장소 선택
         val placeOptions = listOf("포장", "매장")
         val randomPlace = placeOptions.random()
         return AutoOrderRequest(autoOrderMenus = selectMenuList, place = randomPlace, payment = "카드")
     }
 
-    private fun getRandomValue(max: Int, count: Int): List<Int> {
+    private fun generateMenu(menuList: List<MenuInfoDto>): AutoOrderMenu {
+        val menuIndex = getRandomValue(menuList.size)[0]
+
+        //옵션 생성
+        val options = menuList[menuIndex].options
+        var selectOptionList = listOf<AutoOrderOption>()
+        if (options.isNotEmpty()) {
+            selectOptionList = generateOptions(options)
+        }
+
+        return AutoOrderMenu(
+            category = menuList[menuIndex].category,
+            title = menuList[menuIndex].title,
+            count = 1,
+            autoOrderOptions = selectOptionList
+        )
+    }
+
+    private fun generateOptions(options: List<String>): List<AutoOrderOption> {
+        val selectOptionList = mutableListOf<AutoOrderOption>()
+
+        val optionSize = Random.nextInt(0, options.size + 1)
+        val optionIndexList = getRandomValue(options.size, optionSize)
+        for (optIndex in optionIndexList) {
+            selectOptionList.add(
+                AutoOrderOption(
+                    title = options[optIndex],
+                    count = 1
+                )
+            )
+        }
+
+        return selectOptionList
+    }
+
+    private fun getRandomValue(max: Int, count: Int = 1): List<Int> {
         val random = Random(System.nanoTime())
         return (0 until max).shuffled(random).take(count)
     }

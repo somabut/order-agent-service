@@ -12,13 +12,18 @@ import org.springframework.web.bind.annotation.*
 class RandomTaskController @Autowired constructor(
     private val randomTaskService: RandomTaskService
 ) {
-    @PostMapping("/order/test/{kioskId}")
+    @PostMapping("/order/benchmark/{kioskId}")
     fun testOrder(
         @RequestBody randomTaskRequest: RandomTaskRequest,
         @RequestHeader("Authorization", required = false) accessToken: String?
     ): ApiResponse<*> {
         if (accessToken == null) throw KioskAdminSignInException()
-        val result = randomTaskService.generate(randomTaskRequest.count, randomTaskRequest.kioskId, accessToken)
-        return ApiResponse.success(result)
+
+        randomTaskService.proceed(
+            count = randomTaskRequest.count,
+            kioskId = randomTaskRequest.kioskId,
+            accessToken = accessToken
+        )
+        return ApiResponse.success("")
     }
 }
