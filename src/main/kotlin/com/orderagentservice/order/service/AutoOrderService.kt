@@ -116,7 +116,9 @@ class AutoOrderService @Autowired constructor(
     }
 
     private fun clickBack(menuNode: ActionPathDto, context: AutoOrderContext) {
-        val backList = graphService.findBackPath(context.kioskId, menuNode.id)
+        val backList = graphService.findBackPath(context.kioskId, menuNode.id).toMutableList()
+        backList.removeLast()
+
         for (back in backList) {
             notificationService.sendActionCommand(context.kioskId, CoordinateDto(back.x, back.y, back.title))
         }
