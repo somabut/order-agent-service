@@ -13,10 +13,10 @@ import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.entity.UiEntity
-import com.orderagentservice.order.service.MenuGraphService
+import com.orderagentservice.order.service.MenuUtgService
 import com.orderagentservice.order.service.NotificationService
-import com.orderagentservice.order.service.PlaceGraphService
-import com.orderagentservice.order.service.UtgDataService
+import com.orderagentservice.order.service.PlaceUtgService
+import com.orderagentservice.order.service.GraphService
 import com.orderagentservice.order.util.UiExtractorManager
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
@@ -27,7 +27,7 @@ import org.mockito.ArgumentMatchers.anyString
 import org.mockito.kotlin.*
 import java.io.File
 
-class MenuGraphServiceTest {
+class MenuUtgServiceTest {
     companion object {
         private const val TEST_KIOSK_ID = "KIOSK_123123"
         private const val TEST_ROOT_NODE_ID = "ROOT_NODE_123"
@@ -58,11 +58,11 @@ class MenuGraphServiceTest {
     private lateinit var backAgent: BackAgent
     private lateinit var pageAgent: PageAgent
     private lateinit var missingComponentAgent: MissingComponentAgent
-    private lateinit var placeGraphService: PlaceGraphService
+    private lateinit var placeUtgService: PlaceUtgService
     private lateinit var uiExtractorManager: UiExtractorManager
     private lateinit var notificationService: NotificationService
-    private lateinit var utgDataService: UtgDataService
-    private lateinit var menuGraphService: MenuGraphService
+    private lateinit var graphService: GraphService
+    private lateinit var menuGraphService: MenuUtgService
     private lateinit var wordSimilarityService: WordSimilarityService
 
     private lateinit var menuList: List<MenuInfoDto>
@@ -94,15 +94,19 @@ class MenuGraphServiceTest {
         backAgent = mock()
         pageAgent = mock()
         missingComponentAgent = mock()
-        placeGraphService = mock()
+        placeUtgService = mock()
         uiExtractorManager = mock()
         notificationService = mock()
-        utgDataService = mock()
+        graphService = mock()
         wordSimilarityService = mock()
 
-        menuGraphService = MenuGraphService(
-            menuAgent, backAgent, wordSimilarityService, placeGraphService,
-            uiExtractorManager, notificationService, utgDataService
+        menuGraphService = MenuUtgService(
+            placeUtgService = placeUtgService,
+            backAgent = backAgent,
+            wordSimilarityService = wordSimilarityService,
+            uiExtractorManager = uiExtractorManager,
+            notificationService = notificationService,
+            graphService = graphService
         )
 
         firstDto = MenuInfoDto(
@@ -245,8 +249,8 @@ class MenuGraphServiceTest {
             AgentActionDto(false, 0.8F, listOf(100, 200), "매장")
         )
 
-        reset(menuAgent, backAgent, pageAgent, missingComponentAgent, placeGraphService,
-            uiExtractorManager, notificationService, utgDataService)
+        reset(menuAgent, backAgent, pageAgent, missingComponentAgent, placeUtgService,
+            uiExtractorManager, notificationService, graphService)
     }
 
     @Test
@@ -265,7 +269,7 @@ class MenuGraphServiceTest {
         assertTrue(context.isPlaceDetermined)
         assertNotNull(context.lastNodeId)
         assertEquals(TEST_FIRST_NODE_ID, context.lastNodeId)
-        verify(utgDataService, times(3)).saveNode(any<UiDto>()) // root + category + menu
+        verify(graphService, times(3)).saveNode(any<UiDto>()) // root + category + menu
         verify(menuAgent, times(2)).determineAction(any(), any())
     }
 
@@ -297,10 +301,10 @@ class MenuGraphServiceTest {
             score = VERY_LOW_SCORE
         )
 
-        whenever(utgDataService.saveNode(any<UiDto>())).thenReturn(rootNode, firstNode)
+        whenever(graphService.saveNode(any<UiDto>())).thenReturn(rootNode, firstNode)
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
         whenever(uiExtractorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
-        whenever(placeGraphService.initializeGraph(any())).thenAnswer {
+        whenever(placeUtgService.initializeGraph(any())).thenAnswer {
             val ctx = it.arguments[0] as GraphContext
             ctx.isPlaceDetermined = true
             placeActionList.forEach { action -> ctx.history.add(action) }
@@ -349,7 +353,7 @@ class MenuGraphServiceTest {
 
         val context = createTestContext() // lastNode가 null인 초기 컨텍스트
 
-        whenever(utgDataService.saveNode(any<UiDto>())).thenReturn(
+        whenever(graphService.saveNode(any<UiDto>())).thenReturn(
             rootNode,       // 1. initializeGraph의 루트 노드
             category1Node,  // 2. handleFirstNode의 카테고리 노드
             menu1Node,      // 3. selectMenu의 메뉴 노드
@@ -366,7 +370,7 @@ class MenuGraphServiceTest {
         whenever(uiExtractorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
         whenever(notificationService.sendActionCommand(any(), any())).thenReturn(actionResult)
         whenever(pageAgent.determineAction(any(), any())).thenReturn(pageAction) // handleModal 내부에서 사용될 수 있음
-        whenever(placeGraphService.initializeGraph(any())).thenAnswer {
+        whenever(placeUtgService.initializeGraph(any())).thenAnswer {
             // 첫 handleFirstNode에서 호출되므로 Mocking 필요
             context.isPlaceDetermined = true
             Unit
@@ -376,8 +380,8 @@ class MenuGraphServiceTest {
         menuGraphService.initializeGraph(context, listOf(menuWithCategory1, menuWithCategory2))
 
         // then: 카테고리1 노드와 카테고리2 노드가 PATH_TO 관계로 양방향 연결되는지 검증
-        verify(utgDataService).saveRel(category1Node.id, category2Node.id, NodeRelation.PATH_TO)
-        verify(utgDataService).saveRel(category2Node.id, category1Node.id, NodeRelation.PATH_TO)
+        verify(graphService).saveRel(category1Node.id, category2Node.id, NodeRelation.PATH_TO)
+        verify(graphService).saveRel(category2Node.id, category1Node.id, NodeRelation.PATH_TO)
 
         // 그리고 context의 마지막 노드가 새로운 카테고리 노드로 업데이트되었는지 확인
         assertEquals(category2Node.id, context.lastNodeId)
@@ -390,10 +394,10 @@ class MenuGraphServiceTest {
         var callCount = 0
 
         // ← mockStatic 블록 완전 제거!
-        whenever(utgDataService.saveNode(any<UiDto>())).thenReturn(rootNode, firstNode, menuEntity)
+        whenever(graphService.saveNode(any<UiDto>())).thenReturn(rootNode, firstNode, menuEntity)
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
         whenever(uiExtractorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
-        whenever(placeGraphService.initializeGraph(any())).thenAnswer {
+        whenever(placeUtgService.initializeGraph(any())).thenAnswer {
             val ctx = it.arguments[0] as GraphContext
             callCount++
             if (callCount == 2) {
@@ -410,7 +414,7 @@ class MenuGraphServiceTest {
 
         // then: 포장/매장 UI 탐색이 두 번 호출되고 마지막에 찾아진다
         assertTrue(context.isPlaceDetermined)
-        verify(placeGraphService, times(2)).initializeGraph(any())
+        verify(placeUtgService, times(2)).initializeGraph(any())
     }
 
     @Test
@@ -443,18 +447,18 @@ class MenuGraphServiceTest {
     }
 
     private fun setupBasicMocks(context: GraphContext) {
-        whenever(utgDataService.saveNode(any<UiDto>())).thenReturn(rootNode, firstNode, menuEntity, modalEntity, optionEntity, backEntity)
+        whenever(graphService.saveNode(any<UiDto>())).thenReturn(rootNode, firstNode, menuEntity, modalEntity, optionEntity, backEntity)
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID))
             .thenReturn(TEST_IMAGE_DATA)
             .thenReturn(TEST_MODAL_IMAGE_DATA)
         whenever(uiExtractorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
-        whenever(placeGraphService.initializeGraph(any())).thenAnswer {
+        whenever(placeUtgService.initializeGraph(any())).thenAnswer {
             val ctx = it.arguments[0] as GraphContext
             ctx.isPlaceDetermined = true
             placeActionList.forEach { action -> ctx.history.add(action) }
         }
         whenever(notificationService.sendActionCommand(any(), any())).thenReturn(actionResult)
-        doNothing().whenever(utgDataService).saveRel(anyString(), anyString(), any())
+        doNothing().whenever(graphService).saveRel(anyString(), anyString(), any())
     }
 
     private fun setupModalMocks(hasModal: Boolean) {
@@ -486,15 +490,15 @@ class MenuGraphServiceTest {
             LlmUiComponentDto(x = 150, y = 250, title = "숨겨진옵션")
         )
 
-        whenever(utgDataService.saveNode(any<UiDto>())).thenReturn(rootNode, menuEntity)
+        whenever(graphService.saveNode(any<UiDto>())).thenReturn(rootNode, menuEntity)
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
         whenever(uiExtractorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
-        whenever(placeGraphService.initializeGraph(any())).thenAnswer {  }
+        whenever(placeUtgService.initializeGraph(any())).thenAnswer {  }
         whenever(menuAgent.determineAction(any<MenuInfoDto>(), anyList())).thenReturn(menuAction)
         whenever(backAgent.determineBack(any())).thenReturn(backAction)
         whenever(pageAgent.determineAction(anyList(), anyList())).thenReturn(pageAction)
         whenever(notificationService.sendActionCommand(TEST_KIOSK_ID, TEST_COORDINATE)).thenReturn(actionResult)
-        doNothing().whenever(utgDataService).saveRel(anyString(), anyString(), any())
+        doNothing().whenever(graphService).saveRel(anyString(), anyString(), any())
 
         // when: 메뉴 그래프 초기화 실행
         val context = GraphContext(

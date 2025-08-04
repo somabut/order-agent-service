@@ -13,12 +13,12 @@ import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.entity.UiEntity
 import com.orderagentservice.order.util.UiExtractorManager
 
-abstract class AbstractMenuGraphService (
+abstract class AbstractMenuUtgService (
     private val backAgent: BackAgent,
     private val wordSimilarityService: WordSimilarityService,
     private val uiExtractorManager: UiExtractorManager,
     private val notificationService: NotificationService,
-    private val utgDataService: UtgDataService
+    private val graphService: GraphService
 ) {
     private val log = logger()
 
@@ -115,7 +115,7 @@ abstract class AbstractMenuGraphService (
     private fun createCategoryNode(coordinate: CoordinateDto, context: GraphContext): UiEntity {
         log.info("카테고리 노드를 생성합니다. go_next: true, coordinate: [${coordinate.x}, ${coordinate.y}], title: ${coordinate.title}")
 
-        val node = utgDataService.saveNode(
+        val node = graphService.saveNode(
             UiDto(
             isNext = true,
             x = coordinate.x, y = coordinate.y,
@@ -124,15 +124,15 @@ abstract class AbstractMenuGraphService (
         )
         )
 
-        utgDataService.saveRel(context.stationNodeId!!, node.id, NodeRelation.PATH_TO)
-        utgDataService.saveRel(node.id, context.stationNodeId!!, NodeRelation.PATH_TO)
+        graphService.saveRel(context.stationNodeId!!, node.id, NodeRelation.PATH_TO)
+        graphService.saveRel(node.id, context.stationNodeId!!, NodeRelation.PATH_TO)
 
         return node
     }
 
     private fun createMenuNode(coordinate: CoordinateDto, context: GraphContext): UiEntity {
         log.info("메뉴 노드를 생성합니다. go_next: false, coordinate: [${coordinate.x}, ${coordinate.y}], title: ${coordinate.title}")
-        val node = utgDataService.saveNode(
+        val node = graphService.saveNode(
             UiDto(
             isNext = false,
             x = coordinate.x, y = coordinate.y,
@@ -140,7 +140,7 @@ abstract class AbstractMenuGraphService (
             kioskId = context.kioskId
         )
         )
-        utgDataService.saveRel(context.lastNodeId!!, node.id, NodeRelation.HAS_TO)
+        graphService.saveRel(context.lastNodeId!!, node.id, NodeRelation.HAS_TO)
 
         return node
     }
@@ -151,7 +151,7 @@ abstract class AbstractMenuGraphService (
         context: GraphContext
     ) {
         log.info("옵션 노드를 생성합니다. go_next: false, coordinate: [${coordinate.x}, ${coordinate.y}], title: ${coordinate.title}")
-        val optEntity = utgDataService.saveNode(
+        val optEntity = graphService.saveNode(
             UiDto(
             isNext = false,
             x = coordinate.x, y = coordinate.y,
@@ -159,7 +159,7 @@ abstract class AbstractMenuGraphService (
             kioskId = context.kioskId
         )
         )
-        utgDataService.saveRel(menuNode.id, optEntity.id, NodeRelation.OPT_TO)
+        graphService.saveRel(menuNode.id, optEntity.id, NodeRelation.OPT_TO)
     }
 
     private fun createBackNode(
@@ -167,7 +167,7 @@ abstract class AbstractMenuGraphService (
         menuNode: UiEntity,
         context: GraphContext
     ) {
-        val backEntity = utgDataService.saveNode(
+        val backEntity = graphService.saveNode(
             UiDto(
             isNext = false,
             x = action.coordinate[0], y = action.coordinate[1],
@@ -175,7 +175,7 @@ abstract class AbstractMenuGraphService (
             kioskId = context.kioskId
         )
         )
-        utgDataService.saveRel(menuNode.id, backEntity.id, NodeRelation.BACK_TO)
-        utgDataService.saveRel(backEntity.id, context.lastNodeId!!, NodeRelation.BACK_TO)
+        graphService.saveRel(menuNode.id, backEntity.id, NodeRelation.BACK_TO)
+        graphService.saveRel(backEntity.id, context.lastNodeId!!, NodeRelation.BACK_TO)
     }
 }
