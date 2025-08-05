@@ -3,13 +3,17 @@ package com.orderagentservice.agent.util
 import com.orderagentservice.agent.exception.AgentManyRequestException
 import com.orderagentservice.agent.model.LlmProvider
 import com.orderagentservice.agent.model.request.*
+import com.orderagentservice.agent.model.response.ClaudResponse
 import com.orderagentservice.agent.model.response.GeminiResponse
 import com.orderagentservice.agent.model.response.GptResponse
+import com.orderagentservice.jsonMapper
 import com.orderagentservice.logger
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.core.ParameterizedTypeReference
 import org.springframework.core.env.Environment
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpHeaders
+import org.springframework.core.env.get
+import org.springframework.core.env.getProperty
+import org.springframework.http.*
 import org.springframework.stereotype.Component
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestTemplate
@@ -23,9 +27,13 @@ class LlmManager @Autowired constructor(
 
     private val GEMINI_MODEL_NAME = env.getProperty("agent.gemini.model-name")
     private val GPT_MODEL_NAME = env.getProperty("agent.openai.model-name")
+    private val CLAUD_MODEL_NAME = env.getProperty("agent.claud.model-name")
+
+    private val CLAUD_API_KEY = env.getProperty("agent.claud.api-key")
 
     fun query(prompt: String): String {
-        return queryGpt(prompt)
+        return queryClaud(prompt)
+//        return queryGpt(prompt)
 //        return llmRateLimiter.executeWithLimit { apiKey ->
 //            callGeminiApi(prompt, apiKey)
 //        }
@@ -88,5 +96,32 @@ class LlmManager @Autowired constructor(
 
             json
         }
+    }
+
+    fun queryClaud(prompt: String): String {
+        val request = ClaudRequest(
+            model = CLAUD_MODEL_NAME!!,
+            maxTokens = 2048,
+            messages = listOf(
+                ClaudMessage(
+                    role = "user",
+                    content = prompt
+                )
+            )
+        )
+
+        val restTemplate = RestTemplate()
+        val headers = HttpHeaders()
+        headers.contentType = MediaType.APPLICATION_JSON
+        headers.set("x-api-key", CLAUD_API_KEY)
+        headers.set("anthropic-version", "2023-06-01")
+        val url = "https://api.anthropic.com/v1/messages"
+
+        val httpEntity = HttpEntity(request, headers)
+        val response = restTemplate.postForObject(url, httpEntity, ClaudResponse::class.java)
+
+        val text = response!!.content[0].text
+        val json = text.replace("```json", "").replace("```", "").trim()
+        return json
     }
 }

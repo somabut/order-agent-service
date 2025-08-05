@@ -33,4 +33,16 @@ class LlmManagerTest @Autowired constructor(
         //then:
         assertThat(response).isEqualTo("moodTRBL")
     }
+
+    @Test
+    fun `claud에게 질의하여 응답을 얻는다`() {
+        //given: 입력과 프롬프트
+        val input = "안녕 요청이 잘 갔으면 응답을 정확하게 'moodTRBL'로 반환해"
+
+        //when: llm에게 질의를 한다
+        val response = llmManager.queryClaud(input)
+
+        //then:
+        assertThat(response).isEqualTo("moodTRBL")
+    }
 }
