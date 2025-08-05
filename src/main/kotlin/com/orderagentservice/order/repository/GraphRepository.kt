@@ -93,7 +93,8 @@ interface GraphRepository : Neo4jRepository<UiEntity, String> {
     @Query(
         "MATCH (n {id: \$sourceId, kioskId: \$kioskId})-[r:HAS_TO]->(m)\n" +
         "OPTIONAL MATCH (m)-[:opt_TO]->(x)\n" +
-        "DETACH DELETE m, x"
+        "OPTIONAL MATCH (n)<-[:BACK_TO]-(y)\n" +
+        "DETACH DELETE m, x, y"
     )
     fun deleteMenuNode(
         @Param("sourceId") sourceId: String,
@@ -111,4 +112,7 @@ interface GraphRepository : Neo4jRepository<UiEntity, String> {
 
     @Query("MATCH (a:UI {id: \$sourceId}), (b:UI {id: \$targetId}) MERGE (a)-[:BACK_TO]->(b)")
     fun saveBackRelation(sourceId: String, targetId: String)
+
+    @Query("MATCH(n: UI{kioskId: \$kioskId})-[r]->(m) RETURN n,r,m")
+    fun findAllByKioskId(kioskId: String): List<Map<String, Any>>
 }

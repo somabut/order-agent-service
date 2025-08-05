@@ -138,8 +138,7 @@ abstract class AbstractMenuUtgService (
             x = coordinate.x, y = coordinate.y,
             title = coordinate.title,
             kioskId = context.kioskId
-        )
-        )
+        ))
         graphService.saveRel(context.lastNodeId!!, node.id, NodeRelation.HAS_TO)
 
         return node
@@ -157,8 +156,7 @@ abstract class AbstractMenuUtgService (
             x = coordinate.x, y = coordinate.y,
             title = coordinate.title,
             kioskId = context.kioskId
-        )
-        )
+        ))
         graphService.saveRel(menuNode.id, optEntity.id, NodeRelation.OPT_TO)
     }
 
@@ -173,8 +171,7 @@ abstract class AbstractMenuUtgService (
             x = action.coordinate[0], y = action.coordinate[1],
             title = action.title,
             kioskId = context.kioskId
-        )
-        )
+        ))
         graphService.saveRel(menuNode.id, backEntity.id, NodeRelation.BACK_TO)
         graphService.saveRel(backEntity.id, context.lastNodeId!!, NodeRelation.BACK_TO)
     }

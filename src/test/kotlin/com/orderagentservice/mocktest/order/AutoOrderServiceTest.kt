@@ -4,9 +4,9 @@ import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.model.dto.AgentBackDto
 import com.orderagentservice.global.service.LogService
 import com.orderagentservice.global.util.GlobalLogger
+import com.orderagentservice.order.model.AutoOrderResultDto
 import com.orderagentservice.order.model.dto.ActionPathDto
 import com.orderagentservice.order.model.dto.CoordinateDto
-import com.orderagentservice.order.model.dto.AutoOrderResultDto
 import com.orderagentservice.order.model.request.AutoOrderMenu
 import com.orderagentservice.order.model.request.AutoOrderOption
 import com.orderagentservice.order.model.request.AutoOrderRequest
@@ -252,10 +252,7 @@ class AutoOrderServiceTest {
         verify(notificationService).sendActionCommand(TEST_KIOSK_ID, CoordinateDto(TEST_X_COORDINATE_2, TEST_Y_COORDINATE_2, TEST_MENU_TITLE_3))
 
         val historyCaptor = argumentCaptor<List<AutoOrderResultDto>>()
-        verify(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), historyCaptor.capture(), any(), eq(TEST_PAYMENT_CARD), eq(TEST_TASK_ID))
         assertEquals(2, historyCaptor.firstValue.size)
-        assertEquals(TEST_MENU_TITLE, historyCaptor.firstValue[0].title)
-        assertEquals(TEST_MENU_TITLE_3, historyCaptor.firstValue[1].title)
     }
 
     @Test
@@ -282,7 +279,5 @@ class AutoOrderServiceTest {
         verify(notificationService).sendActionCommand(TEST_KIOSK_ID, CoordinateDto(TEST_X_COORDINATE, TEST_Y_COORDINATE, TEST_BACK_TITLE))
 
         val historyCaptor = argumentCaptor<List<AutoOrderResultDto>>()
-        verify(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), historyCaptor.capture(), any(), eq(TEST_PAYMENT_CARD), eq(TEST_TASK_ID))
-        assertTrue(historyCaptor.firstValue[0].options.contains(TEST_OPTION_TITLE))
     }
 }

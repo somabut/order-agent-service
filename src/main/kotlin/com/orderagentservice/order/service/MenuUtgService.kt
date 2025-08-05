@@ -81,6 +81,9 @@ class MenuUtgService @Autowired constructor(
             notificationService.sendActionCommand(context.kioskId, CoordinateDto(act.x, act.y, act.title))
         }
 
+        context.lastNodeId = actionList.last().id
+        context.currentCategory = category
+
         //해당 카테고리의 메뉴 제거
         val categoryId = actionList.last().id
         graphService.deleteMenusByCategory(context.kioskId, categoryId)
