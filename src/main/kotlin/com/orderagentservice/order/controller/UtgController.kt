@@ -30,6 +30,8 @@ class UtgController @Autowired constructor(
     ): ApiResponse<*> {
         if (accessToken == null) throw KioskAdminSignInException()
 
+        println(accessToken)
+
         val history = utgService.updateGraph(kioskId, utgUpdateRequest.editCategories, accessToken)
         return ApiResponse.success(history)
     }

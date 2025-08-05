@@ -3,8 +3,7 @@ package com.orderagentservice.order.model.entity
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.Version
 import org.springframework.data.neo4j.core.schema.*
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
+import java.time.*
 import java.util.*
 
 @Node("UI")
@@ -30,9 +29,8 @@ class UiEntity(
     @Property("kioskId")
     val kioskId: String,
 
-    @CreatedDate
     @Property("created_at")
-    val createdAt: OffsetDateTime? = null,
+    val createdAt: OffsetDateTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toOffsetDateTime(),
 
     @Relationship(type = "PATH_TO", direction = Relationship.Direction.OUTGOING)
     val connectedTo: Set<UiEntity>? = null,
