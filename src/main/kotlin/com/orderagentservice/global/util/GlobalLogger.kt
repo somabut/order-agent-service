@@ -4,7 +4,6 @@ import com.orderagentservice.global.model.LogType
 import com.orderagentservice.jsonMapper
 import com.orderagentservice.order.model.AutoOrderResultDto
 import com.orderagentservice.order.model.dto.CoordinateDto
-import com.orderagentservice.order.model.dto.AutoOrderResultDto
 import org.slf4j.LoggerFactory
 import org.slf4j.MDC
 import org.springframework.stereotype.Component
