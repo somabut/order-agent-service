@@ -22,7 +22,6 @@ class MenuRepository @Autowired constructor(
     private val env: Environment
 ) {
     private val KIOSK_ADMIN_HOST = env.getProperty("kiosk-admin.host")
-    private val KIOSK_ADMIN_PORT = env.getProperty("kiosk-admin.port")
 
     fun findAllMenus(kioskId: String, accessToken: String): MenuInfoResponse {
         val restTemplate = RestTemplate()
@@ -41,6 +40,4 @@ class MenuRepository @Autowired constructor(
 
         return response
     }
-
-
 }

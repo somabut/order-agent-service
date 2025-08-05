@@ -53,6 +53,8 @@ class GraphRepositoryTest @Autowired constructor(
             val r = row["r"] as org.neo4j.driver.types.Relationship
             val m = row["m"] as org.neo4j.driver.types.Node
 
+            println("${n.asMap()} ${r.type()} ${m.asMap()}")
+
             val nMap = n.asMap().toMutableMap().apply { set("kioskId", "GRAPH_TEST") }
             val mMap = m.asMap().toMutableMap().apply { set("kioskId", "GRAPH_TEST") }
 
