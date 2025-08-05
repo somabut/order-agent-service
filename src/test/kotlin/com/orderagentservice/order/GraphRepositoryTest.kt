@@ -17,10 +17,12 @@ class GraphRepositoryTest @Autowired constructor(
 ) {
     @Test
     fun `원하는 메뉴의 경로를 찾는다`() {
-        val kioskId = "kiosk-8f22eeb6-a920-44ed-af26-d800756fb283"
+        val kioskId = "kiosk-d89e07fa-4361-4b6a-a550-ac580a1ba195"
         val nowNode = graphService.findRoot(kioskId)
 
-        val path = graphService.findMenuPath(kioskId, nowNode.id, "불끈버거 맥시멈")
+        println(nowNode)
+
+        val path = graphService.findMenuPath(kioskId, nowNode.id, "원조빽스치노")
         println(path)
     }
 
