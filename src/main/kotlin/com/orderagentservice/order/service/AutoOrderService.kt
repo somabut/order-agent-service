@@ -4,7 +4,6 @@ import com.orderagentservice.global.model.dto.LogDto
 import com.orderagentservice.global.service.LogService
 import com.orderagentservice.logger
 import com.orderagentservice.order.model.dto.CoordinateDto
-import com.orderagentservice.order.model.dto.AutoOrderResultDto
 import com.orderagentservice.order.model.request.AutoOrderMenu
 import com.orderagentservice.order.model.request.AutoOrderRequest
 import com.orderagentservice.global.util.GlobalLogger
