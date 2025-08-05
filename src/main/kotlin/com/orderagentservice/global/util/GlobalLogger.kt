@@ -2,8 +2,9 @@ package com.orderagentservice.global.util
 
 import com.orderagentservice.global.model.LogType
 import com.orderagentservice.jsonMapper
+import com.orderagentservice.order.model.AutoOrderResultDto
 import com.orderagentservice.order.model.dto.CoordinateDto
-import com.orderagentservice.order.model.dto.OrderResultDto
+import com.orderagentservice.order.model.dto.AutoOrderResultDto
 import org.slf4j.LoggerFactory
 import org.slf4j.MDC
 import org.springframework.stereotype.Component
@@ -38,12 +39,11 @@ class GlobalLogger {
     }
 
     fun loggingOrderResult(
-        kioskId: String, menuList: List<OrderResultDto>,
+        kioskId: String, menuList: AutoOrderResultDto,
         processingTime: Long, paymentMethod: String,
         taskId: String
     ) {
         val menuJson = jsonMapper.writeValueAsString(menuList)
-        val totalAmount = menuList.sumOf { it.quantity }
 
         MDC.put("logType", LogType.ORDER_RESULT.name)
         MDC.put("kioskId", kioskId)
@@ -51,7 +51,6 @@ class GlobalLogger {
         MDC.put("menuList", menuJson)
         MDC.put("processingTime (ms)", processingTime.toString())
         MDC.put("paymentMethod", paymentMethod)
-        MDC.put("totalAmount", totalAmount.toString())
         logger.info(LogType.ORDER_RESULT.message)
         MDC.clear()
     }

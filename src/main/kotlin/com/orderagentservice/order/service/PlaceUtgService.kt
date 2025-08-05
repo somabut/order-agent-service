@@ -12,11 +12,11 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-class PlaceGraphService @Autowired constructor(
+class PlaceUtgService @Autowired constructor(
     private val placeAgent: PlaceAgent,
     private val notificationService: NotificationService,
     private val uiExtractorManager: UiExtractorManager,
-    private val utgDataService: UtgDataService
+    private val graphService: GraphService
 ) {
     private val log = logger()
 
@@ -34,13 +34,13 @@ class PlaceGraphService @Autowired constructor(
         for (act in action) {
             val x = act.coordinate[0]
             val y = act.coordinate[1]
-            val entity = utgDataService.saveNode(UiDto(
+            val entity = graphService.saveNode(UiDto(
                     isNext = false,
                     x = x, y = y,
                     title = act.title,
                     kioskId = kioskId
                 ))
-            utgDataService.saveRel(context.lastNodeId!!, entity.id, NodeRelation.HAS_TO)
+            graphService.saveRel(context.lastNodeId!!, entity.id, NodeRelation.HAS_TO)
             context.history.add(act)
             log.info("포장/매장 노드를 생성합니다. go_next: ${act.goNext}, score: ${act.score}, coordinate: $x $y, title: ${act.title}")
         }

@@ -5,7 +5,7 @@ import org.springframework.data.neo4j.repository.Neo4jRepository
 import org.springframework.data.neo4j.repository.query.Query
 import org.springframework.data.repository.query.Param
 
-interface UtgDataRepository : Neo4jRepository<UiEntity, String> {
+interface GraphRepository : Neo4jRepository<UiEntity, String> {
     @Query(
         "MATCH path = (start:UI {kioskId: \$kioskId, id: \$sourceId})-[*]->(target:UI {kioskId: \$kioskId, title: \$targetTitle})\n " +
         "RETURN nodes(path) AS nodes\n" +

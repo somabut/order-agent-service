@@ -8,9 +8,9 @@ import com.orderagentservice.order.model.NodeRelation
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.entity.UiEntity
 import com.orderagentservice.order.service.NotificationService
-import com.orderagentservice.order.service.PaymentGraphService
-import com.orderagentservice.order.service.PlaceGraphService
-import com.orderagentservice.order.service.UtgDataService
+import com.orderagentservice.order.service.PaymentUtgService
+import com.orderagentservice.order.service.PlaceUtgService
+import com.orderagentservice.order.service.GraphService
 import com.orderagentservice.order.util.UiExtractorManager
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -25,7 +25,7 @@ import java.io.File
 import kotlin.test.Test
 
 @SpringBootTest
-class PaymentGraphServiceTest {
+class PaymentUtgServiceTest {
     companion object {
         private const val TEST_KIOSK_ID = "KIOSK_123123"
         private const val TEST_LAST_NODE_ID = "NODE_123"
@@ -38,11 +38,11 @@ class PaymentGraphServiceTest {
     }
 
     private lateinit var paymentAgent: PaymentAgent
-    private lateinit var placeGraphService: PlaceGraphService
+    private lateinit var placeUtgService: PlaceUtgService
     private lateinit var notificationService: NotificationService
     private lateinit var uiExtractorManager: UiExtractorManager
-    private lateinit var utgDataService: UtgDataService
-    private lateinit var paymentGraphService: PaymentGraphService
+    private lateinit var graphService: GraphService
+    private lateinit var paymentUtgService: PaymentUtgService
 
     private lateinit var lastNode: UiEntity
     private lateinit var llmUiList: MutableList<LlmUiComponentDto>
@@ -54,12 +54,12 @@ class PaymentGraphServiceTest {
     @BeforeEach
     fun setUp() {
         paymentAgent = mock()
-        placeGraphService = mock()
+        placeUtgService = mock()
         notificationService = mock()
         uiExtractorManager = mock()
-        utgDataService = mock()
-        paymentGraphService = PaymentGraphService(
-            paymentAgent, placeGraphService, notificationService, uiExtractorManager, utgDataService
+        graphService = mock()
+        paymentUtgService = PaymentUtgService(
+            paymentAgent, placeUtgService, notificationService, uiExtractorManager, graphService
         )
 
         lastNode = UiEntity(
@@ -105,7 +105,7 @@ class PaymentGraphServiceTest {
             AgentActionDto(false, 0.8F, listOf(100, 200), "매장")
         )
 
-        reset(paymentAgent, placeGraphService, notificationService, uiExtractorManager, utgDataService)
+        reset(paymentAgent, placeUtgService, notificationService, uiExtractorManager, graphService)
     }
 
     @Test
@@ -114,8 +114,8 @@ class PaymentGraphServiceTest {
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
         whenever(uiExtractorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
         whenever(paymentAgent.determineAction(llmUiList)).thenReturn(agentActionDto)
-        whenever(utgDataService.saveNode(any<UiDto>())).thenReturn(uiEntity).thenReturn(completeEntity)
-        doNothing().whenever(utgDataService).saveRel(anyString(), anyString(), any())
+        whenever(graphService.saveNode(any<UiDto>())).thenReturn(uiEntity).thenReturn(completeEntity)
+        doNothing().whenever(graphService).saveRel(anyString(), anyString(), any())
 
         // when: 결제 그래프 초기화 실행
         val context = GraphContext(
@@ -126,18 +126,18 @@ class PaymentGraphServiceTest {
             currentCategory = null,
             history = mutableListOf()
         )
-        paymentGraphService.initializeGraph(context)
+        paymentUtgService.initializeGraph(context)
 
         // then: 결제 액션이 히스토리에 추가되고 완료 노드가 생성된다
         assertEquals(1, context.history.size)
         assertEquals(agentActionDto, context.history[0])
 
-        verify(placeGraphService, never()).initializeGraph(any())
+        verify(placeUtgService, never()).initializeGraph(any())
         verify(notificationService).sendCaptureCommand(TEST_KIOSK_ID)
         verify(uiExtractorManager).getUiComponents(TEST_KIOSK_ID)
         verify(paymentAgent).determineAction(llmUiList)
-        verify(utgDataService, times(2)).saveNode(any<UiDto>())
-        verify(utgDataService, times(2)).saveRel(anyString(), anyString(), any<NodeRelation>())
+        verify(graphService, times(2)).saveNode(any<UiDto>())
+        verify(graphService, times(2)).saveRel(anyString(), anyString(), any<NodeRelation>())
     }
 
     @Test
@@ -151,17 +151,17 @@ class PaymentGraphServiceTest {
             currentCategory = null,
             history = mutableListOf()
         )
-        whenever(placeGraphService.initializeGraph(any())).thenAnswer {
+        whenever(placeUtgService.initializeGraph(any())).thenAnswer {
             placeActionList.forEach { context.history.add(it) }
         }
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
         whenever(uiExtractorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
         whenever(paymentAgent.determineAction(llmUiList)).thenReturn(agentActionDto)
-        whenever(utgDataService.saveNode(any<UiDto>())).thenReturn(uiEntity).thenReturn(completeEntity)
-        doNothing().whenever(utgDataService).saveRel(anyString(), anyString(), any())
+        whenever(graphService.saveNode(any<UiDto>())).thenReturn(uiEntity).thenReturn(completeEntity)
+        doNothing().whenever(graphService).saveRel(anyString(), anyString(), any())
 
         // when: 결제 그래프 초기화 실행
-        paymentGraphService.initializeGraph(context)
+        paymentUtgService.initializeGraph(context)
 
         // then: 포장/매장 액션과 결제 액션이 모두 히스토리에 추가된다
         assertEquals(3, context.history.size)
@@ -169,12 +169,12 @@ class PaymentGraphServiceTest {
         assertEquals(placeActionList[1], context.history[1])
         assertEquals(agentActionDto, context.history[2])
 
-        verify(placeGraphService).initializeGraph(any())
+        verify(placeUtgService).initializeGraph(any())
         verify(notificationService).sendCaptureCommand(TEST_KIOSK_ID)
         verify(uiExtractorManager).getUiComponents(TEST_KIOSK_ID)
         verify(paymentAgent).determineAction(llmUiList)
-        verify(utgDataService, times(2)).saveNode(any<UiDto>())
-        verify(utgDataService, times(2)).saveRel(anyString(), anyString(), any<NodeRelation>())
+        verify(graphService, times(2)).saveNode(any<UiDto>())
+        verify(graphService, times(2)).saveRel(anyString(), anyString(), any<NodeRelation>())
     }
 
     @Test
@@ -199,11 +199,11 @@ class PaymentGraphServiceTest {
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
         whenever(uiExtractorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
         whenever(paymentAgent.determineAction(llmUiList)).thenReturn(firstAction).thenReturn(secondAction)
-        whenever(utgDataService.saveNode(any<UiDto>()))
+        whenever(graphService.saveNode(any<UiDto>()))
             .thenReturn(firstEntity)
             .thenReturn(secondEntity)
             .thenReturn(completeEntity)
-        doNothing().whenever(utgDataService).saveRel(anyString(), anyString(), any())
+        doNothing().whenever(graphService).saveRel(anyString(), anyString(), any())
 
         // when: 결제 그래프 초기화 실행
         val context = GraphContext(
@@ -214,7 +214,7 @@ class PaymentGraphServiceTest {
             currentCategory = null,
             history = mutableListOf()
         )
-        paymentGraphService.initializeGraph(context)
+        paymentUtgService.initializeGraph(context)
 
         // then: 모든 결제 단계가 히스토리에 추가되고 완료 노드가 생성된다
         assertEquals(2, context.history.size)
@@ -224,8 +224,8 @@ class PaymentGraphServiceTest {
         verify(notificationService, times(2)).sendCaptureCommand(TEST_KIOSK_ID)
         verify(uiExtractorManager, times(2)).getUiComponents(TEST_KIOSK_ID)
         verify(paymentAgent, times(2)).determineAction(llmUiList)
-        verify(utgDataService, times(3)).saveNode(any<UiDto>())
-        verify(utgDataService, times(3)).saveRel(anyString(), anyString(), any<NodeRelation>())
+        verify(graphService, times(3)).saveNode(any<UiDto>())
+        verify(graphService, times(3)).saveRel(anyString(), anyString(), any<NodeRelation>())
     }
 
     @Test
@@ -234,8 +234,8 @@ class PaymentGraphServiceTest {
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
         whenever(uiExtractorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
         whenever(paymentAgent.determineAction(llmUiList)).thenReturn(agentActionDto)
-        whenever(utgDataService.saveNode(any<UiDto>())).thenReturn(uiEntity).thenReturn(completeEntity)
-        doNothing().whenever(utgDataService).saveRel(anyString(), anyString(), any())
+        whenever(graphService.saveNode(any<UiDto>())).thenReturn(uiEntity).thenReturn(completeEntity)
+        doNothing().whenever(graphService).saveRel(anyString(), anyString(), any())
 
         // when: 결제 그래프 초기화 실행
         val context = GraphContext(
@@ -246,7 +246,7 @@ class PaymentGraphServiceTest {
             currentCategory = null,
             history = mutableListOf()
         )
-        paymentGraphService.initializeGraph(context)
+        paymentUtgService.initializeGraph(context)
 
         // then: 완료 노드가 올바른 파라미터로 생성된다
         val expectedCompleteUiDto = UiDto(
@@ -257,7 +257,7 @@ class PaymentGraphServiceTest {
         )
 
         val captor = argumentCaptor<UiDto>()
-        verify(utgDataService, times(2)).saveNode(captor.capture())
+        verify(graphService, times(2)).saveNode(captor.capture())
 
         val lastArg = captor.lastValue
         assertEquals(expectedCompleteUiDto.x, lastArg.x)
@@ -265,6 +265,6 @@ class PaymentGraphServiceTest {
         assertEquals(expectedCompleteUiDto.title, lastArg.title)
         assertEquals(expectedCompleteUiDto.kioskId, lastArg.kioskId)
 
-        verify(utgDataService, times(2)).saveRel(anyString(), anyString(), any<NodeRelation>())
+        verify(graphService, times(2)).saveRel(anyString(), anyString(), any<NodeRelation>())
     }
 }

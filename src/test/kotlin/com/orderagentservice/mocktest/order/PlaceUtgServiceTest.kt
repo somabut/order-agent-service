@@ -9,8 +9,8 @@ import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.entity.UiEntity
 import com.orderagentservice.order.service.NotificationService
-import com.orderagentservice.order.service.PlaceGraphService
-import com.orderagentservice.order.service.UtgDataService
+import com.orderagentservice.order.service.PlaceUtgService
+import com.orderagentservice.order.service.GraphService
 import com.orderagentservice.order.util.UiExtractorManager
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -23,7 +23,7 @@ import org.mockito.kotlin.*
 import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
-class PlaceGraphServiceTest {
+class PlaceUtgServiceTest {
     companion object {
         private const val TEST_KIOSK_ID = "KIOSK_123123"
         private const val TEST_LAST_NODE_ID = "NODE_123"
@@ -36,8 +36,8 @@ class PlaceGraphServiceTest {
 
     private lateinit var placeAgent: PlaceAgent
     private lateinit var notificationService: NotificationService
-    private lateinit var utgDataService: UtgDataService
-    private lateinit var placeGraphService: PlaceGraphService
+    private lateinit var graphService: GraphService
+    private lateinit var placeUtgService: PlaceUtgService
     private lateinit var uiExtractorManager: UiExtractorManager
 
     private lateinit var lastNode: UiEntity
@@ -51,9 +51,9 @@ class PlaceGraphServiceTest {
     fun setUp() {
         placeAgent = mock()
         notificationService = mock()
-        utgDataService = mock()
+        graphService = mock()
         uiExtractorManager = mock()
-        placeGraphService = PlaceGraphService(placeAgent, notificationService, uiExtractorManager, utgDataService)
+        placeUtgService = PlaceUtgService(placeAgent, notificationService, uiExtractorManager, graphService)
 
         lastNode = UiEntity(
             id = TEST_LAST_NODE_ID,
@@ -90,7 +90,7 @@ class PlaceGraphServiceTest {
             kioskId = TEST_KIOSK_ID
         )
 
-        reset(placeAgent, notificationService, utgDataService)
+        reset(placeAgent, notificationService, graphService)
     }
 
     @Test
@@ -105,19 +105,19 @@ class PlaceGraphServiceTest {
             history = mutableListOf()
         )
         whenever(placeAgent.determineAction(llmUiList)).thenReturn(successAgentActionList)
-        whenever(utgDataService.saveNode(any<UiDto>())).thenReturn(uiEntity)
-        doNothing().whenever(utgDataService).saveRel(TEST_LAST_NODE_ID, TEST_ENTITY_ID, NodeRelation.HAS_TO)
+        whenever(graphService.saveNode(any<UiDto>())).thenReturn(uiEntity)
+        doNothing().whenever(graphService).saveRel(TEST_LAST_NODE_ID, TEST_ENTITY_ID, NodeRelation.HAS_TO)
         whenever(notificationService.sendActionCommand(TEST_KIOSK_ID, TEST_COORDINATE)).thenReturn(actionResult)
 
         // when: 그래프 초기화 실행
-        placeGraphService.initializeGraph(context)
+        placeUtgService.initializeGraph(context)
 
         // then: 히스토리가 정상적으로 반환되고 관련 메서드들이 호출된다
         assertEquals(2, context.history.size)
 
         verify(placeAgent).determineAction(llmUiList)
-        verify(utgDataService, times(2)).saveNode(any())
-        verify(utgDataService, times(2)).saveRel(TEST_LAST_NODE_ID, TEST_ENTITY_ID, NodeRelation.HAS_TO)
+        verify(graphService, times(2)).saveNode(any())
+        verify(graphService, times(2)).saveRel(TEST_LAST_NODE_ID, TEST_ENTITY_ID, NodeRelation.HAS_TO)
         verify(notificationService).sendActionCommand(anyString(), any<CoordinateDto>())
     }
 
@@ -133,17 +133,17 @@ class PlaceGraphServiceTest {
             history = mutableListOf()
         )
         whenever(placeAgent.determineAction(llmUiList)).thenReturn(failAgentActionList)
-        whenever(utgDataService.saveNode(any<UiDto>())).thenReturn(uiEntity)
+        whenever(graphService.saveNode(any<UiDto>())).thenReturn(uiEntity)
 
         // when: 그래프 초기화 실행
-        placeGraphService.initializeGraph(context)
+        placeUtgService.initializeGraph(context)
 
         // then: 빈 히스토리가 반환되고 노드 생성 관련 메서드는 호출되지 않는다
         assertTrue(context.history.isEmpty())
 
         verify(placeAgent).determineAction(llmUiList)
-        verify(utgDataService, never()).saveNode(any<UiDto>())
-        verify(utgDataService, never()).saveRel(anyString(), anyString(), any())
+        verify(graphService, never()).saveNode(any<UiDto>())
+        verify(graphService, never()).saveRel(anyString(), anyString(), any())
         verify(notificationService, never()).sendActionCommand(anyString(), any<CoordinateDto>())
     }
 }

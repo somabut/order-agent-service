@@ -15,19 +15,19 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-class MenuGraphService @Autowired constructor(
-    private val placeGraphService: PlaceGraphService,
+class MenuUtgService @Autowired constructor(
+    private val placeUtgService: PlaceUtgService,
     private val backAgent: BackAgent,
     private val wordSimilarityService: WordSimilarityService,
     private val uiExtractorManager: UiExtractorManager,
     private val notificationService: NotificationService,
-    private val utgDataService: UtgDataService
-) : AbstractMenuGraphService(
+    private val graphService: GraphService
+) : AbstractMenuUtgService(
     backAgent = backAgent,
     wordSimilarityService = wordSimilarityService,
     uiExtractorManager = uiExtractorManager,
     notificationService = notificationService,
-    utgDataService = utgDataService
+    graphService = graphService
 ) {
     private val log = logger()
 
@@ -42,14 +42,14 @@ class MenuGraphService @Autowired constructor(
         setupNode(context)
 
         //포장/매장 찾기
-        placeGraphService.initializeGraph(context)
+        placeUtgService.initializeGraph(context)
 
         //루프를 돌며 메뉴들을 모두 탐색
         navigateMenus(context, menuList)
 
         //포장/매장 찾기
         if (context.isPlaceDetermined == false) {
-            placeGraphService.initializeGraph(context)
+            placeUtgService.initializeGraph(context)
         }
 
         val endTime = System.nanoTime()
@@ -72,18 +72,18 @@ class MenuGraphService @Autowired constructor(
     }
 
     private fun moveCategory(context: GraphContext, categoryMenuList: List<MenuInfoDto>) {
-        val nowNodeId = utgDataService.findRoot(context.kioskId).id
+        val nowNodeId = graphService.findRoot(context.kioskId).id
         val category = categoryMenuList[0].category
 
         //변경이 일어난 카테고리까지 이동
-        val actionList = utgDataService.findMenuPath(context.kioskId, nowNodeId, category)
+        val actionList = graphService.findMenuPath(context.kioskId, nowNodeId, category)
         for (act in actionList) {
             notificationService.sendActionCommand(context.kioskId, CoordinateDto(act.x, act.y, act.title))
         }
 
         //해당 카테고리의 메뉴 제거
         val categoryId = actionList.last().id
-        utgDataService.deleteMenusByCategory(context.kioskId, categoryId)
+        graphService.deleteMenusByCategory(context.kioskId, categoryId)
     }
 
     private fun setupNode(context: GraphContext) {
@@ -95,7 +95,7 @@ class MenuGraphService @Autowired constructor(
             kioskId = kioskId,
             title = "root"
         )
-        context.lastNodeId = utgDataService.saveNode(rootUiDto).id
+        context.lastNodeId = graphService.saveNode(rootUiDto).id
 
         val stationNode = UiDto(
             isNext = true,
@@ -103,9 +103,9 @@ class MenuGraphService @Autowired constructor(
             kioskId = kioskId,
             title = "station"
         )
-        context.stationNodeId = utgDataService.saveNode(stationNode).id
+        context.stationNodeId = graphService.saveNode(stationNode).id
 
-        utgDataService.saveRel(context.lastNodeId!!, context.stationNodeId!!, NodeRelation.PATH_TO)
+        graphService.saveRel(context.lastNodeId!!, context.stationNodeId!!, NodeRelation.PATH_TO)
     }
 
     //TODO(모달 로직 임시 비활성화)
