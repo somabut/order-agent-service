@@ -6,6 +6,7 @@ import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.agent.util.LlmManager
 import com.orderagentservice.jsonMapper
 import com.orderagentservice.logger
+import com.orderagentservice.order.exception.LlmParseException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -18,12 +19,8 @@ class PlaceAgent @Autowired constructor(
     fun determineAction(uiList: List<UiComponentDto>): List<AgentActionDto> {
         val prompt = getPrompt(uiList)
         val json = llmManager.query(prompt)
-        try {
-            val response: List<AgentActionDto> = jsonMapper.readValue<List<AgentActionDto>>(json)
-            return response
-        } catch (e: RuntimeException) {
-            determineAction(uiList)
-        }
+        val response: List<AgentActionDto> = jsonMapper.readValue<List<AgentActionDto>>(json)
+        return response
     }
 
     private fun getPrompt(uiList: List<UiComponentDto>): String {
