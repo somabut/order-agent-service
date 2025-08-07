@@ -1,7 +1,7 @@
 package com.orderagentservice.agent
 
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.orderagentservice.agent.model.dto.LlmUiComponentDto
+import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.util.LlmManager
 import com.orderagentservice.jsonMapper
@@ -17,7 +17,7 @@ class MenuAgent @Autowired constructor(
 ) {
     private val log = logger()
 
-    fun determineAction(menuDto: MenuInfoDto, uiList: List<LlmUiComponentDto>): AgentActionDto {
+    fun determineAction(menuDto: MenuInfoDto, uiList: List<UiComponentDto>): AgentActionDto {
         val prompt = getPrompt(menuDto, uiList)
         val json = llmManager.query(prompt)
         try {
@@ -32,7 +32,7 @@ class MenuAgent @Autowired constructor(
         }
     }
 
-    private fun getPrompt(menuDto: MenuInfoDto, uiList: List<LlmUiComponentDto>): String {
+    private fun getPrompt(menuDto: MenuInfoDto, uiList: List<UiComponentDto>): String {
         val prompt = """
             You are an expert who looks at the UI list and determines if there is a UI for a given input.
             input is information that you need to click to order food.

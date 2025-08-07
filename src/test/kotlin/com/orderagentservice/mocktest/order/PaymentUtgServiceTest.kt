@@ -2,7 +2,7 @@ package com.orderagentservice.mocktest.order
 
 import com.orderagentservice.agent.PaymentAgent
 import com.orderagentservice.agent.model.dto.AgentActionDto
-import com.orderagentservice.agent.model.dto.LlmUiComponentDto
+import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.NodeRelation
 import com.orderagentservice.order.model.dto.UiDto
@@ -45,7 +45,7 @@ class PaymentUtgServiceTest {
     private lateinit var paymentUtgService: PaymentUtgService
 
     private lateinit var lastNode: UiEntity
-    private lateinit var llmUiList: MutableList<LlmUiComponentDto>
+    private lateinit var llmUiList: MutableList<UiComponentDto>
     private lateinit var agentActionDto: AgentActionDto
     private lateinit var uiEntity: UiEntity
     private lateinit var completeEntity: UiEntity
@@ -72,7 +72,7 @@ class PaymentUtgServiceTest {
         )
 
         llmUiList = mutableListOf(
-            LlmUiComponentDto(
+            UiComponentDto(
                 x = TEST_X_COORDINATE, y = TEST_X_COORDINATE, title = TEST_TITLE
             )
         )

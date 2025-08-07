@@ -1,6 +1,6 @@
 package com.orderagentservice.global.service
 
-import com.orderagentservice.agent.model.dto.LlmUiComponentDto
+import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.model.dto.WordMatchDto
 import jep.JepConfig
 import jep.SharedInterpreter
@@ -27,7 +27,7 @@ class WordSimilarityService {
         }
     }
 
-    fun findBestMatch(targetWord: String, uiList: List<LlmUiComponentDto>): WordMatchDto {
+    fun findBestMatch(targetWord: String, uiList: List<UiComponentDto>): WordMatchDto {
         return load { jep ->
             val candidates = uiList.map { listOf(it.x, it.y, it.title) }
             jep.set("candidates", candidates)
@@ -43,7 +43,7 @@ class WordSimilarityService {
         }
     }
 
-    fun determinePage(sourceList: List<String>, uiList: List<LlmUiComponentDto>): Boolean {
+    fun determinePage(sourceList: List<String>, uiList: List<UiComponentDto>): Boolean {
         return load { jep ->
             val pageList = uiList.map { it.title }
             jep.set("need_list", sourceList)

@@ -2,7 +2,7 @@ package com.orderagentservice.order.service
 
 import com.orderagentservice.agent.BackAgent
 import com.orderagentservice.agent.model.dto.AgentBackDto
-import com.orderagentservice.agent.model.dto.LlmUiComponentDto
+import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.model.dto.WordMatchDto
 import com.orderagentservice.global.service.WordSimilarityService
 import com.orderagentservice.logger
@@ -14,7 +14,7 @@ import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.entity.UiEntity
 import com.orderagentservice.order.util.UiExtractorManager
 
-abstract class  AbstractMenuUtgService (
+abstract class AbstractMenuUtgService (
     private val backAgent: BackAgent,
     private val wordSimilarityService: WordSimilarityService,
     private val uiExtractorManager: UiExtractorManager,
@@ -51,7 +51,7 @@ abstract class  AbstractMenuUtgService (
     private fun selectCategory(
         context: GraphContext,
         menuDto: MenuInfoDto,
-        llmUiList: List<LlmUiComponentDto>
+        llmUiList: List<UiComponentDto>
     ) {
         val coordinate = wordSimilarityService.findBestMatch(menuDto.category, llmUiList)
             .toCoordinateDto(menuDto.category)
@@ -68,7 +68,7 @@ abstract class  AbstractMenuUtgService (
     private fun selectMenu(
         context: GraphContext,
         menuDto: MenuInfoDto,
-        llmUiList: List<LlmUiComponentDto>
+        llmUiList: List<UiComponentDto>
     ): String {
         val coordinate = wordSimilarityService.findBestMatch(menuDto.title, llmUiList)
             .toCoordinateDto(menuDto.title)
@@ -206,7 +206,7 @@ abstract class  AbstractMenuUtgService (
         context: GraphContext,
         menuDto: MenuInfoDto,
         menuNodeId: String,
-        menuPageList: List<LlmUiComponentDto>
+        menuPageList: List<UiComponentDto>
     ) {
         //현재 메뉴를 일단 클릭한 상황
         var nodeId = menuNodeId
@@ -249,7 +249,7 @@ abstract class  AbstractMenuUtgService (
         context: GraphContext,
         menuDto: MenuInfoDto,
         menuNodeId: String,
-        uiList: List<LlmUiComponentDto>
+        uiList: List<UiComponentDto>
     ): String {
         //메뉴를 다시 선택해야 할 수도 있으므로 클릭
         var nodeId = menuNodeId
@@ -270,14 +270,14 @@ abstract class  AbstractMenuUtgService (
         return nodeId
     }
 
-    private fun checkMenuPage(menuPageList: List<LlmUiComponentDto>, uiList: List<LlmUiComponentDto>): Boolean {
+    private fun checkMenuPage(menuPageList: List<UiComponentDto>, uiList: List<UiComponentDto>): Boolean {
         val sourceList = menuPageList.map { it.title }
 
         val result = wordSimilarityService.determinePage(sourceList, uiList)
         return result
     }
 
-    private fun checkOptionPage(optionList: List<String>, uiList: List<LlmUiComponentDto>): Boolean {
+    private fun checkOptionPage(optionList: List<String>, uiList: List<UiComponentDto>): Boolean {
         val result = wordSimilarityService.determinePage(optionList, uiList)
         return result
     }

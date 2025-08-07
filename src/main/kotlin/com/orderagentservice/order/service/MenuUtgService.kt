@@ -1,7 +1,7 @@
 package com.orderagentservice.order.service
 
 import com.orderagentservice.agent.BackAgent
-import com.orderagentservice.agent.model.dto.LlmUiComponentDto
+import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.service.WordSimilarityService
 import com.orderagentservice.logger
 import com.orderagentservice.order.model.GraphContext
@@ -113,7 +113,7 @@ class MenuUtgService @Autowired constructor(
         graphService.saveRel(context.lastNodeId!!, context.stationNodeId!!, NodeRelation.PATH_TO)
     }
 
-    private fun removeDuplicate(sourceList: List<LlmUiComponentDto>, targetList: MutableList<LlmUiComponentDto>) {
+    private fun removeDuplicate(sourceList: List<UiComponentDto>, targetList: MutableList<UiComponentDto>) {
         for (addEle in sourceList) {
             val stripAddEle = addEle.title.replace(" ", "")
             for (ele in targetList) {

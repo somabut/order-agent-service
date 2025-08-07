@@ -1,11 +1,11 @@
 package com.orderagentservice.order.util
 
-import com.orderagentservice.agent.model.dto.LlmUiComponentDto
+import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.model.response.ApiResponse
 import com.orderagentservice.logger
 import com.orderagentservice.order.exception.UiExtractException
-import com.orderagentservice.order.model.dto.OmniUiComponentDto
-import com.orderagentservice.order.model.response.OmniResponse
+import com.orderagentservice.order.model.dto.DetectorUiComponentDto
+import com.orderagentservice.order.model.response.DetectorResponse
 import com.orderagentservice.order.service.NotificationService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.ParameterizedTypeReference
@@ -19,10 +19,6 @@ import org.springframework.stereotype.Component
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.client.RestTemplate
 import java.io.File
-import java.io.FileInputStream
-import java.nio.file.Files
-import java.util.*
-import kotlin.collections.HashMap
 
 
 @Component
@@ -33,12 +29,11 @@ class UiExtractorManager @Autowired constructor(
     private val log = logger()
 
     private val UI_EXCTRACTOR_HOST = env.getProperty("ui-extractor.host")
-    private val UI_EXCTRACTOR_PORT = env.getProperty("ui-extractor.port")
     private val UI_EXTRACTOR_API_KEY = env.getProperty("ui-extractor.api-key")!!
 
-    private fun queryUiExtractor(image: File): List<OmniUiComponentDto> {
+    fun queryUiExtractor(image: File): List<DetectorUiComponentDto> {
         val restTemplate = RestTemplate()
-        val url = "$UI_EXCTRACTOR_HOST/api/extract-ui"
+        val url = "$UI_EXCTRACTOR_HOST/v2/extract-ui"
 
         val fileContent = FileSystemResource(image)
 
@@ -56,9 +51,9 @@ class UiExtractorManager @Autowired constructor(
                 url,
                 HttpMethod.POST,
                 requestEntity,
-                object : ParameterizedTypeReference<ApiResponse<OmniResponse>>() {}
+                object : ParameterizedTypeReference<ApiResponse<DetectorResponse>>() {}
             )
-            val response: ApiResponse<OmniResponse> = responseEntity.body!!
+            val response: ApiResponse<DetectorResponse> = responseEntity.body!!
             val uiComponents = response.data!!.uiComponents
             return uiComponents
         } catch (e: RuntimeException) {
@@ -66,25 +61,23 @@ class UiExtractorManager @Autowired constructor(
         }
     }
 
-    fun getUiComponents(kioskId: String): MutableList<LlmUiComponentDto> {
+    fun getUiComponents(kioskId: String): MutableList<UiComponentDto> {
         //ui extractor에게 이미지 파싱 요청
         val image = notificationService.sendCaptureCommand(kioskId)
         val uiComponents = queryUiExtractor(image)
 
         //옴니파서에게 받은 이미지 적절히 변환
-        val llmUiList = mutableListOf<LlmUiComponentDto>()
+        val llmUiList = mutableListOf<UiComponentDto>()
         for (ele in uiComponents) {
-            val width = ele.bbox.width
-            val height = ele.bbox.height
             var title = ""
             for (str in ele.contents) {
                 title += str
             }
 
-            val pixelCoordinate = ele.bbox.coordinate.toPixel(width, height)
+            val pixelCoordinate = ele.bbox.coordinate
             val cord = pixelCoordinate.getCenter()
             llmUiList.add(
-                LlmUiComponentDto(
+                UiComponentDto(
                 x = cord.first,
                 y = cord.second,
                 title = title

@@ -2,7 +2,7 @@ package com.orderagentservice.mocktest.order
 
 import com.orderagentservice.agent.PlaceAgent
 import com.orderagentservice.agent.model.dto.AgentActionDto
-import com.orderagentservice.agent.model.dto.LlmUiComponentDto
+import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.NodeRelation
 import com.orderagentservice.order.model.dto.CoordinateDto
@@ -41,7 +41,7 @@ class PlaceUtgServiceTest {
     private lateinit var uiExtractorManager: UiExtractorManager
 
     private lateinit var lastNode: UiEntity
-    private lateinit var llmUiList: List<LlmUiComponentDto>
+    private lateinit var llmUiList: List<UiComponentDto>
     private lateinit var uiEntity: UiEntity
     private lateinit var successAgentActionList: List<AgentActionDto>
     private lateinit var failAgentActionList: List<AgentActionDto>
@@ -64,7 +64,7 @@ class PlaceUtgServiceTest {
         )
 
         llmUiList = listOf(
-            LlmUiComponentDto(x = TEST_X_COORDINATE, y = TEST_X_COORDINATE, title = TEST_TITLE)
+            UiComponentDto(x = TEST_X_COORDINATE, y = TEST_X_COORDINATE, title = TEST_TITLE)
         )
 
         successAgentActionList = listOf(

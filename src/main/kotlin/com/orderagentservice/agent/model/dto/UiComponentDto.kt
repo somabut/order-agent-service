@@ -1,6 +1,6 @@
 package com.orderagentservice.agent.model.dto
 
-data class LlmUiComponentDto(
+data class UiComponentDto(
     val x: Int,
     val y: Int,
     val title: String
