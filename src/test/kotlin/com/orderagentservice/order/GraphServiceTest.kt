@@ -135,7 +135,7 @@ class GraphServiceTest @Autowired constructor(
     @Test
     fun `저장된 노드에서 특정 노드까지 경로를 찾는다`() {
         //when: 경로를 찾는다
-        val path = graphService.findMenuPath(testKioskId, "면", "콜라")
+        val path = graphService.findPath(testKioskId, "면", "콜라")
 
         //then: 올바른 경로가 반환된다
         assertThat(path[0].title).isEqualTo("음료")

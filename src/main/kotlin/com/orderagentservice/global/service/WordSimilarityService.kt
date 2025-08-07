@@ -2,7 +2,6 @@ package com.orderagentservice.global.service
 
 import com.orderagentservice.agent.model.dto.LlmUiComponentDto
 import com.orderagentservice.global.model.dto.WordMatchDto
-import jakarta.annotation.PreDestroy
 import jep.JepConfig
 import jep.SharedInterpreter
 import org.springframework.stereotype.Service
@@ -16,20 +15,20 @@ class WordSimilarityService {
         SharedInterpreter.setConfig(config)
     }
 
-    fun findBestMatch(targetWord: String, uiList: List<LlmUiComponentDto>): WordMatchDto {
-//        val config = JepConfig()
-//            .addIncludePaths("/venv/lib/python3.11/site-packages")
-//            .addIncludePaths("/")
-//        SharedInterpreter.setConfig(config)
-
-        SharedInterpreter().use { jep ->
+    private fun <T> load(block: (SharedInterpreter) -> T): T {
+        return SharedInterpreter().use { jep ->
             jep.eval("import sys")
             jep.eval("sys.path.append('/')")
             jep.eval("import numpy")
             jep.eval("import sklearn")
             jep.eval("from word_compare import KoreanSimilarityCalculator")
             jep.eval("calculator = KoreanSimilarityCalculator()")
+            block(jep)
+        }
+    }
 
+    fun findBestMatch(targetWord: String, uiList: List<LlmUiComponentDto>): WordMatchDto {
+        return load { jep ->
             val candidates = uiList.map { listOf(it.x, it.y, it.title) }
             jep.set("candidates", candidates)
             jep.eval("result = calculator.find_best_match('$targetWord', candidates)")
@@ -40,7 +39,19 @@ class WordSimilarityService {
             val word = resultMap["word"] as String
             val score = (resultMap["score"] as Number).toDouble()
 
-            return WordMatchDto(x, y, word, score)
+            WordMatchDto(x, y, word, score)
+        }
+    }
+
+    fun determinePage(sourceList: List<String>, uiList: List<LlmUiComponentDto>): Boolean {
+        return load { jep ->
+            val pageList = uiList.map { it.title }
+            jep.set("need_list", sourceList)
+            jep.set("page_list", pageList)
+            jep.eval("result = calculator.determine_page(need_list, page_list)")
+
+            val result = (jep.getValue("result", Any::class.java) as Number).toInt()
+            result != 0
         }
     }
 }

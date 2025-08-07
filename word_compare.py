@@ -24,30 +24,24 @@ class KoreanSimilarityCalculator:
         """
         초기화
 
+
         Args:
-            similarity_threshold: 유사성 판단을 위한 기본 임계값
+        similarity_threshold: 유사성 판단을 위한 기본 임계값
         """
         self.similarity_threshold = similarity_threshold
 
         # 각 유사도 계산기 초기화
         self.calculators = {
             'levenshtein': LevenshteinSimilarity(),
-            'difflib': DifflibSimilarity(),
             'jamo': JamoSimilarity(),
-            'ngram': NGramSimilarity(),
-            'jaccard': JaccardSimilarity()
         }
 
-        # 종합 유사도 계산용 가중치
         self.default_weights = {
-            'levenshtein': 0.2,
-            'difflib': 0.175,
-            'ngram': 0.2,
-            'jaccard': 0.175,
-            'jamo': 0.25
+             'levenshtein': 0.2,
+             'jamo': 0.8
         }
 
-    def calculate_all_similarities(self, word1: str, word2: str) -> dict[str, float]:
+    def _calculate_all_similarities(self, word1: str, word2: str) -> dict[str, float]:
         """모든 유사도 방법으로 계산"""
         similarities = {}
 
@@ -56,13 +50,15 @@ class KoreanSimilarityCalculator:
 
         return similarities
 
-    def calculate_hybrid_similarity(self, word1: str, word2: str,
+    def _calculate_hybrid_similarity(self, word1: str, word2: str,
                                     weights: Optional[dict[str, float]] = None) -> float:
         """가중 평균을 이용한 종합 유사도 계산"""
         if weights is None:
             weights = self.default_weights
 
-        similarities = self.calculate_all_similarities(word1, word2)
+        word1 = word1.replace(" ", "")
+        word2 = word2.replace(" ", "")
+        similarities = self._calculate_all_similarities(word1, word2)
 
         # 가중 평균 계산
         weighted_score = sum(similarities[key] * weights.get(key, 0)
@@ -70,7 +66,7 @@ class KoreanSimilarityCalculator:
 
         return weighted_score
 
-    def find_best_match(self, target_word: str, candidate_words: list[tuple[int, int, str]]) -> dict:
+    def find_best_match(self, target_word: str, candidate_words: list[tuple[int, int, str, float]]) -> dict:
         """
         주어진 단어 리스트에서 가장 유사도 점수가 높은 단어 하나를 반환
 
@@ -90,7 +86,7 @@ class KoreanSimilarityCalculator:
         best_x, best_y = -1, -1
 
         for x, y, title in candidate_words:
-            score = self.calculate_hybrid_similarity(target_word, title)
+            score = self._calculate_hybrid_similarity(target_word, title)
 
             if score > best_score:
                 best_score = score
@@ -104,3 +100,18 @@ class KoreanSimilarityCalculator:
             "score": best_score
         }
         return best_x, best_y, best_word, best_score
+
+    def determine_page(self, need_list: list[str], page_list: list[str]) -> int:
+        if not need_list:
+            return 0
+
+        candidates = [(-1, -1, title) for title in page_list]
+        count = 0
+        for need in need_list:
+            result = self.find_best_match(need, candidates)
+            score = result["score"]
+
+            if score >= 0.7:
+                count += 1
+
+        return int(float(count) / len(need_list) >= 0.8)

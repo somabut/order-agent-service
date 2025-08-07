@@ -3,6 +3,7 @@ package com.orderagentservice.order.service
 import com.orderagentservice.agent.BackAgent
 import com.orderagentservice.agent.model.dto.AgentBackDto
 import com.orderagentservice.agent.model.dto.LlmUiComponentDto
+import com.orderagentservice.global.model.dto.WordMatchDto
 import com.orderagentservice.global.service.WordSimilarityService
 import com.orderagentservice.logger
 import com.orderagentservice.order.model.GraphContext
@@ -13,7 +14,7 @@ import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.entity.UiEntity
 import com.orderagentservice.order.util.UiExtractorManager
 
-abstract class AbstractMenuUtgService (
+abstract class  AbstractMenuUtgService (
     private val backAgent: BackAgent,
     private val wordSimilarityService: WordSimilarityService,
     private val uiExtractorManager: UiExtractorManager,
@@ -32,13 +33,15 @@ abstract class AbstractMenuUtgService (
             }
 
             log.info("진행 중인 메뉴: ${menuDto.title}, 카테고리: ${menuDto.category}")
-            val menuNode = selectMenu(context, menuDto, uiList)
+            val menuNodeId = selectMenu(context, menuDto, uiList)
 
-            //옵션 선택
-            if (menuDto.options.isNotEmpty()) {
-                selectOption(menuDto, menuNode, context)
-            }
-            selectBack(menuNode, context)
+            //모달 처리
+            handleModal(
+                context = context,
+                menuDto = menuDto,
+                menuNodeId = menuNodeId,
+                menuPageList = uiList
+            )
         }
 
         //마지막 노드를 station으로 변경
@@ -66,7 +69,7 @@ abstract class AbstractMenuUtgService (
         context: GraphContext,
         menuDto: MenuInfoDto,
         llmUiList: List<LlmUiComponentDto>
-    ): UiEntity {
+    ): String {
         val coordinate = wordSimilarityService.findBestMatch(menuDto.title, llmUiList)
             .toCoordinateDto(menuDto.title)
 
@@ -76,12 +79,12 @@ abstract class AbstractMenuUtgService (
         //현재 메뉴 좌표 클릭
         notificationService.sendActionCommand(context.kioskId, CoordinateDto(coordinate.x, coordinate.y, coordinate.title))
 
-        return node
+        return node.id
     }
 
     private fun selectOption(
         menuDto: MenuInfoDto,
-        menuNode: UiEntity,
+        menuNodeId: String,
         context: GraphContext
     ) {
         //메뉴의 옵션 노드 추가
@@ -93,11 +96,11 @@ abstract class AbstractMenuUtgService (
                 .toCoordinateDto(opt)
 
             //노드 생성
-            createOptionNode(coordinate, menuNode, context)
+            createOptionNode(coordinate, menuNodeId, context)
         }
     }
 
-    private fun selectBack(menuNode: UiEntity, context: GraphContext) {
+    private fun selectBack(menuNodeId: String, context: GraphContext): String {
         val kioskId = context.kioskId
         val llmOptList = uiExtractorManager.getUiComponents(kioskId)
 
@@ -105,11 +108,13 @@ abstract class AbstractMenuUtgService (
         val backAction = backAgent.determineBack(llmOptList)
 
         //노드 생성
-        createBackNode(backAction, menuNode, context)
+        val backNodeId = createBackNode(backAction, menuNodeId, context)
 
         //sse를 통해 클라이언트에게 원래 페이지로 돌아가는 좌표 클릭하도록 하기
         log.info("돌아가는 좌표를 클릭중입니다. 좌표: ${backAction.coordinate}")
         notificationService.sendActionCommand(kioskId, CoordinateDto(backAction.coordinate[0], backAction.coordinate[1], backAction.title))
+
+        return backNodeId
     }
 
     private fun createCategoryNode(coordinate: CoordinateDto, context: GraphContext): UiEntity {
@@ -146,7 +151,7 @@ abstract class AbstractMenuUtgService (
 
     private fun createOptionNode(
         coordinate: CoordinateDto,
-        menuNode: UiEntity,
+        menuNodeId: String,
         context: GraphContext
     ) {
         log.info("옵션 노드를 생성합니다. go_next: false, coordinate: [${coordinate.x}, ${coordinate.y}], title: ${coordinate.title}")
@@ -157,14 +162,14 @@ abstract class AbstractMenuUtgService (
             title = coordinate.title,
             kioskId = context.kioskId
         ))
-        graphService.saveRel(menuNode.id, optEntity.id, NodeRelation.OPT_TO)
+        graphService.saveRel(menuNodeId, optEntity.id, NodeRelation.OPT_TO)
     }
 
     private fun createBackNode(
         action: AgentBackDto,
-        menuNode: UiEntity,
+        menuNodeId: String,
         context: GraphContext
-    ) {
+    ): String {
         val backEntity = graphService.saveNode(
             UiDto(
             isNext = false,
@@ -172,7 +177,108 @@ abstract class AbstractMenuUtgService (
             title = action.title,
             kioskId = context.kioskId
         ))
-        graphService.saveRel(menuNode.id, backEntity.id, NodeRelation.BACK_TO)
-        graphService.saveRel(backEntity.id, context.lastNodeId!!, NodeRelation.BACK_TO)
+        graphService.saveRel(menuNodeId, backEntity.id, NodeRelation.BACK_TO)
+//        graphService.saveRel(backEntity.id, context.lastNodeId!!, NodeRelation.BACK_TO)
+
+        return backEntity.id
+    }
+
+    private fun createModalNode(
+        context: GraphContext,
+        matchDto: WordMatchDto,
+        menuDto: MenuInfoDto,
+        menuNodeId: String
+    ): String {
+        graphService.changeTitle(menuNodeId, context.kioskId, "modal:${menuDto.title}")
+        val node = graphService.saveNode(
+            UiDto(
+                isNext = true, kioskId = context.kioskId,
+                x = matchDto.x, y = matchDto.y,
+                title = menuDto.title
+            )
+        )
+        graphService.saveRel(menuNodeId, node.id, NodeRelation.HAS_TO)
+
+        return node.id
+    }
+
+    private fun handleModal(
+        context: GraphContext,
+        menuDto: MenuInfoDto,
+        menuNodeId: String,
+        menuPageList: List<LlmUiComponentDto>
+    ) {
+        //현재 메뉴를 일단 클릭한 상황
+        var nodeId = menuNodeId
+        var uiList = uiExtractorManager.getUiComponents(context.kioskId)
+
+        if (menuDto.options.isEmpty()) {
+            //옵션이 없는 경우
+            if (checkMenuPage(menuPageList, uiList) == false) {
+                nodeId = selectModal(
+                    context = context,
+                    menuDto = menuDto,
+                    menuNodeId = menuNodeId,
+                    uiList = uiList
+                )
+            }
+            graphService.saveRel(nodeId, context.lastNodeId!!, NodeRelation.BACK_TO)
+        } else {
+            //옵션이 있는 경우
+            if (checkOptionPage(menuDto.options, uiList) == false) {
+                nodeId = selectModal(
+                    context = context,
+                    menuDto = menuDto,
+                    menuNodeId = menuNodeId,
+                    uiList = uiList
+                )
+            }
+
+            //옵션으로 왔으므로 옵션선택
+            selectOption(menuDto, nodeId, context)
+
+            //옵션을 선택하고 원래 페이지도 이동
+            while (checkMenuPage(menuPageList, uiList) == false) {
+                nodeId = selectBack(nodeId, context)
+            }
+            graphService.saveRel(nodeId, context.lastNodeId!!, NodeRelation.BACK_TO)
+        }
+    }
+
+    private fun selectModal(
+        context: GraphContext,
+        menuDto: MenuInfoDto,
+        menuNodeId: String,
+        uiList: List<LlmUiComponentDto>
+    ): String {
+        //메뉴를 다시 선택해야 할 수도 있으므로 클릭
+        var nodeId = menuNodeId
+        val matchDto = wordSimilarityService.findBestMatch(menuDto.title, uiList)
+        notificationService.sendActionCommand(context.kioskId, CoordinateDto(x = matchDto.x, y = matchDto.y, title = matchDto.title))
+
+        //노드명 변경
+        nodeId = createModalNode(
+            context = context,
+            matchDto = matchDto,
+            menuDto = menuDto,
+            menuNodeId = nodeId
+        )
+
+        //다음으로 이동
+        nodeId = selectBack(nodeId, context)
+
+        return nodeId
+    }
+
+    private fun checkMenuPage(menuPageList: List<LlmUiComponentDto>, uiList: List<LlmUiComponentDto>): Boolean {
+        val sourceList = menuPageList.map { it.title }
+
+        val result = wordSimilarityService.determinePage(sourceList, uiList)
+        return result
+    }
+
+    private fun checkOptionPage(optionList: List<String>, uiList: List<LlmUiComponentDto>): Boolean {
+        val result = wordSimilarityService.determinePage(optionList, uiList)
+        return result
     }
 }

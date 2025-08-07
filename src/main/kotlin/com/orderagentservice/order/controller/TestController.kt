@@ -52,4 +52,23 @@ class TestController @Autowired constructor(
 
         return wordSimilarityService.findBestMatch(target, optUiList)
     }
+
+    @GetMapping("/test/determine")
+    fun determineWord(): Boolean {
+        val sourceList = listOf(
+            "크리스퍼 클래식",
+            "통모짜와퍼세트",
+            "BBQ 통모짜와퍼",
+        )
+        val uiList = listOf(
+            LlmUiComponentDto(x = -1, y = -1, title = "통모짜와퍼"),
+            LlmUiComponentDto(x = -1, y = -1, title = "코카콜라"),
+            LlmUiComponentDto(x = -1, y = -1, title = "프렌치프라이"),
+            LlmUiComponentDto(x = -1, y = -1, title = "카트담기"),
+            LlmUiComponentDto(x = -1, y = -1, title = "크리스퍼클래식"),
+            LlmUiComponentDto(x = -1, y = -1, title = "취소"),
+        )
+
+        return wordSimilarityService.determinePage(sourceList, uiList)
+    }
 }

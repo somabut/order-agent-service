@@ -14,7 +14,6 @@ import com.orderagentservice.order.service.AutoOrderService
 import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.GraphService
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -137,11 +136,11 @@ class AutoOrderServiceTest {
     @Test
     fun `자동주문이_정상적으로_완료된다`() {
         // given: 정상적인 주문 요청과 Mock 설정
-        whenever(graphService.findMenuPath(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_MENU_TITLE)).thenReturn(mockPathList)
+        whenever(graphService.findPath(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_MENU_TITLE)).thenReturn(mockPathList)
         whenever(graphService.findOption(TEST_KIOSK_ID, TEST_MENU_ID, TEST_OPTION_TITLE)).thenReturn(mockOpt)
         whenever(graphService.findBackPath(TEST_KIOSK_ID, TEST_MENU_ID)).thenReturn(mockBackPathList)
         whenever(graphService.findCategoryNodeId(TEST_KIOSK_ID, TEST_MENU_ID)).thenReturn(TEST_CATEGORY_ID)
-        whenever(graphService.findMenuPath(TEST_KIOSK_ID, TEST_CATEGORY_ID, TEST_COMPLETE_TITLE)).thenReturn(mockPathList)
+        whenever(graphService.findPath(TEST_KIOSK_ID, TEST_CATEGORY_ID, TEST_COMPLETE_TITLE)).thenReturn(mockPathList)
         whenever(graphService.findRoot(TEST_KIOSK_ID)).thenReturn(mockRoot)
         doNothing().whenever(globalLogger).loggingOrderStart(TEST_KIOSK_ID, TEST_TASK_ID)
         doNothing().whenever(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), any(), any(), eq(TEST_PAYMENT_CARD), eq(TEST_TASK_ID))
@@ -161,7 +160,7 @@ class AutoOrderServiceTest {
         assertEquals(TEST_MENU_TITLE, capturedCoordinates[0].title)
         assertEquals(TEST_OPTION_TITLE, capturedCoordinates[2].title)
 
-        verify(graphService).findMenuPath(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_MENU_TITLE)
+        verify(graphService).findPath(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_MENU_TITLE)
         verify(graphService).findOption(TEST_KIOSK_ID, TEST_MENU_ID, TEST_OPTION_TITLE)
         verify(graphService).findBackPath(TEST_KIOSK_ID, TEST_MENU_ID)
     }
@@ -186,10 +185,10 @@ class AutoOrderServiceTest {
             ActionPathDto(title = TEST_MENU_TITLE_2, id = TEST_MENU_ID, x = TEST_X_COORDINATE, y = TEST_Y_COORDINATE),
         )
 
-        whenever(graphService.findMenuPath(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_MENU_TITLE_2)).thenReturn(mockTakeoutActionList)
+        whenever(graphService.findPath(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_MENU_TITLE_2)).thenReturn(mockTakeoutActionList)
         whenever(graphService.findPlace(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_PLACE_TAKEOUT)).thenReturn(mockTakePlace)
         whenever(graphService.findCategoryNodeId(TEST_KIOSK_ID, TEST_MENU_ID)).thenReturn(TEST_CATEGORY_ID)
-        whenever(graphService.findMenuPath(TEST_KIOSK_ID, TEST_CATEGORY_ID, TEST_COMPLETE_TITLE)).thenReturn(
+        whenever(graphService.findPath(TEST_KIOSK_ID, TEST_CATEGORY_ID, TEST_COMPLETE_TITLE)).thenReturn(
             listOf(ActionPathDto(id = TEST_COMPLETE_ID, x = TEST_X_COORDINATE_3, y = TEST_Y_COORDINATE_3, title = TEST_COMPLETE_TITLE))
         )
         whenever(graphService.findRoot(TEST_KIOSK_ID)).thenReturn(mockRoot)
@@ -231,11 +230,11 @@ class AutoOrderServiceTest {
         val mockActionList1 = listOf(ActionPathDto(id = TEST_MENU_ID, x = TEST_X_COORDINATE, y = TEST_Y_COORDINATE, title = TEST_MENU_TITLE))
         val mockActionList2 = listOf(ActionPathDto(id = TEST_MENU_ID_2, x = TEST_X_COORDINATE_2, y = TEST_Y_COORDINATE_2, title = TEST_MENU_TITLE_3))
 
-        whenever(graphService.findMenuPath(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_MENU_TITLE)).thenReturn(mockActionList1)
-        whenever(graphService.findMenuPath(TEST_KIOSK_ID, TEST_CATEGORY_ID, TEST_MENU_TITLE_3)).thenReturn(mockActionList2)
+        whenever(graphService.findPath(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_MENU_TITLE)).thenReturn(mockActionList1)
+        whenever(graphService.findPath(TEST_KIOSK_ID, TEST_CATEGORY_ID, TEST_MENU_TITLE_3)).thenReturn(mockActionList2)
         whenever(graphService.findCategoryNodeId(TEST_KIOSK_ID, TEST_MENU_ID)).thenReturn(TEST_CATEGORY_ID)
         whenever(graphService.findCategoryNodeId(TEST_KIOSK_ID, TEST_MENU_ID_2)).thenReturn(TEST_CATEGORY_ID_2)
-        whenever(graphService.findMenuPath(TEST_KIOSK_ID, TEST_CATEGORY_ID_2, TEST_COMPLETE_TITLE)).thenReturn(
+        whenever(graphService.findPath(TEST_KIOSK_ID, TEST_CATEGORY_ID_2, TEST_COMPLETE_TITLE)).thenReturn(
             listOf(ActionPathDto(id = TEST_COMPLETE_ID, x = TEST_X_COORDINATE_3, y = TEST_Y_COORDINATE_3, title = TEST_COMPLETE_TITLE))
         )
         whenever(graphService.findRoot(TEST_KIOSK_ID)).thenReturn(mockRoot)
@@ -246,8 +245,8 @@ class AutoOrderServiceTest {
         autoOrderService.order(TEST_KIOSK_ID, TEST_TASK_ID, multiMenuOrderRequest)
 
         // then: 각 메뉴가 개별적으로 처리되고 결과에 2개 메뉴가 포함된다
-        verify(graphService).findMenuPath(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_MENU_TITLE)
-        verify(graphService).findMenuPath(TEST_KIOSK_ID, TEST_CATEGORY_ID, TEST_MENU_TITLE_3)
+        verify(graphService).findPath(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_MENU_TITLE)
+        verify(graphService).findPath(TEST_KIOSK_ID, TEST_CATEGORY_ID, TEST_MENU_TITLE_3)
         verify(notificationService).sendActionCommand(TEST_KIOSK_ID, CoordinateDto(TEST_X_COORDINATE, TEST_Y_COORDINATE, TEST_MENU_TITLE))
         verify(notificationService).sendActionCommand(TEST_KIOSK_ID, CoordinateDto(TEST_X_COORDINATE_2, TEST_Y_COORDINATE_2, TEST_MENU_TITLE_3))
 
@@ -258,11 +257,11 @@ class AutoOrderServiceTest {
     @Test
     fun `옵션이_있는_메뉴_주문시_옵션_선택_후_뒤로가기한다`() {
         // given: 옵션이 있는 메뉴 주문 요청
-        whenever(graphService.findMenuPath(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_MENU_TITLE)).thenReturn(mockPathList)
+        whenever(graphService.findPath(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_MENU_TITLE)).thenReturn(mockPathList)
         whenever(graphService.findOption(TEST_KIOSK_ID, TEST_MENU_ID, TEST_OPTION_TITLE)).thenReturn(mockOpt)
         whenever(graphService.findBackPath(TEST_KIOSK_ID, TEST_MENU_ID)).thenReturn(mockBackPathList)
         whenever(graphService.findCategoryNodeId(TEST_KIOSK_ID, TEST_MENU_ID)).thenReturn(TEST_CATEGORY_ID)
-        whenever(graphService.findMenuPath(TEST_KIOSK_ID, TEST_CATEGORY_ID, TEST_COMPLETE_TITLE)).thenReturn(
+        whenever(graphService.findPath(TEST_KIOSK_ID, TEST_CATEGORY_ID, TEST_COMPLETE_TITLE)).thenReturn(
             listOf(ActionPathDto(id = TEST_COMPLETE_ID, x = TEST_X_COORDINATE_3, y = TEST_Y_COORDINATE_3, title = TEST_COMPLETE_TITLE))
         )
         whenever(graphService.findRoot(TEST_KIOSK_ID)).thenReturn(mockRoot)
