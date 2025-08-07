@@ -101,6 +101,17 @@ interface GraphRepository : Neo4jRepository<UiEntity, String> {
         @Param("kioskId") kioskId: String,
     )
 
+    @Query(
+        "MATCH (n:UI {id: \$nodeId, kioskId: \$kioskId})\n" +
+        "SET n.title = \$title\n" +
+        "RETURN n"
+    )
+    fun changeTitleById(
+        @Param("nodeId") nodeId: String,
+        @Param("kioskId") kioskId: String,
+        @Param("title") title: String,
+    ): UiEntity?
+
     @Query("MATCH (a:UI {id: \$sourceId}), (b:UI {id: \$targetId}) MERGE (a)-[:PATH_TO]->(b)")
     fun savePathRelation(sourceId: String, targetId: String)
 

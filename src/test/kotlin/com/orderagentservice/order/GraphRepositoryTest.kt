@@ -1,6 +1,5 @@
 package com.orderagentservice.order
 
-import com.orderagentservice.jsonMapper
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.repository.GraphRepository
 import com.orderagentservice.order.service.GraphService
@@ -22,7 +21,7 @@ class GraphRepositoryTest @Autowired constructor(
 
         println(nowNode)
 
-        val path = graphService.findMenuPath(kioskId, nowNode.id, "원조빽스치노")
+        val path = graphService.findPath(kioskId, nowNode.id, "원조빽스치노")
         println(path)
     }
 

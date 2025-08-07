@@ -37,10 +37,13 @@ class GraphService @Autowired constructor(
         }
     }
 
-    fun findMenuPath(kioskId: String, sourceId: String, targetTitle: String): List<ActionPathDto> {
+    fun findPath(kioskId: String, sourceId: String, targetTitle: String): List<ActionPathDto> {
         val nodesList = graphRepository.findPathByTitle(kioskId, sourceId, targetTitle)
             .ifEmpty { throw PathNotFoundException() }
-            .filter { node -> node["title"].toString() != "station" }
+            .filter { node ->
+                val title = node["title"].toString()
+                title != "station" && !title.startsWith("menu:")
+            }
             .drop(1)
 
         return ActionPathDto.toPathDtoList(nodesList)
@@ -104,6 +107,10 @@ class GraphService @Autowired constructor(
             id = entity.id, title = entity.title,
             x = entity.x, y = entity.y
         )
+    }
+
+    fun changeTitle(nodeId: String, kioskId: String, title: String) {
+        graphRepository.changeTitleById(nodeId, kioskId, title) ?: throw NodeNotFoundException()
     }
 
     fun deleteMenusByCategory(kioskId: String, id: String) {

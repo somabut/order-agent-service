@@ -71,10 +71,10 @@ class AutoOrderService @Autowired constructor(
             }
 
             //메뉴 클릭
-            val lastMenu = clickMenu(menu, context)
+            val lastMenuId = clickMenu(menu, context).id
 
             //옵션 클릭
-            val optHistory = clickOption(menu.autoOrderOptions, lastMenu, context)
+            val optHistory = clickOption(menu.autoOrderOptions, lastMenuId, context)
 
             //히스토리에 추가
             val historyMenu = MenuInfoDto(
@@ -85,10 +85,10 @@ class AutoOrderService @Autowired constructor(
             context.history.menus.add(historyMenu)
 
             //돌아가는 UI 클릭
-            clickBack(lastMenu, context)
+            clickBack(lastMenuId, context)
 
             //현재 노드 갱신
-            context.nodeId = graphService.findCategoryNodeId(kioskId, lastMenu.id)
+            context.nodeId = graphService.findCategoryNodeId(kioskId, lastMenuId)
         }
 
         val stationId = graphService.findStation(kioskId).id
@@ -97,7 +97,7 @@ class AutoOrderService @Autowired constructor(
 
     private fun clickMenu(menu: AutoOrderMenu, context: AutoOrderContext): ActionPathDto {
         logOrder(context.kioskId, context.taskId, "메뉴를 담습니다. 메뉴: ${menu.title}")
-        val actionList = graphService.findMenuPath(context.kioskId, context.nodeId, menu.title)
+        val actionList = graphService.findPath(context.kioskId, context.nodeId, menu.title)
 
         //메뉴를 담기 위해 메뉴 노드까지 이동후 필요한 만큼 클릭
         val lastMenu = actionList.last()
@@ -111,11 +111,11 @@ class AutoOrderService @Autowired constructor(
         return lastMenu
     }
 
-    private fun clickOption(options: List<AutoOrderOption>, menuNode: ActionPathDto, context: AutoOrderContext): List<String> {
+    private fun clickOption(options: List<AutoOrderOption>, menuNodeId: String, context: AutoOrderContext): List<String> {
         val optionHistory = mutableListOf<String>()
         for (opt in options) {
             logOrder(context.kioskId, context.taskId, "옵션을 선택합니다. 옵션: ${opt.title}")
-            val dto = graphService.findOption(context.kioskId, menuNode.id, opt.title)
+            val dto = graphService.findOption(context.kioskId, menuNodeId, opt.title)
             repeat(opt.count) {
                 val coordinate = notificationService.sendActionCommand(context.kioskId, CoordinateDto(dto.x, dto.y, dto.title))
                 optionHistory.add(coordinate.title)
@@ -125,9 +125,8 @@ class AutoOrderService @Autowired constructor(
         return optionHistory
     }
 
-    private fun clickBack(menuNode: ActionPathDto, context: AutoOrderContext) {
-        val backList = graphService.findBackPath(context.kioskId, menuNode.id).toMutableList()
-        backList.removeLast()
+    private fun clickBack(menuNodeId: String, context: AutoOrderContext) {
+        val backList = graphService.findPath(context.kioskId, menuNodeId, "station")
 
         for (back in backList) {
             notificationService.sendActionCommand(context.kioskId, CoordinateDto(back.x, back.y, back.title))
@@ -135,7 +134,7 @@ class AutoOrderService @Autowired constructor(
     }
 
     private fun proceedPayment(context: AutoOrderContext) {
-        val actionList = graphService.findPaymentPath(context.kioskId, context.nodeId).toMutableList()
+        val actionList = graphService.findPath(context.kioskId, context.nodeId, "complete").toMutableList()
         actionList.removeLast()
 
         for (act in actionList) {
