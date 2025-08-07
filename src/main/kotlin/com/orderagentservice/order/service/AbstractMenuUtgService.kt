@@ -100,9 +100,8 @@ abstract class AbstractMenuUtgService (
         }
     }
 
-    private fun selectBack(menuNodeId: String, context: GraphContext): String {
+    private fun selectBack(menuNodeId: String, context: GraphContext, llmOptList: List<UiComponentDto>): String {
         val kioskId = context.kioskId
-        val llmOptList = uiExtractorManager.getUiComponents(kioskId)
 
         //다시 원래 페이지로 돌아가야 하므로 backAgent를 통해 이전 페이지로 돌아가기
         val backAction = backAgent.determineBack(llmOptList)
@@ -238,8 +237,10 @@ abstract class AbstractMenuUtgService (
             selectOption(menuDto, nodeId, context)
 
             //옵션을 선택하고 원래 페이지도 이동
+            uiList = uiExtractorManager.getUiComponents(context.kioskId)
             while (checkMenuPage(menuPageList, uiList) == false) {
-                nodeId = selectBack(nodeId, context)
+                nodeId = selectBack(nodeId, context, uiList)
+                uiList = uiExtractorManager.getUiComponents(context.kioskId)
             }
             graphService.saveRel(nodeId, context.lastNodeId!!, NodeRelation.BACK_TO)
         }
@@ -267,7 +268,8 @@ abstract class AbstractMenuUtgService (
         )
 
         //다음으로 이동
-        nodeId = selectBack(nodeId, context)
+        val uiList = uiExtractorManager.getUiComponents(context.kioskId)
+        nodeId = selectBack(nodeId, context, uiList)
 
         return nodeId
     }
