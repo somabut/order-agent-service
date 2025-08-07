@@ -1,7 +1,7 @@
 package com.orderagentservice.agent
 
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.orderagentservice.agent.model.dto.LlmUiComponentDto
+import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.agent.model.dto.AgentBackDto
 import com.orderagentservice.agent.util.LlmManager
 import com.orderagentservice.jsonMapper
@@ -16,7 +16,7 @@ class BackAgent @Autowired constructor(
 ) {
     private val log = logger()
 
-    fun determineBack(uiList: List<LlmUiComponentDto>): AgentBackDto {
+    fun determineBack(uiList: List<UiComponentDto>): AgentBackDto {
         val prompt = getPrompt(uiList)
         val json = llmManager.query(prompt)
         try {
@@ -27,7 +27,7 @@ class BackAgent @Autowired constructor(
         }
     }
 
-    private fun getPrompt(uiList: List<LlmUiComponentDto>): String {
+    private fun getPrompt(uiList: List<UiComponentDto>): String {
         val prompt = """
             You are a professional at kiosks who complete shopping baskets.
             All menu selections are complete. Find the appropriate UI element from the given UI list to complete adding items to the cart.

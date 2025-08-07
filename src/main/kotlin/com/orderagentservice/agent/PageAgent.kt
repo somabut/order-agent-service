@@ -2,7 +2,7 @@ package com.orderagentservice.agent
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.orderagentservice.agent.model.dto.AgentPageDto
-import com.orderagentservice.agent.model.dto.LlmUiComponentDto
+import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.agent.util.LlmManager
 import com.orderagentservice.jsonMapper
 import com.orderagentservice.order.exception.LlmParseException
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component
 class PageAgent @Autowired constructor(
     private val llmManager: LlmManager
 ) {
-    fun determineAction(metaList: List<String>, uiList: List<LlmUiComponentDto>): AgentPageDto {
+    fun determineAction(metaList: List<String>, uiList: List<UiComponentDto>): AgentPageDto {
         val prompt = getPrompt(metaList, uiList)
         val json = llmManager.query(prompt)
         try {
@@ -24,7 +24,7 @@ class PageAgent @Autowired constructor(
         }
     }
 
-    private fun getPrompt(metaList: List<String>, uiList: List<LlmUiComponentDto>): String {
+    private fun getPrompt(metaList: List<String>, uiList: List<UiComponentDto>): String {
         val prompt = """
             You are an expert who looks at a given ui text list and compares it to the current page information to find out if the ui text list is a component of the current page.
             The information about the page is on the page info list. In other words, the page info list is the information on the current page.

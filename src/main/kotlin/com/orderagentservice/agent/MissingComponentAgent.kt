@@ -1,7 +1,7 @@
 package com.orderagentservice.agent
 
 import com.fasterxml.jackson.core.type.TypeReference
-import com.orderagentservice.agent.model.dto.LlmUiComponentDto
+import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.agent.util.LlmManager
 import com.orderagentservice.jsonMapper
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,17 +12,17 @@ import java.io.File
 class MissingComponentAgent@Autowired constructor(
     private val llmManager: LlmManager
 ) {
-    fun determineAction(image: File, titleList: List<String>, uiList: List<LlmUiComponentDto>): List<LlmUiComponentDto> {
+    fun determineAction(image: File, titleList: List<String>, uiList: List<UiComponentDto>): List<UiComponentDto> {
         val prompt = getPrompt(image, titleList, uiList)
         val json = llmManager.query(prompt)
-        val response: List<LlmUiComponentDto> = jsonMapper.readValue(
+        val response: List<UiComponentDto> = jsonMapper.readValue(
             json,
-            object : TypeReference<List<LlmUiComponentDto>>() {}
+            object : TypeReference<List<UiComponentDto>>() {}
         )
         return response
     }
 
-    private fun getPrompt(image: File, titleList: List<String>, uiList: List<LlmUiComponentDto>): String {
+    private fun getPrompt(image: File, titleList: List<String>, uiList: List<UiComponentDto>): String {
         val prompt = """
             You are an expert at figuring out the pixel coordinates of the text on a given ui list in a given image.
             Find the pixel coordinates of the UI that are on the `title list` but not on the `ui list`.

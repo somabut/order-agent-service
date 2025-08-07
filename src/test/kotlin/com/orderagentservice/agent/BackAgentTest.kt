@@ -1,7 +1,6 @@
 package com.orderagentservice.agent
 
-import com.orderagentservice.agent.model.dto.LlmUiComponentDto
-import org.assertj.core.api.Assertions
+import com.orderagentservice.agent.model.dto.UiComponentDto
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,15 +14,15 @@ class BackAgentTest @Autowired constructor(
     fun `옵션 선택을 완료하기 위해 상호작용해야 하는 UI를 찾는다`() {
         //given: ui list
         val uiList = listOf(
-            LlmUiComponentDto(x = 145, y = 310, title = "프렌치 프라이 5600원"),
-            LlmUiComponentDto(x = 212, y = 485, title = "너겟킹 7900원"),
-            LlmUiComponentDto(x = 398, y = 605, title = "리얼 어니언링 8200원"),
-            LlmUiComponentDto(x = 125, y = 732, title = "다음으로"),
-            LlmUiComponentDto(x = 362, y = 298, title = "코카콜라 7500원"),
-            LlmUiComponentDto(x = 274, y = 847, title = "코카콜라 제로 9500원"),
-            LlmUiComponentDto(x = 458, y = 415, title = "취소"),
-            LlmUiComponentDto(x = 107, y = 921, title = "미밋메이드 오렌지 8800원"),
-            LlmUiComponentDto(x = 376, y = 534, title = "스프라이트 8500원")
+            UiComponentDto(x = 145, y = 310, title = "프렌치 프라이 5600원"),
+            UiComponentDto(x = 212, y = 485, title = "너겟킹 7900원"),
+            UiComponentDto(x = 398, y = 605, title = "리얼 어니언링 8200원"),
+            UiComponentDto(x = 125, y = 732, title = "다음으로"),
+            UiComponentDto(x = 362, y = 298, title = "코카콜라 7500원"),
+            UiComponentDto(x = 274, y = 847, title = "코카콜라 제로 9500원"),
+            UiComponentDto(x = 458, y = 415, title = "취소"),
+            UiComponentDto(x = 107, y = 921, title = "미밋메이드 오렌지 8800원"),
+            UiComponentDto(x = 376, y = 534, title = "스프라이트 8500원")
         )
 
         //when: llm에게 질의
@@ -39,16 +38,16 @@ class BackAgentTest @Autowired constructor(
     fun `중복되는 완료 UI중에 적절한 것을 찾는다`() {
         //given: ui list
         val uiList = listOf(
-            LlmUiComponentDto(x = 145, y = 310, title = "프렌치 프라이 5600원"),
-            LlmUiComponentDto(x = 212, y = 485, title = "너겟킹 7900원"),
-            LlmUiComponentDto(x = 398, y = 605, title = "리얼 어니언링 8200원"),
-            LlmUiComponentDto(x = 125, y = 732, title = "결제하기"),
-            LlmUiComponentDto(x = 67, y = 99, title = "선택완료"),
-            LlmUiComponentDto(x = 362, y = 298, title = "코카콜라 7500원"),
-            LlmUiComponentDto(x = 274, y = 847, title = "코카콜라 제로 9500원"),
-            LlmUiComponentDto(x = 458, y = 415, title = "취소"),
-            LlmUiComponentDto(x = 107, y = 921, title = "미밋메이드 오렌지 8800원"),
-            LlmUiComponentDto(x = 376, y = 534, title = "스프라이트 8500원")
+            UiComponentDto(x = 145, y = 310, title = "프렌치 프라이 5600원"),
+            UiComponentDto(x = 212, y = 485, title = "너겟킹 7900원"),
+            UiComponentDto(x = 398, y = 605, title = "리얼 어니언링 8200원"),
+            UiComponentDto(x = 125, y = 732, title = "결제하기"),
+            UiComponentDto(x = 67, y = 99, title = "선택완료"),
+            UiComponentDto(x = 362, y = 298, title = "코카콜라 7500원"),
+            UiComponentDto(x = 274, y = 847, title = "코카콜라 제로 9500원"),
+            UiComponentDto(x = 458, y = 415, title = "취소"),
+            UiComponentDto(x = 107, y = 921, title = "미밋메이드 오렌지 8800원"),
+            UiComponentDto(x = 376, y = 534, title = "스프라이트 8500원")
         )
 
         //when: llm에게 질의

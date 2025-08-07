@@ -17,7 +17,8 @@ class UiExtractorManagerTest @Autowired constructor(
         val imageFile = File(imagePath)
 
         //when: ui extractor에게 이미지 파싱을 요청한다
-        val response = uiExtractorManager.getUiComponents("moodTRBL")
+//        val response = uiExtractorManager.getUiComponents("moodTRBL")
+        val response = uiExtractorManager.queryUiExtractor(imageFile)
 
         //then: 파싱이 완료된다.
         for (ele in response) {

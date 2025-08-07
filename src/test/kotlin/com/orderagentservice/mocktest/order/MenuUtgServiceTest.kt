@@ -76,8 +76,8 @@ class MenuUtgServiceTest {
     private lateinit var modalEntity: UiEntity
     private lateinit var optionEntity: UiEntity
     private lateinit var backEntity: UiEntity
-    private lateinit var llmUiList: MutableList<LlmUiComponentDto>
-    private lateinit var modalLlmUiList: MutableList<LlmUiComponentDto>
+    private lateinit var llmUiList: MutableList<UiComponentDto>
+    private lateinit var modalLlmUiList: MutableList<UiComponentDto>
     private lateinit var menuAction: AgentActionDto
     private lateinit var modalMenuAction: AgentActionDto
     private lateinit var firstAction: AgentActionDto
@@ -190,14 +190,14 @@ class MenuUtgServiceTest {
         )
 
         llmUiList = mutableListOf(
-            LlmUiComponentDto(x = TEST_X_COORDINATE, y = TEST_Y_COORDINATE, title = TEST_MENU_TITLE),
-            LlmUiComponentDto(x = TEST_X_COORDINATE, y = TEST_Y_COORDINATE, title = TEST_CATEGORY)
+            UiComponentDto(x = TEST_X_COORDINATE, y = TEST_Y_COORDINATE, title = TEST_MENU_TITLE),
+            UiComponentDto(x = TEST_X_COORDINATE, y = TEST_Y_COORDINATE, title = TEST_CATEGORY)
         )
 
         modalLlmUiList = mutableListOf(
-            LlmUiComponentDto(x = 300, y = 400, title = TEST_MENU_TITLE),
-            LlmUiComponentDto(x = 150, y = 250, title = "치즈추가"),
-            LlmUiComponentDto(x = 200, y = 300, title = "완료")
+            UiComponentDto(x = 300, y = 400, title = TEST_MENU_TITLE),
+            UiComponentDto(x = 150, y = 250, title = "치즈추가"),
+            UiComponentDto(x = 200, y = 300, title = "완료")
         )
 
         firstAction = AgentActionDto(
@@ -487,7 +487,7 @@ class MenuUtgServiceTest {
     fun 누락된_컴포넌트가_추가된다() {
         // given: 누락된 컴포넌트가 감지되는 상황
         val additionalComponents = listOf(
-            LlmUiComponentDto(x = 150, y = 250, title = "숨겨진옵션")
+            UiComponentDto(x = 150, y = 250, title = "숨겨진옵션")
         )
 
         whenever(graphService.saveNode(any<UiDto>())).thenReturn(rootNode, menuEntity)
