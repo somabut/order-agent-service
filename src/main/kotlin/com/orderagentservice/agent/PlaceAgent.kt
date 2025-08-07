@@ -85,6 +85,9 @@ class PlaceAgent @Autowired constructor(
                     "title": ""
                 }
             ]
+            
+            CRITICAL OUTPUT INSTRUCTION:
+            Your final response MUST be a single, raw JSON object. Do NOT include any introductory text, explanations, or markdown formatting like \\\json ... \\\ around the JSON object.
             ```
         """.trimIndent()
 
