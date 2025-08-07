@@ -5,6 +5,8 @@ import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.agent.util.LlmManager
 import com.orderagentservice.jsonMapper
+import com.orderagentservice.logger
+import com.orderagentservice.order.exception.LlmParseException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -12,6 +14,8 @@ import org.springframework.stereotype.Component
 class PlaceAgent @Autowired constructor(
     private val llmManager: LlmManager
 ) {
+    private val log = logger()
+
     fun determineAction(uiList: List<UiComponentDto>): List<AgentActionDto> {
         val prompt = getPrompt(uiList)
         val json = llmManager.query(prompt)
@@ -87,7 +91,8 @@ class PlaceAgent @Autowired constructor(
             ]
             
             CRITICAL OUTPUT INSTRUCTION:
-            Your final response MUST be a single, raw JSON object. Do NOT include any introductory text, explanations, or markdown formatting like \\\json ... \\\ around the JSON object.
+            Your entire response MUST be a valid JSON array, raw JSON object. It MUST start with [ and end with ]
+            Do NOT include any introductory text, explanations, or markdown formatting like \\\json ... \\\ around the JSON object.
             ```
         """.trimIndent()
 
