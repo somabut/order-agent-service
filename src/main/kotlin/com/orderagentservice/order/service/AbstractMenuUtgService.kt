@@ -254,7 +254,9 @@ abstract class AbstractMenuUtgService (
         //메뉴를 다시 선택해야 할 수도 있으므로 클릭
         var nodeId = menuNodeId
         val matchDto = wordSimilarityService.findBestMatch(menuDto.title, uiList)
-        notificationService.sendActionCommand(context.kioskId, CoordinateDto(x = matchDto.x, y = matchDto.y, title = matchDto.title))
+        if (matchDto.score >= 0.6) {
+            notificationService.sendActionCommand(context.kioskId, CoordinateDto(x = matchDto.x, y = matchDto.y, title = matchDto.title))
+        }
 
         //노드명 변경
         nodeId = createModalNode(
