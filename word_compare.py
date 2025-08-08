@@ -66,7 +66,7 @@ class KoreanSimilarityCalculator:
 
         return weighted_score
 
-    def find_best_match(self, target_word: str, candidate_words: list[tuple[int, int, str, float]]) -> dict:
+    def find_best_match(self, target_word: str, candidate_words: list[tuple[int, int, str]]) -> dict:
         """
         주어진 단어 리스트에서 가장 유사도 점수가 높은 단어 하나를 반환
 
@@ -99,7 +99,6 @@ class KoreanSimilarityCalculator:
             "word": best_word,
             "score": best_score
         }
-        return best_x, best_y, best_word, best_score
 
     def determine_page(self, need_list: list[str], page_list: list[str]) -> int:
         if not need_list:

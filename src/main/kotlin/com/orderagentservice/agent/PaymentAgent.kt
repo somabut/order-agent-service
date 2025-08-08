@@ -36,7 +36,7 @@ class PaymentAgent @Autowired constructor(
                     If you find any of these, you must select one of them and ignore all other options below.
                     
                 Priority 2 (Highest): General Progression
-                    Only if no Priority 1 keywords are found, search for UI elements with general progression keywords like '다음', '확인', '완료'.
+                    Only if no Priority 1 keywords are found, search for UI elements with general progression keywords like '다음', '확인', '완료', '선택완료'.
                     If you find any of these, syou must select one of them and ignore all other options below.
                 
                 Priority 3 (Middle): Direct Card Payment
@@ -139,6 +139,8 @@ class PaymentAgent @Autowired constructor(
             }
             ```
             
+            CRITICAL OUTPUT INSTRUCTION:
+            Your final response MUST be a single, raw JSON object. Do NOT include any introductory text, explanations, or markdown formatting like \\\json ... \\\ around the JSON object.
         """.trimIndent()
 
         return prompt
