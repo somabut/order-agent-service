@@ -46,7 +46,7 @@ class PaymentUtgService @Autowired constructor(
     }
 
     private fun selectPayments(context: GraphContext): Boolean {
-        val llmUiList = uiExtractorManager.getUiComponents(context.kioskId)
+        val llmUiList = uiExtractorManager.getUiComponents(context.kioskId, true)
         val action = paymentAgent.determineAction(llmUiList)
 
         //노드 저장
