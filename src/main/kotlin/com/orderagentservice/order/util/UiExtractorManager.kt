@@ -31,9 +31,9 @@ class UiExtractorManager @Autowired constructor(
     private val UI_EXCTRACTOR_HOST = env.getProperty("ui-extractor.host")
     private val UI_EXTRACTOR_API_KEY = env.getProperty("ui-extractor.api-key")!!
 
-    fun queryUiExtractor(image: File): List<DetectorUiComponentDto> {
+    fun queryUiExtractor(image: File, endpoint: String): List<DetectorUiComponentDto> {
         val restTemplate = RestTemplate()
-        val url = "$UI_EXCTRACTOR_HOST/v2/extract-ui"
+        val url = "$UI_EXCTRACTOR_HOST/v2/$endpoint"
 
         val fileContent = FileSystemResource(image)
 
@@ -57,14 +57,15 @@ class UiExtractorManager @Autowired constructor(
             val uiComponents = response.data!!.uiComponents
             return uiComponents
         } catch (e: RuntimeException) {
+            println(e.message)
             throw UiExtractException()
         }
     }
 
-    fun getUiComponents(kioskId: String): MutableList<UiComponentDto> {
+    fun getUiComponents(kioskId: String, isPayment: Boolean = false): MutableList<UiComponentDto> {
         //ui extractor에게 이미지 파싱 요청
         val image = notificationService.sendCaptureCommand(kioskId)
-        val uiComponents = queryUiExtractor(image)
+        val uiComponents = queryUiExtractor(image, if (!isPayment) "extract-ui" else "ocr")
 
         //옴니파서에게 받은 이미지 적절히 변환
         val llmUiList = mutableListOf<UiComponentDto>()
