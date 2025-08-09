@@ -73,24 +73,13 @@ class AutoOrderService @Autowired constructor(
             }
 
             //메뉴 클릭
-            val lastMenuId = clickMenu(menu, context).id
+            var lastNodeId = clickMenu(menu, context).id
 
             //옵션 클릭
-            val optHistory = clickOption(menu.autoOrderOptions, lastMenuId, context)
-
-            //히스토리에 추가
-            val historyMenu = MenuInfoDto(
-                title = menu.title,
-                options = optHistory,
-                category = menu.category
-            )
-            context.history.menus.add(historyMenu)
+            lastNodeId = clickOption(menu.autoOrderOptions, lastNodeId, context)
 
             //돌아가는 UI 클릭
-            clickBack(lastMenuId, context)
-
-            //현재 노드 갱신
-            context.nodeId = graphService.findCategoryNodeId(kioskId, lastMenuId)
+            context.nodeId = clickBack(lastNodeId, context)
         }
 
         val stationId = graphService.findStation(kioskId).id
@@ -113,7 +102,7 @@ class AutoOrderService @Autowired constructor(
         return lastMenu
     }
 
-    private fun clickOption(options: List<AutoOrderOption>, menuNodeId: String, context: AutoOrderContext): List<String> {
+    private fun clickOption(options: List<AutoOrderOption>, menuNodeId: String, context: AutoOrderContext): String {
         val optionHistory = mutableListOf<String>()
         var nodeId = menuNodeId
         for (opt in options) {
@@ -127,15 +116,17 @@ class AutoOrderService @Autowired constructor(
             if (actionList.size > 1) nodeId = actionList[actionList.lastIndex - 1].id
         }
 
-        return optionHistory
+        return nodeId
     }
 
-    private fun clickBack(menuNodeId: String, context: AutoOrderContext) {
+    private fun clickBack(menuNodeId: String, context: AutoOrderContext): String {
         val backList = graphService.findPath(context.kioskId, menuNodeId, "station")
 
         for (back in backList) {
             notificationService.sendActionCommand(context.kioskId, CoordinateDto(back.x, back.y, back.title))
         }
+
+        return backList.last().id
     }
 
     private fun proceedPayment(context: AutoOrderContext) {
