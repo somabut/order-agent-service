@@ -35,4 +35,7 @@ class UtgController @Autowired constructor(
         val history = utgService.updateGraph(kioskId, utgUpdateRequest.editCategories, accessToken)
         return ApiResponse.success(history)
     }
+
+    @PostMapping("utg/benchmark")
+
 }
