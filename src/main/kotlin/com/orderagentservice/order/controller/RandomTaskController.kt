@@ -19,7 +19,7 @@ class RandomTaskController @Autowired constructor(
     ): ApiResponse<*> {
         if (accessToken == null) throw KioskAdminSignInException()
 
-        randomTaskService.proceed(
+        randomTaskService.proceedAutoOrder(
             count = randomTaskRequest.count,
             kioskId = randomTaskRequest.kioskId,
             accessToken = accessToken

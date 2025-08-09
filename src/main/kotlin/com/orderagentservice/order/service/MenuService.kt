@@ -1,48 +1,9 @@
 package com.orderagentservice.order.service
 
-import com.orderagentservice.logger
 import com.orderagentservice.order.model.dto.MenuInfoDto
-import com.orderagentservice.order.model.request.KioskAdminSignInRequest
-import com.orderagentservice.order.repository.MenuRepository
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Service
 
-@Service
-class MenuService @Autowired constructor(
-    private val menuRepository: MenuRepository
-) {
-    private val log = logger()
+interface MenuService {
+    fun getMenus(kioskId: String, accessToken: String): List<MenuInfoDto>
 
-    fun getMenus(kioskId: String, accessToken: String): List<MenuInfoDto> {
-        log.info("메뉴 정보를 얻어옵니다. 키오스크 ID: ${kioskId}")
-        val response = menuRepository.findAllMenus(kioskId, accessToken)
-        val menuInfoList = mutableListOf<MenuInfoDto>()
-
-        for (category in response.categories) {
-            for (menu in category.menus) {
-                val options = mutableListOf<String>()
-                menu.options.forEach { options.add(it.name) }
-
-                val dto = MenuInfoDto(
-                    title = menu.name,
-                    options = options,
-                    category = category.name
-                )
-                menuInfoList.add(dto)
-            }
-        }
-        return menuInfoList
-    }
-
-    fun getMenusByCategory(kioskId: String, category: String, accessToken: String): List<MenuInfoDto> {
-        val allMenuList = getMenus(kioskId, accessToken)
-        val menuList = mutableListOf<MenuInfoDto>()
-
-        for (menu in allMenuList) {
-            if (menu.category == category) {
-                menuList.add(menu)
-            }
-        }
-        return menuList
-    }
+    fun getMenusByCategory(kioskId: String, category: String, accessToken: String): List<MenuInfoDto>
 }

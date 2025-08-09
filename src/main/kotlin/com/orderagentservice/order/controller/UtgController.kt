@@ -2,7 +2,11 @@ package com.orderagentservice.order.controller
 
 import com.orderagentservice.global.model.response.ApiResponse
 import com.orderagentservice.order.exception.KioskAdminSignInException
+import com.orderagentservice.order.model.GraphContext
+import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.request.UtgUpdateRequest
+import com.orderagentservice.order.service.auto.RandomTaskService
+import com.orderagentservice.order.service.utg.MenuUtgService
 import com.orderagentservice.order.service.utg.UtgService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
@@ -10,7 +14,9 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/v1")
 class UtgController @Autowired constructor(
-    private val utgService: UtgService
+    private val utgService: UtgService,
+    private val randomTaskService: RandomTaskService,
+    private val menuUtgService: MenuUtgService
 ) {
     @GetMapping("/utg/init/{kioskId}")
     fun initializeUtg(
@@ -34,5 +40,15 @@ class UtgController @Autowired constructor(
 
         val history = utgService.updateGraph(kioskId, utgUpdateRequest.editCategories, accessToken)
         return ApiResponse.success(history)
+    }
+
+    @GetMapping("utg/benchmark")
+    fun updateUtg(
+        @RequestHeader("Authorization", required = false) accessToken: String?
+    ): ApiResponse<*> {
+        if (accessToken == null) throw KioskAdminSignInException()
+
+        val result = randomTaskService.proceedUtg(accessToken)
+        return ApiResponse.success(result)
     }
 }
