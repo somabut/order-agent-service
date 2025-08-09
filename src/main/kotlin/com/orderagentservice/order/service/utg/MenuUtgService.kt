@@ -1,7 +1,6 @@
-package com.orderagentservice.order.service
+package com.orderagentservice.order.service.utg
 
 import com.orderagentservice.agent.BackAgent
-import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.service.WordSimilarityService
 import com.orderagentservice.logger
 import com.orderagentservice.order.model.GraphContext
@@ -9,6 +8,8 @@ import com.orderagentservice.order.model.NodeRelation
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.dto.UiDto
+import com.orderagentservice.order.service.NotificationService
+import com.orderagentservice.order.service.graph.GraphService
 import com.orderagentservice.order.util.UiExtractorManager
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -30,8 +31,6 @@ class MenuUtgService @Autowired constructor(
     graphService = graphService
 ) {
     private val log = logger()
-
-    private val MAX_MODAL_TO_MENU_COUNT = 3
 
     @Transactional
     fun initializeGraph(context: GraphContext, menuList: List<MenuInfoDto>) {
@@ -111,17 +110,5 @@ class MenuUtgService @Autowired constructor(
         context.stationNodeId = graphService.saveNode(stationNode).id
 
         graphService.saveRel(context.lastNodeId!!, context.stationNodeId!!, NodeRelation.PATH_TO)
-    }
-
-    private fun removeDuplicate(sourceList: List<UiComponentDto>, targetList: MutableList<UiComponentDto>) {
-        for (addEle in sourceList) {
-            val stripAddEle = addEle.title.replace(" ", "")
-            for (ele in targetList) {
-                val stripEle = ele.title.replace(" ", "")
-                if (stripAddEle.contains(stripEle)) {
-                    targetList.remove(ele)
-                }
-            }
-        }
     }
 }

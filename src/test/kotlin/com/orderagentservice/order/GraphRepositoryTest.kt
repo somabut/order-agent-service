@@ -2,7 +2,9 @@ package com.orderagentservice.order
 
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.repository.GraphRepository
-import com.orderagentservice.order.service.GraphService
+import com.orderagentservice.order.service.graph.GraphService
+import com.orderagentservice.order.service.graph.GraphServiceImpl
+import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -87,5 +89,16 @@ class GraphRepositoryTest @Autowired constructor(
     fun `노드 삭제`() {
         val kioskId = "GRAPH_TEST"
         graphService.deleteMenusByCategory(kioskId, "34785735-8acf-4d35-b04d-4788587738a0")
+    }
+
+    @Test
+    fun `활성화 프로필에 맞게 서비스를 로드한다`() {
+        val dto = UiDto(
+            isNext = false,
+            x = -1, y = -1,
+            title = "title", kioskId = "id"
+        )
+        val result = graphService.saveNode(dto)
+        Assertions.assertThat(result.kioskId).isEqualTo("TEST")
     }
 }

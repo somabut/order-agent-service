@@ -1,6 +1,7 @@
 package com.orderagentservice.order.repository
 
 import com.orderagentservice.order.model.entity.UiEntity
+import org.springframework.context.annotation.Profile
 import org.springframework.data.neo4j.repository.Neo4jRepository
 import org.springframework.data.neo4j.repository.query.Query
 import org.springframework.data.repository.query.Param

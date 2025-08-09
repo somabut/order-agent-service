@@ -13,10 +13,10 @@ import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.entity.UiEntity
-import com.orderagentservice.order.service.MenuUtgService
+import com.orderagentservice.order.service.utg.MenuUtgService
 import com.orderagentservice.order.service.NotificationService
-import com.orderagentservice.order.service.PlaceUtgService
-import com.orderagentservice.order.service.GraphService
+import com.orderagentservice.order.service.utg.PlaceUtgService
+import com.orderagentservice.order.service.graph.GraphServiceImpl
 import com.orderagentservice.order.util.UiExtractorManager
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
@@ -61,7 +61,7 @@ class MenuUtgServiceTest {
     private lateinit var placeUtgService: PlaceUtgService
     private lateinit var uiExtractorManager: UiExtractorManager
     private lateinit var notificationService: NotificationService
-    private lateinit var graphService: GraphService
+    private lateinit var graphService: GraphServiceImpl
     private lateinit var menuGraphService: MenuUtgService
     private lateinit var wordSimilarityService: WordSimilarityService
 

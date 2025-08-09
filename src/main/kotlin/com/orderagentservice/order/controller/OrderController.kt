@@ -3,7 +3,7 @@ package com.orderagentservice.order.controller
 import com.orderagentservice.global.model.response.ApiResponse
 import com.orderagentservice.order.model.request.AutoOrderRequest
 import com.orderagentservice.order.model.response.AutoOrderResponse
-import com.orderagentservice.order.service.AutoOrderService
+import com.orderagentservice.order.service.auto.AutoOrderService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping

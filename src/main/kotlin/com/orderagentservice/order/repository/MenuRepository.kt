@@ -7,6 +7,8 @@ import com.orderagentservice.order.model.request.KioskAdminSignInRequest
 import com.orderagentservice.order.model.response.KioskAdminSingInResponse
 import com.orderagentservice.order.model.response.MenuInfoResponse
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Primary
+import org.springframework.context.annotation.Profile
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.core.env.Environment
 import org.springframework.http.HttpEntity

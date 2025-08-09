@@ -1,4 +1,4 @@
-package com.orderagentservice.order.service
+package com.orderagentservice.order.service.auto
 
 import com.orderagentservice.order.model.AutoOrderResultDto
 import com.orderagentservice.order.model.dto.AutoOrderBenchMarkDto
@@ -6,7 +6,7 @@ import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.request.AutoOrderMenu
 import com.orderagentservice.order.model.request.AutoOrderOption
 import com.orderagentservice.order.model.request.AutoOrderRequest
-import kotlinx.coroutines.withTimeoutOrNull
+import com.orderagentservice.order.service.MenuService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import kotlin.random.Random

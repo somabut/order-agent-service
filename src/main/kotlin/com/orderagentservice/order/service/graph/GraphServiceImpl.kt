@@ -1,4 +1,4 @@
-package com.orderagentservice.order.service
+package com.orderagentservice.order.service.graph
 
 import com.orderagentservice.logger
 import com.orderagentservice.order.exception.NodeNotFoundException
@@ -9,24 +9,26 @@ import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.entity.UiEntity
 import com.orderagentservice.order.repository.GraphRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
+@Profile("!test")
 @Service
-class GraphService @Autowired constructor(
+class GraphServiceImpl @Autowired constructor(
     private val graphRepository: GraphRepository
-) {
+) : GraphService {
     private val log = logger()
 
     @Transactional
-    fun saveNode(uiDto: UiDto): UiEntity {
+    override fun saveNode(uiDto: UiDto): UiEntity {
         log.info("노드 저장. ${uiDto.title}")
         val uiEntity = graphRepository.save(uiDto.toEntity())
         return uiEntity
     }
 
     @Transactional
-    fun saveRel(sourceId: String, targetId: String, type: NodeRelation) {
+    override fun saveRel(sourceId: String, targetId: String, type: NodeRelation) {
         log.info("관계 설정. ${sourceId} [${type.name}]-> ${targetId}")
         when(type) {
             NodeRelation.PATH_TO -> graphRepository.savePathRelation(sourceId, targetId)
@@ -37,7 +39,7 @@ class GraphService @Autowired constructor(
         }
     }
 
-    fun findPath(kioskId: String, sourceId: String, targetTitle: String): List<ActionPathDto> {
+    override fun findPath(kioskId: String, sourceId: String, targetTitle: String): List<ActionPathDto> {
         val nodesList = graphRepository.findPathByTitle(kioskId, sourceId, targetTitle)
             .ifEmpty { throw PathNotFoundException() }
             .filter { node ->
@@ -49,7 +51,7 @@ class GraphService @Autowired constructor(
         return ActionPathDto.toPathDtoList(nodesList)
     }
 
-    fun findPaymentPath(kioskId: String, sourceId: String): List<ActionPathDto> {
+    override fun findPaymentPath(kioskId: String, sourceId: String): List<ActionPathDto> {
         val nodesList = graphRepository.findPathByTitle(kioskId, sourceId, "complete")
             .ifEmpty { throw PathNotFoundException() }
             .filter { node -> node["title"].toString() != "station" }
@@ -57,7 +59,7 @@ class GraphService @Autowired constructor(
         return ActionPathDto.toPathDtoList(nodesList)
     }
 
-    fun findOption(kioskId: String, menuId: String, optKeyword: String): ActionPathDto {
+    override fun findOption(kioskId: String, menuId: String, optKeyword: String): ActionPathDto {
         val entity = graphRepository.findOptionByTitle(kioskId, menuId, optKeyword)
             ?: throw NodeNotFoundException()
 
@@ -67,7 +69,7 @@ class GraphService @Autowired constructor(
         )
     }
 
-    fun findBackPath(kioskId: String, sourceId: String): List<ActionPathDto> {
+    override fun findBackPath(kioskId: String, sourceId: String): List<ActionPathDto> {
         val nodesList = graphRepository.findBackPathByTitle(kioskId, sourceId)
             .ifEmpty { throw PathNotFoundException() }
             .drop(1)
@@ -75,14 +77,14 @@ class GraphService @Autowired constructor(
         return ActionPathDto.toPathDtoList(nodesList)
     }
 
-    fun findCategoryNodeId(kioskId: String, id: String): String {
+    override fun findCategoryNodeId(kioskId: String, id: String): String {
         val entity = graphRepository.findIncomingHasTo(kioskId, id)
             ?: throw NodeNotFoundException()
 
         return entity.id
     }
 
-    fun findPlace(kioskId: String, id: String, place: String): ActionPathDto? {
+    override fun findPlace(kioskId: String, id: String, place: String): ActionPathDto? {
         val entity = graphRepository.findPlaceByTitle(kioskId, id, place) ?: return null
 
         return ActionPathDto(
@@ -91,7 +93,7 @@ class GraphService @Autowired constructor(
         )
     }
 
-    fun findRoot(kioskId: String): ActionPathDto {
+    override fun findRoot(kioskId: String): ActionPathDto {
         val entity = graphRepository.findRootNode(kioskId) ?: throw NodeNotFoundException()
 
         return ActionPathDto(
@@ -100,7 +102,7 @@ class GraphService @Autowired constructor(
         )
     }
 
-    fun findStation(kioskId: String): ActionPathDto {
+    override fun findStation(kioskId: String): ActionPathDto {
         val entity = graphRepository.findStationNode(kioskId) ?: throw NodeNotFoundException()
 
         return ActionPathDto(
@@ -109,11 +111,11 @@ class GraphService @Autowired constructor(
         )
     }
 
-    fun changeTitle(nodeId: String, kioskId: String, title: String) {
+    override fun changeTitle(nodeId: String, kioskId: String, title: String) {
         graphRepository.changeTitleById(nodeId, kioskId, title) ?: throw NodeNotFoundException()
     }
 
-    fun deleteMenusByCategory(kioskId: String, id: String) {
+    override fun deleteMenusByCategory(kioskId: String, id: String) {
         graphRepository.deleteMenuNode(id, kioskId)
     }
 }

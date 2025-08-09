@@ -3,7 +3,7 @@ package com.orderagentservice.order.controller
 import com.orderagentservice.global.model.response.ApiResponse
 import com.orderagentservice.order.exception.KioskAdminSignInException
 import com.orderagentservice.order.model.request.RandomTaskRequest
-import com.orderagentservice.order.service.RandomTaskService
+import com.orderagentservice.order.service.auto.RandomTaskService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 
