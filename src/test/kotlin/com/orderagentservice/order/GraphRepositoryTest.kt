@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.neo4j.core.Neo4jClient
+import kotlin.contracts.contract
 
 @SpringBootTest
 class GraphRepositoryTest @Autowired constructor(
@@ -26,7 +27,8 @@ class GraphRepositoryTest @Autowired constructor(
 //        val menuId = "b85ef30a-7558-4480-aea7-a9b8b41f7c55"
         val menuId = "fcdd70d8-021f-4671-bf91-21bafff17557"
 
-        val path = graphService.findPath(kioskId, menuId, "complete")
+//        val path = graphService.findPath(kioskId, menuId, "station")
+        val path = graphService.findStation(kioskId)
         println(path)
     }
 
