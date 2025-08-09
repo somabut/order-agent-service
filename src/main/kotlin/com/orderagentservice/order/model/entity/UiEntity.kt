@@ -1,5 +1,6 @@
 package com.orderagentservice.order.model.entity
 
+import com.orderagentservice.agent.model.dto.AgentActionDto
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.Version
 import org.springframework.data.neo4j.core.schema.*
@@ -40,4 +41,11 @@ class UiEntity(
 
     @Relationship(type = "BACK_TO", direction = Relationship.Direction.OUTGOING)
     val backTo: Set<UiEntity>? = null,
-)
+) {
+    fun toAgentActionDto() = AgentActionDto(
+        goNext = isNext,
+        score = 0.0F,
+        coordinate = listOf(x, y),
+        title = title
+    )
+}

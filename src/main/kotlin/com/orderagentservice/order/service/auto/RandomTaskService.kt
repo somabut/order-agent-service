@@ -1,24 +1,31 @@
 package com.orderagentservice.order.service.auto
 
+import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.order.model.AutoOrderResultDto
+import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.dto.AutoOrderBenchMarkDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.request.AutoOrderMenu
 import com.orderagentservice.order.model.request.AutoOrderOption
 import com.orderagentservice.order.model.request.AutoOrderRequest
 import com.orderagentservice.order.service.MenuService
+import com.orderagentservice.order.service.utg.MenuUtgService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.core.convert.ConversionService
 import org.springframework.stereotype.Service
 import kotlin.random.Random
 
 @Service
 class RandomTaskService @Autowired constructor(
     private val autoOrderService: AutoOrderService,
-    private val menuService: MenuService
+    private val menuUtgService: MenuUtgService,
+    private val menuService: MenuService,
+    @Qualifier("conversionService") private val conversionService: ConversionService
 ) {
     private val TEST_TASK_ID = "test-session-bag-coffee-1"
 
-    fun proceed(count: Int, kioskId: String, accessToken: String): List<AutoOrderBenchMarkDto> {
+    fun proceedAutoOrder(count: Int, kioskId: String, accessToken: String): List<AutoOrderBenchMarkDto> {
         val benchMarkList = mutableListOf<AutoOrderBenchMarkDto>()
 
         repeat(count) {
@@ -26,7 +33,7 @@ class RandomTaskService @Autowired constructor(
             val history = autoOrderService.order(kioskId, TEST_TASK_ID, request)
 
             //클릭결과와 원래 요청 비교
-            val compareResult = compare(request, history)
+            val compareResult = compareAutoOrder(request, history)
             benchMarkList.add(
                 AutoOrderBenchMarkDto(
                     correct = compareResult.first,
@@ -38,7 +45,7 @@ class RandomTaskService @Autowired constructor(
         return benchMarkList
     }
 
-    fun compare(request: AutoOrderRequest, result: AutoOrderResultDto): Pair<Int, Int> {
+    fun compareAutoOrder(request: AutoOrderRequest, result: AutoOrderResultDto): Pair<Int, Int> {
         var correct = 0
         var wrong = 0
 
@@ -90,6 +97,22 @@ class RandomTaskService @Autowired constructor(
 
     private fun compareOptions(requestOptions: List<AutoOrderOption>, resultOptions: List<String>)
         = requestOptions.map { it.title }.toSet() == resultOptions.toSet()
+
+    fun proceedUtg(accessToken: String): List<AgentActionDto> {
+        val task = generate(1, "TEST", accessToken)
+        val menu = task.autoOrderMenus[0]
+
+        val dto = MenuInfoDto(
+            title = menu.title,
+            options = menu.autoOrderOptions.map { it.title },
+            category = menu.category
+        )
+
+        val context = GraphContext.toBasicContext("TEST")
+        menuUtgService.updateGraph(context, listOf(dto))
+
+        return context.history
+    }
 
     fun generate(count: Int, kioskId: String, accessToken: String): AutoOrderRequest {
         val menuList = menuService.getMenus(kioskId, accessToken)
