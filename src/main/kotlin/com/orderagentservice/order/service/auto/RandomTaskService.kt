@@ -21,7 +21,6 @@ class RandomTaskService @Autowired constructor(
     private val autoOrderService: AutoOrderService,
     private val menuUtgService: MenuUtgService,
     private val menuService: MenuService,
-    @Qualifier("conversionService") private val conversionService: ConversionService
 ) {
     private val TEST_TASK_ID = "test-session-bag-coffee-1"
 
