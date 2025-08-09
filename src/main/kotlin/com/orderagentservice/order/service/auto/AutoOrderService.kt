@@ -82,8 +82,8 @@ class AutoOrderService @Autowired constructor(
             context.nodeId = clickBack(lastNodeId, context)
         }
 
-        val stationId = graphService.findStation(kioskId).id
-        context.nodeId = stationId
+//        val stationId = graphService.findStation(kioskId).id
+//        context.nodeId = stationId
     }
 
     private fun clickMenu(menu: AutoOrderMenu, context: AutoOrderContext): ActionPathDto {
@@ -127,7 +127,6 @@ class AutoOrderService @Autowired constructor(
         }
 
         val lastNode = backList.last().id
-        context.nodeId = lastNode
         return lastNode
     }
 
