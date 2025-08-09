@@ -1,4 +1,4 @@
-package com.orderagentservice.order.service
+package com.orderagentservice.order.service.utg
 
 import com.orderagentservice.agent.BackAgent
 import com.orderagentservice.agent.model.dto.AgentBackDto
@@ -12,6 +12,8 @@ import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.entity.UiEntity
+import com.orderagentservice.order.service.NotificationService
+import com.orderagentservice.order.service.graph.GraphService
 import com.orderagentservice.order.util.UiExtractorManager
 
 abstract class AbstractMenuUtgService (
@@ -177,7 +179,6 @@ abstract class AbstractMenuUtgService (
             kioskId = context.kioskId
         ))
         graphService.saveRel(menuNodeId, backEntity.id, NodeRelation.BACK_TO)
-//        graphService.saveRel(backEntity.id, context.lastNodeId!!, NodeRelation.BACK_TO)
 
         return backEntity.id
     }

@@ -1,6 +1,6 @@
 package com.orderagentservice.order
 
-import com.orderagentservice.order.service.RandomTaskService
+import com.orderagentservice.order.service.auto.RandomTaskService
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest

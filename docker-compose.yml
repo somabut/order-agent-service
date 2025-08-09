@@ -44,4 +44,5 @@ services:
       - grafana
     environment:
       - SPRING_PROFILES_ACTIVE=deploy
+      - SPRING_PROFILES_ACTIVE=test
       - HOSTNAME=order-agent-service

@@ -8,9 +8,9 @@ import com.orderagentservice.order.model.NodeRelation
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.entity.UiEntity
 import com.orderagentservice.order.service.NotificationService
-import com.orderagentservice.order.service.PaymentUtgService
-import com.orderagentservice.order.service.PlaceUtgService
-import com.orderagentservice.order.service.GraphService
+import com.orderagentservice.order.service.utg.PaymentUtgService
+import com.orderagentservice.order.service.utg.PlaceUtgService
+import com.orderagentservice.order.service.graph.GraphServiceImpl
 import com.orderagentservice.order.util.UiExtractorManager
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -41,7 +41,7 @@ class PaymentUtgServiceTest {
     private lateinit var placeUtgService: PlaceUtgService
     private lateinit var notificationService: NotificationService
     private lateinit var uiExtractorManager: UiExtractorManager
-    private lateinit var graphService: GraphService
+    private lateinit var graphService: GraphServiceImpl
     private lateinit var paymentUtgService: PaymentUtgService
 
     private lateinit var lastNode: UiEntity

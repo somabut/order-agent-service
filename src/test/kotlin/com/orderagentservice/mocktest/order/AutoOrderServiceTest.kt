@@ -10,9 +10,9 @@ import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.request.AutoOrderMenu
 import com.orderagentservice.order.model.request.AutoOrderOption
 import com.orderagentservice.order.model.request.AutoOrderRequest
-import com.orderagentservice.order.service.AutoOrderService
+import com.orderagentservice.order.service.auto.AutoOrderService
 import com.orderagentservice.order.service.NotificationService
-import com.orderagentservice.order.service.GraphService
+import com.orderagentservice.order.service.graph.GraphServiceImpl
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -68,7 +68,7 @@ class AutoOrderServiceTest {
     private lateinit var logService: LogService
 
     @Mock
-    private lateinit var graphService: GraphService
+    private lateinit var graphService: GraphServiceImpl
 
     @Mock
     private lateinit var globalLogger: GlobalLogger
