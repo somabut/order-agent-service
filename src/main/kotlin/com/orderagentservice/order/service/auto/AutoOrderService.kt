@@ -126,7 +126,9 @@ class AutoOrderService @Autowired constructor(
             notificationService.sendActionCommand(context.kioskId, CoordinateDto(back.x, back.y, back.title))
         }
 
-        return backList.last().id
+        val lastNode = backList.last().id
+        context.nodeId = lastNode
+        return lastNode
     }
 
     private fun proceedPayment(context: AutoOrderContext) {

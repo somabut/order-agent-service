@@ -24,9 +24,9 @@ class GraphRepositoryTest @Autowired constructor(
 
         println(nowNode)
 //        val menuId = "b85ef30a-7558-4480-aea7-a9b8b41f7c55"
-        val menuId = "99cae3e9-43fb-4472-bc3b-03bb2022ae35"
+        val menuId = "fcdd70d8-021f-4671-bf91-21bafff17557"
 
-        val path = graphService.findPath(kioskId, menuId, "station")
+        val path = graphService.findPath(kioskId, menuId, "complete")
         println(path)
     }
 
