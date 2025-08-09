@@ -8,10 +8,15 @@ import org.springframework.data.repository.query.Param
 
 interface GraphRepository : Neo4jRepository<UiEntity, String> {
     @Query(
-        "MATCH path = (start:UI {kioskId: \$kioskId, id: \$sourceId})-[*]->(target:UI {kioskId: \$kioskId, title: \$targetTitle})\n " +
-        "RETURN nodes(path) AS nodes\n" +
-        "ORDER BY length(path) ASC\n" +
-        "LIMIT 1"
+        "MATCH (start:UI {kioskId:\$kioskId, id:\$sourceId})\n" +
+        "MATCH (t:UI {kioskId:\$kioskId, title:\$targetTitle})\n" +
+        "WITH start, t\n" +
+        "MATCH p1 = shortestPath( (start)-[*..6]->(t) )\n" +
+        "WITH start, t, length(p1) AS dist\n" +
+        "ORDER BY dist ASC\n" +
+        "LIMIT 1\n" +
+        "MATCH p = shortestPath( (start)-[*..6]->(t) )\n" +
+        "RETURN nodes(p) AS nodes"
     )
     fun findPathByTitle(
         @Param("kioskId") kioskId: String,

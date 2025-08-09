@@ -115,13 +115,16 @@ class AutoOrderService @Autowired constructor(
 
     private fun clickOption(options: List<AutoOrderOption>, menuNodeId: String, context: AutoOrderContext): List<String> {
         val optionHistory = mutableListOf<String>()
+        var nodeId = menuNodeId
         for (opt in options) {
             logOrder(context.kioskId, context.taskId, "옵션을 선택합니다. 옵션: ${opt.title}")
-            val dto = graphService.findOption(context.kioskId, menuNodeId, opt.title)
-            repeat(opt.count) {
-                val coordinate = notificationService.sendActionCommand(context.kioskId, CoordinateDto(dto.x, dto.y, dto.title))
+
+            val actionList = graphService.findPath(context.kioskId, nodeId, opt.title)
+            for (act in actionList) {
+                val coordinate = notificationService.sendActionCommand(context.kioskId, CoordinateDto(act.x, act.y, act.title))
                 optionHistory.add(coordinate.title)
             }
+            if (actionList.size > 1) nodeId = actionList[actionList.lastIndex - 1].id
         }
 
         return optionHistory

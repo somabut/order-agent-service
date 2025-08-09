@@ -11,8 +11,6 @@ import com.orderagentservice.order.model.request.AutoOrderRequest
 import com.orderagentservice.order.service.MenuService
 import com.orderagentservice.order.service.utg.MenuUtgService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.core.convert.ConversionService
 import org.springframework.stereotype.Service
 import kotlin.random.Random
 
@@ -22,7 +20,8 @@ class RandomTaskService @Autowired constructor(
     private val menuUtgService: MenuUtgService,
     private val menuService: MenuService,
 ) {
-    private val TEST_TASK_ID = "test-session-bag-coffee-1"
+//    private val TEST_TASK_ID = "test-session-bag-coffee-1"
+    private val TEST_TASK_ID = "test-session-bugger-king-1"
 
     fun proceedAutoOrder(count: Int, kioskId: String, accessToken: String): List<AutoOrderBenchMarkDto> {
         val benchMarkList = mutableListOf<AutoOrderBenchMarkDto>()
