@@ -1,3 +1,3 @@
 package com.orderagentservice.order.service.graph
 
-interface GraphService : GraphSaveService, GraphFindService, GraphUtilService
+interface GraphService : GraphSaveService, GraphFindService, GraphDeleteService, GraphEditService

@@ -36,6 +36,12 @@ class TestController @Autowired constructor(
         notificationService.sendActionCommand(kioskId, CoordinateDto(x = 1000, y = 500, title = "TEST"))
     }
 
+    @GetMapping("/test/capture")
+    fun sendCaptureMessage() {
+        val kioskId = "kiosk-8f22eeb6-a920-44ed-af26-d800756fb283"
+        notificationService.sendCaptureCommand(kioskId)
+    }
+
     @GetMapping("/test/compare")
     fun compareWord(): WordMatchDto {
         val optUiList = listOf(
