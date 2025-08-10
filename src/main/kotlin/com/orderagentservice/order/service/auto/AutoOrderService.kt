@@ -80,6 +80,7 @@ class AutoOrderService @Autowired constructor(
 
             //돌아가는 UI 클릭
             context.nodeId = clickBack(lastNodeId, context)
+            log.info("현재 노드 ID: ${context.nodeId}")
         }
 
 //        val stationId = graphService.findStation(kioskId).id

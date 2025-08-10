@@ -18,47 +18,25 @@ class MockGraphService : GraphService {
         return uiEntity
     }
 
-    override fun saveRel(sourceId: String, targetId: String, type: NodeRelation) {
+    override fun saveRel(sourceId: String, targetId: String, type: NodeRelation) {}
 
-    }
+    override fun changeTitle(nodeId: String, kioskId: String, title: String) {}
 
-    override fun changeTitle(nodeId: String, kioskId: String, title: String) {
+    override fun findPath(kioskId: String, sourceId: String, targetTitle: String): List<ActionPathDto> = listOf()
 
-    }
+    override fun findPaymentPath(kioskId: String, sourceId: String): List<ActionPathDto> = listOf()
 
-    override fun findPath(kioskId: String, sourceId: String, targetTitle: String): List<ActionPathDto> {
-        TODO("Not yet implemented")
-    }
+    override fun findOption(kioskId: String, menuId: String, optKeyword: String): ActionPathDto = ActionPathDto(id = "", title = "", x = -1, y = -1)
 
-    override fun findPaymentPath(kioskId: String, sourceId: String): List<ActionPathDto> {
-        TODO("Not yet implemented")
-    }
+    override fun findBackPath(kioskId: String, sourceId: String): List<ActionPathDto> = listOf()
 
-    override fun findOption(kioskId: String, menuId: String, optKeyword: String): ActionPathDto {
-        TODO("Not yet implemented")
-    }
+    override fun findCategoryNodeId(kioskId: String, id: String): String = ""
 
-    override fun findBackPath(kioskId: String, sourceId: String): List<ActionPathDto> {
-        TODO("Not yet implemented")
-    }
+    override fun findPlace(kioskId: String, id: String, place: String): ActionPathDto? = ActionPathDto(id = "", title = "", x = -1, y = -1)
 
-    override fun findCategoryNodeId(kioskId: String, id: String): String {
-        TODO("Not yet implemented")
-    }
+    override fun findRoot(kioskId: String): ActionPathDto = ActionPathDto(id = "", title = "", x = -1, y = -1)
 
-    override fun findPlace(kioskId: String, id: String, place: String): ActionPathDto? {
-        TODO("Not yet implemented")
-    }
+    override fun findStation(kioskId: String): ActionPathDto = ActionPathDto(id = "", title = "", x = -1, y = -1)
 
-    override fun findRoot(kioskId: String): ActionPathDto {
-        TODO("Not yet implemented")
-    }
-
-    override fun findStation(kioskId: String): ActionPathDto {
-        TODO("Not yet implemented")
-    }
-
-    override fun deleteMenusByCategory(kioskId: String, id: String) {
-        TODO("Not yet implemented")
-    }
+    override fun deleteMenusByCategory(kioskId: String, id: String) {}
 }
