@@ -1,7 +1,7 @@
 package com.orderagentservice.order.service.utg
 
 import com.orderagentservice.agent.BackAgent
-import com.orderagentservice.global.service.WordSimilarityService
+import com.orderagentservice.order.service.WordSimilarityService
 import com.orderagentservice.logger
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.NodeRelation

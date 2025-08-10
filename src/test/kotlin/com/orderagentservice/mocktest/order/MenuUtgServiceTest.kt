@@ -3,7 +3,7 @@ package com.orderagentservice.mocktest.order
 import com.orderagentservice.agent.BackAgent
 import com.orderagentservice.agent.PageAgent
 import com.orderagentservice.agent.model.dto.*
-import com.orderagentservice.global.service.WordSimilarityService
+import com.orderagentservice.order.service.WordSimilarityService
 import com.orderagentservice.order.exception.LowScoreException
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.NodeRelation

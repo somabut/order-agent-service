@@ -4,7 +4,7 @@ import com.orderagentservice.agent.BackAgent
 import com.orderagentservice.agent.model.dto.AgentBackDto
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.model.dto.WordMatchDto
-import com.orderagentservice.global.service.WordSimilarityService
+import com.orderagentservice.order.service.WordSimilarityService
 import com.orderagentservice.logger
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.NodeRelation
