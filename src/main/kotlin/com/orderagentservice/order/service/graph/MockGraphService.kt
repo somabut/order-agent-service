@@ -13,7 +13,7 @@ class MockGraphService : GraphService {
     override fun saveNode(uiDto: UiDto): UiEntity {
         val uiEntity = UiEntity(
             x = -1, y = -1, isNext = false,
-            title = "TEST", kioskId = "TEST"
+            title = uiDto.title, kioskId = "TEST"
         )
         return uiEntity
     }
