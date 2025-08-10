@@ -107,7 +107,7 @@ class RandomTaskService @Autowired constructor(
         )
 
         val context = GraphContext.toBasicContext(kioskId)
-        menuUtgService.updateGraph(context, listOf(dto))
+        menuUtgService.initializeGraph(context, listOf(dto))
 
         return context.history
     }
