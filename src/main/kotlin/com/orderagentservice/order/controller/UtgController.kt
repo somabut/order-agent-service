@@ -42,7 +42,7 @@ class UtgController @Autowired constructor(
         return ApiResponse.success(history)
     }
 
-    @GetMapping("utg/benchmark/{kioskId}")
+    @GetMapping("/utg/benchmark/{kioskId}")
     fun updateUtg(
         @PathVariable kioskId: String,
         @RequestHeader("Authorization", required = false) accessToken: String?
