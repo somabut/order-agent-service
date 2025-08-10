@@ -42,13 +42,14 @@ class UtgController @Autowired constructor(
         return ApiResponse.success(history)
     }
 
-    @GetMapping("utg/benchmark")
+    @GetMapping("utg/benchmark/{kioskId}")
     fun updateUtg(
+        @PathVariable kioskId: String,
         @RequestHeader("Authorization", required = false) accessToken: String?
     ): ApiResponse<*> {
         if (accessToken == null) throw KioskAdminSignInException()
 
-        val result = randomTaskService.proceedUtg(accessToken)
+        val result = randomTaskService.proceedUtg(kioskId, accessToken)
         return ApiResponse.success(result)
     }
 }

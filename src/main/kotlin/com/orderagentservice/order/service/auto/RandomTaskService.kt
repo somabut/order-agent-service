@@ -96,8 +96,8 @@ class RandomTaskService @Autowired constructor(
     private fun compareOptions(requestOptions: List<AutoOrderOption>, resultOptions: List<String>)
         = requestOptions.map { it.title }.toSet() == resultOptions.toSet()
 
-    fun proceedUtg(accessToken: String): List<AgentActionDto> {
-        val task = generate(1, "TEST", accessToken)
+    fun proceedUtg(kioskId: String, accessToken: String): List<AgentActionDto> {
+        val task = generate(1, kioskId, accessToken)
         val menu = task.autoOrderMenus[0]
 
         val dto = MenuInfoDto(
@@ -106,7 +106,7 @@ class RandomTaskService @Autowired constructor(
             category = menu.category
         )
 
-        val context = GraphContext.toBasicContext("TEST")
+        val context = GraphContext.toBasicContext(kioskId)
         menuUtgService.updateGraph(context, listOf(dto))
 
         return context.history
