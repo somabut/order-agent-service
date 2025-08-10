@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service
 class MockGraphService : GraphService {
     override fun saveNode(uiDto: UiDto): UiEntity {
         val uiEntity = UiEntity(
-            x = -1, y = -1, isNext = false,
-            title = uiDto.title, kioskId = "TEST"
+            x = uiDto.x, y = uiDto.y, isNext = uiDto.isNext,
+            title = uiDto.title, kioskId = uiDto.kioskId
         )
         return uiEntity
     }
