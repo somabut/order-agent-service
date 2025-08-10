@@ -1,8 +1,6 @@
 package com.orderagentservice.mocktest.order
 
 import com.orderagentservice.agent.BackAgent
-import com.orderagentservice.agent.MenuAgent
-import com.orderagentservice.agent.MissingComponentAgent
 import com.orderagentservice.agent.PageAgent
 import com.orderagentservice.agent.model.dto.*
 import com.orderagentservice.global.service.WordSimilarityService
@@ -54,10 +52,8 @@ class MenuUtgServiceTest {
         private const val TEST_MODAL_IMAGE_HASH = "modal_hash_456"
     }
 
-    private lateinit var menuAgent: MenuAgent
     private lateinit var backAgent: BackAgent
     private lateinit var pageAgent: PageAgent
-    private lateinit var missingComponentAgent: MissingComponentAgent
     private lateinit var placeUtgService: PlaceUtgService
     private lateinit var uiExtractorManager: UiExtractorManager
     private lateinit var notificationService: NotificationService
@@ -90,10 +86,8 @@ class MenuUtgServiceTest {
 
     @BeforeEach
     fun setUp() {
-        menuAgent = mock()
         backAgent = mock()
         pageAgent = mock()
-        missingComponentAgent = mock()
         placeUtgService = mock()
         uiExtractorManager = mock()
         notificationService = mock()
@@ -249,7 +243,7 @@ class MenuUtgServiceTest {
             AgentActionDto(false, 0.8F, listOf(100, 200), "매장")
         )
 
-        reset(menuAgent, backAgent, pageAgent, missingComponentAgent, placeUtgService,
+        reset(backAgent, pageAgent, placeUtgService,
             uiExtractorManager, notificationService, graphService)
     }
 
@@ -260,7 +254,6 @@ class MenuUtgServiceTest {
         val context = createTestContext()
 
         setupBasicMocks(context)
-        whenever(menuAgent.determineAction(any(), any())).thenReturn(firstAction, menuAction)
 
         // when
         menuGraphService.initializeGraph(context, simpleMenuList)
@@ -270,7 +263,6 @@ class MenuUtgServiceTest {
         assertNotNull(context.lastNodeId)
         assertEquals(TEST_FIRST_NODE_ID, context.lastNodeId)
         verify(graphService, times(3)).saveNode(any<UiDto>()) // root + category + menu
-        verify(menuAgent, times(2)).determineAction(any(), any())
     }
 
     @Test
@@ -279,14 +271,12 @@ class MenuUtgServiceTest {
         val context = createTestContext()
 
         setupBasicMocks(context)
-        setupOptionMocks()
 
         // when
         menuGraphService.initializeGraph(context, menuList)
 
         // then
         verify(pageAgent).determineAction(anyList(), any())
-        verify(menuAgent, atLeastOnce()).determineAction(any(), any())
     }
 
     @Test
@@ -309,7 +299,6 @@ class MenuUtgServiceTest {
             ctx.isPlaceDetermined = true
             placeActionList.forEach { action -> ctx.history.add(action) }
         }
-        whenever(menuAgent.determineAction(any(), any())).thenReturn(firstAction, veryLowScoreAction)
 
         // when & then
         assertThrows<LowScoreException> {
@@ -359,11 +348,6 @@ class MenuUtgServiceTest {
             menu1Node,      // 3. selectMenu의 메뉴 노드
             category2Node   // 4. selectCategory의 카테고리 노드
         )
-        whenever(menuAgent.determineAction(any(), any())).thenReturn(
-            category1Action, // 1. handleFirstNode에서 호출
-            menu1Action,     // 2. selectMenu에서 호출
-            category2Action  // 3. selectCategory에서 호출
-        )
 
         // 테스트에 필요한 기본적인 Mocking
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
@@ -405,7 +389,6 @@ class MenuUtgServiceTest {
                 placeActionList.forEach { action -> ctx.history.add(action) }
             }
         }
-        whenever(menuAgent.determineAction(any(), any())).thenReturn(firstAction, menuAction)
         whenever(pageAgent.determineAction(any(), any())).thenReturn(pageAction)
         whenever(notificationService.sendActionCommand(any(), any())).thenReturn(actionResult)
 
@@ -425,13 +408,12 @@ class MenuUtgServiceTest {
         // ← mockStatic 블록 완전 제거!
         setupBasicMocks(context)
         setupModalMocks(hasModal = false)
-        setupOptionMocks()
 
         // when
         menuGraphService.initializeGraph(context, menuList)
 
         // then
-        verify(backAgent, atLeastOnce()).determineBack(any())
+        verify(backAgent, atLeastOnce()).determineAction(any())
         verify(notificationService, atLeast(4)).sendCaptureCommand(TEST_KIOSK_ID) // 여러 번 캡처
     }
 
@@ -464,23 +446,10 @@ class MenuUtgServiceTest {
     private fun setupModalMocks(hasModal: Boolean) {
         if (hasModal) {
             whenever(pageAgent.determineAction(any(), any())).thenReturn(modalPageAction)
-            whenever(menuAgent.determineAction(menuInfoWithOptionsDto, modalLlmUiList)).thenReturn(modalMenuAction)
         } else {
             whenever(pageAgent.determineAction(any(), any())).thenReturn(pageAction)
         }
-        whenever(menuAgent.determineAction(any(), anyList())).thenReturn(firstAction, menuAction)
-        whenever(backAgent.determineBack(any())).thenReturn(backAction)
-    }
-
-    private fun setupOptionMocks() {
-        val optAction1 = AgentActionDto(false, HIGH_SCORE, listOf(150, 250), "치즈추가")
-        val optAction2 = AgentActionDto(false, HIGH_SCORE, listOf(160, 260), "피클빼기")
-
-        val cheeseMenuDto = MenuInfoDto("치즈추가", listOf(), menuInfoWithOptionsDto.title)
-        val pickleMenuDto = MenuInfoDto("피클빼기", listOf(), menuInfoWithOptionsDto.title)
-
-        whenever(menuAgent.determineAction(eq(cheeseMenuDto), any())).thenReturn(optAction1)
-        whenever(menuAgent.determineAction(eq(pickleMenuDto), any())).thenReturn(optAction2)
+        whenever(backAgent.determineAction(any())).thenReturn(backAction)
     }
 
     @Test
@@ -494,8 +463,7 @@ class MenuUtgServiceTest {
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
         whenever(uiExtractorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
         whenever(placeUtgService.initializeGraph(any())).thenAnswer {  }
-        whenever(menuAgent.determineAction(any<MenuInfoDto>(), anyList())).thenReturn(menuAction)
-        whenever(backAgent.determineBack(any())).thenReturn(backAction)
+        whenever(backAgent.determineAction(any())).thenReturn(backAction)
         whenever(pageAgent.determineAction(anyList(), anyList())).thenReturn(pageAction)
         whenever(notificationService.sendActionCommand(TEST_KIOSK_ID, TEST_COORDINATE)).thenReturn(actionResult)
         doNothing().whenever(graphService).saveRel(anyString(), anyString(), any())
