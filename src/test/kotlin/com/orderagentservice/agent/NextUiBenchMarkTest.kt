@@ -16,7 +16,7 @@ class NextUiBenchMarkTest @Autowired constructor(
     fun `backAgent 벤치마크`() {
         var count = 0
         for (i in backBenchList.indices) {
-            val result = backAgent.determineBack(backBenchList[i])
+            val result = backAgent.determineAction(backBenchList[i])
             if (result.title == backAnswerList[i]) count += 1
             Thread.sleep(2000)
         }

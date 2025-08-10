@@ -1,18 +1,16 @@
 package com.orderagentservice.order.service.utg
 
 import com.orderagentservice.agent.BackAgent
-import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.model.dto.AgentBackDto
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.model.dto.WordMatchDto
-import com.orderagentservice.global.service.WordSimilarityService
+import com.orderagentservice.order.service.WordSimilarityService
 import com.orderagentservice.logger
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.NodeRelation
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.dto.UiDto
-import com.orderagentservice.order.model.entity.UiEntity
 import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.graph.GraphService
 import com.orderagentservice.order.util.UiExtractorManager
@@ -106,7 +104,7 @@ abstract class AbstractMenuUtgService (
         val kioskId = context.kioskId
 
         //다시 원래 페이지로 돌아가야 하므로 backAgent를 통해 이전 페이지로 돌아가기
-        val backAction = backAgent.determineBack(llmOptList)
+        val backAction = backAgent.determineAction(llmOptList)
 
         //노드 생성
         val backNodeId = createBackNode(backAction, menuNodeId, context)

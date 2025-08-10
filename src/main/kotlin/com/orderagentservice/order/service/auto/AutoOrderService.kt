@@ -65,7 +65,6 @@ class AutoOrderService @Autowired constructor(
     }
 
     private fun putMenus(context: AutoOrderContext, menuList: List<AutoOrderMenu>) {
-        val kioskId = context.kioskId
         for (menu in menuList) {
             //포장/매장 클릭
             if (context.isPlaceSelected == false) {
@@ -82,9 +81,6 @@ class AutoOrderService @Autowired constructor(
             context.nodeId = clickBack(lastNodeId, context)
             log.info("현재 노드 ID: ${context.nodeId}")
         }
-
-//        val stationId = graphService.findStation(kioskId).id
-//        context.nodeId = stationId
     }
 
     private fun clickMenu(menu: AutoOrderMenu, context: AutoOrderContext): ActionPathDto {

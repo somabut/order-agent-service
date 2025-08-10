@@ -2,7 +2,8 @@ package com.orderagentservice.order.controller
 
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.model.dto.WordMatchDto
-import com.orderagentservice.global.service.WordSimilarityService
+import com.orderagentservice.order.model.dto.CoordinateDto
+import com.orderagentservice.order.service.WordSimilarityService
 import com.orderagentservice.order.service.NotificationService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class TestController @Autowired constructor(
     private val notificationService: NotificationService,
-    private val wordSimilarityService: WordSimilarityService
+    private val wordSimilarityService: WordSimilarityService,
 ) {
     @GetMapping("/")
     fun test(): String {
@@ -27,6 +28,12 @@ class TestController @Autowired constructor(
     @GetMapping("/test/{kioskId}")
     fun sendMessageTest(@PathVariable kioskId: String) {
         notificationService.sendMessage(kioskId, "[${kioskId}] test message from moodTRBL")
+    }
+
+    @GetMapping("/test/action")
+    fun sendActionMessage() {
+        val kioskId = "kiosk-8f22eeb6-a920-44ed-af26-d800756fb283"
+        notificationService.sendActionCommand(kioskId, CoordinateDto(x = 1000, y = 500, title = "TEST"))
     }
 
     @GetMapping("/test/compare")

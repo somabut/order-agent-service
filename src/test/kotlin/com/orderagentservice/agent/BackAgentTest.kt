@@ -26,7 +26,7 @@ class BackAgentTest @Autowired constructor(
         )
 
         //when: llm에게 질의
-        val response = backAgent.determineBack(uiList)
+        val response = backAgent.determineAction(uiList)
 
         //then: 올바른 액션 반환
         assertThat(response.title).isEqualTo("다음으로")
@@ -51,7 +51,7 @@ class BackAgentTest @Autowired constructor(
         )
 
         //when: llm에게 질의
-        val response = backAgent.determineBack(uiList)
+        val response = backAgent.determineAction(uiList)
         println(response)
 
         assertThat(response.title).isEqualTo("선택완료")

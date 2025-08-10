@@ -16,7 +16,7 @@ class BackAgent @Autowired constructor(
 ) {
     private val log = logger()
 
-    fun determineBack(uiList: List<UiComponentDto>): AgentBackDto {
+    fun determineAction(uiList: List<UiComponentDto>): AgentBackDto {
         val prompt = getPrompt(uiList)
         val json = llmManager.query(prompt)
         try {
