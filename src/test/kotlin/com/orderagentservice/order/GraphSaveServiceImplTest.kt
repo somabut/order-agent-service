@@ -3,7 +3,6 @@ package com.orderagentservice.order
 import com.orderagentservice.order.model.NodeRelation
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.service.graph.GraphService
-import com.orderagentservice.order.service.graph.GraphServiceImpl
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

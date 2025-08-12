@@ -1,4 +1,4 @@
-package com.orderagentservice.order.service
+package com.orderagentservice.order.service.utg
 
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.model.dto.WordMatchDto

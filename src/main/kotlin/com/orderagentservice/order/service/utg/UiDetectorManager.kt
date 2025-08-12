@@ -1,4 +1,4 @@
-package com.orderagentservice.order.util
+package com.orderagentservice.order.service.utg
 
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.model.response.ApiResponse
@@ -22,7 +22,7 @@ import java.io.File
 
 
 @Component
-class UiExtractorManager @Autowired constructor(
+class UiDetectorManager @Autowired constructor(
     private val env: Environment,
     private val notificationService: NotificationService
 ) {

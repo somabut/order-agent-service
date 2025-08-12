@@ -9,9 +9,9 @@ import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.entity.UiEntity
 import com.orderagentservice.order.service.NotificationService
-import com.orderagentservice.order.service.utg.PlaceUtgService
+import com.orderagentservice.order.service.utg.place.PlaceUtgService
 import com.orderagentservice.order.service.graph.GraphServiceImpl
-import com.orderagentservice.order.util.UiExtractorManager
+import com.orderagentservice.order.service.utg.UiDetectorManager
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -38,7 +38,7 @@ class PlaceUtgServiceTest {
     private lateinit var notificationService: NotificationService
     private lateinit var graphService: GraphServiceImpl
     private lateinit var placeUtgService: PlaceUtgService
-    private lateinit var uiExtractorManager: UiExtractorManager
+    private lateinit var uiDetectorManager: UiDetectorManager
 
     private lateinit var lastNode: UiEntity
     private lateinit var llmUiList: List<UiComponentDto>
@@ -52,8 +52,8 @@ class PlaceUtgServiceTest {
         placeAgent = mock()
         notificationService = mock()
         graphService = mock()
-        uiExtractorManager = mock()
-        placeUtgService = PlaceUtgService(placeAgent, notificationService, uiExtractorManager, graphService)
+        uiDetectorManager = mock()
+        placeUtgService = PlaceUtgService(placeAgent, notificationService, uiDetectorManager, graphService)
 
         lastNode = UiEntity(
             id = TEST_LAST_NODE_ID,

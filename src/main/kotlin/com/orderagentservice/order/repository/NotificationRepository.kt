@@ -7,7 +7,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArraySet
-import kotlin.math.log
 
 @Repository
 class NotificationRepository {

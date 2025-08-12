@@ -8,10 +8,10 @@ import com.orderagentservice.order.model.NodeRelation
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.entity.UiEntity
 import com.orderagentservice.order.service.NotificationService
-import com.orderagentservice.order.service.utg.PaymentUtgService
-import com.orderagentservice.order.service.utg.PlaceUtgService
+import com.orderagentservice.order.service.utg.payment.PaymentUtgService
+import com.orderagentservice.order.service.utg.place.PlaceUtgService
 import com.orderagentservice.order.service.graph.GraphServiceImpl
-import com.orderagentservice.order.util.UiExtractorManager
+import com.orderagentservice.order.service.utg.UiDetectorManager
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.mockito.ArgumentMatchers.anyString
@@ -40,7 +40,7 @@ class PaymentUtgServiceTest {
     private lateinit var paymentAgent: PaymentAgent
     private lateinit var placeUtgService: PlaceUtgService
     private lateinit var notificationService: NotificationService
-    private lateinit var uiExtractorManager: UiExtractorManager
+    private lateinit var uiDetectorManager: UiDetectorManager
     private lateinit var graphService: GraphServiceImpl
     private lateinit var paymentUtgService: PaymentUtgService
 
@@ -56,10 +56,10 @@ class PaymentUtgServiceTest {
         paymentAgent = mock()
         placeUtgService = mock()
         notificationService = mock()
-        uiExtractorManager = mock()
+        uiDetectorManager = mock()
         graphService = mock()
         paymentUtgService = PaymentUtgService(
-            paymentAgent, placeUtgService, notificationService, uiExtractorManager, graphService
+            paymentAgent, placeUtgService, notificationService, uiDetectorManager, graphService
         )
 
         lastNode = UiEntity(
@@ -105,14 +105,14 @@ class PaymentUtgServiceTest {
             AgentActionDto(false, 0.8F, listOf(100, 200), "매장")
         )
 
-        reset(paymentAgent, placeUtgService, notificationService, uiExtractorManager, graphService)
+        reset(paymentAgent, placeUtgService, notificationService, uiDetectorManager, graphService)
     }
 
     @Test
     fun `포장_매장_UI를_찾은_상태에서_결제_그래프_초기화가_성공한다`() {
         // given: 포장/매장 UI를 이미 찾은 상태
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
-        whenever(uiExtractorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
+        whenever(uiDetectorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
         whenever(paymentAgent.determineAction(llmUiList)).thenReturn(agentActionDto)
         whenever(graphService.saveNode(any<UiDto>())).thenReturn(uiEntity).thenReturn(completeEntity)
         doNothing().whenever(graphService).saveRel(anyString(), anyString(), any())
@@ -134,7 +134,7 @@ class PaymentUtgServiceTest {
 
         verify(placeUtgService, never()).initializeGraph(any())
         verify(notificationService).sendCaptureCommand(TEST_KIOSK_ID)
-        verify(uiExtractorManager).getUiComponents(TEST_KIOSK_ID)
+        verify(uiDetectorManager).getUiComponents(TEST_KIOSK_ID)
         verify(paymentAgent).determineAction(llmUiList)
         verify(graphService, times(2)).saveNode(any<UiDto>())
         verify(graphService, times(2)).saveRel(anyString(), anyString(), any<NodeRelation>())
@@ -155,7 +155,7 @@ class PaymentUtgServiceTest {
             placeActionList.forEach { context.history.add(it) }
         }
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
-        whenever(uiExtractorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
+        whenever(uiDetectorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
         whenever(paymentAgent.determineAction(llmUiList)).thenReturn(agentActionDto)
         whenever(graphService.saveNode(any<UiDto>())).thenReturn(uiEntity).thenReturn(completeEntity)
         doNothing().whenever(graphService).saveRel(anyString(), anyString(), any())
@@ -171,7 +171,7 @@ class PaymentUtgServiceTest {
 
         verify(placeUtgService).initializeGraph(any())
         verify(notificationService).sendCaptureCommand(TEST_KIOSK_ID)
-        verify(uiExtractorManager).getUiComponents(TEST_KIOSK_ID)
+        verify(uiDetectorManager).getUiComponents(TEST_KIOSK_ID)
         verify(paymentAgent).determineAction(llmUiList)
         verify(graphService, times(2)).saveNode(any<UiDto>())
         verify(graphService, times(2)).saveRel(anyString(), anyString(), any<NodeRelation>())
@@ -197,7 +197,7 @@ class PaymentUtgServiceTest {
         val secondEntity = UiEntity("ENTITY_456", null, false, 200, 300, "결제완료", TEST_KIOSK_ID)
 
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
-        whenever(uiExtractorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
+        whenever(uiDetectorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
         whenever(paymentAgent.determineAction(llmUiList)).thenReturn(firstAction).thenReturn(secondAction)
         whenever(graphService.saveNode(any<UiDto>()))
             .thenReturn(firstEntity)
@@ -222,7 +222,7 @@ class PaymentUtgServiceTest {
         assertEquals(secondAction, context.history[1])
 
         verify(notificationService, times(2)).sendCaptureCommand(TEST_KIOSK_ID)
-        verify(uiExtractorManager, times(2)).getUiComponents(TEST_KIOSK_ID)
+        verify(uiDetectorManager, times(2)).getUiComponents(TEST_KIOSK_ID)
         verify(paymentAgent, times(2)).determineAction(llmUiList)
         verify(graphService, times(3)).saveNode(any<UiDto>())
         verify(graphService, times(3)).saveRel(anyString(), anyString(), any<NodeRelation>())
@@ -232,7 +232,7 @@ class PaymentUtgServiceTest {
     fun 완료_노드가_올바르게_생성된다() {
         // given: 결제 과정이 완료되는 상황
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
-        whenever(uiExtractorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
+        whenever(uiDetectorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
         whenever(paymentAgent.determineAction(llmUiList)).thenReturn(agentActionDto)
         whenever(graphService.saveNode(any<UiDto>())).thenReturn(uiEntity).thenReturn(completeEntity)
         doNothing().whenever(graphService).saveRel(anyString(), anyString(), any())

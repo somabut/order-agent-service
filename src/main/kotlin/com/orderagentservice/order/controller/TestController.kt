@@ -3,7 +3,7 @@ package com.orderagentservice.order.controller
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.model.dto.WordMatchDto
 import com.orderagentservice.order.model.dto.CoordinateDto
-import com.orderagentservice.order.service.WordSimilarityService
+import com.orderagentservice.order.service.utg.WordSimilarityService
 import com.orderagentservice.order.service.NotificationService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping

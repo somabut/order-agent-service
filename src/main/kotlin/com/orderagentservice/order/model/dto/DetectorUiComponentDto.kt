@@ -1,7 +1,6 @@
 package com.orderagentservice.order.model.dto
 
 import com.orderagentservice.global.model.dto.PixelCoordinate
-import com.orderagentservice.global.model.dto.RatioCoordinate
 
 data class DetectorUiComponentDto(
     val contents: String,

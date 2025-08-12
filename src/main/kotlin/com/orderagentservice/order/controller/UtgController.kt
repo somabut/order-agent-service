@@ -2,11 +2,8 @@ package com.orderagentservice.order.controller
 
 import com.orderagentservice.global.model.response.ApiResponse
 import com.orderagentservice.order.exception.KioskAdminSignInException
-import com.orderagentservice.order.model.GraphContext
-import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.request.UtgUpdateRequest
 import com.orderagentservice.order.service.auto.RandomTaskService
-import com.orderagentservice.order.service.utg.MenuUtgService
 import com.orderagentservice.order.service.utg.UtgService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
@@ -16,7 +13,6 @@ import org.springframework.web.bind.annotation.*
 class UtgController @Autowired constructor(
     private val utgService: UtgService,
     private val randomTaskService: RandomTaskService,
-    private val menuUtgService: MenuUtgService
 ) {
     @GetMapping("/utg/init/{kioskId}")
     fun initializeUtg(

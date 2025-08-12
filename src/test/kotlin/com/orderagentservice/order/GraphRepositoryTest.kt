@@ -3,13 +3,11 @@ package com.orderagentservice.order
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.repository.GraphRepository
 import com.orderagentservice.order.service.graph.GraphService
-import com.orderagentservice.order.service.graph.GraphServiceImpl
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.neo4j.core.Neo4jClient
-import kotlin.contracts.contract
 
 @SpringBootTest
 class GraphRepositoryTest @Autowired constructor(

@@ -4,6 +4,8 @@ import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.logger
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.service.MenuService
+import com.orderagentservice.order.service.utg.menu.MenuUtgService
+import com.orderagentservice.order.service.utg.payment.PaymentUtgService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
