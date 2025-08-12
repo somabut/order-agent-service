@@ -1,35 +1,22 @@
-package com.orderagentservice.order.service.utg
+package com.orderagentservice.order.service.utg.menu
 
-import com.orderagentservice.agent.BackAgent
-import com.orderagentservice.order.service.WordSimilarityService
 import com.orderagentservice.logger
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.NodeRelation
-import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.dto.UiDto
-import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.graph.GraphService
-import com.orderagentservice.order.util.UiExtractorManager
+import com.orderagentservice.order.service.utg.PlaceUtgService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class MenuUtgService @Autowired constructor(
+    private val menuNavigator: MenuNavigator,
     private val placeUtgService: PlaceUtgService,
-    private val backAgent: BackAgent,
-    private val wordSimilarityService: WordSimilarityService,
-    private val uiExtractorManager: UiExtractorManager,
-    private val notificationService: NotificationService,
     private val graphService: GraphService
-) : AbstractMenuUtgService(
-    backAgent = backAgent,
-    wordSimilarityService = wordSimilarityService,
-    uiExtractorManager = uiExtractorManager,
-    notificationService = notificationService,
-    graphService = graphService
-) {
+)  {
     private val log = logger()
 
     @Transactional
@@ -44,7 +31,7 @@ class MenuUtgService @Autowired constructor(
         placeUtgService.initializeGraph(context)
 
         //루프를 돌며 메뉴들을 모두 탐색
-        navigateMenus(context, menuList)
+        menuNavigator.navigateMenus(context, menuList)
 
         //포장/매장 찾기
         if (context.isPlaceDetermined == false) {
@@ -64,30 +51,13 @@ class MenuUtgService @Autowired constructor(
         context.lastNodeId = nowNodeId
 
         //카테고리로 이동
-        moveCategory(context, categoryMenuList)
+        menuNavigator.moveCategory(context, categoryMenuList)
 
         //해당 페이지에서 메뉴 탐색
-        navigateMenus(context, categoryMenuList)
+        menuNavigator.navigateMenus(context, categoryMenuList)
 
         val endTime = System.nanoTime()
         log.info("메뉴 utg 업데이트 완료. 수행시간: ${(endTime - startTime) / 1000000}ms")
-    }
-
-    private fun moveCategory(context: GraphContext, categoryMenuList: List<MenuInfoDto>) {
-        val category = categoryMenuList[0].category
-
-        //변경이 일어난 카테고리까지 이동
-        val actionList = graphService.findPath(context.kioskId, context.lastNodeId!!, category)
-        for (act in actionList) {
-            notificationService.sendActionCommand(context.kioskId, CoordinateDto(act.x, act.y, act.title))
-        }
-
-        context.lastNodeId = actionList.last().id
-        context.currentCategory = category
-
-        //해당 카테고리의 메뉴 제거
-        val categoryId = actionList.last().id
-        graphService.deleteMenusByCategory(context.kioskId, categoryId)
     }
 
     private fun setupNode(context: GraphContext) {

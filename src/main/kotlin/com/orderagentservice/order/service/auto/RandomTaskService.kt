@@ -9,7 +9,7 @@ import com.orderagentservice.order.model.request.AutoOrderMenu
 import com.orderagentservice.order.model.request.AutoOrderOption
 import com.orderagentservice.order.model.request.AutoOrderRequest
 import com.orderagentservice.order.service.MenuService
-import com.orderagentservice.order.service.utg.MenuUtgService
+import com.orderagentservice.order.service.utg.menu.MenuUtgService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import kotlin.random.Random

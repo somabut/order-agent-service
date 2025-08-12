@@ -11,7 +11,7 @@ import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.entity.UiEntity
-import com.orderagentservice.order.service.utg.MenuUtgService
+import com.orderagentservice.order.service.utg.menu.MenuUtgService
 import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.utg.PlaceUtgService
 import com.orderagentservice.order.service.graph.GraphServiceImpl
