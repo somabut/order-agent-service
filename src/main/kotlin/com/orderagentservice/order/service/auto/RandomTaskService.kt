@@ -28,7 +28,7 @@ class RandomTaskService @Autowired constructor(
 
         repeat(count) {
             val request = generate(count, kioskId, accessToken)
-            val history = autoOrderService.order(kioskId, TEST_TASK_ID, request)
+            val history = autoOrderService.execute(kioskId, TEST_TASK_ID, request)
 
             //클릭결과와 원래 요청 비교
             val compareResult = compareAutoOrder(request, history)

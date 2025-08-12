@@ -22,7 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
 
 @ExtendWith(MockitoExtension::class)
-class AutoOrderServiceTest {
+class AutoExecuteServiceTest {
     companion object {
         private const val TEST_KIOSK_ID = "KIOSK_001"
         private const val TEST_ROOT_NODE_ID = "root"
