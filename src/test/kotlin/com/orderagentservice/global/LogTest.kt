@@ -2,9 +2,9 @@ package com.orderagentservice.global
 
 import com.orderagentservice.global.util.GlobalLogger
 import com.orderagentservice.jsonMapper
-import com.orderagentservice.order.auto.model.request.AutoOrderMenu
-import com.orderagentservice.order.auto.model.request.AutoOrderOption
-import com.orderagentservice.order.auto.model.request.AutoOrderRequest
+import com.orderagentservice.order.model.request.AutoOrderMenu
+import com.orderagentservice.order.model.request.AutoOrderOption
+import com.orderagentservice.order.model.request.AutoOrderRequest
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest

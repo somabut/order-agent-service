@@ -1,8 +1,8 @@
 package com.orderagentservice.order
 
-import com.orderagentservice.order.utg.model.dto.UiDto
+import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.repository.GraphRepository
-import com.orderagentservice.order.service.GraphService
+import com.orderagentservice.order.service.graph.GraphService
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

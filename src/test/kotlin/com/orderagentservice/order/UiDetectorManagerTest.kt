@@ -1,6 +1,6 @@
 package com.orderagentservice.order
 
-import com.orderagentservice.order.utg.UiDetectorManager
+import com.orderagentservice.order.service.utg.UiDetectorManager
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest

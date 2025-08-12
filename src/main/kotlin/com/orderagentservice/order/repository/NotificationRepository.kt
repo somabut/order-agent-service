@@ -1,7 +1,7 @@
 package com.orderagentservice.order.repository
 
 import com.orderagentservice.order.exception.NoSuchKioskException
-import com.orderagentservice.order.utg.model.dto.CoordinateDto
+import com.orderagentservice.order.model.dto.CoordinateDto
 import org.springframework.stereotype.Repository
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
 import java.io.File

@@ -1,6 +1,6 @@
 package com.orderagentservice.global.model.dto
 
-import com.orderagentservice.order.utg.model.dto.CoordinateDto
+import com.orderagentservice.order.model.dto.CoordinateDto
 
 data class WordMatchDto(
     val x: Int,
