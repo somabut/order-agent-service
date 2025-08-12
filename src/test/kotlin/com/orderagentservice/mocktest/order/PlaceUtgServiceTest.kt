@@ -3,15 +3,15 @@ package com.orderagentservice.mocktest.order
 import com.orderagentservice.agent.PlaceAgent
 import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.model.dto.UiComponentDto
-import com.orderagentservice.order.model.GraphContext
-import com.orderagentservice.order.model.NodeRelation
-import com.orderagentservice.order.model.dto.CoordinateDto
-import com.orderagentservice.order.model.dto.UiDto
-import com.orderagentservice.order.model.entity.UiEntity
+import com.orderagentservice.order.utg.model.GraphContext
+import com.orderagentservice.order.utg.NodeRelation
+import com.orderagentservice.order.utg.model.dto.CoordinateDto
+import com.orderagentservice.order.utg.model.dto.UiDto
+import com.orderagentservice.order.utg.model.entity.UiEntity
 import com.orderagentservice.order.service.NotificationService
-import com.orderagentservice.order.service.utg.PlaceUtgService
-import com.orderagentservice.order.service.graph.GraphServiceImpl
-import com.orderagentservice.order.util.UiExtractorManager
+import com.orderagentservice.order.utg.service.PlaceUtgService
+import com.orderagentservice.order.service.GraphServiceImpl
+import com.orderagentservice.order.utg.UiDetectorManager
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -38,7 +38,7 @@ class PlaceUtgServiceTest {
     private lateinit var notificationService: NotificationService
     private lateinit var graphService: GraphServiceImpl
     private lateinit var placeUtgService: PlaceUtgService
-    private lateinit var uiExtractorManager: UiExtractorManager
+    private lateinit var uiDetectorManager: UiDetectorManager
 
     private lateinit var lastNode: UiEntity
     private lateinit var llmUiList: List<UiComponentDto>
@@ -52,8 +52,8 @@ class PlaceUtgServiceTest {
         placeAgent = mock()
         notificationService = mock()
         graphService = mock()
-        uiExtractorManager = mock()
-        placeUtgService = PlaceUtgService(placeAgent, notificationService, uiExtractorManager, graphService)
+        uiDetectorManager = mock()
+        placeUtgService = PlaceUtgService(placeAgent, notificationService, uiDetectorManager, graphService)
 
         lastNode = UiEntity(
             id = TEST_LAST_NODE_ID,

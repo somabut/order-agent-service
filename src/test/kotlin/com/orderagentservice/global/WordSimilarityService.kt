@@ -1,7 +1,7 @@
 package com.orderagentservice.global
 
 import com.orderagentservice.agent.model.dto.UiComponentDto
-import com.orderagentservice.order.service.WordSimilarityService
+import com.orderagentservice.order.utg.service.WordSimilarityService
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest

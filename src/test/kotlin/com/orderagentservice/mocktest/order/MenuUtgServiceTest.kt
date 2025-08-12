@@ -3,19 +3,19 @@ package com.orderagentservice.mocktest.order
 import com.orderagentservice.agent.BackAgent
 import com.orderagentservice.agent.PageAgent
 import com.orderagentservice.agent.model.dto.*
-import com.orderagentservice.order.service.WordSimilarityService
+import com.orderagentservice.order.utg.service.WordSimilarityService
 import com.orderagentservice.order.exception.LowScoreException
-import com.orderagentservice.order.model.GraphContext
-import com.orderagentservice.order.model.NodeRelation
-import com.orderagentservice.order.model.dto.CoordinateDto
+import com.orderagentservice.order.utg.model.GraphContext
+import com.orderagentservice.order.utg.NodeRelation
+import com.orderagentservice.order.utg.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
-import com.orderagentservice.order.model.dto.UiDto
-import com.orderagentservice.order.model.entity.UiEntity
-import com.orderagentservice.order.service.utg.menu.MenuUtgService
+import com.orderagentservice.order.utg.model.dto.UiDto
+import com.orderagentservice.order.utg.model.entity.UiEntity
+import com.orderagentservice.order.utg.service.MenuUtgService
 import com.orderagentservice.order.service.NotificationService
-import com.orderagentservice.order.service.utg.PlaceUtgService
-import com.orderagentservice.order.service.graph.GraphServiceImpl
-import com.orderagentservice.order.util.UiExtractorManager
+import com.orderagentservice.order.utg.service.PlaceUtgService
+import com.orderagentservice.order.service.GraphServiceImpl
+import com.orderagentservice.order.utg.UiDetectorManager
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -55,7 +55,7 @@ class MenuUtgServiceTest {
     private lateinit var backAgent: BackAgent
     private lateinit var pageAgent: PageAgent
     private lateinit var placeUtgService: PlaceUtgService
-    private lateinit var uiExtractorManager: UiExtractorManager
+    private lateinit var uiDetectorManager: UiDetectorManager
     private lateinit var notificationService: NotificationService
     private lateinit var graphService: GraphServiceImpl
     private lateinit var menuGraphService: MenuUtgService
@@ -89,7 +89,7 @@ class MenuUtgServiceTest {
         backAgent = mock()
         pageAgent = mock()
         placeUtgService = mock()
-        uiExtractorManager = mock()
+        uiDetectorManager = mock()
         notificationService = mock()
         graphService = mock()
         wordSimilarityService = mock()
@@ -98,7 +98,7 @@ class MenuUtgServiceTest {
             placeUtgService = placeUtgService,
             backAgent = backAgent,
             wordSimilarityService = wordSimilarityService,
-            uiExtractorManager = uiExtractorManager,
+            uiExtractorManager = uiDetectorManager,
             notificationService = notificationService,
             graphService = graphService
         )
@@ -244,7 +244,7 @@ class MenuUtgServiceTest {
         )
 
         reset(backAgent, pageAgent, placeUtgService,
-            uiExtractorManager, notificationService, graphService)
+            uiDetectorManager, notificationService, graphService)
     }
 
     @Test
@@ -293,7 +293,7 @@ class MenuUtgServiceTest {
 
         whenever(graphService.saveNode(any<UiDto>())).thenReturn(rootNode, firstNode)
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
-        whenever(uiExtractorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
+        whenever(uiDetectorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
         whenever(placeUtgService.initializeGraph(any())).thenAnswer {
             val ctx = it.arguments[0] as GraphContext
             ctx.isPlaceDetermined = true
@@ -351,7 +351,7 @@ class MenuUtgServiceTest {
 
         // 테스트에 필요한 기본적인 Mocking
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
-        whenever(uiExtractorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
+        whenever(uiDetectorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
         whenever(notificationService.sendActionCommand(any(), any())).thenReturn(actionResult)
         whenever(pageAgent.determineAction(any(), any())).thenReturn(pageAction) // handleModal 내부에서 사용될 수 있음
         whenever(placeUtgService.initializeGraph(any())).thenAnswer {
@@ -380,7 +380,7 @@ class MenuUtgServiceTest {
         // ← mockStatic 블록 완전 제거!
         whenever(graphService.saveNode(any<UiDto>())).thenReturn(rootNode, firstNode, menuEntity)
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
-        whenever(uiExtractorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
+        whenever(uiDetectorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
         whenever(placeUtgService.initializeGraph(any())).thenAnswer {
             val ctx = it.arguments[0] as GraphContext
             callCount++
@@ -433,7 +433,7 @@ class MenuUtgServiceTest {
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID))
             .thenReturn(TEST_IMAGE_DATA)
             .thenReturn(TEST_MODAL_IMAGE_DATA)
-        whenever(uiExtractorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
+        whenever(uiDetectorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
         whenever(placeUtgService.initializeGraph(any())).thenAnswer {
             val ctx = it.arguments[0] as GraphContext
             ctx.isPlaceDetermined = true
@@ -461,7 +461,7 @@ class MenuUtgServiceTest {
 
         whenever(graphService.saveNode(any<UiDto>())).thenReturn(rootNode, menuEntity)
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
-        whenever(uiExtractorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
+        whenever(uiDetectorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
         whenever(placeUtgService.initializeGraph(any())).thenAnswer {  }
         whenever(backAgent.determineAction(any())).thenReturn(backAction)
         whenever(pageAgent.determineAction(anyList(), anyList())).thenReturn(pageAction)

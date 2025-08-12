@@ -4,7 +4,7 @@ import com.orderagentservice.global.model.response.ApiResponse
 import com.orderagentservice.order.model.request.ActionReplyRequest
 import com.orderagentservice.order.model.response.CommandResponse
 import com.orderagentservice.global.service.AmazonS3Service
-import com.orderagentservice.order.model.dto.CoordinateDto
+import com.orderagentservice.order.utg.model.dto.CoordinateDto
 import com.orderagentservice.order.service.NotificationService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PathVariable
