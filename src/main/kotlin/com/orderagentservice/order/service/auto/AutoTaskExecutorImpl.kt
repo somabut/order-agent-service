@@ -20,8 +20,6 @@ class AutoTaskExecutorImpl @Autowired constructor(
     private val notificationService: NotificationService,
     private val orderLogSender: OrderLogSender
 ) : AutoTaskExecutor {
-    private val log = logger()
-
     override fun clickMenu(context: AutoOrderContext, menu: AutoOrderMenu): ActionPathDto {
         orderLogSender.logOrder(context.kioskId, context.taskId, "메뉴를 담습니다. 메뉴: ${menu.title}")
         val actionList = graphService.findPath(context.kioskId, context.nodeId, menu.title)

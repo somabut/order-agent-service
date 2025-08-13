@@ -1,18 +1,12 @@
 package com.orderagentservice.order.service.auto
 
-import com.orderagentservice.global.model.dto.LogDto
-import com.orderagentservice.global.service.LogService
 import com.orderagentservice.logger
-import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.request.AutoOrderMenu
 import com.orderagentservice.order.model.request.AutoOrderRequest
 import com.orderagentservice.global.util.GlobalLogger
 import com.orderagentservice.jsonMapper
 import com.orderagentservice.order.model.AutoOrderContext
 import com.orderagentservice.order.model.AutoOrderResultDto
-import com.orderagentservice.order.model.dto.ActionPathDto
-import com.orderagentservice.order.model.request.AutoOrderOption
-import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.graph.GraphService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service

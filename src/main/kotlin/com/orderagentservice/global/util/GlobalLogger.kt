@@ -50,7 +50,7 @@ class GlobalLogger {
         MDC.put("menuList", menuJson)
         MDC.put("processingTime (ms)", processingTime.toString())
         MDC.put("paymentMethod", paymentMethod)
-        logger.info(LogType.ORDER_RESULT.message)
+        logger.info("${LogType.ORDER_RESULT.message} 담은 메뉴: ${menuJson}")
         MDC.clear()
     }
 }
