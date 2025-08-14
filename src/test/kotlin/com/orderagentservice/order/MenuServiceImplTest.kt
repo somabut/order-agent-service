@@ -11,8 +11,8 @@ class MenuServiceImplTest @Autowired constructor(
 ) {
     @Test
     fun `메뉴정보를 받아온다`() {
-        val kioskId = "kiosk-8f22eeb6-a920-44ed-af26-d800756fb283"
-        val accessToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJxd2UxMjMiLCJpYXQiOjE3NTMzNjM0NzgsImV4cCI6MTc1MzQ0OTg3OH0.BTBUWWfazVxAdhHW1IrX_Dh3z4SWm04MpMLI0W37E3Db2FRIxB2_5WvDwZjjrBbLPSX_o_QWMod5QvvynvqAeA"
+        val kioskId = "kiosk-494cbae2-0681-46e6-ba59-88726509fd88"
+        val accessToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzb21hMTMyNDg5NyIsImlhdCI6MTc1NTE3NDQzOCwiZXhwIjoxNzU1MjYwODM4fQ.5jL5U-2IE1-LABEyL15OMeSg0c4JvrzjPandIzmQV4eHJdZlz4c2uvDIuSb9xWA025swW03ffZncQldaFUIIMQ"
         val result = menuService.getMenus(kioskId, accessToken)
         for (ele in result)
             println(ele)

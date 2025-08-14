@@ -12,6 +12,7 @@ import com.orderagentservice.order.service.utg.payment.PaymentUtgService
 import com.orderagentservice.order.service.utg.place.PlaceUtgService
 import com.orderagentservice.order.service.graph.GraphServiceImpl
 import com.orderagentservice.order.service.utg.UiDetectorManager
+import com.orderagentservice.order.service.utg.payment.PaymentNavigator
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.mockito.ArgumentMatchers.anyString
@@ -38,6 +39,7 @@ class PaymentUtgServiceTest {
     }
 
     private lateinit var paymentAgent: PaymentAgent
+    private lateinit var paymentNavigator: PaymentNavigator
     private lateinit var placeUtgService: PlaceUtgService
     private lateinit var notificationService: NotificationService
     private lateinit var uiDetectorManager: UiDetectorManager
@@ -59,7 +61,7 @@ class PaymentUtgServiceTest {
         uiDetectorManager = mock()
         graphService = mock()
         paymentUtgService = PaymentUtgService(
-            paymentAgent, placeUtgService, notificationService, uiDetectorManager, graphService
+            paymentNavigator = paymentNavigator
         )
 
         lastNode = UiEntity(

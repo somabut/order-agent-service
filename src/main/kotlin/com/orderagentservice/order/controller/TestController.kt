@@ -30,15 +30,13 @@ class TestController @Autowired constructor(
         notificationService.sendMessage(kioskId, "[${kioskId}] test message from moodTRBL")
     }
 
-    @GetMapping("/test/action")
-    fun sendActionMessage() {
-        val kioskId = "kiosk-8f22eeb6-a920-44ed-af26-d800756fb283"
+    @GetMapping("/test/action/{kioskId}")
+    fun sendActionMessage(@PathVariable kioskId: String) {
         notificationService.sendActionCommand(kioskId, CoordinateDto(x = 1000, y = 500, title = "TEST"))
     }
 
-    @GetMapping("/test/capture")
-    fun sendCaptureMessage() {
-        val kioskId = "kiosk-8f22eeb6-a920-44ed-af26-d800756fb283"
+    @GetMapping("/test/capture/{kioskId}")
+    fun sendCaptureMessage(@PathVariable kioskId: String) {
         notificationService.sendCaptureCommand(kioskId)
     }
 
