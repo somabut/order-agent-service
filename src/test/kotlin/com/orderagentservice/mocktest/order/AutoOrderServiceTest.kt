@@ -10,8 +10,10 @@ import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.request.AutoOrderMenu
 import com.orderagentservice.order.model.request.AutoOrderOption
 import com.orderagentservice.order.model.request.AutoOrderRequest
-import com.orderagentservice.order.auto.service.AutoOrderService
 import com.orderagentservice.order.service.NotificationService
+import com.orderagentservice.order.service.auto.AutoOrderService
+import com.orderagentservice.order.service.auto.AutoTaskExecutor
+import com.orderagentservice.order.service.auto.OrderLogSender
 import com.orderagentservice.order.service.graph.GraphServiceImpl
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -22,7 +24,7 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.*
 
 @ExtendWith(MockitoExtension::class)
-class AutoOrderServiceTest {
+class AutoExecuteServiceTest {
     companion object {
         private const val TEST_KIOSK_ID = "KIOSK_001"
         private const val TEST_ROOT_NODE_ID = "root"
@@ -65,13 +67,16 @@ class AutoOrderServiceTest {
     private lateinit var notificationService: NotificationService
 
     @Mock
-    private lateinit var logService: LogService
+    private lateinit var autoTaskExecutor: AutoTaskExecutor
 
     @Mock
     private lateinit var graphService: GraphServiceImpl
 
     @Mock
     private lateinit var globalLogger: GlobalLogger
+
+    @Mock
+    private lateinit var orderLogSender: OrderLogSender
 
     private lateinit var autoOrderService: AutoOrderService
     private lateinit var orderRequest: AutoOrderRequest
@@ -90,7 +95,12 @@ class AutoOrderServiceTest {
 
     @BeforeEach
     fun setUp() {
-        autoOrderService = AutoOrderService(notificationService, logService, graphService, globalLogger)
+        autoOrderService = AutoOrderService(
+            graphService = graphService,
+            globalLogger = globalLogger,
+            autoTaskExecutor = autoTaskExecutor,
+            orderLogSender = orderLogSender,
+        )
 
         orderRequest = AutoOrderRequest(
             place = TEST_PLACE_STORE,
@@ -146,7 +156,7 @@ class AutoOrderServiceTest {
         doNothing().whenever(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), any(), any(), eq(TEST_PAYMENT_CARD), eq(TEST_TASK_ID))
 
         // when: 자동주문 진행
-        autoOrderService.order(TEST_KIOSK_ID, TEST_TASK_ID, orderRequest)
+        autoOrderService.execute(TEST_KIOSK_ID, TEST_TASK_ID, orderRequest)
 
         // then: 로그 기록 및 서비스 호출이 정상적으로 수행된다
         verify(globalLogger).loggingOrderStart(TEST_KIOSK_ID, TEST_TASK_ID)
@@ -196,7 +206,7 @@ class AutoOrderServiceTest {
         doNothing().whenever(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), any(), any(), eq(TEST_PAYMENT_CASH), eq(TEST_TASK_ID))
 
         // when: 자동주문 진행
-        autoOrderService.order(TEST_KIOSK_ID, TEST_TASK_ID, takeoutOrderRequest)
+        autoOrderService.execute(TEST_KIOSK_ID, TEST_TASK_ID, takeoutOrderRequest)
 
         // then: 포장 노드 클릭이 정상적으로 수행된다
         verify(graphService).findPlace(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_PLACE_TAKEOUT)
@@ -242,7 +252,7 @@ class AutoOrderServiceTest {
         doNothing().whenever(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), any(), any(), eq(TEST_PAYMENT_CARD), eq(TEST_TASK_ID))
 
         // when: 자동주문 진행
-        autoOrderService.order(TEST_KIOSK_ID, TEST_TASK_ID, multiMenuOrderRequest)
+        autoOrderService.execute(TEST_KIOSK_ID, TEST_TASK_ID, multiMenuOrderRequest)
 
         // then: 각 메뉴가 개별적으로 처리되고 결과에 2개 메뉴가 포함된다
         verify(graphService).findPath(TEST_KIOSK_ID, TEST_ROOT_NODE_ID, TEST_MENU_TITLE)
@@ -269,7 +279,7 @@ class AutoOrderServiceTest {
         doNothing().whenever(globalLogger).loggingOrderResult(eq(TEST_KIOSK_ID), any(), any(), eq(TEST_PAYMENT_CARD), eq(TEST_TASK_ID))
 
         // when: 자동주문 진행
-        autoOrderService.order(TEST_KIOSK_ID, TEST_TASK_ID, orderRequest)
+        autoOrderService.execute(TEST_KIOSK_ID, TEST_TASK_ID, orderRequest)
 
         // then: 옵션 선택 후 뒤로가기가 정상적으로 수행된다
         verify(graphService).findOption(TEST_KIOSK_ID, TEST_MENU_ID, TEST_OPTION_TITLE)

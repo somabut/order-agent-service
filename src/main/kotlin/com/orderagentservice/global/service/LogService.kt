@@ -1,13 +1,9 @@
 package com.orderagentservice.global.service
 
 import com.orderagentservice.global.exception.InvalidSessionException
-import com.orderagentservice.global.model.dto.LogDto
 import com.orderagentservice.global.model.response.ApiResponse
-import com.orderagentservice.order.model.response.MenuInfoResponse
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.core.ParameterizedTypeReference
 import org.springframework.core.env.Environment
-import org.springframework.core.env.get
 import org.springframework.http.*
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException

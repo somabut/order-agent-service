@@ -14,10 +14,10 @@ class PlaceAgentTest @Autowired constructor(
     fun `포장 매장을 선택하는 UI를 찾아낸다`() {
         //given: ui list
         val uiList = listOf(
-            UiComponentDto(x = 145, y = 310, title = "먹고가기"),
+            UiComponentDto(x = 145, y = 310, title = "먹고 가기"),
             UiComponentDto(x = 212, y = 485, title = "너겟킹 7900원"),
             UiComponentDto(x = 398, y = 605, title = "리얼 어니언링 8200원"),
-            UiComponentDto(x = 125, y = 732, title = "가져가기"),
+            UiComponentDto(x = 125, y = 732, title = "포장 하기"),
             UiComponentDto(x = 362, y = 298, title = "코카콜라 7500원"),
             UiComponentDto(x = 274, y = 847, title = "코카콜라 제로 9500원"),
             UiComponentDto(x = 458, y = 415, title = "취소 8900원"),

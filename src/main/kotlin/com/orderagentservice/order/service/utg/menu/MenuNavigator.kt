@@ -68,8 +68,8 @@ class MenuNavigator @Autowired constructor(
                     menuNodeId = menuNodeId,
                     uiList = uiList
                 )
+                graphService.saveRel(nodeId, context.lastNodeId!!, NodeRelation.BACK_TO)
             }
-            graphService.saveRel(nodeId, context.lastNodeId!!, NodeRelation.BACK_TO)
         } else {
             //옵션이 있는 경우
             if (checkOptionPage(menuDto.options, uiList) == false) {

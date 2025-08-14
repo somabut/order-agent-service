@@ -16,6 +16,7 @@ import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.utg.place.PlaceUtgService
 import com.orderagentservice.order.service.graph.GraphServiceImpl
 import com.orderagentservice.order.service.utg.UiDetectorManager
+import com.orderagentservice.order.service.utg.menu.MenuNavigator
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -54,6 +55,7 @@ class MenuUtgServiceTest {
 
     private lateinit var backAgent: BackAgent
     private lateinit var pageAgent: PageAgent
+    private lateinit var menuNavigator: MenuNavigator
     private lateinit var placeUtgService: PlaceUtgService
     private lateinit var uiDetectorManager: UiDetectorManager
     private lateinit var notificationService: NotificationService
@@ -96,11 +98,8 @@ class MenuUtgServiceTest {
 
         menuGraphService = MenuUtgService(
             placeUtgService = placeUtgService,
-            backAgent = backAgent,
-            wordSimilarityService = wordSimilarityService,
-            uiExtractorManager = uiDetectorManager,
-            notificationService = notificationService,
-            graphService = graphService
+            graphService = graphService,
+            menuNavigator = menuNavigator,
         )
 
         firstDto = MenuInfoDto(
