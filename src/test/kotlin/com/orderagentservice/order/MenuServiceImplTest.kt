@@ -26,4 +26,18 @@ class MenuServiceImplTest @Autowired constructor(
         for (ele in result)
             println(ele)
     }
+
+    @Test
+    fun `특정 카테고리의 메뉴 정보를 받아온다 - 2`() {
+        val kioskId = "kiosk-494cbae2-0681-46e6-ba59-88726509fd88"
+        val accessToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzb21hMTMyNDg5NyIsImlhdCI6MTc1NTQxNTczNiwiZXhwIjoxNzU1NTAyMTM2fQ.2Nxgt0cZ_QX8C9HSa4rNv54uqv4CaOF5E42P2FH-gHIvoc3AJ-pJ3l7ALZ0gCoMJqZ0j_JV-q4ndrgd9GHaRCg"
+
+        val menuList = menuService.getMenus(kioskId, accessToken)
+        val menuDto = menuList[0]
+        val filteredList = menuList.filter { it.category == menuDto.category }
+
+        for (ele in filteredList) {
+            println(ele)
+        }
+    }
 }

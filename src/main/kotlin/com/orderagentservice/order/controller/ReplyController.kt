@@ -32,7 +32,9 @@ class ReplyController @Autowired constructor(
         image.transferTo(tempFile)
 
         notificationService.registerCaptureCommand(commandId, tempFile)
-        amazonS3Service.saveFile(kioskId, commandId, tempFile)
+
+        //AWS비밀번호 변경으로 인한 임시적 비활성
+//        amazonS3Service.saveFile(kioskId, commandId, tempFile)
         return ApiResponse.success(CommandResponse(commandId))
     }
 
