@@ -47,15 +47,17 @@ class PaymentAgentTest @Autowired constructor(
         uiList.removeLast()
         Thread.sleep(1000)
 
-        uiList.add(UiComponentDto(x = 220, y = 200, title = "카드를 삽입해주세요"))
+        uiList.add(UiComponentDto(x = 220, y = 200, title = "결제버튼을 선택 후 IC 카드를 투입구에 넣어주세요."))
+        uiList.add(UiComponentDto(x = 210, y = 100, title = "결제"))
 
         //when-3: llm에게 질의 한다
         val response3 = paymentAgent.determineAction(uiList)
         println(response3)
 
         //then-3: 올바른 액션을 반환한다
-        assertThat(response3.title).isEqualTo("카드를 삽입해주세요")
+        assertThat(response3.title).isEqualTo("결제버튼을 선택 후 IC 카드를 투입구에 넣어주세요.")
         assertThat(response3.goNext).isEqualTo(false)
+        uiList.removeLast()
         uiList.removeLast()
         Thread.sleep(1000)
 

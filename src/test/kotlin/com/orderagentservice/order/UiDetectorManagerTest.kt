@@ -13,12 +13,11 @@ class UiDetectorManagerTest @Autowired constructor(
     @Test
     fun `uiExtractorService에게서 이미지 파싱 결과를 가져온다`() {
         //given: 이미지를 가져옴
-        val imagePath = "C:\\Users\\hachi\\IdeaProjects\\OrderAgentService\\src\\test\\resources\\opt.png"
+        val imagePath = "/Users/moodtrbl/IdeaProjects/order-agent-service/src/test/resources/main.png"
         val imageFile = File(imagePath)
 
         //when: ui extractor에게 이미지 파싱을 요청한다
-//        val response = uiExtractorManager.getUiComponents("moodTRBL")
-        val response = uiDetectorManager.queryUiExtractor(imageFile, "ocr")
+        val response = uiDetectorManager.queryUiExtractor(imageFile, "extract-ui")
 
         //then: 파싱이 완료된다.
         for (ele in response) {

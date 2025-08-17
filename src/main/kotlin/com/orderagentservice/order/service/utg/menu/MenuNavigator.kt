@@ -41,6 +41,7 @@ class MenuNavigator @Autowired constructor(
                 context = context,
                 menuDto = menuDto,
                 menuNodeId = menuNodeId,
+                menuList = menuList,
                 menuPageList = uiList
             )
         }
@@ -52,6 +53,7 @@ class MenuNavigator @Autowired constructor(
     private fun handleModal(
         context: GraphContext,
         menuDto: MenuInfoDto,
+        menuList: List<MenuInfoDto>,
         menuNodeId: String,
         menuPageList: List<UiComponentDto>
     ) {
@@ -61,7 +63,10 @@ class MenuNavigator @Autowired constructor(
 
         if (menuDto.options.isEmpty()) {
             //옵션이 없는 경우
-            if (checkMenuPage(menuPageList, uiList) == false) {
+
+            //TODO(실제 페이지 비교결과를 모두 비교하기보다 카테고리의 메뉴정보를 활용하기)
+            if (checkMenuPage(menuDto, menuList, uiList) == false) {
+                log.info("모달이 감지되어 모달을 처리합니다.")
                 nodeId = menuActionExecutor.selectModal(
                     context = context,
                     menuDto = menuDto,
@@ -73,6 +78,7 @@ class MenuNavigator @Autowired constructor(
         } else {
             //옵션이 있는 경우
             if (checkOptionPage(menuDto.options, uiList) == false) {
+                log.info("모달이 감지되어 모달을 처리합니다.")
                 nodeId = menuActionExecutor.selectModal(
                     context = context,
                     menuDto = menuDto,
@@ -86,7 +92,7 @@ class MenuNavigator @Autowired constructor(
 
             //옵션을 선택하고 원래 페이지도 이동
             uiList = uiDetectorManager.getUiComponents(context.kioskId)
-            while (checkMenuPage(menuPageList, uiList) == false) {
+            while (checkMenuPage(menuDto, menuList, uiList) == false) {
                 nodeId = menuActionExecutor.selectBack(context, nodeId, uiList)
                 uiList = uiDetectorManager.getUiComponents(context.kioskId)
             }
@@ -111,8 +117,8 @@ class MenuNavigator @Autowired constructor(
         graphService.deleteMenusByCategory(context.kioskId, categoryId)
     }
 
-    private fun checkMenuPage(menuPageList: List<UiComponentDto>, uiList: List<UiComponentDto>): Boolean {
-        val sourceList = menuPageList.map { it.title }
+    private fun checkMenuPage(menuDto: MenuInfoDto, menuList: List<MenuInfoDto>, uiList: List<UiComponentDto>): Boolean {
+        val sourceList = getMenusByCategory(menuDto, menuList)
 
         val result = wordSimilarityService.determinePage(sourceList, uiList)
         return result
@@ -121,5 +127,13 @@ class MenuNavigator @Autowired constructor(
     private fun checkOptionPage(optionList: List<String>, uiList: List<UiComponentDto>): Boolean {
         val result = wordSimilarityService.determinePage(optionList, uiList)
         return result
+    }
+
+    private fun getMenusByCategory(menuDto: MenuInfoDto, menuList: List<MenuInfoDto>): List<String> {
+        val filteredList = menuList
+            .filter { it.category == menuDto.category }
+            .map { it.title }
+
+        return filteredList
     }
 }
