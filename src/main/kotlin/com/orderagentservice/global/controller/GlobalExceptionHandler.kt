@@ -93,6 +93,12 @@ class GlobalExceptionHandler {
     @ExceptionHandler(InvalidSessionException::class)
     fun handleInvalidSessionException(e: InvalidSessionException): ApiResponse<*> {
         log.info("${e.errorCode.name}: ${e.message}")
-        return ApiResponse.fail<LlmParseException>(e)
+        return ApiResponse.fail<InvalidSessionException>(e)
+    }
+
+    @ExceptionHandler(UtgInfiniteLoopException::class)
+    fun handleInvalidSessionException(e: UtgInfiniteLoopException): ApiResponse<*> {
+        log.info("${e.errorCode.name}: ${e.message}")
+        return ApiResponse.fail<UtgInfiniteLoopException>(e)
     }
 }
