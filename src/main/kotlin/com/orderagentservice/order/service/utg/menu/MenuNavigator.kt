@@ -2,6 +2,7 @@ package com.orderagentservice.order.service.utg.menu
 
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.logger
+import com.orderagentservice.order.exception.UtgInfiniteLoopException
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.NodeRelation
 import com.orderagentservice.order.model.dto.CoordinateDto
@@ -23,6 +24,8 @@ class MenuNavigator @Autowired constructor(
     private val notificationService: NotificationService
 ) {
     private val log = logger()
+
+    private val MAX_LOOP = 5
 
     fun navigateMenus(context: GraphContext, menuList: List<MenuInfoDto>) {
         var uiList = uiDetectorManager.getUiComponents(context.kioskId)
@@ -91,10 +94,16 @@ class MenuNavigator @Autowired constructor(
             menuActionExecutor.selectOption(context, menuDto, nodeId)
 
             //옵션을 선택하고 원래 페이지도 이동
+            var count = 0
             uiList = uiDetectorManager.getUiComponents(context.kioskId)
             while (checkMenuPage(menuDto, menuList, uiList) == false) {
+                if (count >= MAX_LOOP) {
+                    throw UtgInfiniteLoopException()
+                }
+
                 nodeId = menuActionExecutor.selectBack(context, nodeId, uiList)
                 uiList = uiDetectorManager.getUiComponents(context.kioskId)
+                count++
             }
             graphService.saveRel(nodeId, context.lastNodeId!!, NodeRelation.BACK_TO)
         }

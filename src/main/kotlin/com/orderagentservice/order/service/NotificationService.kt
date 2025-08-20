@@ -101,6 +101,9 @@ class NotificationService @Autowired constructor(
             throw e
         }
 
+        //페이지 이동 시간을 고려해 잠시 대기
+        Thread.sleep(500)
+
         globalLogger.loggingActionResult(kioskId, commandId, "CLICK", true, coordinate)
         return coordinatePair
     }
