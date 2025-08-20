@@ -80,7 +80,6 @@ class AutoOrderService @Autowired constructor(
                 context.nodeId = graphService.findNodeByTitle(context.kioskId, menu.category)
             }
 
-//            context.nodeId = autoTaskExecutor.clickBack(context, lastNodeId)
             log.info("현재 노드 ID: ${context.nodeId}")
         }
     }
