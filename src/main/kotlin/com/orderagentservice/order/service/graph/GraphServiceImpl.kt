@@ -39,6 +39,11 @@ class GraphServiceImpl @Autowired constructor(
         }
     }
 
+    override fun findNodeByTitle(kioskId: String, title: String): String {
+        val node = graphRepository.findNodeByTitle(kioskId, title) ?: throw NodeNotFoundException()
+        return node.id
+    }
+
     override fun findPath(kioskId: String, sourceId: String, targetTitle: String): List<ActionPathDto> {
         val nodesList = graphRepository.findPathByTitle(kioskId, sourceId, targetTitle)
             .ifEmpty { throw PathNotFoundException() }
@@ -109,6 +114,12 @@ class GraphServiceImpl @Autowired constructor(
             id = entity.id, title = entity.title,
             x = entity.x, y = entity.y
         )
+    }
+
+    override fun isBackRel(kioskId: String, sourceId: String): Boolean {
+        val result = graphRepository.isBackRel(kioskId, sourceId) ?: throw PathNotFoundException()
+
+        return result
     }
 
     override fun changeTitle(nodeId: String, kioskId: String, title: String) {

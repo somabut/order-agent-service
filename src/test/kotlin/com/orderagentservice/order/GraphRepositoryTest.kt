@@ -105,4 +105,21 @@ class GraphRepositoryTest @Autowired constructor(
 //        Assertions.assertThat(result.kioskId).isEqualTo("TEST")
         Assertions.assertThat(result.kioskId).isNotEqualTo("TEST")
     }
+
+    @Test
+    fun `BACK_TO관계 있는지 확인`() {
+        val kioskId = "kiosk-494cbae2-0681-46e6-ba59-88726509fd88"
+        val fantaId = "c80556d9-094c-42e8-b007-af7357df7e89"
+        val riceId = "0b975193-423f-47d3-a93b-010a45a74ace"
+        val result = graphService.isBackRel(kioskId, riceId)
+        println(result)
+    }
+
+    @Test
+    fun `카테고리 노드만 titl로 찾기`() {
+        val kioskId = "kiosk-494cbae2-0681-46e6-ba59-88726509fd88"
+        val title = "사이드"
+        val node = graphService.findNodeByTitle(kioskId, title)
+        println(node)
+    }
 }

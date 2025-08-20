@@ -87,6 +87,16 @@ interface GraphRepository : Neo4jRepository<UiEntity, String> {
     ): UiEntity?
 
     @Query(
+        "MATCH (n:UI {kioskId: \$kioskId, title: \$title})\n" +
+        "RETURN n\n" +
+        "LIMIT 1"
+    )
+    fun findNodeByTitle(
+        @Param("kioskId") kioskId: String,
+        @Param("title") title: String
+    ): UiEntity?
+
+    @Query(
         "MATCH (prev:UI)-[:BACK_TO]->(current:UI {kioskId: \$kioskId, id: \$id})\n" +
         "RETURN prev\n" +
         "LIMIT 1"
@@ -95,6 +105,15 @@ interface GraphRepository : Neo4jRepository<UiEntity, String> {
         @Param("kioskId") kioskId: String,
         @Param("id") id: String
     ): UiEntity?
+
+    @Query(
+        "MATCH (n {kioskId: \$kioskId, id: \$sourceId})-[:BACK_TO]->()\n" +
+        "RETURN COUNT(*) > 0 AS hasBackTo"
+    )
+    fun isBackRel(
+        @Param("kioskId") kioskId: String,
+        @Param("sourceId") sourceId: String
+    ): Boolean?
 
     @Query(
         "MATCH (n {id: \$sourceId, kioskId: \$kioskId})-[r:HAS_TO]->(m)\n" +
