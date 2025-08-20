@@ -74,6 +74,31 @@ class PlaceAgent @Autowired constructor(
             
             Another Example(
                 ui_list: [
+                    {"coordinate": [210, 364], "title": "매장"},
+                    {"coordinate": [67, 90], "title": "카페라떼 5400원-"},
+                    {"coordinate": [123, 87], "title": "포장"},
+                    {"coordinate": [90, 456], "title": "카푸치노 6000원-"},
+                    {"coordinate": [120, 74], "title": "처음으"}
+                ]):
+            ```json
+            [
+                {
+                    "goNext": "false",
+                    "score": 1.0,
+                    "coordinate": [210, 364],
+                    "title": "매장"
+                },
+                {
+                    "goNext": "false",
+                    "score": 1.0,
+                    "coordinate": [123, 87],
+                    "title": "포장"
+                }
+            ]
+            ```
+            
+            Another Example(
+                ui_list: [
                     {"coordinate": [210, 364], "title": "결제하기"},
                     {"coordinate": [67, 90], "title": "payco 적립"},
                     {"coordinate": [123, 87], "title": "먹고가기"},

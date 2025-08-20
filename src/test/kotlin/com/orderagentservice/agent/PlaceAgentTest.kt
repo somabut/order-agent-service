@@ -23,11 +23,12 @@ class PlaceAgentTest @Autowired constructor(
             UiComponentDto(x = 458, y = 415, title = "취소 8900원"),
             UiComponentDto(x = 107, y = 921, title = "미밋메이드 오렌지 8800원"),
             UiComponentDto(x = 376, y = 534, title = "스프라이트 8500원"),
-            UiComponentDto(x = 111, y = 534, title = "처음으로")
+            UiComponentDto(x = 111, y = 534, title = "처음으")
         )
 
         //when: llm에게 질의
         val response = placeAgent.determineAction(uiList)
+        println(response)
 
         //then: 올바른 액션 반환
         assertThat(response.size).isEqualTo(2)

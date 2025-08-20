@@ -28,10 +28,6 @@ class PlaceUtgService @Autowired constructor(
         val uiList = uiDetectorManager.getUiComponents(context.kioskId)
         val action = placeAgent.determineAction(uiList)
 
-        for(ele in action) {
-            log.info("장소 추론 결과: ${ele}")
-        }
-
         if (action.size <= 1) {
             log.info("포장/매장 UI를 발견하지 못했습니다.")
             return
