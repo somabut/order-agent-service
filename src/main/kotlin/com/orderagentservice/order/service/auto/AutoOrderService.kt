@@ -67,11 +67,20 @@ class AutoOrderService @Autowired constructor(
             //메뉴 클릭
             var lastNodeId = autoTaskExecutor.clickMenu(context, menu).id
 
+            //메뉴에 BACK_TO관계가 없으면 모달, 옵션 없는 것으로 판단
+            val isNextPage = graphService.isBackRel(context.kioskId, lastNodeId)
+
             //옵션 클릭
             lastNodeId = autoTaskExecutor.clickOption(context, menu.autoOrderOptions, lastNodeId)
 
             //돌아가는 UI 클릭
-            context.nodeId = autoTaskExecutor.clickBack(context, lastNodeId)
+            if (isNextPage) {
+                context.nodeId = autoTaskExecutor.clickBack(context, lastNodeId)
+            } else {
+                context.nodeId = graphService.findNodeByTitle(context.kioskId, menu.category)
+            }
+
+//            context.nodeId = autoTaskExecutor.clickBack(context, lastNodeId)
             log.info("현재 노드 ID: ${context.nodeId}")
         }
     }

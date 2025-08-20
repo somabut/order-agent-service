@@ -18,6 +18,10 @@ class MockGraphService : GraphService {
         return uiEntity
     }
 
+    override fun findNodeByTitle(kioskId: String, title: String) = ""
+
+    override fun isBackRel(kioskId: String, sourceId: String) = false
+
     override fun saveRel(sourceId: String, targetId: String, type: NodeRelation) {}
 
     override fun changeTitle(nodeId: String, kioskId: String, title: String) {}
