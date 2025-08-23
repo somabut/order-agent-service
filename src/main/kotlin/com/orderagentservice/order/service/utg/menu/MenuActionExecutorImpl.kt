@@ -7,6 +7,7 @@ import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.service.NotificationService
+import com.orderagentservice.order.service.graph.GraphService
 import com.orderagentservice.order.service.utg.UiDetectorManager
 import com.orderagentservice.order.service.utg.WordSimilarityService
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,6 +20,7 @@ class MenuActionExecutorImpl @Autowired constructor(
     private val nodeGenerator: MenuNodeGenerator,
     private val uiDetectorManager: UiDetectorManager,
     private val backAgent: BackAgent,
+    private val graphService: GraphService
 ) : MenuActionExecutor {
     private val log = logger()
 
@@ -99,11 +101,14 @@ class MenuActionExecutorImpl @Autowired constructor(
         menuNodeId: String,
         uiList: List<UiComponentDto>
     ): String {
-        //메뉴를 다시 선택해야 할 수도 있으므로 클릭
+        //메뉴를 다시 선택(모달 처리)해야 할 수도 있으므로 클릭
         var nodeId = menuNodeId
         val matchDto = wordSimilarityService.findBestMatch(menuDto.title, uiList)
-        if (matchDto.score >= 0.6) {
+
+        //모달인 경우에만 노드 저장과 액션수행
+        if (matchDto.score >= 0.65) {
             notificationService.sendActionCommand(context.kioskId, CoordinateDto(x = matchDto.x, y = matchDto.y, title = matchDto.title))
+            graphService.changeTitle(nodeId, context.kioskId, "modal:${menuDto.title}")
         }
 
         //노드명 변경

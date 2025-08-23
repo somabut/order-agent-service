@@ -102,7 +102,7 @@ class MenuNodeGenerator @Autowired constructor(
         menuDto: MenuInfoDto,
         menuNodeId: String
     ): String {
-        graphService.changeTitle(menuNodeId, context.kioskId, "modal:${menuDto.title}")
+//        graphService.changeTitle(menuNodeId, context.kioskId, "modal:${menuDto.title}")
         val node = graphService.saveNode(
             UiDto(
                 isNext = true, kioskId = context.kioskId,

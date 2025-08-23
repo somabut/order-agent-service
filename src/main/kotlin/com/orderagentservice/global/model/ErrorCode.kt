@@ -23,5 +23,6 @@ enum class ErrorCode(
     ORDER_SCORE_TOO_LOW(207, "agent의 응답 점수가 너무 낮습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
     ORDER_UI_EXTRACT_FAIL(208, "UI Extractor Service로 요청중 에러가 발생하였습니다.", HttpStatus.BAD_REQUEST),
     ORDER_LLM_RESPONSE_PARSE_FAIL(209, "llm의 응답이 json형식이 아니여서 파싱 에러가 발생하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
-    ORDER_INFINITE_LOOP(210, "모달을 제대로 빠져나가지 못했습니다", HttpStatus.INTERNAL_SERVER_ERROR)
+    ORDER_INFINITE_LOOP(210, "모달을 제대로 빠져나가지 못했습니다", HttpStatus.INTERNAL_SERVER_ERROR),
+    ORDER_LLM_SERVER_OVERLOAD(211, "LLM 서버의 과부하로 인해 현재 요청이 불가능합니다.", HttpStatus.SERVICE_UNAVAILABLE),
 }

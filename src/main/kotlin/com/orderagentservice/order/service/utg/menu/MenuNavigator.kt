@@ -45,7 +45,6 @@ class MenuNavigator @Autowired constructor(
                 menuDto = menuDto,
                 menuNodeId = menuNodeId,
                 menuList = menuList,
-                menuPageList = uiList
             )
         }
 
@@ -58,7 +57,6 @@ class MenuNavigator @Autowired constructor(
         menuDto: MenuInfoDto,
         menuList: List<MenuInfoDto>,
         menuNodeId: String,
-        menuPageList: List<UiComponentDto>
     ) {
         //현재 메뉴를 일단 클릭한 상황
         var nodeId = menuNodeId
@@ -67,7 +65,7 @@ class MenuNavigator @Autowired constructor(
         if (menuDto.options.isEmpty()) {
             //옵션이 없는 경우
 
-            //TODO(실제 페이지 비교결과를 모두 비교하기보다 카테고리의 메뉴정보를 활용하기)
+            //모달처리
             if (checkMenuPage(menuDto, menuList, uiList) == false) {
                 log.info("모달이 감지되어 모달을 처리합니다.")
                 nodeId = menuActionExecutor.selectModal(
@@ -80,6 +78,8 @@ class MenuNavigator @Autowired constructor(
             }
         } else {
             //옵션이 있는 경우
+
+            //모달처리
             if (checkOptionPage(menuDto.options, uiList) == false) {
                 log.info("모달이 감지되어 모달을 처리합니다.")
                 nodeId = menuActionExecutor.selectModal(

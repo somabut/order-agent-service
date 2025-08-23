@@ -1,6 +1,7 @@
 package com.orderagentservice.agent.util
 
 import com.orderagentservice.agent.exception.AgentManyRequestException
+import com.orderagentservice.agent.exception.LlmServerOverLoadException
 import com.orderagentservice.agent.model.LlmProvider
 import com.orderagentservice.agent.model.request.*
 import com.orderagentservice.agent.model.response.ClaudResponse
@@ -98,7 +99,7 @@ class LlmManager @Autowired constructor(
         }
     }
 
-    fun queryClaud(prompt: String): String {
+    fun queryClaud(prompt: String, waitTime: Long = 2): String {
         val request = ClaudRequest(
             model = CLAUD_MODEL_NAME!!,
             maxTokens = 2048,
@@ -118,9 +119,18 @@ class LlmManager @Autowired constructor(
         val url = "https://api.anthropic.com/v1/messages"
 
         val httpEntity = HttpEntity(request, headers)
-        val response = restTemplate.postForObject(url, httpEntity, ClaudResponse::class.java)
+        val response = restTemplate.postForObject(url, httpEntity, ClaudResponse::class.java)!!
 
-        val text = response!!.content[0].text
+        if (response.type == "error" && response.error!!.type == "overloaded_error") {
+            if (waitTime >= 10L) {
+                throw LlmServerOverLoadException()
+            }
+            log.info("엔트로픽 서버 과부화 ${waitTime}초 대기합니다.")
+            Thread.sleep(waitTime)
+            queryClaud(prompt, waitTime * 2)
+        }
+
+        val text = response.content?.get(0)!!.text
         val json = text.replace("```json", "").replace("```", "").trim()
         return json
     }

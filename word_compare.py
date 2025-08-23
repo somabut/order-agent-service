@@ -113,4 +113,4 @@ class KoreanSimilarityCalculator:
             if score >= 0.7:
                 count += 1
 
-        return int(float(count) / len(need_list) >= 0.8)
+        return int(float(count) == len(need_list))

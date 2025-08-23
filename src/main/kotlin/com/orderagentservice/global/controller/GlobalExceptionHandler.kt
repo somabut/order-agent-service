@@ -1,6 +1,7 @@
 package com.orderagentservice.global.controller
 
 import com.orderagentservice.agent.exception.AgentManyRequestException
+import com.orderagentservice.agent.exception.LlmServerOverLoadException
 import com.orderagentservice.global.exception.InvalidSessionException
 import com.orderagentservice.global.exception.S3NotSupportedType
 import com.orderagentservice.global.model.OrderAgentException
@@ -100,5 +101,11 @@ class GlobalExceptionHandler {
     fun handleInvalidSessionException(e: UtgInfiniteLoopException): ApiResponse<*> {
         log.info("${e.errorCode.name}: ${e.message}")
         return ApiResponse.fail<UtgInfiniteLoopException>(e)
+    }
+
+    @ExceptionHandler(LlmServerOverLoadException::class)
+    fun handleLlmServerOverLoadException(e: LlmServerOverLoadException): ApiResponse<*> {
+        log.info("${e.errorCode.name}: ${e.message}")
+        return ApiResponse.fail<LlmServerOverLoadException>(e)
     }
 }
