@@ -105,7 +105,7 @@ class MenuActionExecutorImpl @Autowired constructor(
         var nodeId = menuNodeId
         val matchDto = wordSimilarityService.findBestMatch(menuDto.title, uiList)
 
-        //모달인 경우에만 노드 저장과 액션수행
+        //모달인 경우에만 모달노드 저장과 액션수행
         if (matchDto.score >= 0.65) {
             notificationService.sendActionCommand(context.kioskId, CoordinateDto(x = matchDto.x, y = matchDto.y, title = matchDto.title))
             graphService.changeTitle(nodeId, context.kioskId, "modal:${menuDto.title}")
