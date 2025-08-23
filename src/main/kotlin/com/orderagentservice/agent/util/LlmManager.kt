@@ -111,23 +111,17 @@ class LlmManager @Autowired constructor(
             )
         )
 
-        val restTemplate = RestTemplate()
-        val headers = HttpHeaders()
-        headers.contentType = MediaType.APPLICATION_JSON
-        headers.set("x-api-key", CLAUD_API_KEY)
-        headers.set("anthropic-version", "2023-06-01")
-        val url = "https://api.anthropic.com/v1/messages"
+        val response = llmRateLimiter.executeWithLimit(LlmProvider.CLAUD) { apiKey ->
+            val restTemplate = RestTemplate()
+            val headers = HttpHeaders()
 
-        val httpEntity = HttpEntity(request, headers)
-        val response = restTemplate.postForObject(url, httpEntity, ClaudResponse::class.java)!!
+            headers.contentType = MediaType.APPLICATION_JSON
+            headers.set("x-api-key", apiKey)
+            headers.set("anthropic-version", "2023-06-01")
 
-        if (response.type == "error" && response.error!!.type == "overloaded_error") {
-            if (waitTime >= 10L) {
-                throw LlmServerOverLoadException()
-            }
-            log.info("엔트로픽 서버 과부화 ${waitTime}초 대기합니다.")
-            Thread.sleep(waitTime)
-            queryClaud(prompt, waitTime * 2)
+            val url = "https://api.anthropic.com/v1/messages"
+            val httpEntity = HttpEntity(request, headers)
+            restTemplate.postForObject(url, httpEntity, ClaudResponse::class.java)!!
         }
 
         val text = response.content?.get(0)!!.text
