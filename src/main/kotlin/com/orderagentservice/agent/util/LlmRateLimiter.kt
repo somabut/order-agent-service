@@ -1,6 +1,8 @@
 package com.orderagentservice.agent.util
 
+import com.orderagentservice.agent.exception.LlmServerOverLoadException
 import com.orderagentservice.agent.model.LlmProvider
+import com.orderagentservice.agent.model.response.ClaudResponse
 import com.orderagentservice.agent.model.response.GptErrorResponse
 import com.orderagentservice.jsonMapper
 import com.orderagentservice.logger
@@ -26,6 +28,8 @@ class LlmRateLimiter @Autowired constructor(
 
     private val GPT_API_KEY = env.getProperty("agent.openai.api-key")!!
 
+    private val CLAUD_API_KEY = env.getProperty("agent.claud.api-key")!!
+
     init {
         // 각 API 키별 요청 시간 리스트 초기화
         geminiApiKeys.forEach { key ->
@@ -37,6 +41,7 @@ class LlmRateLimiter @Autowired constructor(
         return when (provider) {
             LlmProvider.GEMINI -> executeForGemini(block)
             LlmProvider.GPT -> executeForGpt(block)
+            LlmProvider.CLAUD -> executeForClaud(block)
         }
     }
 
@@ -102,6 +107,27 @@ class LlmRateLimiter @Autowired constructor(
         }
     }
 
+    private fun <T> executeForClaud(block: (apiKey: String) -> T): T {
+        var waitTime = 2L
+        val maxWaitTime = 16L
+
+        //2배씩 늘리며 기다리기
+        while (true) {
+            val response = block(CLAUD_API_KEY)
+
+            if (response is ClaudResponse && response.type == "error" && response.error?.type == "overloaded_error") {
+                if (waitTime > maxWaitTime) {
+                    throw LlmServerOverLoadException()
+                }
+                log.info("엔트로픽 서버 과부화로 인해 ${waitTime}초 대기합니다.")
+                Thread.sleep(waitTime * 1000)
+                waitTime *= 2
+            } else {
+                return response
+            }
+        }
+    }
+    
     private fun handleGptRateLimitError(e: HttpClientErrorException) {
         log.info("GPT API rate limit에 도달했습니다.")
         try {

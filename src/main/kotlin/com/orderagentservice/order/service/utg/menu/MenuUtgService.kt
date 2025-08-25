@@ -3,6 +3,7 @@ package com.orderagentservice.order.service.utg.menu
 import com.orderagentservice.logger
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.NodeRelation
+import com.orderagentservice.order.model.SpecialNode
 import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.service.graph.GraphService
@@ -67,7 +68,7 @@ class MenuUtgService @Autowired constructor(
             isNext = true,
             x = -1, y = -1,
             kioskId = kioskId,
-            title = "root"
+            title = SpecialNode.ROOT.title
         )
         context.lastNodeId = graphService.saveNode(rootUiDto).id
 
@@ -75,7 +76,7 @@ class MenuUtgService @Autowired constructor(
             isNext = true,
             x = -1, y = -1,
             kioskId = kioskId,
-            title = "station"
+            title = SpecialNode.STATION.title
         )
         context.stationNodeId = graphService.saveNode(stationNode).id
 

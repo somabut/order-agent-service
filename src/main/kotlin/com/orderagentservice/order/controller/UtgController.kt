@@ -1,6 +1,8 @@
 package com.orderagentservice.order.controller
 
+import com.orderagentservice.agent.model.UsageTracker
 import com.orderagentservice.global.model.response.ApiResponse
+import com.orderagentservice.logger
 import com.orderagentservice.order.exception.KioskAdminSignInException
 import com.orderagentservice.order.model.request.UtgUpdateRequest
 import com.orderagentservice.order.service.auto.RandomTaskService
@@ -13,14 +15,19 @@ import org.springframework.web.bind.annotation.*
 class UtgController @Autowired constructor(
     private val utgService: UtgService,
     private val randomTaskService: RandomTaskService,
+    private val usageTracker: UsageTracker
 ) {
+    private val log = logger()
+
     @GetMapping("/utg/init/{kioskId}")
     fun initializeUtg(
         @PathVariable kioskId: String,
         @RequestHeader("Authorization", required = false) accessToken: String?
     ): ApiResponse<*> {
         if (accessToken == null) throw KioskAdminSignInException()
+
         val history = utgService.initializeGraph(kioskId, accessToken)
+        log.info("전체 토큰 사용량: ${usageTracker.totalUsage}")
         return ApiResponse.success(history)
     }
 
@@ -32,9 +39,8 @@ class UtgController @Autowired constructor(
     ): ApiResponse<*> {
         if (accessToken == null) throw KioskAdminSignInException()
 
-        println(accessToken)
-
         val history = utgService.updateGraph(kioskId, utgUpdateRequest.editCategories, accessToken)
+        log.info("전체 토큰 사용량: ${usageTracker.totalUsage}")
         return ApiResponse.success(history)
     }
 
@@ -46,6 +52,7 @@ class UtgController @Autowired constructor(
         if (accessToken == null) throw KioskAdminSignInException()
 
         val result = randomTaskService.proceedUtg(kioskId, accessToken)
+        log.info("전체 토큰 사용량: ${usageTracker.totalUsage}")
         return ApiResponse.success(result)
     }
 }

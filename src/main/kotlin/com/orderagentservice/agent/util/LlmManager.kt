@@ -1,11 +1,14 @@
 package com.orderagentservice.agent.util
 
 import com.orderagentservice.agent.exception.AgentManyRequestException
+import com.orderagentservice.agent.exception.LlmServerOverLoadException
 import com.orderagentservice.agent.model.LlmProvider
+import com.orderagentservice.agent.model.UsageTracker
 import com.orderagentservice.agent.model.request.*
 import com.orderagentservice.agent.model.response.ClaudResponse
 import com.orderagentservice.agent.model.response.GeminiResponse
 import com.orderagentservice.agent.model.response.GptResponse
+import com.orderagentservice.agent.model.response.LlmResponse
 import com.orderagentservice.jsonMapper
 import com.orderagentservice.logger
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,7 +24,8 @@ import org.springframework.web.client.RestTemplate
 @Component
 class LlmManager @Autowired constructor(
     private val env: Environment,
-    private val llmRateLimiter: LlmRateLimiter
+    private val llmRateLimiter: LlmRateLimiter,
+    private val usageTracker: UsageTracker
 ){
     private val log = logger()
 
@@ -98,7 +102,7 @@ class LlmManager @Autowired constructor(
         }
     }
 
-    fun queryClaud(prompt: String): String {
+    fun queryClaud(prompt: String, waitTime: Long = 2): String {
         val request = ClaudRequest(
             model = CLAUD_MODEL_NAME!!,
             maxTokens = 2048,
@@ -110,17 +114,24 @@ class LlmManager @Autowired constructor(
             )
         )
 
-        val restTemplate = RestTemplate()
-        val headers = HttpHeaders()
-        headers.contentType = MediaType.APPLICATION_JSON
-        headers.set("x-api-key", CLAUD_API_KEY)
-        headers.set("anthropic-version", "2023-06-01")
-        val url = "https://api.anthropic.com/v1/messages"
+        val response = llmRateLimiter.executeWithLimit(LlmProvider.CLAUD) { apiKey ->
+            val restTemplate = RestTemplate()
+            val headers = HttpHeaders()
 
-        val httpEntity = HttpEntity(request, headers)
-        val response = restTemplate.postForObject(url, httpEntity, ClaudResponse::class.java)
+            headers.contentType = MediaType.APPLICATION_JSON
+            headers.set("x-api-key", apiKey)
+            headers.set("anthropic-version", "2023-06-01")
 
-        val text = response!!.content[0].text
+            val url = "https://api.anthropic.com/v1/messages"
+            val httpEntity = HttpEntity(request, headers)
+            restTemplate.postForObject(url, httpEntity, ClaudResponse::class.java)!!
+        }
+
+        val text = response.content?.get(0)!!.text
+        val usage = response.usage!!.inputTokens + response.usage.outputTokens
+        log.info("$CLAUD_MODEL_NAME: [$usage]의 토큰을 사용했습니다.")
+        usageTracker.totalUsage += usage
+
         val json = text.replace("```json", "").replace("```", "").trim()
         return json
     }

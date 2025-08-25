@@ -2,5 +2,6 @@ package com.orderagentservice.agent.model
 
 enum class LlmProvider {
     GEMINI,
-    GPT
+    GPT,
+    CLAUD
 }

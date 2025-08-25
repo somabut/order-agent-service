@@ -1,5 +1,6 @@
 package com.orderagentservice.order.repository
 
+import com.orderagentservice.order.model.SpecialNode
 import com.orderagentservice.order.model.entity.UiEntity
 import org.springframework.context.annotation.Profile
 import org.springframework.data.neo4j.repository.Neo4jRepository
@@ -21,7 +22,7 @@ interface GraphRepository : Neo4jRepository<UiEntity, String> {
     fun findPathByTitle(
         @Param("kioskId") kioskId: String,
         @Param("sourceId") sourceId: String,
-        @Param("targetTitle") targetTitle: String = "root"
+        @Param("targetTitle") targetTitle: String = SpecialNode.ROOT.title
     ): List<Map<String, Any>>
 
     @Query(
@@ -73,7 +74,7 @@ interface GraphRepository : Neo4jRepository<UiEntity, String> {
     )
     fun findRootNode(
         @Param("kioskId") kioskId: String,
-        @Param("title") title: String = "root",
+        @Param("title") title: String = SpecialNode.ROOT.title,
     ): UiEntity?
 
     @Query(
@@ -83,7 +84,7 @@ interface GraphRepository : Neo4jRepository<UiEntity, String> {
     )
     fun findStationNode(
         @Param("kioskId") kioskId: String,
-        @Param("title") title: String = "station",
+        @Param("title") title: String = SpecialNode.STATION.title,
     ): UiEntity?
 
     @Query(
