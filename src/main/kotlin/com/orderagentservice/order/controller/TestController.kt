@@ -8,6 +8,7 @@ import com.orderagentservice.order.service.NotificationService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -31,8 +32,11 @@ class TestController @Autowired constructor(
     }
 
     @GetMapping("/test/action/{kioskId}")
-    fun sendActionMessage(@PathVariable kioskId: String) {
-        notificationService.sendActionCommand(kioskId, CoordinateDto(x = 1000, y = 500, title = "TEST"))
+    fun sendActionMessage(
+        @PathVariable kioskId: String,
+        @RequestParam x: Int, @RequestParam y: Int
+    ) {
+        notificationService.sendActionCommand(kioskId, CoordinateDto(x = x, y = y, title = "TEST"))
     }
 
     @GetMapping("/test/capture/{kioskId}")

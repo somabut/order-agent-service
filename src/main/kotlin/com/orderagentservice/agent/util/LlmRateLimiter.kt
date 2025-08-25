@@ -127,8 +127,7 @@ class LlmRateLimiter @Autowired constructor(
             }
         }
     }
-
-
+    
     private fun handleGptRateLimitError(e: HttpClientErrorException) {
         log.info("GPT API rate limit에 도달했습니다.")
         try {

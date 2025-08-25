@@ -3,10 +3,12 @@ package com.orderagentservice.agent.util
 import com.orderagentservice.agent.exception.AgentManyRequestException
 import com.orderagentservice.agent.exception.LlmServerOverLoadException
 import com.orderagentservice.agent.model.LlmProvider
+import com.orderagentservice.agent.model.UsageTracker
 import com.orderagentservice.agent.model.request.*
 import com.orderagentservice.agent.model.response.ClaudResponse
 import com.orderagentservice.agent.model.response.GeminiResponse
 import com.orderagentservice.agent.model.response.GptResponse
+import com.orderagentservice.agent.model.response.LlmResponse
 import com.orderagentservice.jsonMapper
 import com.orderagentservice.logger
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,7 +24,8 @@ import org.springframework.web.client.RestTemplate
 @Component
 class LlmManager @Autowired constructor(
     private val env: Environment,
-    private val llmRateLimiter: LlmRateLimiter
+    private val llmRateLimiter: LlmRateLimiter,
+    private val usageTracker: UsageTracker
 ){
     private val log = logger()
 
@@ -125,6 +128,9 @@ class LlmManager @Autowired constructor(
         }
 
         val text = response.content?.get(0)!!.text
+        val usage = response.usage!!.inputTokens + response.usage.outputTokens
+        usageTracker.totalUsage += usage
+
         val json = text.replace("```json", "").replace("```", "").trim()
         return json
     }
