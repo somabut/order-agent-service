@@ -129,6 +129,7 @@ class LlmManager @Autowired constructor(
 
         val text = response.content?.get(0)!!.text
         val usage = response.usage!!.inputTokens + response.usage.outputTokens
+        log.info("$CLAUD_MODEL_NAME: [$usage]의 토큰을 사용했습니다.")
         usageTracker.totalUsage += usage
 
         val json = text.replace("```json", "").replace("```", "").trim()
