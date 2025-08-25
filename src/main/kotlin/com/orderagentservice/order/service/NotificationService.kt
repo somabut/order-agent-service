@@ -8,6 +8,7 @@ import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.request.CommandRequest
 import com.orderagentservice.order.repository.NotificationRepository
 import com.orderagentservice.global.util.GlobalLogger
+import com.orderagentservice.order.model.OverlayType
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
@@ -22,8 +23,9 @@ class NotificationService @Autowired constructor(
     private val log = logger()
 
     val CONNECT_TIMEOUT: Long = 60L * 1000 * 60
-    val CAPTURE_WAIT_TIMEOUT: Long = 10_000
+    val CAPTURE_WAIT_TIMEOUT: Long = 12_000
     val ACTION_WAIT_TIMEOUT: Long = 10_000
+    val OVERLAY_WAIT_TIMEOUT: Long = 9_000
 
     fun connectAction(kioskId: String): SseEmitter {
         val emitter = notificationRepository.saveEmitter(kioskId, SseEmitter(CONNECT_TIMEOUT))
@@ -39,6 +41,10 @@ class NotificationService @Autowired constructor(
 
     fun registerActionCommand(commandId: String, coordinate: CoordinateDto) {
         notificationRepository.saveActionCommand(commandId, coordinate)
+    }
+
+    fun registerOverlayCommand(commandId: String, overlay: String) {
+        notificationRepository.saveOverLayCommand(commandId, overlay)
     }
 
     fun broadcastMessage(message: String) {
@@ -108,6 +114,23 @@ class NotificationService @Autowired constructor(
         return coordinatePair
     }
 
+    fun sendOverlayCommand(kioskId: String, overlay: String): String {
+        log.info("클라이언트에게 오버레이를 요청합니다.")
+        val commandId = UUID.randomUUID().toString()
+        val request = jsonMapper.writeValueAsString(
+            CommandRequest(
+                kioskId = kioskId,
+                commandId = commandId,
+                commandType = CommandType.OVERLAY,
+                data = overlay
+            ))
+        val emitter = notificationRepository.getEmitter(kioskId)
+
+        emitter.send(request)
+        val result = waitOverlayCommand(commandId)
+        return result
+    }
+
     private fun isEmitterCompleted(emitter: SseEmitter): Boolean {
         return try {
             // 더미 데이터로 상태 확인
@@ -129,6 +152,12 @@ class NotificationService @Autowired constructor(
     private fun waitActionCommand(commandId: String): CoordinateDto {
         return waitForCommand(commandId, ACTION_WAIT_TIMEOUT) { id ->
             notificationRepository.removeActionCommand(id)
+        }
+    }
+
+    private fun waitOverlayCommand(commandId: String): String {
+        return waitForCommand(commandId, OVERLAY_WAIT_TIMEOUT) { id ->
+            notificationRepository.removeOverLayCommand(id)
         }
     }
 

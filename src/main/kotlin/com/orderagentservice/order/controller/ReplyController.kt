@@ -5,6 +5,7 @@ import com.orderagentservice.order.model.request.ActionReplyRequest
 import com.orderagentservice.order.model.response.CommandResponse
 import com.orderagentservice.global.service.AmazonS3Service
 import com.orderagentservice.order.model.dto.CoordinateDto
+import com.orderagentservice.order.model.request.OverlayReplyRequest
 import com.orderagentservice.order.service.NotificationService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PathVariable
@@ -51,6 +52,19 @@ class ReplyController @Autowired constructor(
                 y = actionReplyRequest.y,
                 title = ""
             )
+        )
+        return ApiResponse.success(CommandResponse(commandId))
+    }
+
+    @PostMapping("/command/overlay/{kioskId}/{commandId}")
+    fun replyOverlay(
+        @PathVariable kioskId: String,
+        @PathVariable commandId: String,
+        @RequestBody overlayReplyRequest: OverlayReplyRequest
+    ): ApiResponse<*> {
+        notificationService.registerOverlayCommand(
+            commandId = commandId,
+            overlay = overlayReplyRequest.overlay
         )
         return ApiResponse.success(CommandResponse(commandId))
     }

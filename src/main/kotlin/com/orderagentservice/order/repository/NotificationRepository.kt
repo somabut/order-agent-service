@@ -13,6 +13,7 @@ class NotificationRepository {
     private val kioskNotification = ConcurrentHashMap<String, SseEmitter>()
     private val captureCommandCompleteMap = ConcurrentHashMap<String, File>()
     private val actionCommandCompleteMap = ConcurrentHashMap<String, CoordinateDto>()
+    private val overlayCommandCompleteMap = ConcurrentHashMap<String, String>()
     private val logChannelSet = CopyOnWriteArraySet<SseEmitter>()
 
     fun getLogEmitters() = logChannelSet
@@ -44,4 +45,10 @@ class NotificationRepository {
     }
 
     fun removeActionCommand(commandId: String): CoordinateDto? = actionCommandCompleteMap.remove(commandId)
+
+    fun saveOverLayCommand(commandId: String, overlay: String) {
+        overlayCommandCompleteMap[commandId] = overlay
+    }
+
+    fun removeOverLayCommand(commandId: String): String? = overlayCommandCompleteMap.remove(commandId)
 }

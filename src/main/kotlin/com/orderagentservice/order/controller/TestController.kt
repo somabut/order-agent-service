@@ -2,6 +2,7 @@ package com.orderagentservice.order.controller
 
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.model.dto.WordMatchDto
+import com.orderagentservice.order.model.OverlayType
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.service.utg.WordSimilarityService
 import com.orderagentservice.order.service.NotificationService
@@ -42,6 +43,11 @@ class TestController @Autowired constructor(
     @GetMapping("/test/capture/{kioskId}")
     fun sendCaptureMessage(@PathVariable kioskId: String) {
         notificationService.sendCaptureCommand(kioskId)
+    }
+
+    @GetMapping("/test/overlay/{kioskId}")
+    fun sendOverlayMessage(@PathVariable kioskId: String) {
+        notificationService.sendOverlayCommand(kioskId, OverlayType.UTG.title)
     }
 
     @GetMapping("/test/compare")
