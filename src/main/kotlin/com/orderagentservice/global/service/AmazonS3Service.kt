@@ -10,7 +10,6 @@ import java.io.File
 import java.nio.file.Files
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.UUID
 
 @Service
 class AmazonS3Service @Autowired constructor(
@@ -19,8 +18,17 @@ class AmazonS3Service @Autowired constructor(
 ) {
     private val bucket: String = env.getProperty("cloud.aws.credentials.s3.bucket")!!
 
-    fun saveFile(kioskId:String, commandId: String, file: File) {
-        val fileName = getFileName(kioskId, commandId)
+    fun saveFile(kioskId:String, commandId: String, file: File): String {
+        val now = LocalDateTime.now()
+        val dayFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
+        val formattedDate = now.format(dayFormatter)
+        val formattedTime = now.format(timeFormatter)
+
+        val fileName = getImagePath(
+            kioskId = kioskId, commandId = commandId,
+            formattedDate = formattedDate, formattedTime = formattedTime
+        )
 
         val objectMetadata = ObjectMetadata()
         val contentType = Files.probeContentType(file.toPath())
@@ -36,14 +44,13 @@ class AmazonS3Service @Autowired constructor(
                 PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
             )
         }
+
+        return getImageName(commandId = commandId, formattedTime = formattedTime)
     }
 
-    private fun getFileName(kioskId: String, commandId: String): String {
-        val now = LocalDateTime.now()
-        val formatter = DateTimeFormatter.ofPattern("yyyyMMdd")
-        val formattedTime = now.format(formatter)
-        val uuid = UUID.randomUUID().toString()
+    private fun getImagePath(kioskId: String, commandId: String, formattedDate: String, formattedTime: String)
+        = "image/${kioskId}/${formattedDate}/${getImageName(commandId = commandId, formattedTime = formattedTime)}.png"
 
-        return "image/${kioskId}/{$commandId}/${formattedTime}_${uuid}.png"
-    }
+    private fun getImageName(commandId: String, formattedTime: String)
+        = "${formattedTime}_${commandId}"
 }

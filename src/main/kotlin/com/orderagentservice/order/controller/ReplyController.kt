@@ -5,6 +5,7 @@ import com.orderagentservice.order.model.request.ActionReplyRequest
 import com.orderagentservice.order.model.response.CommandResponse
 import com.orderagentservice.global.service.AmazonS3Service
 import com.orderagentservice.order.model.dto.CoordinateDto
+import com.orderagentservice.order.model.request.OverlayReplyRequest
 import com.orderagentservice.order.service.NotificationService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PathVariable
@@ -31,10 +32,8 @@ class ReplyController @Autowired constructor(
         val tempFile = File.createTempFile("capture_", image.originalFilename)
         image.transferTo(tempFile)
 
-        notificationService.registerCaptureCommand(commandId, tempFile)
+        notificationService.registerCaptureCommand(kioskId, commandId, tempFile)
 
-        //AWS비밀번호 변경으로 인한 임시적 비활성
-//        amazonS3Service.saveFile(kioskId, commandId, tempFile)
         return ApiResponse.success(CommandResponse(commandId))
     }
 
@@ -51,6 +50,19 @@ class ReplyController @Autowired constructor(
                 y = actionReplyRequest.y,
                 title = ""
             )
+        )
+        return ApiResponse.success(CommandResponse(commandId))
+    }
+
+    @PostMapping("/command/overlay/{kioskId}/{commandId}")
+    fun replyOverlay(
+        @PathVariable kioskId: String,
+        @PathVariable commandId: String,
+        @RequestBody overlayReplyRequest: OverlayReplyRequest
+    ): ApiResponse<*> {
+        notificationService.registerOverlayCommand(
+            commandId = commandId,
+            overlay = overlayReplyRequest.overlay
         )
         return ApiResponse.success(CommandResponse(commandId))
     }

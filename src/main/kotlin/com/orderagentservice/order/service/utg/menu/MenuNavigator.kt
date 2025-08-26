@@ -13,7 +13,6 @@ import com.orderagentservice.order.service.utg.UiDetectorManager
 import com.orderagentservice.order.service.utg.WordSimilarityService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import org.springframework.stereotype.Service
 
 @Component
 class MenuNavigator @Autowired constructor(
@@ -28,12 +27,12 @@ class MenuNavigator @Autowired constructor(
     private val MAX_LOOP = 5
 
     fun navigateMenus(context: GraphContext, menuList: List<MenuInfoDto>) {
-        var uiList = uiDetectorManager.getUiComponents(context.kioskId)
+        var uiList = uiDetectorManager.getUiComponents(context)
         for (menuDto in menuList) {
             if (menuDto.category != context.currentCategory) {
                 //카테고리가 다르다면 해당 카테고리로 이동
                 menuActionExecutor.selectCategory(context, menuDto, uiList)
-                uiList = uiDetectorManager.getUiComponents(context.kioskId)
+                uiList = uiDetectorManager.getUiComponents(context)
             }
 
             log.info("진행 중인 메뉴: ${menuDto.title}, 카테고리: ${menuDto.category}")
@@ -60,7 +59,7 @@ class MenuNavigator @Autowired constructor(
     ) {
         //현재 메뉴를 일단 클릭한 상황
         var nodeId = menuNodeId
-        var uiList = uiDetectorManager.getUiComponents(context.kioskId)
+        var uiList = uiDetectorManager.getUiComponents(context)
 
         if (menuDto.options.isEmpty()) {
             //옵션이 없는 경우
@@ -95,14 +94,14 @@ class MenuNavigator @Autowired constructor(
 
             //옵션을 선택하고 원래 페이지도 이동
             var count = 0
-            uiList = uiDetectorManager.getUiComponents(context.kioskId)
+            uiList = uiDetectorManager.getUiComponents(context)
             while (checkMenuPage(menuDto, menuList, uiList) == false) {
                 if (count >= MAX_LOOP) {
                     throw UtgInfiniteLoopException()
                 }
 
                 nodeId = menuActionExecutor.selectBack(context, nodeId, uiList)
-                uiList = uiDetectorManager.getUiComponents(context.kioskId)
+                uiList = uiDetectorManager.getUiComponents(context)
                 count++
             }
             graphService.saveRel(nodeId, context.lastNodeId!!, NodeRelation.BACK_TO)

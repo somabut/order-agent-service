@@ -15,7 +15,7 @@ class PaymentActionExecutorImpl(
     private val notificationService: NotificationService
 ) : PaymentActionExecutor {
     override fun selectPayment(context: GraphContext): Boolean {
-        val llmUiList = uiDetectorManager.getUiComponents(context.kioskId, true)
+        val llmUiList = uiDetectorManager.getUiComponents(context, true)
         val action = paymentAgent.determineAction(llmUiList)
 
         //노드 저장

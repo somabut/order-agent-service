@@ -64,7 +64,7 @@ class MenuActionExecutorImpl @Autowired constructor(
     ) {
         //메뉴의 옵션 노드 추가
         val kioskId = context.kioskId
-        val llmOptList = uiDetectorManager.getUiComponents(kioskId)
+        val llmOptList = uiDetectorManager.getUiComponents(context)
 
         for (opt in menuDto.options) {
             val coordinate = wordSimilarityService.findBestMatch(opt, llmOptList)
@@ -120,7 +120,7 @@ class MenuActionExecutorImpl @Autowired constructor(
         )
 
         //다음으로 이동
-        val nextUiList = uiDetectorManager.getUiComponents(context.kioskId)
+        val nextUiList = uiDetectorManager.getUiComponents(context)
         nodeId = selectBack(context, nodeId, nextUiList)
 
         return nodeId

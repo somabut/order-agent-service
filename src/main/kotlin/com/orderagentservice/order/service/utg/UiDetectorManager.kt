@@ -4,6 +4,7 @@ import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.model.response.ApiResponse
 import com.orderagentservice.logger
 import com.orderagentservice.order.exception.UiExtractException
+import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.dto.DetectorUiComponentDto
 import com.orderagentservice.order.model.response.DetectorResponse
 import com.orderagentservice.order.service.NotificationService
@@ -62,10 +63,12 @@ class UiDetectorManager @Autowired constructor(
         }
     }
 
-    fun getUiComponents(kioskId: String, isPayment: Boolean = false): MutableList<UiComponentDto> {
+    fun getUiComponents(context: GraphContext, isPayment: Boolean = false): MutableList<UiComponentDto> {
         //ui extractor에게 이미지 파싱 요청
-        val image = notificationService.sendCaptureCommand(kioskId)
+        val captureDto = notificationService.sendCaptureCommand(context.kioskId)
+        val image = captureDto.file
         val uiComponents = queryUiExtractor(image, if (!isPayment) "extract-ui" else "ocr")
+        context.imageName = captureDto.name
 
         //옴니파서에게 받은 이미지 적절히 변환
         val llmUiList = mutableListOf<UiComponentDto>()
