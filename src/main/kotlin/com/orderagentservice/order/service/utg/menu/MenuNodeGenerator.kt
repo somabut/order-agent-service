@@ -19,7 +19,7 @@ class MenuNodeGenerator @Autowired constructor(
     private val log = logger()
 
     fun createCategoryNode(coordinate: CoordinateDto, context: GraphContext): String {
-        log.info("카테고리 노드를 생성합니다. go_next: true, coordinate: [${coordinate.x}, ${coordinate.y}], title: ${coordinate.title}")
+        log.info("카테고리 노드를 생성합니다. go_next: true, coordinate: [${coordinate.x}, ${coordinate.y}], title: ${coordinate.title}, imageName: ${context.imageName}")
 
         val node = graphService.saveNode(
             UiDto(
@@ -41,7 +41,7 @@ class MenuNodeGenerator @Autowired constructor(
     }
 
     fun createMenuNode(coordinate: CoordinateDto, context: GraphContext): String {
-        log.info("메뉴 노드를 생성합니다. go_next: false, coordinate: [${coordinate.x}, ${coordinate.y}], title: ${coordinate.title}")
+        log.info("메뉴 노드를 생성합니다. go_next: false, coordinate: [${coordinate.x}, ${coordinate.y}], title: ${coordinate.title}, imageName: ${context.imageName}")
         val node = graphService.saveNode(
             UiDto(
                 isNext = false,
@@ -62,7 +62,7 @@ class MenuNodeGenerator @Autowired constructor(
         menuNodeId: String,
         context: GraphContext
     ) {
-        log.info("옵션 노드를 생성합니다. go_next: false, coordinate: [${coordinate.x}, ${coordinate.y}], title: ${coordinate.title}")
+        log.info("옵션 노드를 생성합니다. go_next: false, coordinate: [${coordinate.x}, ${coordinate.y}], title: ${coordinate.title}, imageName: ${context.imageName}")
         val optEntity = graphService.saveNode(
             UiDto(
                 isNext = false,
@@ -81,6 +81,7 @@ class MenuNodeGenerator @Autowired constructor(
         menuNodeId: String,
         context: GraphContext
     ): String {
+        log.info("완료 노드를 생성합니다. go_next: false, coordinate: [${action.coordinate[0]}, ${action.coordinate[1]}], title: ${action.title}, imageName: ${context.imageName}")
         val backEntity = graphService.saveNode(
             UiDto(
                 isNext = false,

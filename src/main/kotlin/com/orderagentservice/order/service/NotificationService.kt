@@ -1,5 +1,6 @@
 package com.orderagentservice.order.service
 
+import com.orderagentservice.global.service.AmazonS3Service
 import com.orderagentservice.jsonMapper
 import com.orderagentservice.logger
 import com.orderagentservice.order.model.CommandType
@@ -9,6 +10,7 @@ import com.orderagentservice.order.model.request.CommandRequest
 import com.orderagentservice.order.repository.NotificationRepository
 import com.orderagentservice.global.util.GlobalLogger
 import com.orderagentservice.order.model.OverlayType
+import com.orderagentservice.order.model.dto.KioskCaptureDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
@@ -18,7 +20,8 @@ import java.util.UUID
 @Service
 class NotificationService @Autowired constructor(
     private val notificationRepository: NotificationRepository,
-    private val globalLogger: GlobalLogger
+    private val amazonS3Service: AmazonS3Service,
+    private val globalLogger: GlobalLogger,
 ) {
     private val log = logger()
 
@@ -35,8 +38,10 @@ class NotificationService @Autowired constructor(
         return emitter
     }
 
-    fun registerCaptureCommand(commandId: String, image: File) {
-        notificationRepository.saveCaptureCommand(commandId, image)
+    fun registerCaptureCommand(kioskId: String, commandId: String, file: File) {
+        val fileName = amazonS3Service.saveFile(kioskId, commandId, file)
+        val captureDto = KioskCaptureDto(file, fileName)
+        notificationRepository.saveCaptureCommand(commandId, captureDto)
     }
 
     fun registerActionCommand(commandId: String, coordinate: CoordinateDto) {
@@ -67,7 +72,7 @@ class NotificationService @Autowired constructor(
         emitter.send(message)
     }
 
-    fun sendCaptureCommand(kioskId: String): File {
+    fun sendCaptureCommand(kioskId: String): KioskCaptureDto {
         log.info("클라이언트에게 캡쳐 요청을 보냅니다.")
         val commandId = UUID.randomUUID().toString()
         val request = jsonMapper.writeValueAsString(
@@ -81,8 +86,8 @@ class NotificationService @Autowired constructor(
 
         //클라이언트는 여기서 보내진 commandId로 응답을 해야함
         emitter.send(request)
-        val file = waitCaptureCommand(commandId)
-        return file
+        val captureDto = waitCaptureCommand(commandId)
+        return captureDto
     }
 
     fun sendActionCommand(kioskId: String, coordinate: CoordinateDto): CoordinateDto {
@@ -142,7 +147,7 @@ class NotificationService @Autowired constructor(
     }
 
     // 캡처 명령 대기
-    private fun waitCaptureCommand(commandId: String): File {
+    private fun waitCaptureCommand(commandId: String): KioskCaptureDto {
         return waitForCommand(commandId, CAPTURE_WAIT_TIMEOUT) { id ->
             notificationRepository.removeCaptureCommand(id)
         }

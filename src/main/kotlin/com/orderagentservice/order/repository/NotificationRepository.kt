@@ -2,6 +2,7 @@ package com.orderagentservice.order.repository
 
 import com.orderagentservice.order.exception.NoSuchKioskException
 import com.orderagentservice.order.model.dto.CoordinateDto
+import com.orderagentservice.order.model.dto.KioskCaptureDto
 import org.springframework.stereotype.Repository
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
 import java.io.File
@@ -11,7 +12,7 @@ import java.util.concurrent.CopyOnWriteArraySet
 @Repository
 class NotificationRepository {
     private val kioskNotification = ConcurrentHashMap<String, SseEmitter>()
-    private val captureCommandCompleteMap = ConcurrentHashMap<String, File>()
+    private val captureCommandCompleteMap = ConcurrentHashMap<String, KioskCaptureDto>()
     private val actionCommandCompleteMap = ConcurrentHashMap<String, CoordinateDto>()
     private val overlayCommandCompleteMap = ConcurrentHashMap<String, String>()
     private val logChannelSet = CopyOnWriteArraySet<SseEmitter>()
@@ -34,11 +35,11 @@ class NotificationRepository {
     fun getEmitter(kioskId: String): SseEmitter =
         kioskNotification[kioskId] ?: throw NoSuchKioskException()
 
-    fun saveCaptureCommand(commandId: String, file: File) {
-        captureCommandCompleteMap[commandId] = file
+    fun saveCaptureCommand(commandId: String, captureDto: KioskCaptureDto) {
+        captureCommandCompleteMap[commandId] = captureDto
     }
 
-    fun removeCaptureCommand(commandId: String): File? = captureCommandCompleteMap.remove(commandId)
+    fun removeCaptureCommand(commandId: String): KioskCaptureDto? = captureCommandCompleteMap.remove(commandId)
 
     fun saveActionCommand(commandId: String, coordinate: CoordinateDto) {
         actionCommandCompleteMap[commandId] = coordinate

@@ -32,10 +32,8 @@ class ReplyController @Autowired constructor(
         val tempFile = File.createTempFile("capture_", image.originalFilename)
         image.transferTo(tempFile)
 
-        notificationService.registerCaptureCommand(commandId, tempFile)
+        notificationService.registerCaptureCommand(kioskId, commandId, tempFile)
 
-        //AWS비밀번호 변경으로 인한 임시적 비활성
-//        amazonS3Service.saveFile(kioskId, commandId, tempFile)
         return ApiResponse.success(CommandResponse(commandId))
     }
 
