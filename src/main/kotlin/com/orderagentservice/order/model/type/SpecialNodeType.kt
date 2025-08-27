@@ -1,6 +1,6 @@
-package com.orderagentservice.order.model
+package com.orderagentservice.order.model.type
 
-enum class SpecialNode(
+enum class SpecialNodeType(
     val title: String,
 ) {
     STATION("station"),

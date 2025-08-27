@@ -15,6 +15,6 @@ class AmazonS3ServiceTest @Autowired constructor(
         val kioskId = "moodtrbl"
         val commandId = "command"
         val file = File("C:\\Users\\hachi\\IdeaProjects\\OrderAgentService\\src\\test\\resources\\backs.png")
-        amazonS3Service.saveFile(kioskId, commandId, file, "category")
+        amazonS3Service.saveFile(kioskId, commandId, file)
     }
 }

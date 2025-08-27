@@ -1,6 +1,6 @@
 package com.orderagentservice.order.service.graph
 
-import com.orderagentservice.order.model.NodeRelation
+import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.dto.ActionPathDto
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.entity.UiEntity
@@ -22,7 +22,7 @@ class MockGraphService : GraphService {
 
     override fun isBackRel(kioskId: String, sourceId: String) = false
 
-    override fun saveRel(sourceId: String, targetId: String, type: NodeRelation) {}
+    override fun saveRel(sourceId: String, targetId: String, type: NodeRelationType) {}
 
     override fun changeTitle(nodeId: String, kioskId: String, title: String) {}
 

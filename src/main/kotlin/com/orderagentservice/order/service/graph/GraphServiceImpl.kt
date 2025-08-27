@@ -3,8 +3,8 @@ package com.orderagentservice.order.service.graph
 import com.orderagentservice.logger
 import com.orderagentservice.order.exception.NodeNotFoundException
 import com.orderagentservice.order.exception.PathNotFoundException
-import com.orderagentservice.order.model.NodeRelation
-import com.orderagentservice.order.model.SpecialNode
+import com.orderagentservice.order.model.type.NodeRelationType
+import com.orderagentservice.order.model.type.SpecialNodeType
 import com.orderagentservice.order.model.dto.ActionPathDto
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.entity.UiEntity
@@ -29,14 +29,14 @@ class GraphServiceImpl @Autowired constructor(
     }
 
     @Transactional
-    override fun saveRel(sourceId: String, targetId: String, type: NodeRelation) {
+    override fun saveRel(sourceId: String, targetId: String, type: NodeRelationType) {
         log.info("관계 설정. ${sourceId} [${type.name}]-> ${targetId}")
         when(type) {
-            NodeRelation.PATH_TO -> graphRepository.savePathRelation(sourceId, targetId)
-            NodeRelation.HAS_TO -> graphRepository.saveHasRelation(sourceId, targetId)
-            NodeRelation.OPT_TO -> graphRepository.saveOptRelation(sourceId, targetId)
-            NodeRelation.BACK_TO -> graphRepository.saveBackRelation(sourceId, targetId)
-            else -> NodeRelation.NONE
+            NodeRelationType.PATH_TO -> graphRepository.savePathRelation(sourceId, targetId)
+            NodeRelationType.HAS_TO -> graphRepository.saveHasRelation(sourceId, targetId)
+            NodeRelationType.OPT_TO -> graphRepository.saveOptRelation(sourceId, targetId)
+            NodeRelationType.BACK_TO -> graphRepository.saveBackRelation(sourceId, targetId)
+            else -> NodeRelationType.NONE
         }
     }
 
@@ -50,7 +50,7 @@ class GraphServiceImpl @Autowired constructor(
             .ifEmpty { throw PathNotFoundException() }
             .filter { node ->
                 val title = node["title"].toString()
-                title != SpecialNode.STATION.title && !title.startsWith("menu:")
+                title != SpecialNodeType.STATION.title && !title.startsWith("menu:")
             }
             .drop(1)
 
@@ -58,9 +58,9 @@ class GraphServiceImpl @Autowired constructor(
     }
 
     override fun findPaymentPath(kioskId: String, sourceId: String): List<ActionPathDto> {
-        val nodesList = graphRepository.findPathByTitle(kioskId, sourceId,  SpecialNode.COMPLETE.title)
+        val nodesList = graphRepository.findPathByTitle(kioskId, sourceId,  SpecialNodeType.COMPLETE.title)
             .ifEmpty { throw PathNotFoundException() }
-            .filter { node -> node["title"].toString() != SpecialNode.STATION.title }
+            .filter { node -> node["title"].toString() != SpecialNodeType.STATION.title }
 
         return ActionPathDto.toPathDtoList(nodesList)
     }

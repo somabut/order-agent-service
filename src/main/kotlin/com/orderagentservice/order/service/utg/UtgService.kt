@@ -1,8 +1,13 @@
 package com.orderagentservice.order.service.utg
 
+import com.orderagentservice.agent.model.UsageTracker
 import com.orderagentservice.agent.model.dto.AgentActionDto
+import com.orderagentservice.global.service.LogService
 import com.orderagentservice.logger
 import com.orderagentservice.order.model.GraphContext
+import com.orderagentservice.order.model.log.UtgEndLog
+import com.orderagentservice.order.model.log.UtgStartLog
+import com.orderagentservice.order.model.type.UtgType
 import com.orderagentservice.order.service.MenuService
 import com.orderagentservice.order.service.utg.menu.MenuUtgService
 import com.orderagentservice.order.service.utg.payment.PaymentUtgService
@@ -14,13 +19,18 @@ import org.springframework.transaction.annotation.Transactional
 class UtgService @Autowired constructor(
     private val menuService: MenuService,
     private val menuGraphService: MenuUtgService,
-    private val paymentUtgService: PaymentUtgService
+    private val paymentUtgService: PaymentUtgService,
+    private val logService: LogService,
+    private val usageTracker: UsageTracker
 ) {
-    private val log = logger()
-
     @Transactional
     fun initializeGraph(kioskId: String, accessToken: String): List<AgentActionDto> {
-        log.info("UTG 생성 시작")
+        logService.printLog(
+            UtgStartLog(
+                kioskId = kioskId,
+                utgType = UtgType.TOTAL
+            )
+        )
         val startTime = System.nanoTime()
 
         //관리자 페이지로부터 메뉴를 얻어온다
@@ -35,7 +45,14 @@ class UtgService @Autowired constructor(
         paymentUtgService.initializeGraph(context = context)
 
         val endTime = System.nanoTime()
-        log.info("모든 utg 생성 완료. 수행시간: ${(endTime - startTime) / 1000000}ms")
+        logService.printLog(
+            UtgEndLog(
+                kioskId = context.kioskId,
+                utgType = UtgType.TOTAL,
+                processingTime = (endTime - startTime) / 1000000,
+                totalTokenUsage = usageTracker.totalUsage
+            )
+        )
 
         return context.history
     }

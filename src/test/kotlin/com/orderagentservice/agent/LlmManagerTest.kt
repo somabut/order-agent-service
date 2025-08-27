@@ -1,8 +1,6 @@
 package com.orderagentservice.agent
 
 import com.orderagentservice.agent.util.LlmManager
-import com.orderagentservice.jsonMapper
-import com.orderagentservice.order.model.SpecialNode
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

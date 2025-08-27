@@ -3,13 +3,12 @@ package com.orderagentservice.order.service
 import com.orderagentservice.global.service.AmazonS3Service
 import com.orderagentservice.jsonMapper
 import com.orderagentservice.logger
-import com.orderagentservice.order.model.CommandType
+import com.orderagentservice.order.model.type.CommandType
 import com.orderagentservice.order.exception.CommandTimeoutException
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.request.CommandRequest
 import com.orderagentservice.order.repository.NotificationRepository
 import com.orderagentservice.global.util.GlobalLogger
-import com.orderagentservice.order.model.OverlayType
 import com.orderagentservice.order.model.dto.KioskCaptureDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service

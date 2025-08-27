@@ -2,6 +2,8 @@ package com.orderagentservice.global.service
 
 import com.orderagentservice.global.exception.InvalidSessionException
 import com.orderagentservice.global.model.response.ApiResponse
+import com.orderagentservice.jsonMapper
+import com.orderagentservice.logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.env.Environment
 import org.springframework.http.*
@@ -14,6 +16,12 @@ class LogService @Autowired constructor(
     private val env: Environment
 ) {
     private val ORDER_CHAT_HOST = env.getProperty("order-chat.host")
+    private val log = logger()
+
+    fun <T> printLog(obj: T) {
+        val json = jsonMapper.writeValueAsString(obj)
+        log.info(json)
+    }
 
     fun sendLog(message: String): ApiResponse<*> {
         val url = "$ORDER_CHAT_HOST/v1/task/"
