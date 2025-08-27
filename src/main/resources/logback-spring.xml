@@ -31,9 +31,10 @@
         </encoder>
     </appender>
 
+    <springProperty scope="context" name="LOKI_URL" source="loki.url"/>
     <appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">
         <http>
-            <url>http://3.106.253.59:3000/loki/api/v1/push</url>
+            <url>${LOKI_URL}</url>
         </http>
         <format>
             <label>
