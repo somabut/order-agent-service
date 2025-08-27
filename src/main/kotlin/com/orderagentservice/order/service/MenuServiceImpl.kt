@@ -1,15 +1,18 @@
 package com.orderagentservice.order.service
 
+import com.orderagentservice.global.service.LogService
 import com.orderagentservice.logger
 import com.orderagentservice.order.model.dto.MenuInfoDto
+import com.orderagentservice.order.model.log.MenuGetLog
 import com.orderagentservice.order.repository.MenuRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
+import kotlin.math.log
 
 @Service
 class MenuServiceImpl @Autowired constructor(
-    private val menuRepository: MenuRepository
+    private val menuRepository: MenuRepository,
 ) : MenuService {
     private val log = logger()
 

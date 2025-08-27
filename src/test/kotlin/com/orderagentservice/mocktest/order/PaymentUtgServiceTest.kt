@@ -4,7 +4,7 @@ import com.orderagentservice.agent.PaymentAgent
 import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.order.model.GraphContext
-import com.orderagentservice.order.model.NodeRelation
+import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.entity.UiEntity
 import com.orderagentservice.order.service.NotificationService
@@ -113,21 +113,23 @@ class PaymentUtgServiceTest {
     @Test
     fun `포장_매장_UI를_찾은_상태에서_결제_그래프_초기화가_성공한다`() {
         // given: 포장/매장 UI를 이미 찾은 상태
-        whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
-        whenever(uiDetectorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
-        whenever(paymentAgent.determineAction(llmUiList)).thenReturn(agentActionDto)
-        whenever(graphService.saveNode(any<UiDto>())).thenReturn(uiEntity).thenReturn(completeEntity)
-        doNothing().whenever(graphService).saveRel(anyString(), anyString(), any())
-
-        // when: 결제 그래프 초기화 실행
         val context = GraphContext(
             kioskId = TEST_KIOSK_ID,
             isPlaceDetermined = true,
             lastNodeId = lastNode.id,
             stationNodeId = null,
             currentCategory = null,
-            history = mutableListOf()
+            history = mutableListOf(),
+            imageName = ""
         )
+        whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(any())
+        whenever(uiDetectorManager.getUiComponents(context)).thenReturn(llmUiList)
+        whenever(paymentAgent.determineAction(llmUiList)).thenReturn(agentActionDto)
+        whenever(graphService.saveNode(any<UiDto>())).thenReturn(uiEntity).thenReturn(completeEntity)
+        doNothing().whenever(graphService).saveRel(anyString(), anyString(), any())
+
+        // when: 결제 그래프 초기화 실행
+
         paymentUtgService.initializeGraph(context)
 
         // then: 결제 액션이 히스토리에 추가되고 완료 노드가 생성된다
@@ -136,10 +138,10 @@ class PaymentUtgServiceTest {
 
         verify(placeUtgService, never()).initializeGraph(any())
         verify(notificationService).sendCaptureCommand(TEST_KIOSK_ID)
-        verify(uiDetectorManager).getUiComponents(TEST_KIOSK_ID)
+        verify(uiDetectorManager).getUiComponents(any())
         verify(paymentAgent).determineAction(llmUiList)
         verify(graphService, times(2)).saveNode(any<UiDto>())
-        verify(graphService, times(2)).saveRel(anyString(), anyString(), any<NodeRelation>())
+        verify(graphService, times(2)).saveRel(anyString(), anyString(), any<NodeRelationType>())
     }
 
     @Test
@@ -151,13 +153,14 @@ class PaymentUtgServiceTest {
             stationNodeId = lastNode.id,
             lastNodeId = null,
             currentCategory = null,
-            history = mutableListOf()
+            history = mutableListOf(),
+            imageName = ""
         )
         whenever(placeUtgService.initializeGraph(any())).thenAnswer {
             placeActionList.forEach { context.history.add(it) }
         }
-        whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
-        whenever(uiDetectorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
+        whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(any())
+        whenever(uiDetectorManager.getUiComponents(context)).thenReturn(llmUiList)
         whenever(paymentAgent.determineAction(llmUiList)).thenReturn(agentActionDto)
         whenever(graphService.saveNode(any<UiDto>())).thenReturn(uiEntity).thenReturn(completeEntity)
         doNothing().whenever(graphService).saveRel(anyString(), anyString(), any())
@@ -173,10 +176,10 @@ class PaymentUtgServiceTest {
 
         verify(placeUtgService).initializeGraph(any())
         verify(notificationService).sendCaptureCommand(TEST_KIOSK_ID)
-        verify(uiDetectorManager).getUiComponents(TEST_KIOSK_ID)
+        verify(uiDetectorManager).getUiComponents(any())
         verify(paymentAgent).determineAction(llmUiList)
         verify(graphService, times(2)).saveNode(any<UiDto>())
-        verify(graphService, times(2)).saveRel(anyString(), anyString(), any<NodeRelation>())
+        verify(graphService, times(2)).saveRel(anyString(), anyString(), any<NodeRelationType>())
     }
 
     @Test
@@ -198,8 +201,18 @@ class PaymentUtgServiceTest {
         val firstEntity = UiEntity(TEST_ENTITY_ID, null, true, 100, 200, "카드결제", TEST_KIOSK_ID)
         val secondEntity = UiEntity("ENTITY_456", null, false, 200, 300, "결제완료", TEST_KIOSK_ID)
 
-        whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
-        whenever(uiDetectorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
+        val context = GraphContext(
+            kioskId = TEST_KIOSK_ID,
+            isPlaceDetermined = true,
+            stationNodeId = null,
+            lastNodeId = lastNode.id,
+            currentCategory = null,
+            history = mutableListOf(),
+            imageName = ""
+        )
+
+        whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(any())
+        whenever(uiDetectorManager.getUiComponents(context)).thenReturn(llmUiList)
         whenever(paymentAgent.determineAction(llmUiList)).thenReturn(firstAction).thenReturn(secondAction)
         whenever(graphService.saveNode(any<UiDto>()))
             .thenReturn(firstEntity)
@@ -208,14 +221,7 @@ class PaymentUtgServiceTest {
         doNothing().whenever(graphService).saveRel(anyString(), anyString(), any())
 
         // when: 결제 그래프 초기화 실행
-        val context = GraphContext(
-            kioskId = TEST_KIOSK_ID,
-            isPlaceDetermined = true,
-            stationNodeId = null,
-            lastNodeId = lastNode.id,
-            currentCategory = null,
-            history = mutableListOf()
-        )
+
         paymentUtgService.initializeGraph(context)
 
         // then: 모든 결제 단계가 히스토리에 추가되고 완료 노드가 생성된다
@@ -224,30 +230,32 @@ class PaymentUtgServiceTest {
         assertEquals(secondAction, context.history[1])
 
         verify(notificationService, times(2)).sendCaptureCommand(TEST_KIOSK_ID)
-        verify(uiDetectorManager, times(2)).getUiComponents(TEST_KIOSK_ID)
+        verify(uiDetectorManager, times(2)).getUiComponents(any())
         verify(paymentAgent, times(2)).determineAction(llmUiList)
         verify(graphService, times(3)).saveNode(any<UiDto>())
-        verify(graphService, times(3)).saveRel(anyString(), anyString(), any<NodeRelation>())
+        verify(graphService, times(3)).saveRel(anyString(), anyString(), any<NodeRelationType>())
     }
 
     @Test
     fun 완료_노드가_올바르게_생성된다() {
         // given: 결제 과정이 완료되는 상황
-        whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
-        whenever(uiDetectorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
-        whenever(paymentAgent.determineAction(llmUiList)).thenReturn(agentActionDto)
-        whenever(graphService.saveNode(any<UiDto>())).thenReturn(uiEntity).thenReturn(completeEntity)
-        doNothing().whenever(graphService).saveRel(anyString(), anyString(), any())
-
-        // when: 결제 그래프 초기화 실행
         val context = GraphContext(
             kioskId = TEST_KIOSK_ID,
             isPlaceDetermined = true,
             stationNodeId = null,
             lastNodeId = lastNode.id,
             currentCategory = null,
-            history = mutableListOf()
+            history = mutableListOf(),
+            imageName = ""
         )
+        whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(any())
+        whenever(uiDetectorManager.getUiComponents(context)).thenReturn(llmUiList)
+        whenever(paymentAgent.determineAction(llmUiList)).thenReturn(agentActionDto)
+        whenever(graphService.saveNode(any<UiDto>())).thenReturn(uiEntity).thenReturn(completeEntity)
+        doNothing().whenever(graphService).saveRel(anyString(), anyString(), any())
+
+        // when: 결제 그래프 초기화 실행
+
         paymentUtgService.initializeGraph(context)
 
         // then: 완료 노드가 올바른 파라미터로 생성된다
@@ -267,6 +275,6 @@ class PaymentUtgServiceTest {
         assertEquals(expectedCompleteUiDto.title, lastArg.title)
         assertEquals(expectedCompleteUiDto.kioskId, lastArg.kioskId)
 
-        verify(graphService, times(2)).saveRel(anyString(), anyString(), any<NodeRelation>())
+        verify(graphService, times(2)).saveRel(anyString(), anyString(), any<NodeRelationType>())
     }
 }

@@ -1,7 +1,7 @@
 package com.orderagentservice.order.controller
 
 import com.orderagentservice.global.model.response.ApiResponse
-import com.orderagentservice.order.model.OverlayType
+import com.orderagentservice.order.model.type.OverlayType
 import com.orderagentservice.order.model.request.AutoOrderRequest
 import com.orderagentservice.order.model.response.AutoOrderResponse
 import com.orderagentservice.order.service.NotificationService

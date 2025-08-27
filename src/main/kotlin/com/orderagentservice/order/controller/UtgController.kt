@@ -4,7 +4,7 @@ import com.orderagentservice.agent.model.UsageTracker
 import com.orderagentservice.global.model.response.ApiResponse
 import com.orderagentservice.logger
 import com.orderagentservice.order.exception.KioskAdminSignInException
-import com.orderagentservice.order.model.OverlayType
+import com.orderagentservice.order.model.type.OverlayType
 import com.orderagentservice.order.model.request.UtgUpdateRequest
 import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.auto.RandomTaskService

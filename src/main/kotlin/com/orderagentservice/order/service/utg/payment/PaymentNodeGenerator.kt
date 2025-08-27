@@ -1,22 +1,31 @@
 package com.orderagentservice.order.service.utg.payment
 
 import com.orderagentservice.agent.model.dto.AgentActionDto
+import com.orderagentservice.global.service.LogService
 import com.orderagentservice.logger
 import com.orderagentservice.order.model.GraphContext
-import com.orderagentservice.order.model.NodeRelation
+import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.dto.UiDto
+import com.orderagentservice.order.model.log.NodeSaveLog
+import com.orderagentservice.order.model.type.SaveNodeType
+import com.orderagentservice.order.model.type.SpecialNodeType
 import com.orderagentservice.order.service.graph.GraphService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
 class PaymentNodeGenerator @Autowired constructor(
-    private val graphService: GraphService
+    private val graphService: GraphService,
+    private val logService: LogService
 ) {
-    private val log = logger()
-
     fun createPaymentNode(action: AgentActionDto, context: GraphContext) {
-        log.info("결제 노드를 생성합니다. go_next: ${action.goNext}, score: ${action.score}, coordinate: ${action.coordinate}, title: ${action.title}")
+        logService.printLog(
+            NodeSaveLog(
+                kioskId = context.kioskId, nodeType = SaveNodeType.PAYMENT,
+                x = action.coordinate[0], y = action.coordinate[1],
+                title = action.title, imageName = context.imageName
+            )
+        )
 
         val entity = graphService.saveNode(
             UiDto(
@@ -26,22 +35,27 @@ class PaymentNodeGenerator @Autowired constructor(
                 kioskId = context.kioskId
             )
         )
-        graphService.saveRel(context.lastNodeId!!, entity.id, NodeRelation.PATH_TO)
+        graphService.saveRel(context.lastNodeId!!, entity.id, NodeRelationType.PATH_TO)
 
         context.lastNodeId = entity.id
     }
 
     fun createCompleteNode(context: GraphContext) {
-        log.info("완료 노드를 생성합니다.")
-
+        logService.printLog(
+            NodeSaveLog(
+                kioskId = context.kioskId, nodeType = SaveNodeType.COMPLETE,
+                x = -1, y = -1,
+                title = SpecialNodeType.COMPLETE.title, imageName = context.imageName
+            )
+        )
         val completeEntity =  graphService.saveNode(
             UiDto(
                 isNext = false,
                 x = -1, y = -1,
-                title = "complete",
+                title = SpecialNodeType.COMPLETE.title,
                 kioskId = context.kioskId
             )
         )
-        graphService.saveRel(context.lastNodeId!!, completeEntity.id, NodeRelation.PATH_TO)
+        graphService.saveRel(context.lastNodeId!!, completeEntity.id, NodeRelationType.PATH_TO)
     }
 }

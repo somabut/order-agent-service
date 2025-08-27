@@ -6,7 +6,7 @@ import com.orderagentservice.agent.model.dto.*
 import com.orderagentservice.order.service.utg.WordSimilarityService
 import com.orderagentservice.order.exception.LowScoreException
 import com.orderagentservice.order.model.GraphContext
-import com.orderagentservice.order.model.NodeRelation
+import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.dto.UiDto
@@ -291,8 +291,8 @@ class MenuUtgServiceTest {
         )
 
         whenever(graphService.saveNode(any<UiDto>())).thenReturn(rootNode, firstNode)
-        whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
-        whenever(uiDetectorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
+        whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(any())
+        whenever(uiDetectorManager.getUiComponents(context)).thenReturn(llmUiList)
         whenever(placeUtgService.initializeGraph(any())).thenAnswer {
             val ctx = it.arguments[0] as GraphContext
             ctx.isPlaceDetermined = true
@@ -349,8 +349,8 @@ class MenuUtgServiceTest {
         )
 
         // 테스트에 필요한 기본적인 Mocking
-        whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
-        whenever(uiDetectorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
+        whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(any())
+        whenever(uiDetectorManager.getUiComponents(context)).thenReturn(llmUiList)
         whenever(notificationService.sendActionCommand(any(), any())).thenReturn(actionResult)
         whenever(pageAgent.determineAction(any(), any())).thenReturn(pageAction) // handleModal 내부에서 사용될 수 있음
         whenever(placeUtgService.initializeGraph(any())).thenAnswer {
@@ -363,8 +363,8 @@ class MenuUtgServiceTest {
         menuGraphService.initializeGraph(context, listOf(menuWithCategory1, menuWithCategory2))
 
         // then: 카테고리1 노드와 카테고리2 노드가 PATH_TO 관계로 양방향 연결되는지 검증
-        verify(graphService).saveRel(category1Node.id, category2Node.id, NodeRelation.PATH_TO)
-        verify(graphService).saveRel(category2Node.id, category1Node.id, NodeRelation.PATH_TO)
+        verify(graphService).saveRel(category1Node.id, category2Node.id, NodeRelationType.PATH_TO)
+        verify(graphService).saveRel(category2Node.id, category1Node.id, NodeRelationType.PATH_TO)
 
         // 그리고 context의 마지막 노드가 새로운 카테고리 노드로 업데이트되었는지 확인
         assertEquals(category2Node.id, context.lastNodeId)
@@ -378,8 +378,8 @@ class MenuUtgServiceTest {
 
         // ← mockStatic 블록 완전 제거!
         whenever(graphService.saveNode(any<UiDto>())).thenReturn(rootNode, firstNode, menuEntity)
-        whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
-        whenever(uiDetectorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
+        whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(any())
+        whenever(uiDetectorManager.getUiComponents(context)).thenReturn(llmUiList)
         whenever(placeUtgService.initializeGraph(any())).thenAnswer {
             val ctx = it.arguments[0] as GraphContext
             callCount++
@@ -423,16 +423,17 @@ class MenuUtgServiceTest {
             currentCategory = null,
             stationNodeId = null,
             lastNodeId = null,
-            history = mutableListOf()
+            history = mutableListOf(),
+            imageName = ""
         )
     }
 
     private fun setupBasicMocks(context: GraphContext) {
         whenever(graphService.saveNode(any<UiDto>())).thenReturn(rootNode, firstNode, menuEntity, modalEntity, optionEntity, backEntity)
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID))
-            .thenReturn(TEST_IMAGE_DATA)
-            .thenReturn(TEST_MODAL_IMAGE_DATA)
-        whenever(uiDetectorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
+            .thenReturn(any())
+            .thenReturn(any())
+        whenever(uiDetectorManager.getUiComponents(context)).thenReturn(llmUiList)
         whenever(placeUtgService.initializeGraph(any())).thenAnswer {
             val ctx = it.arguments[0] as GraphContext
             ctx.isPlaceDetermined = true
@@ -458,9 +459,19 @@ class MenuUtgServiceTest {
             UiComponentDto(x = 150, y = 250, title = "숨겨진옵션")
         )
 
+        val context = GraphContext(
+            kioskId = TEST_KIOSK_ID,
+            isPlaceDetermined = false,
+            stationNodeId = null,
+            lastNodeId = null,
+            currentCategory = null,
+            history = mutableListOf(),
+            imageName = ""
+        )
+
         whenever(graphService.saveNode(any<UiDto>())).thenReturn(rootNode, menuEntity)
-        whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(TEST_IMAGE_DATA)
-        whenever(uiDetectorManager.getUiComponents(TEST_KIOSK_ID)).thenReturn(llmUiList)
+        whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(any())
+        whenever(uiDetectorManager.getUiComponents(context)).thenReturn(llmUiList)
         whenever(placeUtgService.initializeGraph(any())).thenAnswer {  }
         whenever(backAgent.determineAction(any())).thenReturn(backAction)
         whenever(pageAgent.determineAction(anyList(), anyList())).thenReturn(pageAction)
@@ -468,14 +479,7 @@ class MenuUtgServiceTest {
         doNothing().whenever(graphService).saveRel(anyString(), anyString(), any())
 
         // when: 메뉴 그래프 초기화 실행
-        val context = GraphContext(
-            kioskId = TEST_KIOSK_ID,
-            isPlaceDetermined = false,
-            stationNodeId = null,
-            lastNodeId = null,
-            currentCategory = null,
-            history = mutableListOf()
-        )
+
         menuGraphService.initializeGraph(context, menuList)
 
         // then: 누락된 컴포넌트가 감지되고 추가된다

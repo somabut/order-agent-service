@@ -1,11 +1,19 @@
 package com.orderagentservice.order.service.utg.menu
 
+import com.orderagentservice.agent.model.UsageTracker
+import com.orderagentservice.global.service.LogService
 import com.orderagentservice.logger
 import com.orderagentservice.order.model.GraphContext
-import com.orderagentservice.order.model.NodeRelation
-import com.orderagentservice.order.model.SpecialNode
+import com.orderagentservice.order.model.type.NodeRelationType
+import com.orderagentservice.order.model.type.SpecialNodeType
 import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.dto.UiDto
+import com.orderagentservice.order.model.log.NodeSaveLog
+import com.orderagentservice.order.model.log.UtgEndLog
+import com.orderagentservice.order.model.log.UtgProcessLog
+import com.orderagentservice.order.model.log.UtgStartLog
+import com.orderagentservice.order.model.type.SaveNodeType
+import com.orderagentservice.order.model.type.UtgType
 import com.orderagentservice.order.service.graph.GraphService
 import com.orderagentservice.order.service.utg.place.PlaceUtgService
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,13 +24,19 @@ import org.springframework.transaction.annotation.Transactional
 class MenuUtgService @Autowired constructor(
     private val menuNavigator: MenuNavigator,
     private val placeUtgService: PlaceUtgService,
-    private val graphService: GraphService
+    private val graphService: GraphService,
+    private val logService: LogService,
+    private val usageTracker: UsageTracker
 )  {
-    private val log = logger()
 
     @Transactional
     fun initializeGraph(context: GraphContext, menuList: List<MenuInfoDto>) {
-        log.info("메뉴 utg 생성 시작")
+        logService.printLog(
+            UtgStartLog(
+                kioskId = context.kioskId,
+                utgType = UtgType.MENU
+            )
+        )
         val startTime = System.nanoTime()
 
         // root, station노드 초기화
@@ -40,12 +54,24 @@ class MenuUtgService @Autowired constructor(
         }
 
         val endTime = System.nanoTime()
-        log.info("메뉴 utg 생성 완료. 수행시간: ${(endTime - startTime) / 1000000}ms")
+        logService.printLog(
+            UtgEndLog(
+                kioskId = context.kioskId,
+                utgType = UtgType.MENU,
+                processingTime = (endTime - startTime) / 1000000,
+                totalTokenUsage = usageTracker.totalUsage
+            )
+        )
     }
 
     @Transactional
     fun updateGraph(context: GraphContext, categoryMenuList: List<MenuInfoDto>) {
-        log.info("메뉴 utg 업데이트 시작")
+        logService.printLog(
+            UtgStartLog(
+                kioskId = context.kioskId,
+                utgType = UtgType.UPDATE
+            )
+        )
         val startTime = System.nanoTime()
 
         val nowNodeId = graphService.findRoot(context.kioskId).id
@@ -58,28 +84,48 @@ class MenuUtgService @Autowired constructor(
         menuNavigator.navigateMenus(context, categoryMenuList)
 
         val endTime = System.nanoTime()
-        log.info("메뉴 utg 업데이트 완료. 수행시간: ${(endTime - startTime) / 1000000}ms")
+        logService.printLog(
+            UtgEndLog(
+                kioskId = context.kioskId,
+                utgType = UtgType.UPDATE,
+                processingTime = (endTime - startTime) / 1000000,
+                totalTokenUsage = usageTracker.totalUsage
+            )
+        )
     }
 
     private fun setupNode(context: GraphContext) {
-        log.info("root노드와 station노드를 초기화합니다.")
+        logService.printLog(
+            NodeSaveLog(
+                kioskId = context.kioskId, nodeType = SaveNodeType.ROOT,
+                x = -1, y = -1,
+                title = SpecialNodeType.ROOT.title, imageName = context.imageName
+            )
+        )
         val kioskId = context.kioskId
         val rootUiDto = UiDto(
             isNext = true,
             x = -1, y = -1,
             kioskId = kioskId,
-            title = SpecialNode.ROOT.title
+            title = SpecialNodeType.ROOT.title
         )
         context.lastNodeId = graphService.saveNode(rootUiDto).id
 
+        logService.printLog(
+            NodeSaveLog(
+                kioskId = context.kioskId, nodeType = SaveNodeType.STATION,
+                x = -1, y = -1,
+                title = SpecialNodeType.STATION.title, imageName = context.imageName
+            )
+        )
         val stationNode = UiDto(
             isNext = true,
             x = -1, y = -1,
             kioskId = kioskId,
-            title = SpecialNode.STATION.title
+            title = SpecialNodeType.STATION.title
         )
         context.stationNodeId = graphService.saveNode(stationNode).id
 
-        graphService.saveRel(context.lastNodeId!!, context.stationNodeId!!, NodeRelation.PATH_TO)
+        graphService.saveRel(context.lastNodeId!!, context.stationNodeId!!, NodeRelationType.PATH_TO)
     }
 }

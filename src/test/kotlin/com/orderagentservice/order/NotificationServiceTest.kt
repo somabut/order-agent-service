@@ -1,6 +1,7 @@
 package com.orderagentservice.order
 
 import com.orderagentservice.order.exception.CommandTimeoutException
+import com.orderagentservice.order.model.dto.KioskCaptureDto
 import com.orderagentservice.order.repository.NotificationRepository
 import com.orderagentservice.order.service.NotificationService
 import org.assertj.core.api.Assertions.*
@@ -20,7 +21,11 @@ class NotificationServiceTest @Autowired constructor(
         //when: private를 테스트를 위해 임시로 public으로 열고 파일을 저장한다
         val method = notificationService.javaClass.getDeclaredMethod("findAvailableKey", String::class.java)
         method.isAccessible = true
-        notificationRepository.saveCaptureCommand("moodTRBL", File("moodTRBL"))
+        val dto = KioskCaptureDto(
+            file = File("moodTRBL"),
+            name = ""
+        )
+        notificationRepository.saveCaptureCommand("moodTRBL", dto)
 
         //when: 명령완료를 기다린다
         val result = method.invoke(notificationService, "moodTRBL") as File

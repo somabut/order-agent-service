@@ -2,10 +2,12 @@ package com.orderagentservice.order.service.utg.menu
 
 import com.orderagentservice.agent.BackAgent
 import com.orderagentservice.agent.model.dto.UiComponentDto
+import com.orderagentservice.global.service.LogService
 import com.orderagentservice.logger
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
+import com.orderagentservice.order.model.log.UtgProcessLog
 import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.graph.GraphService
 import com.orderagentservice.order.service.utg.UiDetectorManager
@@ -20,9 +22,9 @@ class MenuActionExecutorImpl @Autowired constructor(
     private val nodeGenerator: MenuNodeGenerator,
     private val uiDetectorManager: UiDetectorManager,
     private val backAgent: BackAgent,
-    private val graphService: GraphService
+    private val graphService: GraphService,
+    private val logService: LogService
 ) : MenuActionExecutor {
-    private val log = logger()
 
     override fun selectCategory(
         context: GraphContext,
@@ -63,7 +65,6 @@ class MenuActionExecutorImpl @Autowired constructor(
         menuNodeId: String,
     ) {
         //메뉴의 옵션 노드 추가
-        val kioskId = context.kioskId
         val llmOptList = uiDetectorManager.getUiComponents(context)
 
         for (opt in menuDto.options) {
@@ -89,7 +90,10 @@ class MenuActionExecutorImpl @Autowired constructor(
         val backNodeId = nodeGenerator.createBackNode(backAction, menuNodeId, context)
 
         //sse를 통해 클라이언트에게 원래 페이지로 돌아가는 좌표 클릭하도록 하기
-        log.info("돌아가는 좌표를 클릭중입니다. 좌표: ${backAction.coordinate}")
+        logService.printLog(UtgProcessLog(
+            kioskId = kioskId,
+            message = "돌아가는 좌표를 클릭중입니다. 좌표: ${backAction.coordinate}"
+        ))
         notificationService.sendActionCommand(kioskId, CoordinateDto(backAction.coordinate[0], backAction.coordinate[1], backAction.title))
 
         return backNodeId

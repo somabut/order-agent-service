@@ -4,7 +4,7 @@ import com.orderagentservice.agent.PlaceAgent
 import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.order.model.GraphContext
-import com.orderagentservice.order.model.NodeRelation
+import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.entity.UiEntity
@@ -102,11 +102,12 @@ class PlaceUtgServiceTest {
             stationNodeId = null,
             lastNodeId = lastNode.id,
             currentCategory = null,
-            history = mutableListOf()
+            history = mutableListOf(),
+            imageName = ""
         )
         whenever(placeAgent.determineAction(llmUiList)).thenReturn(successAgentActionList)
         whenever(graphService.saveNode(any<UiDto>())).thenReturn(uiEntity)
-        doNothing().whenever(graphService).saveRel(TEST_LAST_NODE_ID, TEST_ENTITY_ID, NodeRelation.HAS_TO)
+        doNothing().whenever(graphService).saveRel(TEST_LAST_NODE_ID, TEST_ENTITY_ID, NodeRelationType.HAS_TO)
         whenever(notificationService.sendActionCommand(TEST_KIOSK_ID, TEST_COORDINATE)).thenReturn(actionResult)
 
         // when: 그래프 초기화 실행
@@ -117,7 +118,7 @@ class PlaceUtgServiceTest {
 
         verify(placeAgent).determineAction(llmUiList)
         verify(graphService, times(2)).saveNode(any())
-        verify(graphService, times(2)).saveRel(TEST_LAST_NODE_ID, TEST_ENTITY_ID, NodeRelation.HAS_TO)
+        verify(graphService, times(2)).saveRel(TEST_LAST_NODE_ID, TEST_ENTITY_ID, NodeRelationType.HAS_TO)
         verify(notificationService).sendActionCommand(anyString(), any<CoordinateDto>())
     }
 
@@ -130,7 +131,8 @@ class PlaceUtgServiceTest {
             lastNodeId = lastNode.id,
             stationNodeId = null,
             currentCategory = null,
-            history = mutableListOf()
+            history = mutableListOf(),
+            imageName = ""
         )
         whenever(placeAgent.determineAction(llmUiList)).thenReturn(failAgentActionList)
         whenever(graphService.saveNode(any<UiDto>())).thenReturn(uiEntity)

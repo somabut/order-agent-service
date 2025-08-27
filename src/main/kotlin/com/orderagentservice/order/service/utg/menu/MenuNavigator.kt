@@ -1,12 +1,14 @@
 package com.orderagentservice.order.service.utg.menu
 
 import com.orderagentservice.agent.model.dto.UiComponentDto
-import com.orderagentservice.logger
+import com.orderagentservice.global.service.LogService
 import com.orderagentservice.order.exception.UtgInfiniteLoopException
 import com.orderagentservice.order.model.GraphContext
-import com.orderagentservice.order.model.NodeRelation
+import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
+import com.orderagentservice.order.model.log.UtgNowMenuLog
+import com.orderagentservice.order.model.log.UtgProcessLog
 import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.graph.GraphService
 import com.orderagentservice.order.service.utg.UiDetectorManager
@@ -20,10 +22,9 @@ class MenuNavigator @Autowired constructor(
     private val uiDetectorManager: UiDetectorManager,
     private val graphService: GraphService,
     private val wordSimilarityService: WordSimilarityService,
-    private val notificationService: NotificationService
+    private val notificationService: NotificationService,
+    private val logService: LogService
 ) {
-    private val log = logger()
-
     private val MAX_LOOP = 5
 
     fun navigateMenus(context: GraphContext, menuList: List<MenuInfoDto>) {
@@ -35,7 +36,13 @@ class MenuNavigator @Autowired constructor(
                 uiList = uiDetectorManager.getUiComponents(context)
             }
 
-            log.info("진행 중인 메뉴: ${menuDto.title}, 카테고리: ${menuDto.category}")
+            logService.printLog(
+                UtgNowMenuLog(
+                    kioskId = context.kioskId,
+                    menu = menuDto.title,
+                    category = menuDto.category
+                )
+            )
             val menuNodeId = menuActionExecutor.selectMenu(context, menuDto, uiList)
 
             //모달 처리
@@ -66,21 +73,31 @@ class MenuNavigator @Autowired constructor(
 
             //모달처리
             if (checkMenuPage(menuDto, menuList, uiList) == false) {
-                log.info("모달이 감지되어 모달을 처리합니다.")
+                logService.printLog(
+                    UtgProcessLog(
+                        kioskId = context.kioskId,
+                        message = "모달이 감지되어 모달을 처리합니다."
+                    )
+                )
                 nodeId = menuActionExecutor.selectModal(
                     context = context,
                     menuDto = menuDto,
                     menuNodeId = menuNodeId,
                     uiList = uiList
                 )
-                graphService.saveRel(nodeId, context.lastNodeId!!, NodeRelation.BACK_TO)
+                graphService.saveRel(nodeId, context.lastNodeId!!, NodeRelationType.BACK_TO)
             }
         } else {
             //옵션이 있는 경우
 
             //모달처리
             if (checkOptionPage(menuDto.options, uiList) == false) {
-                log.info("모달이 감지되어 모달을 처리합니다.")
+                logService.printLog(
+                    UtgProcessLog(
+                        kioskId = context.kioskId,
+                        message = "모달이 감지되어 모달을 처리합니다."
+                    )
+                )
                 nodeId = menuActionExecutor.selectModal(
                     context = context,
                     menuDto = menuDto,
@@ -104,7 +121,7 @@ class MenuNavigator @Autowired constructor(
                 uiList = uiDetectorManager.getUiComponents(context)
                 count++
             }
-            graphService.saveRel(nodeId, context.lastNodeId!!, NodeRelation.BACK_TO)
+            graphService.saveRel(nodeId, context.lastNodeId!!, NodeRelationType.BACK_TO)
         }
     }
 

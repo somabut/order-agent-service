@@ -1,6 +1,6 @@
 package com.orderagentservice.order
 
-import com.orderagentservice.order.model.NodeRelation
+import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.service.graph.GraphService
 import org.assertj.core.api.Assertions.*
@@ -127,7 +127,7 @@ class GraphSaveServiceImplTest @Autowired constructor(
         //when: UI 노드를 저장하고 관계를 맺는다
         val entity1 = graphService.saveNode(uiDto1)
         val entity2 = graphService.saveNode(uiDto2)
-        graphService.saveRel(entity1.id, entity2.id, NodeRelation.PATH_TO)
+        graphService.saveRel(entity1.id, entity2.id, NodeRelationType.PATH_TO)
 
         //then: 저장이 완료된다
     }

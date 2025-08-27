@@ -2,24 +2,33 @@ package com.orderagentservice.order.service.utg.menu
 
 import com.orderagentservice.agent.model.dto.AgentBackDto
 import com.orderagentservice.global.model.dto.WordMatchDto
-import com.orderagentservice.logger
+import com.orderagentservice.global.service.LogService
 import com.orderagentservice.order.model.GraphContext
-import com.orderagentservice.order.model.NodeRelation
+import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.dto.UiDto
+import com.orderagentservice.order.model.log.NodeSaveLog
+import com.orderagentservice.order.model.type.SaveNodeType
 import com.orderagentservice.order.service.graph.GraphService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
 class MenuNodeGenerator @Autowired constructor(
-    private val graphService: GraphService
+    private val graphService: GraphService,
+    private val logService: LogService
 ) {
-    private val log = logger()
 
     fun createCategoryNode(coordinate: CoordinateDto, context: GraphContext): String {
-        log.info("카테고리 노드를 생성합니다. go_next: true, coordinate: [${coordinate.x}, ${coordinate.y}], title: ${coordinate.title}, imageName: ${context.imageName}")
+        logService.printLog(
+            NodeSaveLog(
+                kioskId = context.kioskId,
+                nodeType = SaveNodeType.CATEGORY,
+                x = coordinate.x, y = coordinate.y,
+                title = coordinate.title, imageName = context.imageName
+            )
+        )
 
         val node = graphService.saveNode(
             UiDto(
@@ -30,8 +39,8 @@ class MenuNodeGenerator @Autowired constructor(
             )
         )
 
-        graphService.saveRel(context.stationNodeId!!, node.id, NodeRelation.PATH_TO)
-        graphService.saveRel(node.id, context.stationNodeId!!, NodeRelation.PATH_TO)
+        graphService.saveRel(context.stationNodeId!!, node.id, NodeRelationType.PATH_TO)
+        graphService.saveRel(node.id, context.stationNodeId!!, NodeRelationType.PATH_TO)
 
         context.currentCategory = node.title
         context.lastNodeId = node.id
@@ -41,7 +50,14 @@ class MenuNodeGenerator @Autowired constructor(
     }
 
     fun createMenuNode(coordinate: CoordinateDto, context: GraphContext): String {
-        log.info("메뉴 노드를 생성합니다. go_next: false, coordinate: [${coordinate.x}, ${coordinate.y}], title: ${coordinate.title}, imageName: ${context.imageName}")
+        logService.printLog(
+            NodeSaveLog(
+                kioskId = context.kioskId,
+                nodeType = SaveNodeType.MENU,
+                x = coordinate.x, y = coordinate.y,
+                title = coordinate.title, imageName = context.imageName
+            )
+        )
         val node = graphService.saveNode(
             UiDto(
                 isNext = false,
@@ -50,7 +66,7 @@ class MenuNodeGenerator @Autowired constructor(
                 kioskId = context.kioskId
             )
         )
-        graphService.saveRel(context.lastNodeId!!, node.id, NodeRelation.HAS_TO)
+        graphService.saveRel(context.lastNodeId!!, node.id, NodeRelationType.HAS_TO)
 
         context.history.add(node.toAgentActionDto())
 
@@ -62,7 +78,14 @@ class MenuNodeGenerator @Autowired constructor(
         menuNodeId: String,
         context: GraphContext
     ) {
-        log.info("옵션 노드를 생성합니다. go_next: false, coordinate: [${coordinate.x}, ${coordinate.y}], title: ${coordinate.title}, imageName: ${context.imageName}")
+        logService.printLog(
+            NodeSaveLog(
+                kioskId = context.kioskId,
+                nodeType = SaveNodeType.OPTION,
+                x = coordinate.x, y = coordinate.y,
+                title = coordinate.title, imageName = context.imageName
+            )
+        )
         val optEntity = graphService.saveNode(
             UiDto(
                 isNext = false,
@@ -71,7 +94,7 @@ class MenuNodeGenerator @Autowired constructor(
                 kioskId = context.kioskId
             )
         )
-        graphService.saveRel(menuNodeId, optEntity.id, NodeRelation.OPT_TO)
+        graphService.saveRel(menuNodeId, optEntity.id, NodeRelationType.OPT_TO)
 
         context.history.add(optEntity.toAgentActionDto())
     }
@@ -81,16 +104,25 @@ class MenuNodeGenerator @Autowired constructor(
         menuNodeId: String,
         context: GraphContext
     ): String {
-        log.info("완료 노드를 생성합니다. go_next: false, coordinate: [${action.coordinate[0]}, ${action.coordinate[1]}], title: ${action.title}, imageName: ${context.imageName}")
+        val x = action.coordinate[0]
+        val y = action.coordinate[1]
+        logService.printLog(
+            NodeSaveLog(
+                kioskId = context.kioskId,
+                nodeType = SaveNodeType.BACK,
+                x = x, y = y,
+                title = action.title, imageName = context.imageName
+            )
+        )
         val backEntity = graphService.saveNode(
             UiDto(
                 isNext = false,
-                x = action.coordinate[0], y = action.coordinate[1],
+                x = x, y = y,
                 title = action.title,
                 kioskId = context.kioskId
             )
         )
-        graphService.saveRel(menuNodeId, backEntity.id, NodeRelation.BACK_TO)
+        graphService.saveRel(menuNodeId, backEntity.id, NodeRelationType.BACK_TO)
 
         context.history.add(backEntity.toAgentActionDto())
 
@@ -103,6 +135,14 @@ class MenuNodeGenerator @Autowired constructor(
         menuDto: MenuInfoDto,
         menuNodeId: String
     ): String {
+        logService.printLog(
+            NodeSaveLog(
+                kioskId = context.kioskId,
+                nodeType = SaveNodeType.MODAL,
+                x = matchDto.x, y = matchDto.y,
+                title = menuDto.title, imageName = context.imageName
+            )
+        )
         val node = graphService.saveNode(
             UiDto(
                 isNext = true, kioskId = context.kioskId,
@@ -110,7 +150,7 @@ class MenuNodeGenerator @Autowired constructor(
                 title = menuDto.title
             )
         )
-        graphService.saveRel(menuNodeId, node.id, NodeRelation.HAS_TO)
+        graphService.saveRel(menuNodeId, node.id, NodeRelationType.HAS_TO)
 
         context.history.add(node.toAgentActionDto())
 

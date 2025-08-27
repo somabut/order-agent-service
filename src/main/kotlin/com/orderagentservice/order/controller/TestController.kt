@@ -2,7 +2,7 @@ package com.orderagentservice.order.controller
 
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.model.dto.WordMatchDto
-import com.orderagentservice.order.model.OverlayType
+import com.orderagentservice.order.model.type.OverlayType
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.service.utg.WordSimilarityService
 import com.orderagentservice.order.service.NotificationService

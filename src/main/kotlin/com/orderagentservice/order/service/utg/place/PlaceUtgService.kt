@@ -1,27 +1,31 @@
 package com.orderagentservice.order.service.utg.place
 
 import com.orderagentservice.agent.PlaceAgent
+import com.orderagentservice.global.service.LogService
 import com.orderagentservice.logger
 import com.orderagentservice.order.model.GraphContext
-import com.orderagentservice.order.model.NodeRelation
+import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.UiDto
+import com.orderagentservice.order.model.log.NodeSaveLog
+import com.orderagentservice.order.model.log.UtgProcessLog
+import com.orderagentservice.order.model.type.SaveNodeType
 import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.graph.GraphService
 import com.orderagentservice.order.service.utg.UiDetectorManager
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import kotlin.math.log
 
 @Service
 class PlaceUtgService @Autowired constructor(
     private val placeAgent: PlaceAgent,
     private val notificationService: NotificationService,
     private val uiDetectorManager: UiDetectorManager,
-    private val graphService: GraphService
+    private val graphService: GraphService,
+    private val logService: LogService
 ) {
-    private val log = logger()
-
     @Transactional
     fun initializeGraph(context: GraphContext) {
         val kioskId = context.kioskId
@@ -29,7 +33,12 @@ class PlaceUtgService @Autowired constructor(
         val action = placeAgent.determineAction(uiList)
 
         if (action.size <= 1) {
-            log.info("포장/매장 UI를 발견하지 못했습니다.")
+            logService.printLog(
+                UtgProcessLog(
+                    kioskId = context.kioskId,
+                    message = "포장/매장 UI를 발견하지 못했습니다."
+                )
+            )
             return
         }
 
@@ -45,9 +54,16 @@ class PlaceUtgService @Autowired constructor(
                     kioskId = kioskId
                 )
             )
-            graphService.saveRel(context.lastNodeId!!, entity.id, NodeRelation.HAS_TO)
+            graphService.saveRel(context.lastNodeId!!, entity.id, NodeRelationType.HAS_TO)
             context.history.add(act)
-            log.info("포장/매장 노드를 생성합니다. go_next: ${act.goNext}, score: ${act.score}, coordinate: $x $y, title: ${act.title}")
+            logService.printLog(
+                NodeSaveLog(
+                    kioskId = context.kioskId,
+                    nodeType = SaveNodeType.PLACE,
+                    x = x, y = y,
+                    title = act.title, imageName = context.imageName
+                )
+            )
         }
         context.isPlaceDetermined = true
 
