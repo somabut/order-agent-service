@@ -1,5 +1,6 @@
 package com.orderagentservice.order.service.auto
 
+import com.orderagentservice.global.service.LogService
 import com.orderagentservice.logger
 import com.orderagentservice.order.model.request.AutoOrderMenu
 import com.orderagentservice.order.model.request.AutoOrderRequest
@@ -7,6 +8,10 @@ import com.orderagentservice.global.util.GlobalLogger
 import com.orderagentservice.jsonMapper
 import com.orderagentservice.order.model.AutoOrderContext
 import com.orderagentservice.order.model.AutoOrderResultDto
+import com.orderagentservice.order.model.log.OrderEndLog
+import com.orderagentservice.order.model.log.OrderProcessLog
+import com.orderagentservice.order.model.log.OrderStartLog
+import com.orderagentservice.order.model.type.NodeType
 import com.orderagentservice.order.service.graph.GraphService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -16,13 +21,20 @@ class AutoOrderService @Autowired constructor(
     private val graphService: GraphService,
     private val globalLogger: GlobalLogger,
     private val autoTaskExecutor: AutoTaskExecutor,
-    private val orderLogSender: OrderLogSender
+    private val orderLogSender: OrderLogSender,
 ) {
     private val log = logger()
 
     fun execute(kioskId: String, taskId: String, orderRequest: AutoOrderRequest): AutoOrderResultDto {
         val requestJson = jsonMapper.writeValueAsString(orderRequest)
-        orderLogSender.logOrder(kioskId, taskId, "자동 주문을 시작합니다. 주문: ${requestJson}")
+
+        orderLogSender.logOrder(
+            kioskId = kioskId, taskId = taskId,
+            message = "자동 주문을 시작합니다. 주문: ${requestJson}",
+            OrderStartLog(
+                kioskId = kioskId, menus = requestJson
+            )
+        )
         globalLogger.loggingOrderStart(kioskId, taskId)
         val startTime = System.nanoTime()
 
@@ -47,7 +59,13 @@ class AutoOrderService @Autowired constructor(
         val processingTime = (endTime - startTime) / 1000000
         context.history.processingTime += processingTime
 
-        orderLogSender.logOrder(kioskId, taskId, "자동 주문 완료. 수행시간: ${processingTime}ms")
+        orderLogSender.logOrder(
+            kioskId = kioskId, taskId = taskId,
+            message = "자동 주문 완료. 수행시간: ${processingTime}ms",
+            OrderEndLog(
+                kioskId = kioskId, menus = context.history.menus, processingTime = processingTime
+            )
+        )
         globalLogger.loggingOrderResult(
             kioskId = kioskId, menuList = context.history,
             processingTime = processingTime, paymentMethod = orderRequest.payment,
@@ -79,8 +97,6 @@ class AutoOrderService @Autowired constructor(
             } else {
                 context.nodeId = graphService.findNodeByTitle(context.kioskId, menu.category)
             }
-
-            log.info("현재 노드 ID: ${context.nodeId}")
         }
     }
 

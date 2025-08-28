@@ -2,7 +2,7 @@ package com.orderagentservice.order.model.log
 
 import com.orderagentservice.order.model.type.LogType
 import com.orderagentservice.order.model.dto.MenuInfoDto
-import com.orderagentservice.order.model.type.SaveNodeType
+import com.orderagentservice.order.model.type.NodeType
 import com.orderagentservice.order.model.type.UtgType
 
 data class UtgProcessLog(
@@ -41,7 +41,7 @@ data class MenuGetLog(
 data class NodeSaveLog(
     val type: LogType = LogType.UTG_NODE_SAVE,
     val kioskId: String,
-    val nodeType: SaveNodeType,
+    val nodeType: NodeType,
     val x: Int,
     val y: Int,
     val title: String,

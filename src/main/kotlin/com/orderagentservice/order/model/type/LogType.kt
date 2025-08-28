@@ -9,4 +9,8 @@ enum class LogType {
     UTG_NODE_SAVE,
     UTG_NODE_REL,
     UTG_LLM_QUERY,
+
+    AO_START,
+    AO_PROCESS,
+    AO_END
 }

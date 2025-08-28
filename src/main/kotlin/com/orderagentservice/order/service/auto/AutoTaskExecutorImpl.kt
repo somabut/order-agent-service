@@ -7,8 +7,10 @@ import com.orderagentservice.logger
 import com.orderagentservice.order.model.AutoOrderContext
 import com.orderagentservice.order.model.dto.ActionPathDto
 import com.orderagentservice.order.model.dto.CoordinateDto
+import com.orderagentservice.order.model.log.OrderProcessLog
 import com.orderagentservice.order.model.request.AutoOrderMenu
 import com.orderagentservice.order.model.request.AutoOrderOption
+import com.orderagentservice.order.model.type.NodeType
 import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.graph.GraphService
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,7 +23,13 @@ class AutoTaskExecutorImpl @Autowired constructor(
     private val orderLogSender: OrderLogSender
 ) : AutoTaskExecutor {
     override fun clickMenu(context: AutoOrderContext, menu: AutoOrderMenu): ActionPathDto {
-        orderLogSender.logOrder(context.kioskId, context.taskId, "메뉴를 담습니다. 메뉴: ${menu.title}")
+        orderLogSender.logOrder(
+            kioskId = context.kioskId, taskId = context.taskId,
+            message = "메뉴를 담습니다. 메뉴: ${menu.title}",
+            OrderProcessLog(
+                kioskId = context.kioskId, nodeType = NodeType.MENU, title = menu.title
+            )
+        )
         val actionList = graphService.findPath(context.kioskId, context.nodeId, menu.title)
 
         //메뉴를 담기 위해 메뉴 노드까지 이동후 필요한 만큼 클릭
@@ -40,7 +48,13 @@ class AutoTaskExecutorImpl @Autowired constructor(
         val optionHistory = mutableListOf<String>()
         var nodeId = menuNodeId
         for (opt in options) {
-            orderLogSender.logOrder(context.kioskId, context.taskId, "옵션을 선택합니다. 옵션: ${opt.title}")
+            orderLogSender.logOrder(
+                kioskId = context.kioskId, taskId = context.taskId,
+                message = "옵션을 선택합니다. 옵션: ${opt.title}",
+                OrderProcessLog(
+                    kioskId = context.kioskId, nodeType = NodeType.OPTION, title = opt.title
+                )
+            )
 
             val actionList = graphService.findPath(context.kioskId, nodeId, opt.title)
             for (act in actionList) {
@@ -65,7 +79,13 @@ class AutoTaskExecutorImpl @Autowired constructor(
     }
 
     override fun clickPayment(context: AutoOrderContext, paymentNode: ActionPathDto) {
-        orderLogSender.logOrder(context.kioskId, context.taskId, "결제를 진행중입니다. 현재: ${paymentNode.title}")
+        orderLogSender.logOrder(
+            kioskId = context.kioskId, taskId = context.taskId,
+            message = "결제를 진행중입니다. 현재: ${paymentNode.title}",
+            OrderProcessLog(
+                kioskId = context.kioskId, nodeType = NodeType.PAYMENT, title = paymentNode.title
+            )
+        )
         notificationService.sendActionCommand(context.kioskId, CoordinateDto(paymentNode.x, paymentNode.y, paymentNode.title))
     }
 
@@ -75,7 +95,13 @@ class AutoTaskExecutorImpl @Autowired constructor(
         val taskId = context.taskId
         val action = graphService.findPlace(kioskId, context.nodeId, context.place!!) ?: return false
 
-        orderLogSender.logOrder(kioskId, taskId,"포장/매장을 선택합니다. ${context.place}")
+        orderLogSender.logOrder(
+            kioskId = kioskId, taskId = taskId,
+            message = "포장/매장을 선택합니다. ${context.place}",
+            OrderProcessLog(
+                kioskId = kioskId, nodeType = NodeType.PAYMENT, title = context.place
+            )
+        )
         val coordinate = notificationService.sendActionCommand(kioskId, CoordinateDto(action.x, action.y, action.title))
         context.history.payment = coordinate.title
         return true
