@@ -35,7 +35,6 @@ class UiDetectorManager @Autowired constructor(
     fun queryUiExtractor(image: File, endpoint: String): List<DetectorUiComponentDto> {
         val restTemplate = RestTemplate()
         val url = "$UI_EXCTRACTOR_HOST/v2/$endpoint"
-        log.info("${url} 로 요청합니다")
 
         val fileContent = FileSystemResource(image)
 
@@ -47,21 +46,27 @@ class UiDetectorManager @Autowired constructor(
         headers.setBearerAuth(UI_EXTRACTOR_API_KEY)
 
         //ui extractor service에게 UI 추출 요청
-        try {
-            val requestEntity = HttpEntity(body, headers)
-            val responseEntity = restTemplate.exchange(
-                url,
-                HttpMethod.POST,
-                requestEntity,
-                object : ParameterizedTypeReference<ApiResponse<DetectorResponse>>() {}
-            )
-            val response: ApiResponse<DetectorResponse> = responseEntity.body!!
-            val uiComponents = response.data!!.uiComponents
-            return uiComponents
-        } catch (e: RuntimeException) {
-            println(e.message)
-            throw UiExtractException()
+        var requestCount = 0
+        val maxRequest = 4
+        while (requestCount < maxRequest) {
+            try {
+                val requestEntity = HttpEntity(body, headers)
+                val responseEntity = restTemplate.exchange(
+                    url,
+                    HttpMethod.POST,
+                    requestEntity,
+                    object : ParameterizedTypeReference<ApiResponse<DetectorResponse>>() {}
+                )
+                val response: ApiResponse<DetectorResponse> = responseEntity.body!!
+                val uiComponents = response.data!!.uiComponents
+                return uiComponents
+            }catch (e: RuntimeException) {
+                log.error(e.message)
+                log.info("UI extractor service요류로 인해 재시도합니다. 현재횟수: $requestCount")
+            }
+            requestCount++
         }
+        throw UiExtractException()
     }
 
     fun getUiComponents(context: GraphContext, isPayment: Boolean = false): MutableList<UiComponentDto> {
