@@ -1,13 +1,23 @@
 package com.orderagentservice.agent
 
+import com.orderagentservice.agent.exception.LlmServerOverLoadException
 import com.orderagentservice.agent.model.LlmProvider
 import com.orderagentservice.agent.util.LlmManager
 import com.orderagentservice.agent.util.LlmRateLimiter
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Test
+import org.mockito.ArgumentMatchers.anyString
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
+import org.mockito.kotlin.mock
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatusCode
+import org.springframework.web.client.HttpServerErrorException
 import java.util.*
+import java.util.concurrent.atomic.AtomicInteger
 
 @SpringBootTest
 class LlmRateLimiterTest @Autowired constructor(
@@ -77,7 +87,47 @@ class LlmRateLimiterTest @Autowired constructor(
         assertThat(result).isEqualTo(4.92)
     }
 
-//    15 RPM – 분당 최대 15회 요청 가능
-//    1,500 RPD – 하루 1,500회 요청 가능
-//    TPM: 분당 최대 토큰 1,000,000 토큰
+    @Test
+    fun `엔트로픽 529에러에 걸리는 경우 한번 더 요청한다`() {
+        val callCount = AtomicInteger(0)
+        val mockApiCall: (String) -> String = mock()
+
+        `when`(mockApiCall.invoke(anyString())).thenAnswer {
+            val count = callCount.incrementAndGet()
+            if (count <= 3) {
+                throw HttpServerErrorException(HttpStatusCode.valueOf(529), "Service Overloaded")
+            }
+            "성공 응답"
+        }
+
+        val result = executeForClaudTest(mockApiCall)
+        verify(mockApiCall, times(4)).invoke(anyString())
+        assertThat(callCount.get()).isEqualTo(4)
+        assertThat(result).isEqualTo("성공 응답")
+    }
+
+    // 테스트용 executeForClaud 메서드
+    private fun <T> executeForClaudTest(block: (String) -> T): T {
+        var waitTime = 2L
+        val maxWaitTime = 16L
+
+        while (true) {
+            try {
+                return block("test_api_key")
+            } catch (e: HttpServerErrorException) {
+                if (e.statusCode.value() != 529) {
+                    throw e
+                }
+
+                if (waitTime > maxWaitTime) {
+                    throw LlmServerOverLoadException()
+                }
+
+                println("엔트로픽 서버 과부화로 인해 ${waitTime}초 대기합니다.")
+                waitTime *= 2
+            }
+        }
+    }
+
+
 }

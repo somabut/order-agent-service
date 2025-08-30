@@ -1,8 +1,10 @@
 package com.orderagentservice.mocktest.order
 
 import com.orderagentservice.agent.PlaceAgent
+import com.orderagentservice.agent.model.UsageTracker
 import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.model.dto.UiComponentDto
+import com.orderagentservice.global.service.LogService
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.dto.CoordinateDto
@@ -39,6 +41,8 @@ class PlaceUtgServiceTest {
     private lateinit var graphService: GraphServiceImpl
     private lateinit var placeUtgService: PlaceUtgService
     private lateinit var uiDetectorManager: UiDetectorManager
+    private lateinit var usageTracker: UsageTracker
+    private lateinit var logService: LogService
 
     private lateinit var lastNode: UiEntity
     private lateinit var llmUiList: List<UiComponentDto>
@@ -53,7 +57,13 @@ class PlaceUtgServiceTest {
         notificationService = mock()
         graphService = mock()
         uiDetectorManager = mock()
-        placeUtgService = PlaceUtgService(placeAgent, notificationService, uiDetectorManager, graphService)
+        placeUtgService = PlaceUtgService(
+            placeAgent = placeAgent,
+            notificationService = notificationService,
+            uiDetectorManager = uiDetectorManager,
+            graphService = graphService,
+            logService = logService,
+        )
 
         lastNode = UiEntity(
             id = TEST_LAST_NODE_ID,

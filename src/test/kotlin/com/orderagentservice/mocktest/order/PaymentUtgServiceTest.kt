@@ -1,8 +1,10 @@
 package com.orderagentservice.mocktest.order
 
 import com.orderagentservice.agent.PaymentAgent
+import com.orderagentservice.agent.model.UsageTracker
 import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.model.dto.UiComponentDto
+import com.orderagentservice.global.service.LogService
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.dto.UiDto
@@ -45,6 +47,8 @@ class PaymentUtgServiceTest {
     private lateinit var uiDetectorManager: UiDetectorManager
     private lateinit var graphService: GraphServiceImpl
     private lateinit var paymentUtgService: PaymentUtgService
+    private lateinit var usageTracker: UsageTracker
+    private lateinit var logService: LogService
 
     private lateinit var lastNode: UiEntity
     private lateinit var llmUiList: MutableList<UiComponentDto>
@@ -60,8 +64,12 @@ class PaymentUtgServiceTest {
         notificationService = mock()
         uiDetectorManager = mock()
         graphService = mock()
+        usageTracker = mock()
+        logService = mock()
         paymentUtgService = PaymentUtgService(
-            paymentNavigator = paymentNavigator
+            paymentNavigator = paymentNavigator,
+            logService = logService,
+            usageTracker = usageTracker,
         )
 
         lastNode = UiEntity(
