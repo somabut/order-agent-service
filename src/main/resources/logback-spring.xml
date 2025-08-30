@@ -23,7 +23,7 @@
                 <timestamp/>
                 <logLevel/>
                 <loggerName/>
-                <mdc/>
+                <mdc prefix="" />
                 <message/>
                 <arguments/>
                 <stackTrace/>
