@@ -20,20 +20,20 @@ class MenuServiceImplTest @Autowired constructor(
 
     @Test
     fun `특정 카테고리의 메뉴 정보를 받아온다`() {
-        val kioskId = "kiosk-d89e07fa-4361-4b6a-a550-ac580a1ba195"
-        val accessToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJxd2UxMjMiLCJpYXQiOjE3NTQzODE1ODAsImV4cCI6MTc1NDQ2Nzk4MH0.CbepFStBYxo-8yS9hjj5gf9P0ejUwpRBLxxuhG_4RsV5fzlhSaXIL6GqWaMVnPbj0lzAPvvYzuTvUcR1u6mr6g"
-        val result = menuService.getMenusByCategory(kioskId, "빽스치노", accessToken)
+        val kioskId = "kiosk-2303452c-8454-4b9f-add2-47314cfd3911"
+        val accessToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJxd2UxMjMiLCJpYXQiOjE3NTY1MzIwMzIsImV4cCI6MTc1NjYxODQzMn0.6jenARBMW5pylsZcayf4uSUASBs3e_Jz2Rp0pG2MMf4Bqdc_sIYIwgmtWgiVsLzINo41B5St1F7qPiFgWwe4IA"
+        val result = menuService.getMenusByCategory(kioskId, "음료", accessToken)
         for (ele in result)
             println(ele)
     }
 
     @Test
     fun `특정 카테고리의 메뉴 정보를 받아온다 - 2`() {
-        val kioskId = "kiosk-494cbae2-0681-46e6-ba59-88726509fd88"
-        val accessToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzb21hMTMyNDg5NyIsImlhdCI6MTc1NTQxNTczNiwiZXhwIjoxNzU1NTAyMTM2fQ.2Nxgt0cZ_QX8C9HSa4rNv54uqv4CaOF5E42P2FH-gHIvoc3AJ-pJ3l7ALZ0gCoMJqZ0j_JV-q4ndrgd9GHaRCg"
+        val kioskId = "kiosk-2303452c-8454-4b9f-add2-47314cfd3911"
+        val accessToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJxd2UxMjMiLCJpYXQiOjE3NTY1MzgyMjUsImV4cCI6MTc1NjYyNDYyNX0.hEStIJkSrnkemiHn1bSOQ7izT9oQWk0Q6-9XsY2qyOg8BixaPTfNWqa_AjkpoqrKg1kG5l1OcCHVBnCYJCt7rw"
 
         val menuList = menuService.getMenus(kioskId, accessToken)
-        val menuDto = menuList[0]
+        val menuDto = menuList.first { it.title == "달콤아이스티" }
         val filteredList = menuList.filter { it.category == menuDto.category }
 
         for (ele in filteredList) {

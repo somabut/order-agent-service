@@ -77,17 +77,24 @@ class TestController @Autowired constructor(
     @GetMapping("/test/determine")
     fun determineWord(): Boolean {
         val sourceList = listOf(
-            "크리스퍼 클래식",
-            "통모짜와퍼세트",
-            "BBQ 통모짜와퍼",
+            "달콤아이스티",
+            "초코라떼",
+            "우리수박주스(ICED)",
         )
         val uiList = listOf(
-            UiComponentDto(x = -1, y = -1, title = "통모짜와퍼"),
-            UiComponentDto(x = -1, y = -1, title = "코카콜라"),
-            UiComponentDto(x = -1, y = -1, title = "프렌치프라이"),
-            UiComponentDto(x = -1, y = -1, title = "카트담기"),
-            UiComponentDto(x = -1, y = -1, title = "크리스퍼클래식"),
-            UiComponentDto(x = -1, y = -1, title = "취소"),
+            UiComponentDto(x = 370, y = 80, title = "음료"),
+            UiComponentDto(x = 106, y = 78, title = "커피"),
+            UiComponentDto(x = 870, y = 77, title = "백스치노"),
+            UiComponentDto(x = 365, y = 313, title = "PAIK'S"),
+            UiComponentDto(x = 370, y = 327, title = "COFFEE"),
+            UiComponentDto(x = 294, y = 386, title = "우리수박주스(ICED)"),
+            UiComponentDto(x = 696, y = 1766, title = "전체취소"),
+            UiComponentDto(x = 71, y = 381, title = "달콤아이스티"),
+            UiComponentDto(x = 623, y = 313, title = "PAIK'S"),
+            UiComponentDto(x = 638, y = 329, title = "OEFEE"),
+            UiComponentDto(x = 607, y = 380, title = "초코라떼"),
+            UiComponentDto(x = 659, y = 440, title = "W 3,500"),
+            UiComponentDto(x = 620, y = 78, title = "디저트"),
         )
 
         return wordSimilarityService.determinePage(sourceList, uiList)
