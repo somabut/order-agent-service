@@ -3,6 +3,8 @@ package com.orderagentservice.global
 import com.orderagentservice.global.model.dto.LogDto
 import com.orderagentservice.global.service.LogService
 import com.orderagentservice.jsonMapper
+import com.orderagentservice.order.model.dto.MenuInfoDto
+import com.orderagentservice.order.model.log.OrderEndLog
 import com.orderagentservice.order.model.log.UtgProcessLog
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -31,5 +33,15 @@ class LogServiceTest @Autowired constructor(
             message = "안녕하세요"
         )
         logService.printLog(dto)
+
+        val menus = listOf<MenuInfoDto>(
+            MenuInfoDto("menu", emptyList(), "he")
+        )
+        val orderDto = OrderEndLog(
+            kioskId = "test",
+            menus = menus,
+            processingTime = 123
+        )
+        logService.printLog(orderDto)
     }
 }

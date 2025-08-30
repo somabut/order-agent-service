@@ -47,7 +47,7 @@ class TestController @Autowired constructor(
 
     @GetMapping("/test/overlay/{kioskId}")
     fun sendOverlayMessage(@PathVariable kioskId: String) {
-        notificationService.sendOverlayCommand(kioskId, OverlayType.UTG.title)
+        notificationService.sendOverlayCommand(kioskId, OverlayType.UTG_START.title)
     }
 
     @GetMapping("/test/compare")
