@@ -15,6 +15,7 @@ import com.orderagentservice.order.service.utg.UiDetectorManager
 import com.orderagentservice.order.service.utg.WordSimilarityService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import kotlin.math.log
 
 @Component
 class MenuNavigator @Autowired constructor(
@@ -120,6 +121,7 @@ class MenuNavigator @Autowired constructor(
                 nodeId = menuActionExecutor.selectBack(context, nodeId, uiList)
                 uiList = uiDetectorManager.getUiComponents(context)
                 count++
+                println("찾는메뉴: ${menuDto.title}, 리스트: ${menuList}")
             }
             graphService.saveRel(nodeId, context.lastNodeId!!, NodeRelationType.BACK_TO)
         }
