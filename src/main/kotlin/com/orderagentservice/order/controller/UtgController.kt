@@ -28,9 +28,9 @@ class UtgController @Autowired constructor(
         @RequestHeader("Authorization", required = false) accessToken: String?
     ): ApiResponse<*> {
         if (accessToken == null) throw KioskAdminSignInException()
-//        notificationService.sendOverlayCommand(kioskId, OverlayType.UTG.title)
-
+        notificationService.sendOverlayCommand(kioskId, OverlayType.UTG_START.title)
         val history = utgService.initializeGraph(kioskId, accessToken)
+        notificationService.sendOverlayCommand(kioskId, OverlayType.UTG_END.title)
         log.info("전체 토큰 사용량: ${usageTracker.totalUsage}")
         return ApiResponse.success(history)
     }

@@ -7,6 +7,7 @@ import com.orderagentservice.logger
 import com.orderagentservice.order.model.AutoOrderContext
 import com.orderagentservice.order.model.dto.ActionPathDto
 import com.orderagentservice.order.model.dto.CoordinateDto
+import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.log.OrderProcessLog
 import com.orderagentservice.order.model.request.AutoOrderMenu
 import com.orderagentservice.order.model.request.AutoOrderOption
