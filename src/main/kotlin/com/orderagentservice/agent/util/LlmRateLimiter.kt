@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.env.Environment
 import org.springframework.stereotype.Component
 import org.springframework.web.client.HttpClientErrorException
+import org.springframework.web.client.HttpServerErrorException
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
@@ -113,18 +114,23 @@ class LlmRateLimiter @Autowired constructor(
 
         //2배씩 늘리며 기다리기
         while (true) {
-            val response = block(CLAUD_API_KEY)
-
-            if (response is ClaudResponse && response.type == "error" && response.error?.type == "overloaded_error") {
+            var response: T
+            try {
+                response = block(CLAUD_API_KEY)
+            } catch (e: HttpServerErrorException) {
+                if (e.statusCode.value() != 529) {
+                    throw e
+                }
                 if (waitTime > maxWaitTime) {
                     throw LlmServerOverLoadException()
                 }
+
                 log.info("엔트로픽 서버 과부화로 인해 ${waitTime}초 대기합니다.")
                 Thread.sleep(waitTime * 1000)
                 waitTime *= 2
-            } else {
-                return response
+                continue
             }
+            return response
         }
     }
     

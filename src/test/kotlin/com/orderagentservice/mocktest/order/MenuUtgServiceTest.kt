@@ -2,7 +2,9 @@ package com.orderagentservice.mocktest.order
 
 import com.orderagentservice.agent.BackAgent
 import com.orderagentservice.agent.PageAgent
+import com.orderagentservice.agent.model.UsageTracker
 import com.orderagentservice.agent.model.dto.*
+import com.orderagentservice.global.service.LogService
 import com.orderagentservice.order.service.utg.WordSimilarityService
 import com.orderagentservice.order.exception.LowScoreException
 import com.orderagentservice.order.model.GraphContext
@@ -62,6 +64,8 @@ class MenuUtgServiceTest {
     private lateinit var graphService: GraphServiceImpl
     private lateinit var menuGraphService: MenuUtgService
     private lateinit var wordSimilarityService: WordSimilarityService
+    private lateinit var usageTracker: UsageTracker
+    private lateinit var logService: LogService
 
     private lateinit var menuList: List<MenuInfoDto>
     private lateinit var menuInfoDto: MenuInfoDto
@@ -95,11 +99,15 @@ class MenuUtgServiceTest {
         notificationService = mock()
         graphService = mock()
         wordSimilarityService = mock()
+        usageTracker = mock()
+        logService = mock()
 
         menuGraphService = MenuUtgService(
             placeUtgService = placeUtgService,
             graphService = graphService,
             menuNavigator = menuNavigator,
+            usageTracker = usageTracker,
+            logService = logService,
         )
 
         firstDto = MenuInfoDto(
