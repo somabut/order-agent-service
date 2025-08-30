@@ -121,7 +121,6 @@ class MenuNavigator @Autowired constructor(
                 nodeId = menuActionExecutor.selectBack(context, nodeId, uiList)
                 uiList = uiDetectorManager.getUiComponents(context)
                 count++
-                println("찾는메뉴: ${menuDto.title}, 리스트: ${uiList}")
             }
             graphService.saveRel(nodeId, context.lastNodeId!!, NodeRelationType.BACK_TO)
         }
