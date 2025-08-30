@@ -17,7 +17,7 @@ class UiDetectorManagerTest @Autowired constructor(
         val imageFile = File(imagePath)
 
         //when: ui extractor에게 이미지 파싱을 요청한다
-        val response = uiDetectorManager.queryUiExtractor(imageFile, "exract-ui")
+        val response = uiDetectorManager.queryUiExtractor(imageFile, "extract-ui")
 //        val response = uiDetectorManager.queryUiExtractor(imageFile, "ocr")
 
         //then: 파싱이 완료된다.
