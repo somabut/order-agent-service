@@ -35,6 +35,7 @@ class UiDetectorManager @Autowired constructor(
     fun queryUiExtractor(image: File, endpoint: String): List<DetectorUiComponentDto> {
         val restTemplate = RestTemplate()
         val url = "$UI_EXCTRACTOR_HOST/v2/$endpoint"
+        log.info("${url} 로 요청합니다")
 
         val fileContent = FileSystemResource(image)
 

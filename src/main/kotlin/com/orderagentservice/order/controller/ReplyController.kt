@@ -36,7 +36,7 @@ class ReplyController @Autowired constructor(
         try {
             notificationService.registerCaptureCommand(kioskId, commandId, tempFile)
         } finally {
-            tempFile.delete()
+            if (tempFile.exists()) tempFile.delete()
         }
         return ApiResponse.success(CommandResponse(commandId))
     }
