@@ -2,7 +2,6 @@ package com.orderagentservice.order.service.utg.menu
 
 import com.orderagentservice.agent.model.UsageTracker
 import com.orderagentservice.global.service.LogService
-import com.orderagentservice.logger
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.type.SpecialNodeType
@@ -10,9 +9,8 @@ import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.log.NodeSaveLog
 import com.orderagentservice.order.model.log.UtgEndLog
-import com.orderagentservice.order.model.log.UtgProcessLog
 import com.orderagentservice.order.model.log.UtgStartLog
-import com.orderagentservice.order.model.type.SaveNodeType
+import com.orderagentservice.order.model.type.NodeType
 import com.orderagentservice.order.model.type.UtgType
 import com.orderagentservice.order.service.graph.GraphService
 import com.orderagentservice.order.service.utg.place.PlaceUtgService
@@ -97,7 +95,7 @@ class MenuUtgService @Autowired constructor(
     private fun setupNode(context: GraphContext) {
         logService.printLog(
             NodeSaveLog(
-                kioskId = context.kioskId, nodeType = SaveNodeType.ROOT,
+                kioskId = context.kioskId, nodeType = NodeType.ROOT,
                 x = -1, y = -1,
                 title = SpecialNodeType.ROOT.title, imageName = context.imageName
             )
@@ -113,7 +111,7 @@ class MenuUtgService @Autowired constructor(
 
         logService.printLog(
             NodeSaveLog(
-                kioskId = context.kioskId, nodeType = SaveNodeType.STATION,
+                kioskId = context.kioskId, nodeType = NodeType.STATION,
                 x = -1, y = -1,
                 title = SpecialNodeType.STATION.title, imageName = context.imageName
             )

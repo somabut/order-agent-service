@@ -13,7 +13,7 @@ class OrderLogSender @Autowired constructor(
 ) {
     private val log = logger()
 
-    fun logOrder(kioskId: String, taskId: String, message: String) {
+    fun<T> logOrder(kioskId: String, taskId: String, message: String, obj: T) {
         val logDto = LogDto(
             kioskId = kioskId,
             taskId = taskId,
@@ -23,5 +23,6 @@ class OrderLogSender @Autowired constructor(
 
         log.info(message)
         logService.sendLog(json)
+        logService.printLog(obj)
     }
 }

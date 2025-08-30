@@ -2,21 +2,19 @@ package com.orderagentservice.order.service.utg.place
 
 import com.orderagentservice.agent.PlaceAgent
 import com.orderagentservice.global.service.LogService
-import com.orderagentservice.logger
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.log.NodeSaveLog
 import com.orderagentservice.order.model.log.UtgProcessLog
-import com.orderagentservice.order.model.type.SaveNodeType
+import com.orderagentservice.order.model.type.NodeType
 import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.graph.GraphService
 import com.orderagentservice.order.service.utg.UiDetectorManager
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import kotlin.math.log
 
 @Service
 class PlaceUtgService @Autowired constructor(
@@ -59,7 +57,7 @@ class PlaceUtgService @Autowired constructor(
             logService.printLog(
                 NodeSaveLog(
                     kioskId = context.kioskId,
-                    nodeType = SaveNodeType.PLACE,
+                    nodeType = NodeType.PLACE,
                     x = x, y = y,
                     title = act.title, imageName = context.imageName
                 )

@@ -9,7 +9,7 @@ import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.log.NodeSaveLog
-import com.orderagentservice.order.model.type.SaveNodeType
+import com.orderagentservice.order.model.type.NodeType
 import com.orderagentservice.order.service.graph.GraphService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -24,7 +24,7 @@ class MenuNodeGenerator @Autowired constructor(
         logService.printLog(
             NodeSaveLog(
                 kioskId = context.kioskId,
-                nodeType = SaveNodeType.CATEGORY,
+                nodeType = NodeType.CATEGORY,
                 x = coordinate.x, y = coordinate.y,
                 title = coordinate.title, imageName = context.imageName
             )
@@ -53,7 +53,7 @@ class MenuNodeGenerator @Autowired constructor(
         logService.printLog(
             NodeSaveLog(
                 kioskId = context.kioskId,
-                nodeType = SaveNodeType.MENU,
+                nodeType = NodeType.MENU,
                 x = coordinate.x, y = coordinate.y,
                 title = coordinate.title, imageName = context.imageName
             )
@@ -81,7 +81,7 @@ class MenuNodeGenerator @Autowired constructor(
         logService.printLog(
             NodeSaveLog(
                 kioskId = context.kioskId,
-                nodeType = SaveNodeType.OPTION,
+                nodeType = NodeType.OPTION,
                 x = coordinate.x, y = coordinate.y,
                 title = coordinate.title, imageName = context.imageName
             )
@@ -109,7 +109,7 @@ class MenuNodeGenerator @Autowired constructor(
         logService.printLog(
             NodeSaveLog(
                 kioskId = context.kioskId,
-                nodeType = SaveNodeType.BACK,
+                nodeType = NodeType.BACK,
                 x = x, y = y,
                 title = action.title, imageName = context.imageName
             )
@@ -138,7 +138,7 @@ class MenuNodeGenerator @Autowired constructor(
         logService.printLog(
             NodeSaveLog(
                 kioskId = context.kioskId,
-                nodeType = SaveNodeType.MODAL,
+                nodeType = NodeType.MODAL,
                 x = matchDto.x, y = matchDto.y,
                 title = menuDto.title, imageName = context.imageName
             )

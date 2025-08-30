@@ -2,12 +2,11 @@ package com.orderagentservice.order.service.utg.payment
 
 import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.global.service.LogService
-import com.orderagentservice.logger
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.log.NodeSaveLog
-import com.orderagentservice.order.model.type.SaveNodeType
+import com.orderagentservice.order.model.type.NodeType
 import com.orderagentservice.order.model.type.SpecialNodeType
 import com.orderagentservice.order.service.graph.GraphService
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,7 +20,7 @@ class PaymentNodeGenerator @Autowired constructor(
     fun createPaymentNode(action: AgentActionDto, context: GraphContext) {
         logService.printLog(
             NodeSaveLog(
-                kioskId = context.kioskId, nodeType = SaveNodeType.PAYMENT,
+                kioskId = context.kioskId, nodeType = NodeType.PAYMENT,
                 x = action.coordinate[0], y = action.coordinate[1],
                 title = action.title, imageName = context.imageName
             )
@@ -43,7 +42,7 @@ class PaymentNodeGenerator @Autowired constructor(
     fun createCompleteNode(context: GraphContext) {
         logService.printLog(
             NodeSaveLog(
-                kioskId = context.kioskId, nodeType = SaveNodeType.COMPLETE,
+                kioskId = context.kioskId, nodeType = NodeType.COMPLETE,
                 x = -1, y = -1,
                 title = SpecialNodeType.COMPLETE.title, imageName = context.imageName
             )

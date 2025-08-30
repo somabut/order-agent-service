@@ -1,6 +1,6 @@
 package com.orderagentservice.order.model.type
 
-enum class SaveNodeType{
+enum class NodeType{
     MENU,
     OPTION,
     CATEGORY,
