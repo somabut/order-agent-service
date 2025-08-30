@@ -46,8 +46,7 @@ class AmazonS3Service @Autowired constructor(
             extension = extension
         )
 
-        val fileBytes = file.readBytes()
-        fileBytes.inputStream().use { inputStream ->
+        file.inputStream().use { inputStream ->
             amazonS3.putObject(
                 PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
             )
