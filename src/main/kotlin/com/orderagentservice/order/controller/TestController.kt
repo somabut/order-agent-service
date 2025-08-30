@@ -79,22 +79,32 @@ class TestController @Autowired constructor(
         val sourceList = listOf(
             "달콤아이스티",
             "초코라떼",
-            "우리수박주스(ICED)",
+            "우리수박주스",
         )
+
         val uiList = listOf(
-            UiComponentDto(x = 370, y = 80, title = "음료"),
-            UiComponentDto(x = 106, y = 78, title = "커피"),
-            UiComponentDto(x = 870, y = 77, title = "백스치노"),
-            UiComponentDto(x = 365, y = 313, title = "PAIK'S"),
-            UiComponentDto(x = 370, y = 327, title = "COFFEE"),
-            UiComponentDto(x = 294, y = 386, title = "우리수박주스(ICED)"),
-            UiComponentDto(x = 696, y = 1766, title = "전체취소"),
-            UiComponentDto(x = 71, y = 381, title = "달콤아이스티"),
-            UiComponentDto(x = 623, y = 313, title = "PAIK'S"),
-            UiComponentDto(x = 638, y = 329, title = "OEFEE"),
-            UiComponentDto(x = 607, y = 380, title = "초코라떼"),
-            UiComponentDto(x = 659, y = 440, title = "W 3,500"),
-            UiComponentDto(x = 620, y = 78, title = "디저트"),
+            UiComponentDto(x = 405, y = 98, title = "음료"),
+            UiComponentDto(x = 134, y = 98, title = "커피"),
+            UiComponentDto(x = 139, y = 416, title = "달콤아이스티"), //
+            UiComponentDto(x = 198, y = 476, title = "W2,800"),
+            UiComponentDto(x = 780, y = 1833, title = "전체취소"),
+            UiComponentDto(x = 944, y = 96, title = "백스치노"),
+            UiComponentDto(x = 366, y = 1839, title = "1"),
+            UiComponentDto(x = 368, y = 1842, title = "+"),
+            UiComponentDto(x = 173, y = 1839, title = "1"),
+            UiComponentDto(x = 174, y = 1842, title = "+"),
+            UiComponentDto(x = 403, y = 335, title = "PAIK'S"),
+            UiComponentDto(x = 405, y = 347, title = "COFFEE"),
+            UiComponentDto(x = 407, y = 415, title = "우리수박주스"), //
+            UiComponentDto(x = 405, y = 456, title = "(ICED)"),
+            UiComponentDto(x = 673, y = 339, title = "PAIK'S"),
+            UiComponentDto(x = 678, y = 351, title = "OIFEE"),
+            UiComponentDto(x = 672, y = 414, title = "초코라떼"),   //
+            UiComponentDto(x = 730, y = 475, title = "W3,500"),
+            UiComponentDto(x = 565, y = 1838, title = "1"),
+            UiComponentDto(x = 564, y = 1841, title = "+"),
+            UiComponentDto(x = 999, y = 1773, title = "결제하기"),
+            UiComponentDto(x = 675, y = 97, title = "디저트"),
         )
 
         return wordSimilarityService.determinePage(sourceList, uiList)
