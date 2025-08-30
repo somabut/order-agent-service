@@ -21,7 +21,7 @@ class OrderController @Autowired constructor(
 ) {
     @PostMapping("/order/start/{kioskId}/{taskId}")
     fun startOrder(@PathVariable kioskId: String, @PathVariable taskId: String, @RequestBody orderRequest: AutoOrderRequest): ApiResponse<*> {
-        notificationService.sendOverlayCommand(kioskId, OverlayType.ORDER.title)
+//        notificationService.sendOverlayCommand(kioskId, OverlayType.ORDER.title)
         val history = autoOrderService.execute(kioskId, taskId, orderRequest)
 
         return ApiResponse.success(

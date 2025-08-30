@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service
 import java.io.File
 import java.nio.file.Files
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 @Service
@@ -23,7 +24,7 @@ class AmazonS3Service @Autowired constructor(
     private val allowTypes = listOf("image/png", "image/jpeg", "image/jpg")
 
     fun saveFile(kioskId:String, commandId: String, file: File): String {
-        val now = LocalDateTime.now()
+        val now = LocalDateTime.now(ZoneId.of("Asia/Seoul"))
         val dayFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         val timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
         val formattedDate = now.format(dayFormatter)
