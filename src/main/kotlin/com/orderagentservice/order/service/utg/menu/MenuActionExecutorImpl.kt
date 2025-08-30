@@ -112,16 +112,16 @@ class MenuActionExecutorImpl @Autowired constructor(
         //모달인 경우에만 모달노드 저장과 액션수행
         if (matchDto.score >= 0.65) {
             notificationService.sendActionCommand(context.kioskId, CoordinateDto(x = matchDto.x, y = matchDto.y, title = matchDto.title))
-        }
-        graphService.changeTitle(nodeId, context.kioskId, "modal:${menuDto.title}")
+            graphService.changeTitle(nodeId, context.kioskId, "modal:${menuDto.title}")
 
-        //모달 노드 저장
-        nodeId = nodeGenerator.createModalNode(
-            context = context,
-            matchDto = matchDto,
-            menuDto = menuDto,
-            menuNodeId = nodeId
-        )
+            //모달 노드 저장
+            nodeId = nodeGenerator.createModalNode(
+                context = context,
+                matchDto = matchDto,
+                menuDto = menuDto,
+                menuNodeId = nodeId
+            )
+        }
 
         //다음으로 이동
         val nextUiList = uiDetectorManager.getUiComponents(context)
