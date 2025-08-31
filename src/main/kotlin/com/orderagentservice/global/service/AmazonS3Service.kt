@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata
 import com.amazonaws.services.s3.model.PutObjectRequest
 import com.orderagentservice.global.exception.S3NotSupportedType
 import com.orderagentservice.global.model.ErrorCode
+import com.orderagentservice.global.util.ImageUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.env.Environment
 import org.springframework.stereotype.Service
@@ -37,7 +38,7 @@ class AmazonS3Service @Autowired constructor(
 
         objectMetadata.contentLength = fileBytes.size.toLong()
         objectMetadata.contentType = contentType
-        val extension = getExtension(contentType)
+        val extension = ImageUtils.getExtension(contentType)
 
         val fileName = getImagePath(
             kioskId = kioskId, commandId = commandId,
@@ -59,12 +60,4 @@ class AmazonS3Service @Autowired constructor(
 
     private fun getImageName(commandId: String, formattedTime: String)
         = "${formattedTime}_${commandId}"
-
-    private fun getExtension(contentType: String) =
-        when(contentType) {
-            "image/png" -> "png"
-            "image/jpeg", "image/jpg" -> "jpg"
-            else -> throw S3NotSupportedType()
-        }
-
 }

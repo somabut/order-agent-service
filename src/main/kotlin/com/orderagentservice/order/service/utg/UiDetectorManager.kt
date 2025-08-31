@@ -3,6 +3,7 @@ package com.orderagentservice.order.service.utg
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.exception.S3NotSupportedType
 import com.orderagentservice.global.model.response.ApiResponse
+import com.orderagentservice.global.util.ImageUtils
 import com.orderagentservice.logger
 import com.orderagentservice.order.exception.UiExtractException
 import com.orderagentservice.order.model.GraphContext
@@ -40,7 +41,7 @@ class UiDetectorManager @Autowired constructor(
 
         val fileContent = object : ByteArrayResource(imageByte) {
             override fun getFilename(): String {
-                return "capture.${getExtension(type)}"
+                return "capture.${ImageUtils.getExtension(type)}"
             }
         }
 
@@ -68,7 +69,7 @@ class UiDetectorManager @Autowired constructor(
                 return uiComponents
             }catch (e: RuntimeException) {
                 log.error(e.message)
-                log.info("UI extractor service요류로 인해 재시도합니다. 현재횟수: $requestCount")
+                log.info("UI extractor service오류로 인해 재시도합니다. 현재횟수: $requestCount")
             }
             requestCount++
         }
@@ -102,11 +103,4 @@ class UiDetectorManager @Autowired constructor(
         }
         return llmUiList
     }
-
-    private fun getExtension(contentType: String) =
-        when(contentType) {
-            "image/png" -> "png"
-            "image/jpeg", "image/jpg" -> "jpg"
-            else -> contentType
-        }
 }

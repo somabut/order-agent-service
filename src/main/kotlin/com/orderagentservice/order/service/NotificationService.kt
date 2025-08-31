@@ -138,16 +138,6 @@ class NotificationService @Autowired constructor(
         return result
     }
 
-    private fun isEmitterCompleted(emitter: SseEmitter): Boolean {
-        return try {
-            // 더미 데이터로 상태 확인
-            emitter.send(SseEmitter.event().name("heartbeat").data(""))
-            false
-        } catch (e: Exception) {
-            true
-        }
-    }
-
     // 캡처 명령 대기
     private fun waitCaptureCommand(commandId: String): KioskCaptureDto {
         return waitForCommand(commandId, CAPTURE_WAIT_TIMEOUT) { id ->
