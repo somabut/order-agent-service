@@ -1,6 +1,7 @@
 package com.orderagentservice.order.service.utg
 
 import com.orderagentservice.agent.model.dto.UiComponentDto
+import com.orderagentservice.global.exception.S3NotSupportedType
 import com.orderagentservice.global.model.response.ApiResponse
 import com.orderagentservice.logger
 import com.orderagentservice.order.exception.UiExtractException
@@ -33,11 +34,15 @@ class UiDetectorManager @Autowired constructor(
     private val UI_EXCTRACTOR_HOST = env.getProperty("ui-extractor.host")
     private val UI_EXTRACTOR_API_KEY = env.getProperty("ui-extractor.api-key")!!
 
-    fun queryUiExtractor(imageByte: ByteArray, endpoint: String): List<DetectorUiComponentDto> {
+    fun queryUiExtractor(imageByte: ByteArray, type: String, endpoint: String): List<DetectorUiComponentDto> {
         val restTemplate = RestTemplate()
         val url = "$UI_EXCTRACTOR_HOST/v2/$endpoint"
 
-        val fileContent = ByteArrayResource(imageByte)
+        val fileContent = object : ByteArrayResource(imageByte) {
+            override fun getFilename(): String {
+                return "capture.${getExtension(type)}"
+            }
+        }
 
         val body = LinkedMultiValueMap<String, Any>()
         body["file"] = fileContent
@@ -74,7 +79,8 @@ class UiDetectorManager @Autowired constructor(
         //ui extractor에게 이미지 파싱 요청
         val captureDto = notificationService.sendCaptureCommand(context.kioskId)
         val imageBytes = captureDto.content
-        val uiComponents = queryUiExtractor(imageBytes, if (!isPayment) "extract-ui" else "ocr")
+        val imageType = captureDto.type
+        val uiComponents = queryUiExtractor(imageBytes, imageType, if (!isPayment) "extract-ui" else "ocr")
         context.imageName = captureDto.name
 
         //옴니파서에게 받은 이미지 적절히 변환
@@ -96,4 +102,11 @@ class UiDetectorManager @Autowired constructor(
         }
         return llmUiList
     }
+
+    private fun getExtension(contentType: String) =
+        when(contentType) {
+            "image/png" -> "png"
+            "image/jpeg", "image/jpg" -> "jpg"
+            else -> contentType
+        }
 }
