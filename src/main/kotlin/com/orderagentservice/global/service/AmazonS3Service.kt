@@ -23,7 +23,7 @@ class AmazonS3Service @Autowired constructor(
 
     private val allowTypes = listOf("image/png", "image/jpeg", "image/jpg")
 
-    fun saveFile(kioskId:String, commandId: String, file: File): String {
+    fun saveFile(kioskId:String, commandId: String, fileBytes: ByteArray, contentType: String): String {
         val now = LocalDateTime.now(ZoneId.of("Asia/Seoul"))
         val dayFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         val timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
@@ -31,12 +31,11 @@ class AmazonS3Service @Autowired constructor(
         val formattedTime = now.format(timeFormatter)
 
         val objectMetadata = ObjectMetadata()
-        val contentType = Files.probeContentType(file.toPath())
         if (contentType !in allowTypes) {
             throw S3NotSupportedType()
         }
 
-        objectMetadata.contentLength = file.length()
+        objectMetadata.contentLength = fileBytes.size.toLong()
         objectMetadata.contentType = contentType
         val extension = getExtension(contentType)
 
@@ -46,7 +45,7 @@ class AmazonS3Service @Autowired constructor(
             extension = extension
         )
 
-        file.inputStream().use { inputStream ->
+        fileBytes.inputStream().use { inputStream ->
             amazonS3.putObject(
                 PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
             )

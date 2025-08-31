@@ -29,10 +29,12 @@ class ReplyController @Autowired constructor(
         @PathVariable commandId: String,
         @RequestParam image: MultipartFile
     ): ApiResponse<*> {
-        val tempFile = File.createTempFile("capture_", image.originalFilename)
-        image.transferTo(tempFile)
+//        val tempFile = File.createTempFile("capture_", image.originalFilename)
+//        image.transferTo(tempFile)
+        val imageBytes = image.bytes
+        val imageType = image.contentType
 
-        notificationService.registerCaptureCommand(kioskId, commandId, tempFile)
+        notificationService.registerCaptureCommand(kioskId, commandId, imageBytes, imageType!!)
         return ApiResponse.success(CommandResponse(commandId))
     }
 

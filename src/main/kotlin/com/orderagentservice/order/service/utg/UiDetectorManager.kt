@@ -11,6 +11,7 @@ import com.orderagentservice.order.service.NotificationService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.core.env.Environment
+import org.springframework.core.io.ByteArrayResource
 import org.springframework.core.io.FileSystemResource
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -32,11 +33,11 @@ class UiDetectorManager @Autowired constructor(
     private val UI_EXCTRACTOR_HOST = env.getProperty("ui-extractor.host")
     private val UI_EXTRACTOR_API_KEY = env.getProperty("ui-extractor.api-key")!!
 
-    fun queryUiExtractor(image: File, endpoint: String): List<DetectorUiComponentDto> {
+    fun queryUiExtractor(imageByte: ByteArray, endpoint: String): List<DetectorUiComponentDto> {
         val restTemplate = RestTemplate()
         val url = "$UI_EXCTRACTOR_HOST/v2/$endpoint"
 
-        val fileContent = FileSystemResource(image)
+        val fileContent = ByteArrayResource(imageByte)
 
         val body = LinkedMultiValueMap<String, Any>()
         body["file"] = fileContent
@@ -72,8 +73,8 @@ class UiDetectorManager @Autowired constructor(
     fun getUiComponents(context: GraphContext, isPayment: Boolean = false): MutableList<UiComponentDto> {
         //ui extractor에게 이미지 파싱 요청
         val captureDto = notificationService.sendCaptureCommand(context.kioskId)
-        val image = captureDto.file
-        val uiComponents = queryUiExtractor(image, if (!isPayment) "extract-ui" else "ocr")
+        val imageBytes = captureDto.content
+        val uiComponents = queryUiExtractor(imageBytes, if (!isPayment) "extract-ui" else "ocr")
         context.imageName = captureDto.name
 
         //옴니파서에게 받은 이미지 적절히 변환
