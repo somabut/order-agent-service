@@ -37,10 +37,12 @@ class NotificationService @Autowired constructor(
         return emitter
     }
 
-    fun registerCaptureCommand(kioskId: String, commandId: String, file: File) {
-//        val fileName = amazonS3Service.saveFile(kioskId, commandId, file)
-//        val captureDto = KioskCaptureDto(file, fileName)
-        val captureDto = KioskCaptureDto(file, commandId)
+    fun registerCaptureCommand(kioskId: String, commandId: String, content: ByteArray, imageType: String) {
+        val fileName = amazonS3Service.saveFile(
+            kioskId = kioskId, commandId = commandId,
+            fileBytes = content, contentType = imageType
+        )
+        val captureDto = KioskCaptureDto(content = content, type = imageType, name = fileName)
         notificationRepository.saveCaptureCommand(commandId, captureDto)
     }
 
