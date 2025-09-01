@@ -10,18 +10,17 @@ import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.log.UtgNowMenuLog
 import com.orderagentservice.order.model.log.UtgProcessLog
 import com.orderagentservice.order.service.NotificationService
-import com.orderagentservice.order.service.graph.GraphService
+import com.orderagentservice.order.service.graph.ui.UiGraphService
 import com.orderagentservice.order.service.utg.UiDetectorManager
 import com.orderagentservice.order.service.utg.WordSimilarityService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import kotlin.math.log
 
 @Component
 class MenuNavigator @Autowired constructor(
     private val menuActionExecutor: MenuActionExecutor,
     private val uiDetectorManager: UiDetectorManager,
-    private val graphService: GraphService,
+    private val graphService: UiGraphService,
     private val wordSimilarityService: WordSimilarityService,
     private val notificationService: NotificationService,
     private val logService: LogService

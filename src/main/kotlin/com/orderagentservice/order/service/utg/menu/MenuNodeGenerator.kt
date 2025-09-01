@@ -10,13 +10,13 @@ import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.log.NodeSaveLog
 import com.orderagentservice.order.model.type.NodeType
-import com.orderagentservice.order.service.graph.GraphService
+import com.orderagentservice.order.service.graph.ui.UiGraphService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
 class MenuNodeGenerator @Autowired constructor(
-    private val graphService: GraphService,
+    private val graphService: UiGraphService,
     private val logService: LogService
 ) {
 

@@ -12,7 +12,7 @@ import com.orderagentservice.order.model.entity.UiEntity
 import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.utg.payment.PaymentUtgService
 import com.orderagentservice.order.service.utg.place.PlaceUtgService
-import com.orderagentservice.order.service.graph.GraphServiceImpl
+import com.orderagentservice.order.service.graph.ui.UiGraphServiceImpl
 import com.orderagentservice.order.service.utg.UiDetectorManager
 import com.orderagentservice.order.service.utg.payment.PaymentNavigator
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -45,7 +45,7 @@ class PaymentUtgServiceTest {
     private lateinit var placeUtgService: PlaceUtgService
     private lateinit var notificationService: NotificationService
     private lateinit var uiDetectorManager: UiDetectorManager
-    private lateinit var graphService: GraphServiceImpl
+    private lateinit var graphService: UiGraphServiceImpl
     private lateinit var paymentUtgService: PaymentUtgService
     private lateinit var usageTracker: UsageTracker
     private lateinit var logService: LogService

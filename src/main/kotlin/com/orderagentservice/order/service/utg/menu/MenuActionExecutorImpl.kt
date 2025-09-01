@@ -3,13 +3,12 @@ package com.orderagentservice.order.service.utg.menu
 import com.orderagentservice.agent.BackAgent
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.service.LogService
-import com.orderagentservice.logger
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.log.UtgProcessLog
 import com.orderagentservice.order.service.NotificationService
-import com.orderagentservice.order.service.graph.GraphService
+import com.orderagentservice.order.service.graph.ui.UiGraphService
 import com.orderagentservice.order.service.utg.UiDetectorManager
 import com.orderagentservice.order.service.utg.WordSimilarityService
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,7 +21,7 @@ class MenuActionExecutorImpl @Autowired constructor(
     private val nodeGenerator: MenuNodeGenerator,
     private val uiDetectorManager: UiDetectorManager,
     private val backAgent: BackAgent,
-    private val graphService: GraphService,
+    private val graphService: UiGraphService,
     private val logService: LogService
 ) : MenuActionExecutor {
 

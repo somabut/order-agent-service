@@ -1,8 +1,8 @@
-package com.orderagentservice.order.service.graph
+package com.orderagentservice.order.service.graph.ui
 
 import com.orderagentservice.order.model.dto.ActionPathDto
 
-interface GraphFindService {
+interface UiGraphFindService {
     fun findNodeByTitle(kioskId: String, title: String): String
     fun findPath(kioskId: String, sourceId: String, targetTitle: String): List<ActionPathDto>
     fun findPaymentPath(kioskId: String, sourceId: String): List<ActionPathDto>

@@ -2,7 +2,6 @@ package com.orderagentservice.mocktest.order
 
 import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.model.dto.AgentBackDto
-import com.orderagentservice.global.service.LogService
 import com.orderagentservice.global.util.GlobalLogger
 import com.orderagentservice.order.model.AutoOrderResultDto
 import com.orderagentservice.order.model.dto.ActionPathDto
@@ -14,7 +13,7 @@ import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.auto.AutoOrderService
 import com.orderagentservice.order.service.auto.AutoTaskExecutor
 import com.orderagentservice.order.service.auto.OrderLogSender
-import com.orderagentservice.order.service.graph.GraphServiceImpl
+import com.orderagentservice.order.service.graph.ui.UiGraphServiceImpl
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -70,7 +69,7 @@ class AutoExecuteServiceTest {
     private lateinit var autoTaskExecutor: AutoTaskExecutor
 
     @Mock
-    private lateinit var graphService: GraphServiceImpl
+    private lateinit var graphService: UiGraphServiceImpl
 
     @Mock
     private lateinit var globalLogger: GlobalLogger

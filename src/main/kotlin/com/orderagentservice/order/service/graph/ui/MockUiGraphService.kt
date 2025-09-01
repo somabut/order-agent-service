@@ -1,4 +1,4 @@
-package com.orderagentservice.order.service.graph
+package com.orderagentservice.order.service.graph.ui
 
 import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.dto.ActionPathDto
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 
 @Profile("test")
 @Service
-class MockGraphService : GraphService {
+class MockUiGraphService : UiGraphService {
     override fun saveNode(uiDto: UiDto): UiEntity {
         val uiEntity = UiEntity(
             x = uiDto.x, y = uiDto.y, isNext = uiDto.isNext,

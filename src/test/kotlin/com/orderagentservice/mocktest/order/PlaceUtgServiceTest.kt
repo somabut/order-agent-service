@@ -12,7 +12,7 @@ import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.entity.UiEntity
 import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.utg.place.PlaceUtgService
-import com.orderagentservice.order.service.graph.GraphServiceImpl
+import com.orderagentservice.order.service.graph.ui.UiGraphServiceImpl
 import com.orderagentservice.order.service.utg.UiDetectorManager
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -38,7 +38,7 @@ class PlaceUtgServiceTest {
 
     private lateinit var placeAgent: PlaceAgent
     private lateinit var notificationService: NotificationService
-    private lateinit var graphService: GraphServiceImpl
+    private lateinit var graphService: UiGraphServiceImpl
     private lateinit var placeUtgService: PlaceUtgService
     private lateinit var uiDetectorManager: UiDetectorManager
     private lateinit var usageTracker: UsageTracker

@@ -33,6 +33,9 @@ class UiEntity(
     @Property("created_at")
     val createdAt: OffsetDateTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toOffsetDateTime(),
 
+    @Property("updated_at")
+    val updatedAt: OffsetDateTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toOffsetDateTime(),
+
     @Relationship(type = "PATH_TO", direction = Relationship.Direction.OUTGOING)
     val connectedTo: Set<UiEntity>? = null,
 

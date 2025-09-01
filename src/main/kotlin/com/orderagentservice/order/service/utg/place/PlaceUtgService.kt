@@ -10,7 +10,7 @@ import com.orderagentservice.order.model.log.NodeSaveLog
 import com.orderagentservice.order.model.log.UtgProcessLog
 import com.orderagentservice.order.model.type.NodeType
 import com.orderagentservice.order.service.NotificationService
-import com.orderagentservice.order.service.graph.GraphService
+import com.orderagentservice.order.service.graph.ui.UiGraphService
 import com.orderagentservice.order.service.utg.UiDetectorManager
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -21,7 +21,7 @@ class PlaceUtgService @Autowired constructor(
     private val placeAgent: PlaceAgent,
     private val notificationService: NotificationService,
     private val uiDetectorManager: UiDetectorManager,
-    private val graphService: GraphService,
+    private val graphService: UiGraphService,
     private val logService: LogService
 ) {
     @Transactional

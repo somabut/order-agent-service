@@ -16,7 +16,7 @@ import com.orderagentservice.order.model.entity.UiEntity
 import com.orderagentservice.order.service.utg.menu.MenuUtgService
 import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.utg.place.PlaceUtgService
-import com.orderagentservice.order.service.graph.GraphServiceImpl
+import com.orderagentservice.order.service.graph.ui.UiGraphServiceImpl
 import com.orderagentservice.order.service.utg.UiDetectorManager
 import com.orderagentservice.order.service.utg.menu.MenuNavigator
 import org.junit.jupiter.api.Assertions.*
@@ -61,7 +61,7 @@ class MenuUtgServiceTest {
     private lateinit var placeUtgService: PlaceUtgService
     private lateinit var uiDetectorManager: UiDetectorManager
     private lateinit var notificationService: NotificationService
-    private lateinit var graphService: GraphServiceImpl
+    private lateinit var graphService: UiGraphServiceImpl
     private lateinit var menuGraphService: MenuUtgService
     private lateinit var wordSimilarityService: WordSimilarityService
     private lateinit var usageTracker: UsageTracker
