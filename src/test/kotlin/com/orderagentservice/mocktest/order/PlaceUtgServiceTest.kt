@@ -3,6 +3,7 @@ package com.orderagentservice.mocktest.order
 import com.orderagentservice.agent.PlaceAgent
 import com.orderagentservice.agent.model.UsageTracker
 import com.orderagentservice.agent.model.dto.AgentActionDto
+import com.orderagentservice.agent.model.dto.AgentUiDto
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.service.LogService
 import com.orderagentservice.order.model.GraphContext
@@ -46,6 +47,7 @@ class PlaceUtgServiceTest {
 
     private lateinit var lastNode: UiEntity
     private lateinit var llmUiList: List<UiComponentDto>
+    private lateinit var agentUiList: List<AgentUiDto>
     private lateinit var uiEntity: UiEntity
     private lateinit var successAgentActionList: List<AgentActionDto>
     private lateinit var failAgentActionList: List<AgentActionDto>
@@ -74,7 +76,10 @@ class PlaceUtgServiceTest {
         )
 
         llmUiList = listOf(
-            UiComponentDto(x = TEST_X_COORDINATE, y = TEST_X_COORDINATE, title = TEST_TITLE)
+            UiComponentDto(x = TEST_X_COORDINATE, y = TEST_X_COORDINATE, minX = 1, minY = 1, maxX = 1, maxY = 1, title = TEST_TITLE)
+        )
+        agentUiList = listOf(
+            AgentUiDto(x = TEST_X_COORDINATE, y = TEST_Y_COORDINATE, title = TEST_TITLE)
         )
 
         successAgentActionList = listOf(
@@ -116,7 +121,7 @@ class PlaceUtgServiceTest {
             imageName = "",
             screenNodeId = ""
         )
-        whenever(placeAgent.determineAction(llmUiList)).thenReturn(successAgentActionList)
+        whenever(placeAgent.determineAction(agentUiList)).thenReturn(successAgentActionList)
         whenever(graphService.saveNode(any<UiDto>())).thenReturn(uiEntity)
         doNothing().whenever(graphService).saveRel(TEST_LAST_NODE_ID, TEST_ENTITY_ID, NodeRelationType.HAS_TO)
         whenever(notificationService.sendActionCommand(TEST_KIOSK_ID, TEST_COORDINATE)).thenReturn(actionResult)
@@ -127,7 +132,7 @@ class PlaceUtgServiceTest {
         // then: 히스토리가 정상적으로 반환되고 관련 메서드들이 호출된다
         assertEquals(2, context.history.size)
 
-        verify(placeAgent).determineAction(llmUiList)
+        verify(placeAgent).determineAction(agentUiList)
         verify(graphService, times(2)).saveNode(any())
         verify(graphService, times(2)).saveRel(TEST_LAST_NODE_ID, TEST_ENTITY_ID, NodeRelationType.HAS_TO)
         verify(notificationService).sendActionCommand(anyString(), any<CoordinateDto>())
@@ -146,7 +151,7 @@ class PlaceUtgServiceTest {
             imageName = "",
             screenNodeId = ""
         )
-        whenever(placeAgent.determineAction(llmUiList)).thenReturn(failAgentActionList)
+        whenever(placeAgent.determineAction(agentUiList)).thenReturn(failAgentActionList)
         whenever(graphService.saveNode(any<UiDto>())).thenReturn(uiEntity)
 
         // when: 그래프 초기화 실행
@@ -155,7 +160,7 @@ class PlaceUtgServiceTest {
         // then: 빈 히스토리가 반환되고 노드 생성 관련 메서드는 호출되지 않는다
         assertTrue(context.history.isEmpty())
 
-        verify(placeAgent).determineAction(llmUiList)
+        verify(placeAgent).determineAction(agentUiList)
         verify(graphService, never()).saveNode(any<UiDto>())
         verify(graphService, never()).saveRel(anyString(), anyString(), any())
         verify(notificationService, never()).sendActionCommand(anyString(), any<CoordinateDto>())

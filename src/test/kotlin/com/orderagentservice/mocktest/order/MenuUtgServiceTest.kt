@@ -192,14 +192,14 @@ class MenuUtgServiceTest {
         )
 
         llmUiList = mutableListOf(
-            UiComponentDto(x = TEST_X_COORDINATE, y = TEST_Y_COORDINATE, title = TEST_MENU_TITLE),
-            UiComponentDto(x = TEST_X_COORDINATE, y = TEST_Y_COORDINATE, title = TEST_CATEGORY)
+            UiComponentDto(x = TEST_X_COORDINATE, y = TEST_Y_COORDINATE, minX = 1, minY = 1, maxX = 1, maxY = 1,title = TEST_MENU_TITLE),
+            UiComponentDto(x = TEST_X_COORDINATE, y = TEST_Y_COORDINATE, minX = 1, minY = 1, maxX = 1, maxY = 1,title = TEST_CATEGORY)
         )
 
         modalLlmUiList = mutableListOf(
-            UiComponentDto(x = 300, y = 400, title = TEST_MENU_TITLE),
-            UiComponentDto(x = 150, y = 250, title = "치즈추가"),
-            UiComponentDto(x = 200, y = 300, title = "완료")
+            UiComponentDto(x = 300, y = 400, minX = 1, minY = 1, maxX = 1, maxY = 1,title = TEST_MENU_TITLE),
+            UiComponentDto(x = 150, y = 250, minX = 1, minY = 1, maxX = 1, maxY = 1,title = "치즈추가"),
+            UiComponentDto(x = 200, y = 300, minX = 1, minY = 1, maxX = 1, maxY = 1,title = "완료")
         )
 
         firstAction = AgentActionDto(
@@ -466,7 +466,7 @@ class MenuUtgServiceTest {
     fun 누락된_컴포넌트가_추가된다() {
         // given: 누락된 컴포넌트가 감지되는 상황
         val additionalComponents = listOf(
-            UiComponentDto(x = 150, y = 250, title = "숨겨진옵션")
+            UiComponentDto(x = 150, y = 250, minX = 1, minY = 1, maxX = 1, maxY = 1,title = "숨겨진옵션")
         )
 
         val context = GraphContext(

@@ -1,6 +1,7 @@
 package com.orderagentservice.order.service.utg.menu
 
 import com.orderagentservice.agent.BackAgent
+import com.orderagentservice.agent.model.dto.AgentUiDto
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.service.LogService
 import com.orderagentservice.order.model.type.ExtractType
@@ -84,7 +85,8 @@ class MenuActionExecutorImpl @Autowired constructor(
         val kioskId = context.kioskId
 
         //다시 원래 페이지로 돌아가야 하므로 backAgent를 통해 이전 페이지로 돌아가기
-        val backAction = backAgent.determineAction(uiList)
+        val agentUiList = uiList.map { AgentUiDto(it.x, it.y, it.title) }
+        val backAction = backAgent.determineAction(agentUiList)
 
         //노드 생성
         val backNodeId = nodeGenerator.createBackNode(backAction, menuNodeId, context)

@@ -75,12 +75,15 @@ class UiDetectorManager @Autowired constructor(
             }
 
             val pixelCoordinate = ele.bbox.coordinate
+
+            //TODO(여기서 중앙좌표가 아닌 바운딩박스 좌표로 반환)
             val cord = pixelCoordinate.getCenter()
             llmUiList.add(
                 UiComponentDto(
-                    x = cord.first,
-                    y = cord.second,
-                    title = title
+                    x = cord.first, y = cord.second,
+                    title = title,
+                    minX = ele.bbox.coordinate.minX, minY = ele.bbox.coordinate.minY,
+                    maxX = ele.bbox.coordinate.maxX, maxY = ele.bbox.coordinate.maxY,
                 )
             )
         }

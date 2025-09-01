@@ -3,6 +3,7 @@ package com.orderagentservice.mocktest.order
 import com.orderagentservice.agent.PaymentAgent
 import com.orderagentservice.agent.model.UsageTracker
 import com.orderagentservice.agent.model.dto.AgentActionDto
+import com.orderagentservice.agent.model.dto.AgentUiDto
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.service.LogService
 import com.orderagentservice.order.model.type.ExtractType
@@ -53,6 +54,7 @@ class PaymentUtgServiceTest {
 
     private lateinit var lastNode: UiEntity
     private lateinit var llmUiList: MutableList<UiComponentDto>
+    private lateinit var agentUiList: MutableList<AgentUiDto>
     private lateinit var agentActionDto: AgentActionDto
     private lateinit var uiEntity: UiEntity
     private lateinit var completeEntity: UiEntity
@@ -84,6 +86,11 @@ class PaymentUtgServiceTest {
 
         llmUiList = mutableListOf(
             UiComponentDto(
+                x = TEST_X_COORDINATE, y = TEST_X_COORDINATE, minX = 1, minY = 1, maxX = 1, maxY = 1,title = TEST_TITLE
+            )
+        )
+        agentUiList = mutableListOf(
+            AgentUiDto(
                 x = TEST_X_COORDINATE, y = TEST_X_COORDINATE, title = TEST_TITLE
             )
         )
@@ -134,7 +141,7 @@ class PaymentUtgServiceTest {
         )
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(any())
         whenever(uiDetectorManager.getUiComponents(context, ExtractType.SOM)).thenReturn(llmUiList)
-        whenever(paymentAgent.determineAction(llmUiList)).thenReturn(agentActionDto)
+        whenever(paymentAgent.determineAction(agentUiList)).thenReturn(agentActionDto)
         whenever(graphService.saveNode(any<UiDto>())).thenReturn(uiEntity).thenReturn(completeEntity)
         doNothing().whenever(graphService).saveRel(anyString(), anyString(), any())
 
@@ -149,7 +156,7 @@ class PaymentUtgServiceTest {
         verify(placeUtgService, never()).initializeGraph(any())
         verify(notificationService).sendCaptureCommand(TEST_KIOSK_ID)
         verify(uiDetectorManager).getUiComponents(any(), ExtractType.SOM)
-        verify(paymentAgent).determineAction(llmUiList)
+        verify(paymentAgent).determineAction(agentUiList)
         verify(graphService, times(2)).saveNode(any<UiDto>())
         verify(graphService, times(2)).saveRel(anyString(), anyString(), any<NodeRelationType>())
     }
@@ -172,7 +179,7 @@ class PaymentUtgServiceTest {
         }
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(any())
         whenever(uiDetectorManager.getUiComponents(context, ExtractType.SOM)).thenReturn(llmUiList)
-        whenever(paymentAgent.determineAction(llmUiList)).thenReturn(agentActionDto)
+        whenever(paymentAgent.determineAction(agentUiList)).thenReturn(agentActionDto)
         whenever(graphService.saveNode(any<UiDto>())).thenReturn(uiEntity).thenReturn(completeEntity)
         doNothing().whenever(graphService).saveRel(anyString(), anyString(), any())
 
@@ -188,7 +195,7 @@ class PaymentUtgServiceTest {
         verify(placeUtgService).initializeGraph(any())
         verify(notificationService).sendCaptureCommand(TEST_KIOSK_ID)
         verify(uiDetectorManager).getUiComponents(any(), ExtractType.SOM)
-        verify(paymentAgent).determineAction(llmUiList)
+        verify(paymentAgent).determineAction(agentUiList)
         verify(graphService, times(2)).saveNode(any<UiDto>())
         verify(graphService, times(2)).saveRel(anyString(), anyString(), any<NodeRelationType>())
     }
@@ -225,7 +232,7 @@ class PaymentUtgServiceTest {
 
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(any())
         whenever(uiDetectorManager.getUiComponents(context, ExtractType.SOM)).thenReturn(llmUiList)
-        whenever(paymentAgent.determineAction(llmUiList)).thenReturn(firstAction).thenReturn(secondAction)
+        whenever(paymentAgent.determineAction(agentUiList)).thenReturn(firstAction).thenReturn(secondAction)
         whenever(graphService.saveNode(any<UiDto>()))
             .thenReturn(firstEntity)
             .thenReturn(secondEntity)
@@ -243,7 +250,7 @@ class PaymentUtgServiceTest {
 
         verify(notificationService, times(2)).sendCaptureCommand(TEST_KIOSK_ID)
         verify(uiDetectorManager, times(2)).getUiComponents(any(), ExtractType.SOM)
-        verify(paymentAgent, times(2)).determineAction(llmUiList)
+        verify(paymentAgent, times(2)).determineAction(agentUiList)
         verify(graphService, times(3)).saveNode(any<UiDto>())
         verify(graphService, times(3)).saveRel(anyString(), anyString(), any<NodeRelationType>())
     }
@@ -263,7 +270,7 @@ class PaymentUtgServiceTest {
         )
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(any())
         whenever(uiDetectorManager.getUiComponents(context, ExtractType.SOM)).thenReturn(llmUiList)
-        whenever(paymentAgent.determineAction(llmUiList)).thenReturn(agentActionDto)
+        whenever(paymentAgent.determineAction(agentUiList)).thenReturn(agentActionDto)
         whenever(graphService.saveNode(any<UiDto>())).thenReturn(uiEntity).thenReturn(completeEntity)
         doNothing().whenever(graphService).saveRel(anyString(), anyString(), any())
 

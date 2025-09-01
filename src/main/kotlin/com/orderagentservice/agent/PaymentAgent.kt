@@ -2,6 +2,7 @@ package com.orderagentservice.agent
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.orderagentservice.agent.model.dto.AgentActionDto
+import com.orderagentservice.agent.model.dto.AgentUiDto
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.agent.util.LlmManager
 import com.orderagentservice.jsonMapper
@@ -12,14 +13,14 @@ import org.springframework.stereotype.Component
 class PaymentAgent @Autowired constructor(
     private val llmManager: LlmManager
 ) {
-    fun determineAction(uiList: List<UiComponentDto>): AgentActionDto {
+    fun determineAction(uiList: List<AgentUiDto>): AgentActionDto {
         val prompt = getPrompt(uiList)
         val json = llmManager.query(prompt)
         val response: AgentActionDto = jsonMapper.readValue<AgentActionDto>(json)
         return response
     }
 
-    private fun getPrompt(uiList: List<UiComponentDto>): String {
+    private fun getPrompt(uiList: List<AgentUiDto>): String {
         val prompt = """            
             You are a kiosk payment expert. Items are in cart, payment remains. Identify UI to click, leading to card insertion page.
             The ui list has a list of currently clickable ui.
