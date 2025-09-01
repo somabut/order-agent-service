@@ -1,6 +1,7 @@
 package com.orderagentservice.order.service.utg.payment
 
 import com.orderagentservice.agent.PaymentAgent
+import com.orderagentservice.order.model.type.ExtractType
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.service.NotificationService
@@ -15,7 +16,7 @@ class PaymentActionExecutorImpl(
     private val notificationService: NotificationService
 ) : PaymentActionExecutor {
     override fun selectPayment(context: GraphContext): Boolean {
-        val llmUiList = uiDetectorManager.getUiComponents(context, true)
+        val llmUiList = uiDetectorManager.getUiComponents(context, ExtractType.OCR)
         val action = paymentAgent.determineAction(llmUiList)
 
         //노드 저장

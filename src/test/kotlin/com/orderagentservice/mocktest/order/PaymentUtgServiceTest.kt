@@ -5,6 +5,7 @@ import com.orderagentservice.agent.model.UsageTracker
 import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.service.LogService
+import com.orderagentservice.order.model.type.ExtractType
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.dto.UiDto
@@ -128,10 +129,11 @@ class PaymentUtgServiceTest {
             stationNodeId = null,
             currentCategory = null,
             history = mutableListOf(),
-            imageName = ""
+            imageName = "",
+            screenNodeId = ""
         )
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(any())
-        whenever(uiDetectorManager.getUiComponents(context)).thenReturn(llmUiList)
+        whenever(uiDetectorManager.getUiComponents(context, ExtractType.SOM)).thenReturn(llmUiList)
         whenever(paymentAgent.determineAction(llmUiList)).thenReturn(agentActionDto)
         whenever(graphService.saveNode(any<UiDto>())).thenReturn(uiEntity).thenReturn(completeEntity)
         doNothing().whenever(graphService).saveRel(anyString(), anyString(), any())
@@ -146,7 +148,7 @@ class PaymentUtgServiceTest {
 
         verify(placeUtgService, never()).initializeGraph(any())
         verify(notificationService).sendCaptureCommand(TEST_KIOSK_ID)
-        verify(uiDetectorManager).getUiComponents(any())
+        verify(uiDetectorManager).getUiComponents(any(), ExtractType.SOM)
         verify(paymentAgent).determineAction(llmUiList)
         verify(graphService, times(2)).saveNode(any<UiDto>())
         verify(graphService, times(2)).saveRel(anyString(), anyString(), any<NodeRelationType>())
@@ -162,13 +164,14 @@ class PaymentUtgServiceTest {
             lastNodeId = null,
             currentCategory = null,
             history = mutableListOf(),
-            imageName = ""
+            imageName = "",
+            screenNodeId = ""
         )
         whenever(placeUtgService.initializeGraph(any())).thenAnswer {
             placeActionList.forEach { context.history.add(it) }
         }
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(any())
-        whenever(uiDetectorManager.getUiComponents(context)).thenReturn(llmUiList)
+        whenever(uiDetectorManager.getUiComponents(context, ExtractType.SOM)).thenReturn(llmUiList)
         whenever(paymentAgent.determineAction(llmUiList)).thenReturn(agentActionDto)
         whenever(graphService.saveNode(any<UiDto>())).thenReturn(uiEntity).thenReturn(completeEntity)
         doNothing().whenever(graphService).saveRel(anyString(), anyString(), any())
@@ -184,7 +187,7 @@ class PaymentUtgServiceTest {
 
         verify(placeUtgService).initializeGraph(any())
         verify(notificationService).sendCaptureCommand(TEST_KIOSK_ID)
-        verify(uiDetectorManager).getUiComponents(any())
+        verify(uiDetectorManager).getUiComponents(any(), ExtractType.SOM)
         verify(paymentAgent).determineAction(llmUiList)
         verify(graphService, times(2)).saveNode(any<UiDto>())
         verify(graphService, times(2)).saveRel(anyString(), anyString(), any<NodeRelationType>())
@@ -216,11 +219,12 @@ class PaymentUtgServiceTest {
             lastNodeId = lastNode.id,
             currentCategory = null,
             history = mutableListOf(),
-            imageName = ""
+            imageName = "",
+            screenNodeId = ""
         )
 
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(any())
-        whenever(uiDetectorManager.getUiComponents(context)).thenReturn(llmUiList)
+        whenever(uiDetectorManager.getUiComponents(context, ExtractType.SOM)).thenReturn(llmUiList)
         whenever(paymentAgent.determineAction(llmUiList)).thenReturn(firstAction).thenReturn(secondAction)
         whenever(graphService.saveNode(any<UiDto>()))
             .thenReturn(firstEntity)
@@ -238,7 +242,7 @@ class PaymentUtgServiceTest {
         assertEquals(secondAction, context.history[1])
 
         verify(notificationService, times(2)).sendCaptureCommand(TEST_KIOSK_ID)
-        verify(uiDetectorManager, times(2)).getUiComponents(any())
+        verify(uiDetectorManager, times(2)).getUiComponents(any(), ExtractType.SOM)
         verify(paymentAgent, times(2)).determineAction(llmUiList)
         verify(graphService, times(3)).saveNode(any<UiDto>())
         verify(graphService, times(3)).saveRel(anyString(), anyString(), any<NodeRelationType>())
@@ -254,10 +258,11 @@ class PaymentUtgServiceTest {
             lastNodeId = lastNode.id,
             currentCategory = null,
             history = mutableListOf(),
-            imageName = ""
+            imageName = "",
+            screenNodeId = ""
         )
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(any())
-        whenever(uiDetectorManager.getUiComponents(context)).thenReturn(llmUiList)
+        whenever(uiDetectorManager.getUiComponents(context, ExtractType.SOM)).thenReturn(llmUiList)
         whenever(paymentAgent.determineAction(llmUiList)).thenReturn(agentActionDto)
         whenever(graphService.saveNode(any<UiDto>())).thenReturn(uiEntity).thenReturn(completeEntity)
         doNothing().whenever(graphService).saveRel(anyString(), anyString(), any())

@@ -19,5 +19,4 @@ class SomGraphServiceTest @Autowired constructor(
             )
         )
     }
-
 }

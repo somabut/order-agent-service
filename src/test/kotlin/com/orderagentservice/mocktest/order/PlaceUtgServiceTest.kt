@@ -113,7 +113,8 @@ class PlaceUtgServiceTest {
             lastNodeId = lastNode.id,
             currentCategory = null,
             history = mutableListOf(),
-            imageName = ""
+            imageName = "",
+            screenNodeId = ""
         )
         whenever(placeAgent.determineAction(llmUiList)).thenReturn(successAgentActionList)
         whenever(graphService.saveNode(any<UiDto>())).thenReturn(uiEntity)
@@ -142,7 +143,8 @@ class PlaceUtgServiceTest {
             stationNodeId = null,
             currentCategory = null,
             history = mutableListOf(),
-            imageName = ""
+            imageName = "",
+            screenNodeId = ""
         )
         whenever(placeAgent.determineAction(llmUiList)).thenReturn(failAgentActionList)
         whenever(graphService.saveNode(any<UiDto>())).thenReturn(uiEntity)

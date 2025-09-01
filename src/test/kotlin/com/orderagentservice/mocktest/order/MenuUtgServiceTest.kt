@@ -7,6 +7,7 @@ import com.orderagentservice.agent.model.dto.*
 import com.orderagentservice.global.service.LogService
 import com.orderagentservice.order.service.utg.WordSimilarityService
 import com.orderagentservice.order.exception.LowScoreException
+import com.orderagentservice.order.model.type.ExtractType
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.dto.CoordinateDto
@@ -300,7 +301,7 @@ class MenuUtgServiceTest {
 
         whenever(graphService.saveNode(any<UiDto>())).thenReturn(rootNode, firstNode)
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(any())
-        whenever(uiDetectorManager.getUiComponents(context)).thenReturn(llmUiList)
+        whenever(uiDetectorManager.getUiComponents(context, ExtractType.SOM)).thenReturn(llmUiList)
         whenever(placeUtgService.initializeGraph(any())).thenAnswer {
             val ctx = it.arguments[0] as GraphContext
             ctx.isPlaceDetermined = true
@@ -358,7 +359,7 @@ class MenuUtgServiceTest {
 
         // 테스트에 필요한 기본적인 Mocking
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(any())
-        whenever(uiDetectorManager.getUiComponents(context)).thenReturn(llmUiList)
+        whenever(uiDetectorManager.getUiComponents(context, ExtractType.SOM)).thenReturn(llmUiList)
         whenever(notificationService.sendActionCommand(any(), any())).thenReturn(actionResult)
         whenever(pageAgent.determineAction(any(), any())).thenReturn(pageAction) // handleModal 내부에서 사용될 수 있음
         whenever(placeUtgService.initializeGraph(any())).thenAnswer {
@@ -387,7 +388,7 @@ class MenuUtgServiceTest {
         // ← mockStatic 블록 완전 제거!
         whenever(graphService.saveNode(any<UiDto>())).thenReturn(rootNode, firstNode, menuEntity)
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(any())
-        whenever(uiDetectorManager.getUiComponents(context)).thenReturn(llmUiList)
+        whenever(uiDetectorManager.getUiComponents(context, ExtractType.SOM)).thenReturn(llmUiList)
         whenever(placeUtgService.initializeGraph(any())).thenAnswer {
             val ctx = it.arguments[0] as GraphContext
             callCount++
@@ -432,7 +433,8 @@ class MenuUtgServiceTest {
             stationNodeId = null,
             lastNodeId = null,
             history = mutableListOf(),
-            imageName = ""
+            imageName = "",
+            screenNodeId = ""
         )
     }
 
@@ -441,7 +443,7 @@ class MenuUtgServiceTest {
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID))
             .thenReturn(any())
             .thenReturn(any())
-        whenever(uiDetectorManager.getUiComponents(context)).thenReturn(llmUiList)
+        whenever(uiDetectorManager.getUiComponents(context, ExtractType.SOM)).thenReturn(llmUiList)
         whenever(placeUtgService.initializeGraph(any())).thenAnswer {
             val ctx = it.arguments[0] as GraphContext
             ctx.isPlaceDetermined = true
@@ -474,12 +476,13 @@ class MenuUtgServiceTest {
             lastNodeId = null,
             currentCategory = null,
             history = mutableListOf(),
-            imageName = ""
+            imageName = "",
+            screenNodeId = ""
         )
 
         whenever(graphService.saveNode(any<UiDto>())).thenReturn(rootNode, menuEntity)
         whenever(notificationService.sendCaptureCommand(TEST_KIOSK_ID)).thenReturn(any())
-        whenever(uiDetectorManager.getUiComponents(context)).thenReturn(llmUiList)
+        whenever(uiDetectorManager.getUiComponents(context, ExtractType.SOM)).thenReturn(llmUiList)
         whenever(placeUtgService.initializeGraph(any())).thenAnswer {  }
         whenever(backAgent.determineAction(any())).thenReturn(backAction)
         whenever(pageAgent.determineAction(anyList(), anyList())).thenReturn(pageAction)

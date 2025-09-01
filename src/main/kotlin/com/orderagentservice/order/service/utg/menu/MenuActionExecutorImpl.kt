@@ -3,6 +3,7 @@ package com.orderagentservice.order.service.utg.menu
 import com.orderagentservice.agent.BackAgent
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.service.LogService
+import com.orderagentservice.order.model.type.ExtractType
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
@@ -64,7 +65,7 @@ class MenuActionExecutorImpl @Autowired constructor(
         menuNodeId: String,
     ) {
         //메뉴의 옵션 노드 추가
-        val llmOptList = uiDetectorManager.getUiComponents(context)
+        val llmOptList = uiDetectorManager.getUiComponents(context, ExtractType.SOM)
 
         for (opt in menuDto.options) {
             val coordinate = wordSimilarityService.findBestMatch(opt, llmOptList)
@@ -123,7 +124,7 @@ class MenuActionExecutorImpl @Autowired constructor(
         }
 
         //다음으로 이동
-        val nextUiList = uiDetectorManager.getUiComponents(context)
+        val nextUiList = uiDetectorManager.getUiComponents(context, ExtractType.SOM)
         nodeId = selectBack(context, nodeId, nextUiList)
 
         return nodeId

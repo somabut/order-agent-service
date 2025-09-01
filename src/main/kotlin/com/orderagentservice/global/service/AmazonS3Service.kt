@@ -52,7 +52,8 @@ class AmazonS3Service @Autowired constructor(
             )
         }
 
-        return getImageName(commandId = commandId, formattedTime = formattedTime)
+        return getImagePath(kioskId, commandId, formattedDate, formattedTime, extension)
+//        return getImageName(commandId = commandId, formattedTime = formattedTime)
     }
 
     private fun getImagePath(kioskId: String, commandId: String, formattedDate: String, formattedTime: String, extension: String)

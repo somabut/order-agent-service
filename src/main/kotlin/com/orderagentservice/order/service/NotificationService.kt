@@ -13,7 +13,6 @@ import com.orderagentservice.order.model.dto.KioskCaptureDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
-import java.io.File
 import java.util.UUID
 
 @Service
@@ -42,7 +41,7 @@ class NotificationService @Autowired constructor(
             kioskId = kioskId, commandId = commandId,
             fileBytes = content, contentType = imageType
         )
-        val captureDto = KioskCaptureDto(content = content, type = imageType, name = fileName)
+        val captureDto = KioskCaptureDto(content = content, type = imageType, url = fileName)
         notificationRepository.saveCaptureCommand(commandId, captureDto)
     }
 

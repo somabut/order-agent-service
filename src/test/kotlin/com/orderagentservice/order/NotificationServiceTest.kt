@@ -23,7 +23,7 @@ class NotificationServiceTest @Autowired constructor(
         method.isAccessible = true
         val dto = KioskCaptureDto(
             content = byteArrayOf(),
-            name = "",
+            url = "",
             type = ""
         )
         notificationRepository.saveCaptureCommand("moodTRBL", dto)

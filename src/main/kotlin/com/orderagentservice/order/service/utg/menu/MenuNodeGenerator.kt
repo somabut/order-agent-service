@@ -10,16 +10,17 @@ import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.log.NodeSaveLog
 import com.orderagentservice.order.model.type.NodeType
+import com.orderagentservice.order.service.graph.screen.ScreenGraphService
 import com.orderagentservice.order.service.graph.ui.UiGraphService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
 class MenuNodeGenerator @Autowired constructor(
-    private val graphService: UiGraphService,
-    private val logService: LogService
+    private val uiGraphService: UiGraphService,
+    private val logService: LogService,
+    private val screenGraphService: ScreenGraphService
 ) {
-
     fun createCategoryNode(coordinate: CoordinateDto, context: GraphContext): String {
         logService.printLog(
             NodeSaveLog(
@@ -30,7 +31,7 @@ class MenuNodeGenerator @Autowired constructor(
             )
         )
 
-        val node = graphService.saveNode(
+        val node = uiGraphService.saveNode(
             UiDto(
                 isNext = true,
                 x = coordinate.x, y = coordinate.y,
@@ -39,8 +40,10 @@ class MenuNodeGenerator @Autowired constructor(
             )
         )
 
-        graphService.saveRel(context.stationNodeId!!, node.id, NodeRelationType.PATH_TO)
-        graphService.saveRel(node.id, context.stationNodeId!!, NodeRelationType.PATH_TO)
+        uiGraphService.saveRel(context.stationNodeId!!, node.id, NodeRelationType.PATH_TO)
+        uiGraphService.saveRel(node.id, context.stationNodeId!!, NodeRelationType.PATH_TO)
+
+        screenGraphService.saveRel(node.id, context.screenNodeId)
 
         context.currentCategory = node.title
         context.lastNodeId = node.id
@@ -58,7 +61,7 @@ class MenuNodeGenerator @Autowired constructor(
                 title = coordinate.title, imageName = context.imageName
             )
         )
-        val node = graphService.saveNode(
+        val node = uiGraphService.saveNode(
             UiDto(
                 isNext = false,
                 x = coordinate.x, y = coordinate.y,
@@ -66,7 +69,9 @@ class MenuNodeGenerator @Autowired constructor(
                 kioskId = context.kioskId
             )
         )
-        graphService.saveRel(context.lastNodeId!!, node.id, NodeRelationType.HAS_TO)
+        uiGraphService.saveRel(context.lastNodeId!!, node.id, NodeRelationType.HAS_TO)
+
+        screenGraphService.saveRel(node.id, context.screenNodeId)
 
         context.history.add(node.toAgentActionDto())
 
@@ -86,7 +91,7 @@ class MenuNodeGenerator @Autowired constructor(
                 title = coordinate.title, imageName = context.imageName
             )
         )
-        val optEntity = graphService.saveNode(
+        val optEntity = uiGraphService.saveNode(
             UiDto(
                 isNext = false,
                 x = coordinate.x, y = coordinate.y,
@@ -94,7 +99,9 @@ class MenuNodeGenerator @Autowired constructor(
                 kioskId = context.kioskId
             )
         )
-        graphService.saveRel(menuNodeId, optEntity.id, NodeRelationType.OPT_TO)
+        uiGraphService.saveRel(menuNodeId, optEntity.id, NodeRelationType.OPT_TO)
+
+        screenGraphService.saveRel(optEntity.id, context.screenNodeId)
 
         context.history.add(optEntity.toAgentActionDto())
     }
@@ -114,7 +121,7 @@ class MenuNodeGenerator @Autowired constructor(
                 title = action.title, imageName = context.imageName
             )
         )
-        val backEntity = graphService.saveNode(
+        val backEntity = uiGraphService.saveNode(
             UiDto(
                 isNext = false,
                 x = x, y = y,
@@ -122,7 +129,9 @@ class MenuNodeGenerator @Autowired constructor(
                 kioskId = context.kioskId
             )
         )
-        graphService.saveRel(menuNodeId, backEntity.id, NodeRelationType.BACK_TO)
+        uiGraphService.saveRel(menuNodeId, backEntity.id, NodeRelationType.BACK_TO)
+
+        screenGraphService.saveRel(backEntity.id, context.screenNodeId)
 
         context.history.add(backEntity.toAgentActionDto())
 
@@ -143,14 +152,16 @@ class MenuNodeGenerator @Autowired constructor(
                 title = menuDto.title, imageName = context.imageName
             )
         )
-        val node = graphService.saveNode(
+        val node = uiGraphService.saveNode(
             UiDto(
                 isNext = true, kioskId = context.kioskId,
                 x = matchDto.x, y = matchDto.y,
                 title = menuDto.title
             )
         )
-        graphService.saveRel(menuNodeId, node.id, NodeRelationType.HAS_TO)
+        uiGraphService.saveRel(menuNodeId, node.id, NodeRelationType.HAS_TO)
+
+        screenGraphService.saveRel(node.id, context.screenNodeId)
 
         context.history.add(node.toAgentActionDto())
 
