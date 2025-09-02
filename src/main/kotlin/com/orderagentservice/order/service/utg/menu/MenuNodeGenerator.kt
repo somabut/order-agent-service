@@ -7,12 +7,14 @@ import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
+import com.orderagentservice.order.model.dto.SomParams
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.log.NodeSaveLog
 import com.orderagentservice.order.model.type.NodeType
 import com.orderagentservice.order.service.graph.screen.ScreenGraphService
 import com.orderagentservice.order.service.graph.som.SomGraphService
 import com.orderagentservice.order.service.graph.ui.UiGraphService
+import com.orderagentservice.order.service.utg.ScreenNodeGenerator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -20,8 +22,8 @@ import org.springframework.stereotype.Component
 class MenuNodeGenerator @Autowired constructor(
     private val uiGraphService: UiGraphService,
     private val logService: LogService,
-    private val screenGraphService: ScreenGraphService,
     private val somGraphService: SomGraphService,
+    private val screenNodeGenerator: ScreenNodeGenerator,
 ) {
     fun createCategoryNode(matchDto: WordMatchDto, context: GraphContext): String {
         logService.printLog(
@@ -46,13 +48,14 @@ class MenuNodeGenerator @Autowired constructor(
         uiGraphService.saveRel(node.id, context.stationNodeId!!, NodeRelationType.PATH_TO)
 
         //match 노드와 관계, screen 노드와 관계 연결
-        val somNodeId = somGraphService.findNode(
-            minX = matchDto.minX, minY = matchDto.minY,
-            maxX = matchDto.maxX, maxY = matchDto.maxY,
-            title = matchDto.title
+        screenNodeGenerator.linkNode(
+            nodeId = node.id, screenNodeId = context.screenNodeId,
+            SomParams(
+                minX = matchDto.minX, minY = matchDto.minY,
+                maxX = matchDto.maxX, maxY = matchDto.maxY,
+                title = matchDto.title
+            )
         )
-        uiGraphService.saveRel(node.id, somNodeId, NodeRelationType.MATCH_TO)
-        uiGraphService.saveRel(node.id, context.screenNodeId, NodeRelationType.IMAGE_TO)
 
         context.currentCategory = node.title
         context.lastNodeId = node.id
@@ -80,13 +83,14 @@ class MenuNodeGenerator @Autowired constructor(
         uiGraphService.saveRel(context.lastNodeId!!, node.id, NodeRelationType.HAS_TO)
 
         //match 노드와 관계, screen 노드와 관계 연결
-        val somNodeId = somGraphService.findNode(
-            minX = matchDto.minX, minY = matchDto.minY,
-            maxX = matchDto.maxX, maxY = matchDto.maxY,
-            title = matchDto.title
+        screenNodeGenerator.linkNode(
+            nodeId = node.id, screenNodeId = context.screenNodeId,
+            SomParams(
+                minX = matchDto.minX, minY = matchDto.minY,
+                maxX = matchDto.maxX, maxY = matchDto.maxY,
+                title = matchDto.title
+            )
         )
-        uiGraphService.saveRel(node.id, somNodeId, NodeRelationType.MATCH_TO)
-        uiGraphService.saveRel(node.id, context.screenNodeId, NodeRelationType.IMAGE_TO)
 
         return node.id
     }
@@ -115,13 +119,14 @@ class MenuNodeGenerator @Autowired constructor(
         uiGraphService.saveRel(menuNodeId, node.id, NodeRelationType.OPT_TO)
 
         //match 노드와 관계, screen 노드와 관계 연결
-        val somNodeId = somGraphService.findNode(
-            minX = matchDto.minX, minY = matchDto.minY,
-            maxX = matchDto.maxX, maxY = matchDto.maxY,
-            title = matchDto.title
+        screenNodeGenerator.linkNode(
+            nodeId = node.id, screenNodeId = context.screenNodeId,
+            SomParams(
+                minX = matchDto.minX, minY = matchDto.minY,
+                maxX = matchDto.maxX, maxY = matchDto.maxY,
+                title = matchDto.title
+            )
         )
-        uiGraphService.saveRel(node.id, somNodeId, NodeRelationType.MATCH_TO)
-        uiGraphService.saveRel(node.id, context.screenNodeId, NodeRelationType.IMAGE_TO)
     }
 
     fun createBackNode(
@@ -150,13 +155,14 @@ class MenuNodeGenerator @Autowired constructor(
         uiGraphService.saveRel(menuNodeId, node.id, NodeRelationType.BACK_TO)
 
         //match 노드와 관계, screen 노드와 관계 연결
-        val somNodeId = somGraphService.findNode(
-            minX = minX, minY = minY,
-            maxX = maxX, maxY = maxY,
-            title = action.title
+        screenNodeGenerator.linkNode(
+            nodeId = node.id, screenNodeId = context.screenNodeId,
+            SomParams(
+                minX = minX, minY = minY,
+                maxX = maxX, maxY = maxY,
+                title = action.title
+            )
         )
-        uiGraphService.saveRel(node.id, somNodeId, NodeRelationType.MATCH_TO)
-        uiGraphService.saveRel(node.id, context.screenNodeId, NodeRelationType.IMAGE_TO)
 
         return node.id
     }
@@ -185,13 +191,14 @@ class MenuNodeGenerator @Autowired constructor(
         uiGraphService.saveRel(menuNodeId, node.id, NodeRelationType.HAS_TO)
 
         //match 노드와 관계, screen 노드와 관계 연결
-        val somNodeId = somGraphService.findNode(
-            minX = matchDto.minX, minY = matchDto.minY,
-            maxX = matchDto.maxX, maxY = matchDto.maxY,
-            title = matchDto.title
+        screenNodeGenerator.linkNode(
+            nodeId = node.id, screenNodeId = context.screenNodeId,
+            SomParams(
+                minX = matchDto.minX, minY = matchDto.minY,
+                maxX = matchDto.maxX, maxY = matchDto.maxY,
+                title = matchDto.title
+            )
         )
-        uiGraphService.saveRel(node.id, somNodeId, NodeRelationType.MATCH_TO)
-        uiGraphService.saveRel(node.id, context.screenNodeId, NodeRelationType.IMAGE_TO)
         return node.id
     }
 }

@@ -3,40 +3,56 @@ package com.orderagentservice.order.service.utg.payment
 import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.global.service.LogService
 import com.orderagentservice.order.model.GraphContext
+import com.orderagentservice.order.model.dto.SomParams
 import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.log.NodeSaveLog
 import com.orderagentservice.order.model.type.NodeType
 import com.orderagentservice.order.model.type.SpecialNodeType
 import com.orderagentservice.order.service.graph.ui.UiGraphService
+import com.orderagentservice.order.service.utg.ScreenNodeGenerator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
 class PaymentNodeGenerator @Autowired constructor(
     private val graphService: UiGraphService,
-    private val logService: LogService
+    private val logService: LogService,
+    private val screenNodeGenerator: ScreenNodeGenerator,
 ) {
     fun createPaymentNode(action: AgentActionDto, context: GraphContext) {
+        val (x, y) = action.coordinate
+        val (minX, minY, maxX, maxY) = action.bbox
+
         logService.printLog(
             NodeSaveLog(
                 kioskId = context.kioskId, nodeType = NodeType.PAYMENT,
-                x = action.coordinate[0], y = action.coordinate[1],
+                x = x, y = y,
                 title = action.title, imageName = context.imageName
             )
         )
 
-        val entity = graphService.saveNode(
+        val node = graphService.saveNode(
             UiDto(
                 isNext = action.goNext,
-                x = action.coordinate[0], y = action.coordinate[1],
+                x = x, y = y,
                 title = action.title,
                 kioskId = context.kioskId
             )
         )
-        graphService.saveRel(context.lastNodeId!!, entity.id, NodeRelationType.PATH_TO)
+        graphService.saveRel(context.lastNodeId!!, node.id, NodeRelationType.PATH_TO)
 
-        context.lastNodeId = entity.id
+        //match 노드와 관계, screen 노드와 관계 연결
+        screenNodeGenerator.linkNode(
+            nodeId = node.id, screenNodeId = context.screenNodeId,
+            SomParams(
+                minX = minX, minY = minY,
+                maxX = maxX, maxY = maxY,
+                title = action.title
+            )
+        )
+
+        context.lastNodeId = node.id
     }
 
     fun createCompleteNode(context: GraphContext) {
@@ -47,7 +63,7 @@ class PaymentNodeGenerator @Autowired constructor(
                 title = SpecialNodeType.COMPLETE.title, imageName = context.imageName
             )
         )
-        val completeEntity =  graphService.saveNode(
+        val completeEntity = graphService.saveNode(
             UiDto(
                 isNext = false,
                 x = -1, y = -1,

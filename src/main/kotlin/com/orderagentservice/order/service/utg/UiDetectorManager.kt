@@ -48,7 +48,7 @@ class UiDetectorManager @Autowired constructor(
         context.imageName = captureDto.url
 
         //노드 생성
-        screenNodeGenerator.generateNode(
+        screenNodeGenerator.createScreenNode(
             context = context, captureDto = captureDto,
             uiComponents = uiElements, ocrComponents = ocrElements, yoloComponents = yoloElements,
         )

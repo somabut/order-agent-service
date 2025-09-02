@@ -6,12 +6,14 @@ import com.orderagentservice.order.model.dto.KioskCaptureDto
 import com.orderagentservice.order.model.dto.OcrDto
 import com.orderagentservice.order.model.dto.ScreenDto
 import com.orderagentservice.order.model.dto.SomDto
+import com.orderagentservice.order.model.dto.SomParams
 import com.orderagentservice.order.model.dto.YoloDto
+import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.service.graph.ocr.OcrGraphService
 import com.orderagentservice.order.service.graph.screen.ScreenGraphService
 import com.orderagentservice.order.service.graph.som.SomGraphService
+import com.orderagentservice.order.service.graph.ui.UiGraphService
 import com.orderagentservice.order.service.graph.yolo.YoloGraphService
-import org.apache.catalina.realm.GenericPrincipal
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -21,8 +23,9 @@ class ScreenNodeGenerator @Autowired constructor(
     private val somGraphService: SomGraphService,
     private val ocrGraphService: OcrGraphService,
     private val yoloGraphService: YoloGraphService,
+    private val uiGraphService: UiGraphService
 ) {
-    fun generateNode(
+    fun createScreenNode(
         context: GraphContext,
         captureDto: KioskCaptureDto,
         uiComponents: List<DetectorUiComponentDto>,
@@ -67,5 +70,16 @@ class ScreenNodeGenerator @Autowired constructor(
             ).id
             screenGraphService.saveRel(screenNodeId, yoloNode)
         }
+    }
+
+    fun linkNode(nodeId: String, screenNodeId: String, somParams: SomParams) {
+        //match 노드와 관계, screen 노드와 관계 연결
+        val somNodeId = somGraphService.findNode(
+            minX = somParams.minX, minY = somParams.minY,
+            maxX = somParams.maxX, maxY = somParams.maxY,
+            title = somParams.title
+        )
+        uiGraphService.saveRel(nodeId, somNodeId, NodeRelationType.MATCH_TO)
+        uiGraphService.saveRel(nodeId, screenNodeId, NodeRelationType.IMAGE_TO)
     }
 }
