@@ -3,6 +3,7 @@ package com.orderagentservice.order.service.utg.menu
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.service.LogService
 import com.orderagentservice.order.exception.UtgInfiniteLoopException
+import com.orderagentservice.order.model.type.ExtractType
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.dto.CoordinateDto
@@ -10,18 +11,17 @@ import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.log.UtgNowMenuLog
 import com.orderagentservice.order.model.log.UtgProcessLog
 import com.orderagentservice.order.service.NotificationService
-import com.orderagentservice.order.service.graph.GraphService
+import com.orderagentservice.order.service.graph.ui.UiGraphService
 import com.orderagentservice.order.service.utg.UiDetectorManager
 import com.orderagentservice.order.service.utg.WordSimilarityService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import kotlin.math.log
 
 @Component
 class MenuNavigator @Autowired constructor(
     private val menuActionExecutor: MenuActionExecutor,
     private val uiDetectorManager: UiDetectorManager,
-    private val graphService: GraphService,
+    private val graphService: UiGraphService,
     private val wordSimilarityService: WordSimilarityService,
     private val notificationService: NotificationService,
     private val logService: LogService
@@ -29,12 +29,12 @@ class MenuNavigator @Autowired constructor(
     private val MAX_LOOP = 5
 
     fun navigateMenus(context: GraphContext, menuList: List<MenuInfoDto>) {
-        var uiList = uiDetectorManager.getUiComponents(context)
+        var uiList = uiDetectorManager.getUiComponents(context, ExtractType.SOM)
         for (menuDto in menuList) {
             if (menuDto.category != context.currentCategory) {
                 //카테고리가 다르다면 해당 카테고리로 이동
                 menuActionExecutor.selectCategory(context, menuDto, uiList)
-                uiList = uiDetectorManager.getUiComponents(context)
+                uiList = uiDetectorManager.getUiComponents(context, ExtractType.SOM)
             }
 
             logService.printLog(
@@ -67,7 +67,7 @@ class MenuNavigator @Autowired constructor(
     ) {
         //현재 메뉴를 일단 클릭한 상황
         var nodeId = menuNodeId
-        var uiList = uiDetectorManager.getUiComponents(context)
+        var uiList = uiDetectorManager.getUiComponents(context, ExtractType.SOM)
 
         if (menuDto.options.isEmpty()) {
             //옵션이 없는 경우
@@ -112,14 +112,14 @@ class MenuNavigator @Autowired constructor(
 
             //옵션을 선택하고 원래 페이지도 이동
             var count = 0
-            uiList = uiDetectorManager.getUiComponents(context)
+            uiList = uiDetectorManager.getUiComponents(context, ExtractType.SOM)
             while (checkMenuPage(menuDto, menuList, uiList) == false) {
                 if (count >= MAX_LOOP) {
                     throw UtgInfiniteLoopException()
                 }
 
                 nodeId = menuActionExecutor.selectBack(context, nodeId, uiList)
-                uiList = uiDetectorManager.getUiComponents(context)
+                uiList = uiDetectorManager.getUiComponents(context, ExtractType.SOM)
                 count++
             }
             graphService.saveRel(nodeId, context.lastNodeId!!, NodeRelationType.BACK_TO)

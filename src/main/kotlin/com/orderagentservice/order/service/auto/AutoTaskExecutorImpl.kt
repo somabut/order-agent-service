@@ -1,25 +1,20 @@
 package com.orderagentservice.order.service.auto
 
-import com.orderagentservice.global.model.dto.LogDto
-import com.orderagentservice.global.service.LogService
-import com.orderagentservice.jsonMapper
-import com.orderagentservice.logger
 import com.orderagentservice.order.model.AutoOrderContext
 import com.orderagentservice.order.model.dto.ActionPathDto
 import com.orderagentservice.order.model.dto.CoordinateDto
-import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.log.OrderProcessLog
 import com.orderagentservice.order.model.request.AutoOrderMenu
 import com.orderagentservice.order.model.request.AutoOrderOption
 import com.orderagentservice.order.model.type.NodeType
 import com.orderagentservice.order.service.NotificationService
-import com.orderagentservice.order.service.graph.GraphService
+import com.orderagentservice.order.service.graph.ui.UiGraphService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
 class AutoTaskExecutorImpl @Autowired constructor(
-    private val graphService: GraphService,
+    private val graphService: UiGraphService,
     private val notificationService: NotificationService,
     private val orderLogSender: OrderLogSender
 ) : AutoTaskExecutor {

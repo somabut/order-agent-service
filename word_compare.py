@@ -66,7 +66,7 @@ class KoreanSimilarityCalculator:
 
         return weighted_score
 
-    def find_best_match(self, target_word: str, candidate_words: list[tuple[int, int, str]]) -> dict:
+    def find_best_match(self, target_word: str, candidate_words: list[tuple[int, int, int, int, int, int, str]]) -> dict:
         """
         주어진 단어 리스트에서 가장 유사도 점수가 높은 단어 하나를 반환
 
@@ -84,18 +84,24 @@ class KoreanSimilarityCalculator:
         best_word = None
         best_score = 0.0
         best_x, best_y = -1, -1
+        best_min_x, best_min_y, best_max_x, best_max_y = -1, -1, -1, -1
 
-        for x, y, title in candidate_words:
+        for x, y, min_x, min_y, max_x, max_y, title in candidate_words:
             score = self._calculate_hybrid_similarity(target_word, title)
 
             if score > best_score:
                 best_score = score
                 best_word = title
                 best_x, best_y = x, y
+                best_min_x, best_min_y, best_max_x, best_max_y = min_x, min_y, max_x, max_y
 
         return {
             "x": best_x,
             "y": best_y,
+            "min_x": best_min_x,
+            "min_y": best_min_y,
+            "max_x": best_max_x,
+            "max_y": best_max_y,
             "word": best_word,
             "score": best_score
         }
@@ -113,4 +119,4 @@ class KoreanSimilarityCalculator:
             if score >= 0.7:
                 count += 1
 
-        return int(float(count) == len(need_list))
+        return int(float(count) / len(need_list) >= 0.8)

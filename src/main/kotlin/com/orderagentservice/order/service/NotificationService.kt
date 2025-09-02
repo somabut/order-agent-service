@@ -13,7 +13,6 @@ import com.orderagentservice.order.model.dto.KioskCaptureDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
-import java.io.File
 import java.util.UUID
 
 @Service
@@ -42,7 +41,7 @@ class NotificationService @Autowired constructor(
             kioskId = kioskId, commandId = commandId,
             fileBytes = content, contentType = imageType
         )
-        val captureDto = KioskCaptureDto(content = content, type = imageType, name = fileName)
+        val captureDto = KioskCaptureDto(content = content, type = imageType, url = fileName)
         notificationRepository.saveCaptureCommand(commandId, captureDto)
     }
 
@@ -136,16 +135,6 @@ class NotificationService @Autowired constructor(
         emitter.send(request)
         val result = waitOverlayCommand(commandId)
         return result
-    }
-
-    private fun isEmitterCompleted(emitter: SseEmitter): Boolean {
-        return try {
-            // 더미 데이터로 상태 확인
-            emitter.send(SseEmitter.event().name("heartbeat").data(""))
-            false
-        } catch (e: Exception) {
-            true
-        }
     }
 
     // 캡처 명령 대기

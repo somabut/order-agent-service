@@ -2,6 +2,7 @@ package com.orderagentservice.agent
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.orderagentservice.agent.model.dto.AgentActionDto
+import com.orderagentservice.agent.model.dto.AgentUiDto
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.agent.util.LlmManager
 import com.orderagentservice.jsonMapper
@@ -42,18 +43,20 @@ class PlaceAgent @Autowired constructor(
             9. Response logic:
                - If BOTH dine-in AND take-out UI are found: return both
                - If NEITHER can be found: return empty string
-               - Success: [{"title": "매장", "coordinate": [x, y]}, {"title": "포장", "coordinate": [x, y]}] (See the example below for more detailed formatting)
-               - Not found: [{"title": "", "coordinate": [-1, -1]}] (See the example below for more detailed formatting)
+               - Success: [{"title": "매장", "coordinate": [x, y], "bbox": [min_x, min_y, max_x, max_y]}, {"title": "포장", "coordinate": [x, y], "bbox": [min_x, min_y, max_x, max_y]}] 
+                 (See the example below for more detailed formatting)
+               - Not found: [{"title": "", "coordinate": [-1, -1], "bbox": [-1, -1, -1, -1]}] (See the example below for more detailed formatting)
             
             'goNext' is always false, 'score' is the accuracy score, 'coordinate' is the UI coordinate, 'title' is a string that follows Rule 5.
+            'bbox' must be from 'uiList'.
              
              One Example(
                 ui_list: [
-                    {"coordinate": [210, 364], "title": "결제하기"},
-                    {"coordinate": [67, 90], "title": "카페라떼 5400원-"},
-                    {"coordinate": [123, 87], "title": "먹고가기"},
-                    {"coordinate": [90, 456], "title": "카푸치노 6000원-"},
-                    {"coordinate": [120, 74], "title": "포장하기"}
+                    {"coordinate":[210, 364], "title":"결제하기", "bbox":[144, 354, 276, 374]},
+                    {"coordinate":[67, 90], "title":"카페라떼 5400원-", "bbox":[0, 80, 147, 100]},
+                    {"coordinate":[123, 87], "title":"먹고가기", "bbox":[51, 77, 195, 97]},
+                    {"coordinate":[90, 456], "title":"카푸치노 6000원-", "bbox":[0, 446, 138, 466]},
+                    {"coordinate":[120, 74], "title":"포장하기", "bbox":[36, 64, 204, 84]}
                 ]):
             ```json
             [
@@ -61,12 +64,14 @@ class PlaceAgent @Autowired constructor(
                     "goNext": "false",
                     "score": 1.0,
                     "coordinate": [123, 87],
+                    "bbox":[51, 77, 195, 97],
                     "title": "매장"
                 },
                 {
                     "goNext": "false",
                     "score": 1.0,
                     "coordinate": [120, 74],
+                    "bbox":[36, 64, 204, 84],
                     "title": "포장"
                 }
             ]
@@ -74,11 +79,11 @@ class PlaceAgent @Autowired constructor(
             
             Another Example(
                 ui_list: [
-                    {"coordinate": [210, 364], "title": "매장"},
-                    {"coordinate": [67, 90], "title": "카페라떼 5400원-"},
-                    {"coordinate": [123, 87], "title": "포장"},
-                    {"coordinate": [90, 456], "title": "카푸치노 6000원-"},
-                    {"coordinate": [120, 74], "title": "처음으"}
+                    {"coordinate":[210, 364], "title":"매장", "bbox":[186, 354, 234, 374]},
+                    {"coordinate":[67, 90], "title":"카페라떼 5400원-", "bbox":[0, 80, 147, 100]},
+                    {"coordinate":[123, 87], "title":"포장", "bbox":[99, 77, 147, 97]},
+                    {"coordinate":[90, 456], "title":"카푸치노 6000원-", "bbox":[0, 446, 138, 466]},
+                    {"coordinate":[120, 74], "title":"처음으", "bbox":[36, 64, 132, 84]}
                 ]):
             ```json
             [
@@ -86,12 +91,14 @@ class PlaceAgent @Autowired constructor(
                     "goNext": "false",
                     "score": 1.0,
                     "coordinate": [210, 364],
+                    "bbox":[186, 354, 234, 374],
                     "title": "매장"
                 },
                 {
                     "goNext": "false",
                     "score": 1.0,
                     "coordinate": [123, 87],
+                    "bbox":[99, 77, 147, 97],
                     "title": "포장"
                 }
             ]
@@ -99,11 +106,11 @@ class PlaceAgent @Autowired constructor(
             
             Another Example(
                 ui_list: [
-                    {"coordinate": [210, 364], "title": "결제하기"},
-                    {"coordinate": [67, 90], "title": "payco 적립"},
-                    {"coordinate": [123, 87], "title": "먹고가기"},
-                    {"coordinate": [90, 456], "title": "메뉴"},
-                    {"coordinate": [120, 74], "title": "번호조회"}
+                    {"coordinate":[210, 364], "title":"결제하기", "bbox":[144, 354, 276, 374]},
+                    {"coordinate":[67, 90], "title":"payco 적립", "bbox":[43, 80, 147, 100]},
+                    {"coordinate":[123, 87], "title":"먹고가기", "bbox":[51, 77, 195, 97]},
+                    {"coordinate":[90, 456], "title":"메뉴", "bbox":[66, 446, 114, 466]},
+                    {"coordinate":[120, 74], "title":"번호조회", "bbox":[96, 64, 168, 84]}
                 ]):
             ```json
             [
@@ -111,6 +118,7 @@ class PlaceAgent @Autowired constructor(
                     "goNext": "false",
                     "score": 0.9,
                     "coordinate": [-1, -1],
+                    "bbox": [-1, -1, -1, -1],
                     "title": ""
                 }
             ]

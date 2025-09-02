@@ -5,6 +5,10 @@ import com.orderagentservice.order.model.dto.CoordinateDto
 data class WordMatchDto(
     val x: Int,
     val y: Int,
+    val minX: Int,
+    val minY: Int,
+    val maxX: Int,
+    val maxY: Int,
     val title: String,
     val score: Double
 ) {

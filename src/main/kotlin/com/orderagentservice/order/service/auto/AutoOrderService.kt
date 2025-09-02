@@ -1,6 +1,5 @@
 package com.orderagentservice.order.service.auto
 
-import com.orderagentservice.global.service.LogService
 import com.orderagentservice.logger
 import com.orderagentservice.order.model.request.AutoOrderMenu
 import com.orderagentservice.order.model.request.AutoOrderRequest
@@ -9,16 +8,14 @@ import com.orderagentservice.jsonMapper
 import com.orderagentservice.order.model.AutoOrderContext
 import com.orderagentservice.order.model.AutoOrderResultDto
 import com.orderagentservice.order.model.log.OrderEndLog
-import com.orderagentservice.order.model.log.OrderProcessLog
 import com.orderagentservice.order.model.log.OrderStartLog
-import com.orderagentservice.order.model.type.NodeType
-import com.orderagentservice.order.service.graph.GraphService
+import com.orderagentservice.order.service.graph.ui.UiGraphService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
 class AutoOrderService @Autowired constructor(
-    private val graphService: GraphService,
+    private val graphService: UiGraphService,
     private val globalLogger: GlobalLogger,
     private val autoTaskExecutor: AutoTaskExecutor,
     private val orderLogSender: OrderLogSender,

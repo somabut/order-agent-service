@@ -9,7 +9,8 @@ data class GraphContext(
     var stationNodeId: String?,
     var currentCategory: String?,
     val history: MutableList<AgentActionDto>,
-    var imageName: String
+    var imageName: String,
+    var screenNodeId: String
 ) {
     companion object {
         fun toBasicContext(kioskId: String) = GraphContext(
@@ -19,7 +20,8 @@ data class GraphContext(
             stationNodeId = null,
             currentCategory = null,
             history = mutableListOf<AgentActionDto>(),
-            imageName = ""
+            imageName = "",
+            screenNodeId = ""
         )
     }
 }

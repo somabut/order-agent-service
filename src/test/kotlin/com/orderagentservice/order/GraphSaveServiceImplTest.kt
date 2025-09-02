@@ -2,7 +2,7 @@ package com.orderagentservice.order
 
 import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.dto.UiDto
-import com.orderagentservice.order.service.graph.GraphService
+import com.orderagentservice.order.service.graph.ui.UiGraphService
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -14,7 +14,7 @@ import org.springframework.data.neo4j.core.Neo4jClient
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
 class GraphSaveServiceImplTest @Autowired constructor(
-    private val graphService: GraphService,
+    private val graphService: UiGraphService,
     private val neo4jClient: Neo4jClient
 ) {
     private val testKioskId = "TEST-MOODTRBL"

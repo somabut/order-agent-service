@@ -1,15 +1,16 @@
 package com.orderagentservice.order.service.utg.menu
 
 import com.orderagentservice.agent.BackAgent
+import com.orderagentservice.agent.model.dto.AgentUiDto
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.service.LogService
-import com.orderagentservice.logger
+import com.orderagentservice.order.model.type.ExtractType
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.log.UtgProcessLog
 import com.orderagentservice.order.service.NotificationService
-import com.orderagentservice.order.service.graph.GraphService
+import com.orderagentservice.order.service.graph.ui.UiGraphService
 import com.orderagentservice.order.service.utg.UiDetectorManager
 import com.orderagentservice.order.service.utg.WordSimilarityService
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,7 +23,7 @@ class MenuActionExecutorImpl @Autowired constructor(
     private val nodeGenerator: MenuNodeGenerator,
     private val uiDetectorManager: UiDetectorManager,
     private val backAgent: BackAgent,
-    private val graphService: GraphService,
+    private val graphService: UiGraphService,
     private val logService: LogService
 ) : MenuActionExecutor {
 
@@ -31,15 +32,14 @@ class MenuActionExecutorImpl @Autowired constructor(
         menuDto: MenuInfoDto,
         uiList: List<UiComponentDto>
     ) {
-        val coordinate = wordSimilarityService.findBestMatch(menuDto.category, uiList)
-            .toCoordinateDto(menuDto.category)
+        val matchDto = wordSimilarityService.findBestMatch(menuDto.category, uiList)
 
         //노드 생성
-        val nodeId = nodeGenerator.createCategoryNode(coordinate, context)
+        val nodeId = nodeGenerator.createCategoryNode(matchDto, context)
         context.lastNodeId = nodeId
 
         //현재 카테고리 좌표 클릭
-        notificationService.sendActionCommand(context.kioskId, CoordinateDto(coordinate.x, coordinate.y, coordinate.title))
+        notificationService.sendActionCommand(context.kioskId, CoordinateDto(matchDto.x, matchDto.y, matchDto.title))
     }
 
     override fun selectMenu(
@@ -47,14 +47,13 @@ class MenuActionExecutorImpl @Autowired constructor(
         menuDto: MenuInfoDto,
         uiList: List<UiComponentDto>
     ): String {
-        val coordinate = wordSimilarityService.findBestMatch(menuDto.title, uiList)
-            .toCoordinateDto(menuDto.title)
+        val matchDto = wordSimilarityService.findBestMatch(menuDto.title, uiList)
 
         //노드 생성
-        val nodeId = nodeGenerator.createMenuNode(coordinate, context)
+        val nodeId = nodeGenerator.createMenuNode(matchDto, context)
 
         //현재 메뉴 좌표 클릭
-        notificationService.sendActionCommand(context.kioskId, CoordinateDto(coordinate.x, coordinate.y, coordinate.title))
+        notificationService.sendActionCommand(context.kioskId, CoordinateDto(matchDto.x, matchDto.y, matchDto.title))
 
         return nodeId
     }
@@ -65,14 +64,13 @@ class MenuActionExecutorImpl @Autowired constructor(
         menuNodeId: String,
     ) {
         //메뉴의 옵션 노드 추가
-        val llmOptList = uiDetectorManager.getUiComponents(context)
+        val llmOptList = uiDetectorManager.getUiComponents(context, ExtractType.SOM)
 
         for (opt in menuDto.options) {
-            val coordinate = wordSimilarityService.findBestMatch(opt, llmOptList)
-                .toCoordinateDto(opt)
+            val matchDto = wordSimilarityService.findBestMatch(opt, llmOptList)
 
             //노드 생성
-            nodeGenerator.createOptionNode(coordinate, menuNodeId, context)
+            nodeGenerator.createOptionNode(matchDto, menuNodeId, context)
         }
     }
 
@@ -84,7 +82,8 @@ class MenuActionExecutorImpl @Autowired constructor(
         val kioskId = context.kioskId
 
         //다시 원래 페이지로 돌아가야 하므로 backAgent를 통해 이전 페이지로 돌아가기
-        val backAction = backAgent.determineAction(uiList)
+        val agentUiList = uiList
+        val backAction = backAgent.determineAction(agentUiList)
 
         //노드 생성
         val backNodeId = nodeGenerator.createBackNode(backAction, menuNodeId, context)
@@ -124,7 +123,7 @@ class MenuActionExecutorImpl @Autowired constructor(
         }
 
         //다음으로 이동
-        val nextUiList = uiDetectorManager.getUiComponents(context)
+        val nextUiList = uiDetectorManager.getUiComponents(context, ExtractType.SOM)
         nodeId = selectBack(context, nodeId, nextUiList)
 
         return nodeId

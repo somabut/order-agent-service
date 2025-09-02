@@ -1,8 +1,8 @@
 package com.orderagentservice.order
 
 import com.orderagentservice.order.model.dto.UiDto
-import com.orderagentservice.order.repository.GraphRepository
-import com.orderagentservice.order.service.graph.GraphService
+import com.orderagentservice.order.repository.ui.UiGraphRepository
+import com.orderagentservice.order.service.graph.ui.UiGraphService
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,8 +11,8 @@ import org.springframework.data.neo4j.core.Neo4jClient
 
 @SpringBootTest
 class GraphRepositoryTest @Autowired constructor(
-    private val graphService: GraphService,
-    private val graphRepository: GraphRepository,
+    private val graphService: UiGraphService,
+    private val graphRepository: UiGraphRepository,
     private val neo4jClient: Neo4jClient
 ) {
     @Test

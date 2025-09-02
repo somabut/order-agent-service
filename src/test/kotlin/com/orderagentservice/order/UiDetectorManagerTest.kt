@@ -1,5 +1,6 @@
 package com.orderagentservice.order
 
+import com.orderagentservice.order.model.type.ExtractType
 import com.orderagentservice.order.service.utg.UiDetectorManager
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,13 +16,21 @@ class UiDetectorManagerTest @Autowired constructor(
         //given: 이미지를 가져옴
         val imagePath = "/Users/moodtrbl/IdeaProjects/order-agent-service/src/test/resources/burger_main.png"
         val imageFile = File(imagePath)
+        val imageBytes = imageFile.readBytes()
+
 
         //when: ui extractor에게 이미지 파싱을 요청한다
-        val response = uiDetectorManager.queryUiExtractor(imageFile, "extract-ui")
+        val response = uiDetectorManager.queryUiExtractor(imageBytes, "image/png", "extract-ui")
 //        val response = uiDetectorManager.queryUiExtractor(imageFile, "ocr")
 
         //then: 파싱이 완료된다.
-        for (ele in response) {
+        for (ele in response.uiComponents) {
+            println(ele)
+        }
+        for (ele in response.ocrComponents) {
+            println(ele)
+        }
+        for (ele in response.yoloComponents) {
             println(ele)
         }
     }

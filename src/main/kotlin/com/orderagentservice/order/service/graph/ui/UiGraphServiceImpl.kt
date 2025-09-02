@@ -1,4 +1,4 @@
-package com.orderagentservice.order.service.graph
+package com.orderagentservice.order.service.graph.ui
 
 import com.orderagentservice.logger
 import com.orderagentservice.order.exception.NodeNotFoundException
@@ -8,7 +8,7 @@ import com.orderagentservice.order.model.type.SpecialNodeType
 import com.orderagentservice.order.model.dto.ActionPathDto
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.entity.UiEntity
-import com.orderagentservice.order.repository.GraphRepository
+import com.orderagentservice.order.repository.ui.UiGraphRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
@@ -16,14 +16,14 @@ import org.springframework.transaction.annotation.Transactional
 
 @Profile("!test")
 @Service
-class GraphServiceImpl @Autowired constructor(
-    private val graphRepository: GraphRepository
-) : GraphService {
+class UiGraphServiceImpl @Autowired constructor(
+    private val graphRepository: UiGraphRepository
+) : UiGraphService {
     private val log = logger()
 
     @Transactional
     override fun saveNode(uiDto: UiDto): UiEntity {
-        log.info("노드 저장. ${uiDto.title}")
+        log.info("UI 노드 저장. ${uiDto.title}")
         val uiEntity = graphRepository.save(uiDto.toEntity())
         return uiEntity
     }
@@ -36,6 +36,8 @@ class GraphServiceImpl @Autowired constructor(
             NodeRelationType.HAS_TO -> graphRepository.saveHasRelation(sourceId, targetId)
             NodeRelationType.OPT_TO -> graphRepository.saveOptRelation(sourceId, targetId)
             NodeRelationType.BACK_TO -> graphRepository.saveBackRelation(sourceId, targetId)
+            NodeRelationType.MATCH_TO -> graphRepository.saveMathRelation(sourceId, targetId)
+            NodeRelationType.IMAGE_TO -> graphRepository.saveImageRelation(sourceId, targetId)
             else -> NodeRelationType.NONE
         }
     }

@@ -12,7 +12,7 @@ import com.orderagentservice.order.model.log.UtgEndLog
 import com.orderagentservice.order.model.log.UtgStartLog
 import com.orderagentservice.order.model.type.NodeType
 import com.orderagentservice.order.model.type.UtgType
-import com.orderagentservice.order.service.graph.GraphService
+import com.orderagentservice.order.service.graph.ui.UiGraphService
 import com.orderagentservice.order.service.utg.place.PlaceUtgService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional
 class MenuUtgService @Autowired constructor(
     private val menuNavigator: MenuNavigator,
     private val placeUtgService: PlaceUtgService,
-    private val graphService: GraphService,
+    private val graphService: UiGraphService,
     private val logService: LogService,
     private val usageTracker: UsageTracker
 )  {

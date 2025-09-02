@@ -22,8 +22,9 @@ class NotificationServiceTest @Autowired constructor(
         val method = notificationService.javaClass.getDeclaredMethod("findAvailableKey", String::class.java)
         method.isAccessible = true
         val dto = KioskCaptureDto(
-            file = File("moodTRBL"),
-            name = ""
+            content = byteArrayOf(),
+            url = "",
+            type = ""
         )
         notificationRepository.saveCaptureCommand("moodTRBL", dto)
 
