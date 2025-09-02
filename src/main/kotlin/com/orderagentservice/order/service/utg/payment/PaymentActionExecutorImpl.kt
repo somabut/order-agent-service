@@ -17,9 +17,7 @@ class PaymentActionExecutorImpl(
     private val notificationService: NotificationService
 ) : PaymentActionExecutor {
     override fun selectPayment(context: GraphContext): Boolean {
-        val llmUiList = uiDetectorManager.getUiComponents(context, ExtractType.OCR).map {
-            AgentUiDto(it.x, it.y, it.title)
-        }
+        val llmUiList = uiDetectorManager.getUiComponents(context, ExtractType.OCR)
         val action = paymentAgent.determineAction(llmUiList)
 
         //노드 저장

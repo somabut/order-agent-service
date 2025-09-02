@@ -15,16 +15,16 @@ class PlaceAgentTest @Autowired constructor(
     fun `포장 매장을 선택하는 UI를 찾아낸다`() {
         //given: ui list
         val uiList = listOf(
-            AgentUiDto(x = 145, y = 310, title = "매장"),
-            AgentUiDto(x = 212, y = 485, title = "너겟킹 7900원"),
-            AgentUiDto(x = 398, y = 605, title = "리얼 어니언링 8200원"),
-            AgentUiDto(x = 125, y = 732, title = "포장"),
-            AgentUiDto(x = 362, y = 298, title = "코카콜라 7500원"),
-            AgentUiDto(x = 274, y = 847, title = "코카콜라 제로 9500원"),
-            AgentUiDto(x = 458, y = 415, title = "취소 8900원"),
-            AgentUiDto(x = 107, y = 921, title = "미밋메이드 오렌지 8800원"),
-            AgentUiDto(x = 376, y = 534, title = "스프라이트 8500원"),
-            AgentUiDto(x = 111, y = 534, title = "처음으")
+            UiComponentDto(x = 145, y = 310, title = "매장", minX = 7, maxX = 2, minY = 2, maxY = 2),
+            UiComponentDto(x = 212, y = 485, title = "너겟킹 7900원", minX = 7, maxX = 2, minY = 2, maxY = 2),
+            UiComponentDto(x = 398, y = 605, title = "리얼 어니언링 8200원", minX = 7, maxX = 2, minY = 2, maxY = 2),
+            UiComponentDto(x = 125, y = 732, title = "포장", minX = 7, maxX = 2, minY = 2, maxY = 2),
+            UiComponentDto(x = 362, y = 298, title = "코카콜라 7500원", minX = 7, maxX = 2, minY = 2, maxY = 2),
+            UiComponentDto(x = 274, y = 847, title = "코카콜라 제로 9500원", minX = 7, maxX = 2, minY = 2, maxY = 2),
+            UiComponentDto(x = 458, y = 415, title = "취소 8900원", minX = 7, maxX = 2, minY = 2, maxY = 2),
+            UiComponentDto(x = 107, y = 921, title = "미밋메이드 오렌지 8800원", minX = 7, maxX = 2, minY = 2, maxY = 2),
+            UiComponentDto(x = 376, y = 534, title = "스프라이트 8500원", minX = 7, maxX = 2, minY = 2, maxY = 2),
+            UiComponentDto(x = 111, y = 534, title = "처음으", minX = 7, maxX = 2, minY = 2, maxY = 2)
         )
 
         //when: llm에게 질의
@@ -51,17 +51,18 @@ class PlaceAgentTest @Autowired constructor(
     fun `포장 매장 UI가 없으면 미리 정의된 응답을 반환한다`() {
         //given: ui list
         val uiList = listOf(
-            AgentUiDto(x = 212, y = 485, title = "완료"),
-            AgentUiDto(x = 398, y = 605, title = "주문하기"),
-            AgentUiDto(x = 362, y = 298, title = "적립하기"),
-            AgentUiDto(x = 274, y = 847, title = "카드결제"),
-            AgentUiDto(x = 458, y = 415, title = "취소 8900원"),
-            AgentUiDto(x = 107, y = 921, title = "다음으로"),
-            AgentUiDto(x = 376, y = 534, title = "스프라이트 8500원")
+            UiComponentDto(x = 212, y = 485, title = "완료", minX = 7, maxX = 2, minY = 2, maxY = 2),
+            UiComponentDto(x = 398, y = 605, title = "주문하기", minX = 7, maxX = 2, minY = 2, maxY = 2),
+            UiComponentDto(x = 362, y = 298, title = "적립하기", minX = 7, maxX = 2, minY = 2, maxY = 2),
+            UiComponentDto(x = 274, y = 847, title = "카드결제", minX = 7, maxX = 2, minY = 2, maxY = 2),
+            UiComponentDto(x = 458, y = 415, title = "취소 8900원", minX = 7, maxX = 2, minY = 2, maxY = 2),
+            UiComponentDto(x = 107, y = 921, title = "다음으로", minX = 7, maxX = 2, minY = 2, maxY = 2),
+            UiComponentDto(x = 376, y = 534, title = "스프라이트 8500원", minX = 7, maxX = 2, minY = 2, maxY = 2)
         )
 
         //when: llm에게 질의
         val response = placeAgent.determineAction(uiList)
+        println(response)
 
         //then: 올바른 액션 반환
         assertThat(response.size).isEqualTo(1)

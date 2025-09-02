@@ -29,9 +29,7 @@ class PlaceUtgService @Autowired constructor(
     @Transactional
     fun initializeGraph(context: GraphContext) {
         val kioskId = context.kioskId
-        val uiList = uiDetectorManager.getUiComponents(context, ExtractType.SOM).map {
-            AgentUiDto(it.x, it.y, it.title)
-        }
+        val uiList = uiDetectorManager.getUiComponents(context, ExtractType.SOM)
         val action = placeAgent.determineAction(uiList)
 
         if (action.size <= 1) {

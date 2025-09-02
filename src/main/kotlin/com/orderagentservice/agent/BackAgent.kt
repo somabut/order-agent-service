@@ -17,7 +17,7 @@ class BackAgent @Autowired constructor(
 ) {
     private val log = logger()
 
-    fun determineAction(uiList: List<AgentUiDto>): AgentBackDto {
+    fun determineAction(uiList: List<UiComponentDto>): AgentBackDto {
         val prompt = getPrompt(uiList)
         val json = llmManager.query(prompt)
         try {
@@ -28,7 +28,7 @@ class BackAgent @Autowired constructor(
         }
     }
 
-    private fun getPrompt(uiList: List<AgentUiDto>): String {
+    private fun getPrompt(uiList: List<UiComponentDto>): String {
         val prompt = """
             You are a professional at kiosks who complete shopping baskets.
             All menu selections are complete. Find the appropriate UI element from the given UI list to complete adding items to the cart.
@@ -54,69 +54,74 @@ class BackAgent @Autowired constructor(
                 Condition: Does it not fall under Rule A, and does the list have UI elements that meaningfully match one of "완료", "다음", "확인", and "선택"?
                 Action: Select one of them.
             
-            'score' is the accuracy score, 'coordinate' and 'tittle' must be on the ui list.
+            'score' is the accuracy score, 'coordinate', 'bbox' and 'tittle' must be on the ui list.
             
             One Example(
                 ui list: [
-                    {"coordinate": [210, 364], "title": "샷 추가5000원-"},
-                    {"coordinate": [67, 90], "title": "망고 추가 5400원-"},
-                    {"coordinate": [123, 87], "title": "스몰 5000원-"},
-                    {"coordinate": [90, 456], "title": "카트 담기"},
-                    {"coordinate": [90, 456], "title": "취소"}
-                    {"coordinate": [120, 74], "title": "라지 5000원-"}
+                    {"coordinate":[210, 364], "title":"샷 추가5000원-", "bbox":[138, 354, 282, 374]},
+                    {"coordinate":[67, 90], "title":"망고 추가 5400원-", "bbox":[-13, 80, 147, 100]},
+                    {"coordinate":[123, 87], "title":"스몰 5000원-", "bbox":[75, 77, 171, 97]},
+                    {"coordinate":[90, 456], "title":"카트 담기", "bbox":[66, 446, 114, 466]},
+                    {"coordinate":[90, 456], "title":"취소", "bbox":[66, 446, 114, 466]},
+                    {"coordinate":[120, 74], "title":"라지 5000원-", "bbox":[72, 64, 168, 84]}
                 ]):
             ```json
             {
                 "score": 1.0,
                 "coordinate": [90, 456],
+                "bbox":[66, 446, 114, 466],
                 "title": "카트 담기"
             }
             ```
             
             Another Example(
                 ui list: [
-                    {"coordinate": [210, 364], "title": "면 추가 5000원-"},
-                    {"coordinate": [67, 90], "title": "밥 추가 5400원-"},
-                    {"coordinate": [123, 87], "title": "선택완료"},
-                    {"coordinate": [123, 87], "title": "결제하기"},
-                    {"coordinate": [788, 43], "title": "취소"},
-                    {"coordinate": [129, 74], "title": "차슈 추가 5000원-"}
+                    {"coordinate":[210, 364], "title":"면 추가 5000원-", "bbox":[138, 354, 282, 374]},
+                    {"coordinate":[67, 90], "title":"밥 추가 5400원-", "bbox":[-13, 80, 147, 100]},
+                    {"coordinate":[123, 87], "title":"선택완료", "bbox":[75, 77, 171, 97]},
+                    {"coordinate":[123, 87], "title":"결제하기", "bbox":[75, 77, 171, 97]},
+                    {"coordinate":[788, 43], "title":"취소", "bbox":[764, 33, 812, 63]},
+                    {"coordinate":[129, 74], "title":"차슈 추가 5000원-", "bbox":[57, 64, 201, 84]}
+]
                 ]):
             ```json
             {
                 "score": 1.0,
                 "coordinate": [123, 87],
+                "bbox":[75, 77, 171, 97],
                 "title": "선택완료"
             }
             ```
             
             Another Example(
                 ui list: [
-                    {"coordinate": [210, 364], "title": "감자튀김 5000원-"},
-                    {"coordinate": [67, 90], "title": "제로콜라 5400원-"},
-                    {"coordinate": [123, 87], "title": "사이다 5000원-"},
-                    {"coordinate": [120, 74], "title": "다음으로"},
-                    {"coordinate": [21, 78], "title": "취소"}
+                    {"coordinate":[210, 364], "title":"감자튀김 5000원-", "bbox":[138, 354, 282, 374]},
+                    {"coordinate":[67, 90], "title":"제로콜라 5400원-", "bbox":[-13, 80, 147, 100]},
+                    {"coordinate":[123, 87], "title":"사이다 5000원-", "bbox":[51, 77, 195, 97]},
+                    {"coordinate":[120, 74], "title":"다음으로", "bbox":[36, 64, 204, 84]},
+                    {"coordinate":[21, 78], "title":"취소", "bbox":[-3, 68, 45, 88]}
                 ]):
             ```json
             {
                 "score": 0.9,
                 "coordinate": [120, 74],
+                "bbox":[36, 64, 204, 84],
                 "title": "다음으로"
             }
             ```
             
             Another Example(
                 ui list: [
-                    {"coordinate": [210, 364], "title": "감자튀김 5000원-"},
-                    {"coordinate": [67, 90], "title": "제로콜라 5400원-"},
-                    {"coordinate": [123, 87], "title": "주문하기"},
-                    {"coordinate": [21, 78], "title": "확인"}
+                    {"coordinate":[210, 364], "title":"감자튀김 5000원-", "bbox":[138, 354, 282, 374]},
+                    {"coordinate":[67, 90], "title":"제로콜라 5400원-", "bbox":[-13, 80, 147, 100]},
+                    {"coordinate":[123, 87], "title":"주문하기", "bbox":[51, 77, 195, 97]},
+                    {"coordinate":[21, 78], "title":"확인", "bbox":[-3, 68, 45, 88]}
                 ]):
             ```json
             {
                 "score": 0.8,
                 "coordinate": [21, 78],
+                "bbox":[-3, 68, 45, 88],
                 "title": "확인"
             }
             ```

@@ -7,18 +7,8 @@ import com.orderagentservice.logger
 import com.orderagentservice.order.exception.UiExtractException
 import com.orderagentservice.order.model.type.ExtractType
 import com.orderagentservice.order.model.GraphContext
-import com.orderagentservice.order.model.dto.DetectorUiComponentDto
-import com.orderagentservice.order.model.dto.KioskCaptureDto
-import com.orderagentservice.order.model.dto.OcrDto
-import com.orderagentservice.order.model.dto.ScreenDto
-import com.orderagentservice.order.model.dto.SomDto
-import com.orderagentservice.order.model.dto.YoloDto
 import com.orderagentservice.order.model.response.DetectorResponse
 import com.orderagentservice.order.service.NotificationService
-import com.orderagentservice.order.service.graph.ocr.OcrGraphService
-import com.orderagentservice.order.service.graph.screen.ScreenGraphService
-import com.orderagentservice.order.service.graph.som.SomGraphService
-import com.orderagentservice.order.service.graph.yolo.YoloGraphService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.core.env.Environment
@@ -36,10 +26,7 @@ import org.springframework.web.client.RestTemplate
 class UiDetectorManager @Autowired constructor(
     private val env: Environment,
     private val notificationService: NotificationService,
-    private val screenGraphService: ScreenGraphService,
-    private val yoloGraphService: YoloGraphService,
-    private val ocrGraphService: OcrGraphService,
-    private val somGraphService: SomGraphService
+    private val screenNodeGenerator: ScreenNodeGenerator
 ) {
     private val log = logger()
 
@@ -61,7 +48,7 @@ class UiDetectorManager @Autowired constructor(
         context.imageName = captureDto.url
 
         //노드 생성
-        generateNode(
+        screenNodeGenerator.generateNode(
             context = context, captureDto = captureDto,
             uiComponents = uiElements, ocrComponents = ocrElements, yoloComponents = yoloElements,
         )
@@ -76,7 +63,6 @@ class UiDetectorManager @Autowired constructor(
 
             val pixelCoordinate = ele.bbox.coordinate
 
-            //TODO(여기서 중앙좌표가 아닌 바운딩박스 좌표로 반환)
             val cord = pixelCoordinate.getCenter()
             llmUiList.add(
                 UiComponentDto(
@@ -129,52 +115,5 @@ class UiDetectorManager @Autowired constructor(
             requestCount++
         }
         throw UiExtractException()
-    }
-
-    private fun generateNode(
-        context: GraphContext,
-        captureDto: KioskCaptureDto,
-        uiComponents: List<DetectorUiComponentDto>,
-        ocrComponents: List<DetectorUiComponentDto>,
-        yoloComponents: List<DetectorUiComponentDto>,
-    ) {
-        val screenNodeId = screenGraphService.saveNode(
-            ScreenDto(
-                imageUrl = captureDto.url
-            )
-        ).id
-
-        context.screenNodeId = screenNodeId
-
-        //screen 노드에 박스 연결
-        for (uiComponent in uiComponents) {
-            val somNodeId = somGraphService.saveNode(
-                SomDto(
-                    minX = uiComponent.bbox.coordinate.minX, minY = uiComponent.bbox.coordinate.minY,
-                    maxX = uiComponent.bbox.coordinate.maxX, maxY = uiComponent.bbox.coordinate.maxY,
-                    content = uiComponent.contents
-                )
-            ).id
-            screenGraphService.saveRel(screenNodeId, somNodeId)
-        }
-        for (ocrComponent in ocrComponents) {
-            val ocrNodeId = ocrGraphService.saveNode(
-                OcrDto(
-                    minX = ocrComponent.bbox.coordinate.minX, minY = ocrComponent.bbox.coordinate.minY,
-                    maxX = ocrComponent.bbox.coordinate.maxX, maxY = ocrComponent.bbox.coordinate.maxY,
-                    content = ocrComponent.contents
-                )
-            ).id
-            screenGraphService.saveRel(screenNodeId, ocrNodeId)
-        }
-        for (yoloComponent in yoloComponents) {
-            val yoloNode = yoloGraphService.saveNode(
-                YoloDto(
-                    minX = yoloComponent.bbox.coordinate.minX, minY = yoloComponent.bbox.coordinate.minY,
-                    maxX = yoloComponent.bbox.coordinate.maxX, maxY = yoloComponent.bbox.coordinate.maxY,
-                )
-            ).id
-            screenGraphService.saveRel(screenNodeId, yoloNode)
-        }
     }
 }

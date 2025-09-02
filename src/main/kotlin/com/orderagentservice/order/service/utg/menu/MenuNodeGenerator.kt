@@ -11,6 +11,7 @@ import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.log.NodeSaveLog
 import com.orderagentservice.order.model.type.NodeType
 import com.orderagentservice.order.service.graph.screen.ScreenGraphService
+import com.orderagentservice.order.service.graph.som.SomGraphService
 import com.orderagentservice.order.service.graph.ui.UiGraphService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -19,23 +20,24 @@ import org.springframework.stereotype.Component
 class MenuNodeGenerator @Autowired constructor(
     private val uiGraphService: UiGraphService,
     private val logService: LogService,
-    private val screenGraphService: ScreenGraphService
+    private val screenGraphService: ScreenGraphService,
+    private val somGraphService: SomGraphService,
 ) {
-    fun createCategoryNode(coordinate: CoordinateDto, context: GraphContext): String {
+    fun createCategoryNode(matchDto: WordMatchDto, context: GraphContext): String {
         logService.printLog(
             NodeSaveLog(
                 kioskId = context.kioskId,
                 nodeType = NodeType.CATEGORY,
-                x = coordinate.x, y = coordinate.y,
-                title = coordinate.title, imageName = context.imageName
+                x = matchDto.x, y = matchDto.y,
+                title = matchDto.title, imageName = context.imageName
             )
         )
 
         val node = uiGraphService.saveNode(
             UiDto(
                 isNext = true,
-                x = coordinate.x, y = coordinate.y,
-                title = coordinate.title,
+                x = matchDto.x, y = matchDto.y,
+                title = matchDto.title,
                 kioskId = context.kioskId
             )
         )
@@ -43,43 +45,54 @@ class MenuNodeGenerator @Autowired constructor(
         uiGraphService.saveRel(context.stationNodeId!!, node.id, NodeRelationType.PATH_TO)
         uiGraphService.saveRel(node.id, context.stationNodeId!!, NodeRelationType.PATH_TO)
 
-        screenGraphService.saveRel(node.id, context.screenNodeId)
+        //match 노드와 관계, screen 노드와 관계 연결
+        val somNodeId = somGraphService.findNode(
+            minX = matchDto.minX, minY = matchDto.minY,
+            maxX = matchDto.maxX, maxY = matchDto.maxY,
+            title = matchDto.title
+        )
+        uiGraphService.saveRel(node.id, somNodeId, NodeRelationType.MATCH_TO)
+        uiGraphService.saveRel(node.id, context.screenNodeId, NodeRelationType.IMAGE_TO)
 
         context.currentCategory = node.title
         context.lastNodeId = node.id
-        context.history.add(node.toAgentActionDto())
 
         return node.id
     }
 
-    fun createMenuNode(coordinate: CoordinateDto, context: GraphContext): String {
+    fun createMenuNode(matchDto: WordMatchDto, context: GraphContext): String {
         logService.printLog(
             NodeSaveLog(
                 kioskId = context.kioskId,
                 nodeType = NodeType.MENU,
-                x = coordinate.x, y = coordinate.y,
-                title = coordinate.title, imageName = context.imageName
+                x = matchDto.x, y = matchDto.y,
+                title = matchDto.title, imageName = context.imageName
             )
         )
         val node = uiGraphService.saveNode(
             UiDto(
                 isNext = false,
-                x = coordinate.x, y = coordinate.y,
-                title = coordinate.title,
+                x = matchDto.x, y = matchDto.y,
+                title = matchDto.title,
                 kioskId = context.kioskId
             )
         )
         uiGraphService.saveRel(context.lastNodeId!!, node.id, NodeRelationType.HAS_TO)
 
-        screenGraphService.saveRel(node.id, context.screenNodeId)
-
-        context.history.add(node.toAgentActionDto())
+        //match 노드와 관계, screen 노드와 관계 연결
+        val somNodeId = somGraphService.findNode(
+            minX = matchDto.minX, minY = matchDto.minY,
+            maxX = matchDto.maxX, maxY = matchDto.maxY,
+            title = matchDto.title
+        )
+        uiGraphService.saveRel(node.id, somNodeId, NodeRelationType.MATCH_TO)
+        uiGraphService.saveRel(node.id, context.screenNodeId, NodeRelationType.IMAGE_TO)
 
         return node.id
     }
 
     fun createOptionNode(
-        coordinate: CoordinateDto,
+        matchDto: WordMatchDto,
         menuNodeId: String,
         context: GraphContext
     ) {
@@ -87,23 +100,28 @@ class MenuNodeGenerator @Autowired constructor(
             NodeSaveLog(
                 kioskId = context.kioskId,
                 nodeType = NodeType.OPTION,
-                x = coordinate.x, y = coordinate.y,
-                title = coordinate.title, imageName = context.imageName
+                x = matchDto.x, y = matchDto.y,
+                title = matchDto.title, imageName = context.imageName
             )
         )
-        val optEntity = uiGraphService.saveNode(
+        val node = uiGraphService.saveNode(
             UiDto(
                 isNext = false,
-                x = coordinate.x, y = coordinate.y,
-                title = coordinate.title,
+                x = matchDto.x, y = matchDto.y,
+                title = matchDto.title,
                 kioskId = context.kioskId
             )
         )
-        uiGraphService.saveRel(menuNodeId, optEntity.id, NodeRelationType.OPT_TO)
+        uiGraphService.saveRel(menuNodeId, node.id, NodeRelationType.OPT_TO)
 
-        screenGraphService.saveRel(optEntity.id, context.screenNodeId)
-
-        context.history.add(optEntity.toAgentActionDto())
+        //match 노드와 관계, screen 노드와 관계 연결
+        val somNodeId = somGraphService.findNode(
+            minX = matchDto.minX, minY = matchDto.minY,
+            maxX = matchDto.maxX, maxY = matchDto.maxY,
+            title = matchDto.title
+        )
+        uiGraphService.saveRel(node.id, somNodeId, NodeRelationType.MATCH_TO)
+        uiGraphService.saveRel(node.id, context.screenNodeId, NodeRelationType.IMAGE_TO)
     }
 
     fun createBackNode(
@@ -111,8 +129,8 @@ class MenuNodeGenerator @Autowired constructor(
         menuNodeId: String,
         context: GraphContext
     ): String {
-        val x = action.coordinate[0]
-        val y = action.coordinate[1]
+        val (x, y) = action.coordinate
+        val (minX, minY, maxX, maxY) = action.bbox
         logService.printLog(
             NodeSaveLog(
                 kioskId = context.kioskId,
@@ -121,7 +139,7 @@ class MenuNodeGenerator @Autowired constructor(
                 title = action.title, imageName = context.imageName
             )
         )
-        val backEntity = uiGraphService.saveNode(
+        val node = uiGraphService.saveNode(
             UiDto(
                 isNext = false,
                 x = x, y = y,
@@ -129,13 +147,18 @@ class MenuNodeGenerator @Autowired constructor(
                 kioskId = context.kioskId
             )
         )
-        uiGraphService.saveRel(menuNodeId, backEntity.id, NodeRelationType.BACK_TO)
+        uiGraphService.saveRel(menuNodeId, node.id, NodeRelationType.BACK_TO)
 
-        screenGraphService.saveRel(backEntity.id, context.screenNodeId)
+        //match 노드와 관계, screen 노드와 관계 연결
+        val somNodeId = somGraphService.findNode(
+            minX = minX, minY = minY,
+            maxX = maxX, maxY = maxY,
+            title = action.title
+        )
+        uiGraphService.saveRel(node.id, somNodeId, NodeRelationType.MATCH_TO)
+        uiGraphService.saveRel(node.id, context.screenNodeId, NodeRelationType.IMAGE_TO)
 
-        context.history.add(backEntity.toAgentActionDto())
-
-        return backEntity.id
+        return node.id
     }
 
     fun createModalNode(
@@ -161,10 +184,14 @@ class MenuNodeGenerator @Autowired constructor(
         )
         uiGraphService.saveRel(menuNodeId, node.id, NodeRelationType.HAS_TO)
 
-        screenGraphService.saveRel(node.id, context.screenNodeId)
-
-        context.history.add(node.toAgentActionDto())
-
+        //match 노드와 관계, screen 노드와 관계 연결
+        val somNodeId = somGraphService.findNode(
+            minX = matchDto.minX, minY = matchDto.minY,
+            maxX = matchDto.maxX, maxY = matchDto.maxY,
+            title = matchDto.title
+        )
+        uiGraphService.saveRel(node.id, somNodeId, NodeRelationType.MATCH_TO)
+        uiGraphService.saveRel(node.id, context.screenNodeId, NodeRelationType.IMAGE_TO)
         return node.id
     }
 }

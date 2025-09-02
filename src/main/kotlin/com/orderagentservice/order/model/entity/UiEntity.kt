@@ -45,10 +45,11 @@ class UiEntity(
     @Relationship(type = "BACK_TO", direction = Relationship.Direction.OUTGOING)
     val backTo: Set<UiEntity>? = null,
 ) {
-    fun toAgentActionDto() = AgentActionDto(
+    fun toAgentActionDto(minX: Int, minY: Int, maxX: Int, maxY: Int) = AgentActionDto(
         goNext = isNext,
         score = 0.0F,
         coordinate = listOf(x, y),
+        bbox = listOf(minX, minY, maxX, maxY),
         title = title
     )
 }

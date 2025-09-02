@@ -9,6 +9,8 @@ data class UiComponentDto(
     val maxY: Int,
     val title: String
 ) {
+    override fun toString(): String = "{\"coordinate\": [$x, $y], \"title\": \"$title\", \"bbox\": [$minX, $minY, $maxX, $maxY]}"
+
     fun toAgentDto() = AgentUiDto(
         x = x, y = y,
         title = title
