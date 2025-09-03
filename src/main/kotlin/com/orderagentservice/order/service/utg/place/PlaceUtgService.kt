@@ -62,6 +62,7 @@ class PlaceUtgService @Autowired constructor(
 
             //match 노드와 관계, screen 노드와 관계 연결
             screenNodeGenerator.linkNode(
+                kioskId = context.kioskId,
                 nodeId = node.id, screenNodeId = context.screenNodeId,
                 SomParams(
                     minX = minX, minY = minY,
