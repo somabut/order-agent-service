@@ -5,4 +5,5 @@ import com.orderagentservice.order.model.entity.OcrEntity
 
 interface OcrGraphService {
     fun saveNode(ocrDto: OcrDto): OcrEntity
+    fun findNode(kioskId: String, minX: Int, minY: Int, maxX: Int, maxY: Int, title: String): String
 }

@@ -5,13 +5,11 @@ import com.orderagentservice.global.model.dto.WordMatchDto
 import com.orderagentservice.global.service.LogService
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.type.NodeRelationType
-import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
-import com.orderagentservice.order.model.dto.SomParams
+import com.orderagentservice.order.model.dto.UiComponentParams
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.log.NodeSaveLog
 import com.orderagentservice.order.model.type.NodeType
-import com.orderagentservice.order.service.graph.screen.ScreenGraphService
 import com.orderagentservice.order.service.graph.som.SomGraphService
 import com.orderagentservice.order.service.graph.ui.UiGraphService
 import com.orderagentservice.order.service.utg.ScreenNodeGenerator
@@ -51,7 +49,7 @@ class MenuNodeGenerator @Autowired constructor(
         screenNodeGenerator.linkNode(
             kioskId = context.kioskId,
             nodeId = node.id, screenNodeId = context.screenNodeId,
-            SomParams(
+            UiComponentParams(
                 minX = matchDto.minX, minY = matchDto.minY,
                 maxX = matchDto.maxX, maxY = matchDto.maxY,
                 title = matchDto.title
@@ -87,7 +85,7 @@ class MenuNodeGenerator @Autowired constructor(
         screenNodeGenerator.linkNode(
             kioskId = context.kioskId,
             nodeId = node.id, screenNodeId = context.screenNodeId,
-            SomParams(
+            UiComponentParams(
                 minX = matchDto.minX, minY = matchDto.minY,
                 maxX = matchDto.maxX, maxY = matchDto.maxY,
                 title = matchDto.title
@@ -125,7 +123,7 @@ class MenuNodeGenerator @Autowired constructor(
         screenNodeGenerator.linkNode(
             kioskId = context.kioskId,
             nodeId = node.id, screenNodeId = context.screenNodeId,
-            SomParams(
+            UiComponentParams(
                 minX = matchDto.minX, minY = matchDto.minY,
                 maxX = matchDto.maxX, maxY = matchDto.maxY,
                 title = matchDto.title
@@ -162,7 +160,7 @@ class MenuNodeGenerator @Autowired constructor(
         screenNodeGenerator.linkNode(
             kioskId = context.kioskId,
             nodeId = node.id, screenNodeId = context.screenNodeId,
-            SomParams(
+            UiComponentParams(
                 minX = minX, minY = minY,
                 maxX = maxX, maxY = maxY,
                 title = action.title
@@ -199,7 +197,7 @@ class MenuNodeGenerator @Autowired constructor(
         screenNodeGenerator.linkNode(
             kioskId = context.kioskId,
             nodeId = node.id, screenNodeId = context.screenNodeId,
-            SomParams(
+            UiComponentParams(
                 minX = matchDto.minX, minY = matchDto.minY,
                 maxX = matchDto.maxX, maxY = matchDto.maxY,
                 title = matchDto.title
