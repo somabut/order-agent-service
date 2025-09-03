@@ -164,3 +164,5 @@
 {"@timestamp":"2025-09-03T22:36:28.3737153+09:00","level":"INFO","logger_name":"com.orderagentservice.agent.util.LlmManager","message":"claude-sonnet-4-20250514: [2299]의 토큰을 사용했습니다."}
 {"@timestamp":"2025-09-03T22:36:31.1915115+09:00","level":"INFO","logger_name":"com.orderagentservice.agent.util.LlmManager","message":"claude-sonnet-4-20250514: [2261]의 토큰을 사용했습니다."}
 {"@timestamp":"2025-09-03T22:36:32.2126977+09:00","level":"INFO","logger_name":"org.neo4j.driver.internal.InternalDriver","message":"Closing driver instance 1706139228"}
+{"@timestamp":"2025-09-03T23:44:11.6396673+09:00","level":"INFO","logger_name":"com.orderagentservice.OrderAgentServiceApplicationKt","message":"Starting OrderAgentServiceApplicationKt using Java 21.0.6 with PID 530084 (C:\\Users\\hachi\\IdeaProjects\\OrderAgentService\\build\\classes\\kotlin\\main started by sunwoo in C:\\Users\\hachi\\IdeaProjects\\OrderAgentService)"}
+{"@timestamp":"2025-09-03T23:44:11.6477017+09:00","level":"INFO","logger_name":"com.orderagentservice.OrderAgentServiceApplicationKt","message":"The following 1 profile is active: \"local\""}
