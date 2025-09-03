@@ -29,12 +29,12 @@ class MenuNavigator @Autowired constructor(
     private val MAX_LOOP = 5
 
     fun navigateMenus(context: GraphContext, menuList: List<MenuInfoDto>) {
-        var uiList = uiDetectorManager.getUiComponents(context, ExtractType.SOM)
+        var uiList = uiDetectorManager.getUiComponents(context).uiElements
         for (menuDto in menuList) {
             if (menuDto.category != context.currentCategory) {
                 //카테고리가 다르다면 해당 카테고리로 이동
                 menuActionExecutor.selectCategory(context, menuDto, uiList)
-                uiList = uiDetectorManager.getUiComponents(context, ExtractType.SOM)
+                uiList = uiDetectorManager.getUiComponents(context).uiElements
             }
 
             logService.printLog(
@@ -67,7 +67,7 @@ class MenuNavigator @Autowired constructor(
     ) {
         //현재 메뉴를 일단 클릭한 상황
         var nodeId = menuNodeId
-        var uiList = uiDetectorManager.getUiComponents(context, ExtractType.SOM)
+        var uiList = uiDetectorManager.getUiComponents(context).uiElements
 
         if (menuDto.options.isEmpty()) {
             //옵션이 없는 경우
@@ -112,14 +112,14 @@ class MenuNavigator @Autowired constructor(
 
             //옵션을 선택하고 원래 페이지도 이동
             var count = 0
-            uiList = uiDetectorManager.getUiComponents(context, ExtractType.SOM)
+            uiList = uiDetectorManager.getUiComponents(context).uiElements
             while (checkMenuPage(menuDto, menuList, uiList) == false) {
                 if (count >= MAX_LOOP) {
                     throw UtgInfiniteLoopException()
                 }
 
                 nodeId = menuActionExecutor.selectBack(context, nodeId, uiList)
-                uiList = uiDetectorManager.getUiComponents(context, ExtractType.SOM)
+                uiList = uiDetectorManager.getUiComponents(context).uiElements
                 count++
             }
             graphService.saveRel(nodeId, context.lastNodeId!!, NodeRelationType.BACK_TO)

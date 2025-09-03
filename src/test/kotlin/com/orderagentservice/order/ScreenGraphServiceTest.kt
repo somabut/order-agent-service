@@ -15,6 +15,7 @@ class ScreenGraphServiceTest @Autowired constructor(
     @Test
     fun `screen 노드가 저장된다`() {
         val entity = screenGraphService.saveNode(ScreenDto(
+            kioskId = "kiosk",
             imageUrl = "test"
         ))
         print(entity)

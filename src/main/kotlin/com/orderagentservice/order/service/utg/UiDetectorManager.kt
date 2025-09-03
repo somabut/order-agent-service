@@ -7,6 +7,8 @@ import com.orderagentservice.logger
 import com.orderagentservice.order.exception.UiExtractException
 import com.orderagentservice.order.model.type.ExtractType
 import com.orderagentservice.order.model.GraphContext
+import com.orderagentservice.order.model.dto.AllUiComponentDto
+import com.orderagentservice.order.model.dto.DetectorUiComponentDto
 import com.orderagentservice.order.model.response.DetectorResponse
 import com.orderagentservice.order.service.NotificationService
 import org.springframework.beans.factory.annotation.Autowired
@@ -33,12 +35,12 @@ class UiDetectorManager @Autowired constructor(
     private val UI_EXCTRACTOR_HOST = env.getProperty("ui-extractor.host")
     private val UI_EXTRACTOR_API_KEY = env.getProperty("ui-extractor.api-key")!!
 
-    fun getUiComponents(context: GraphContext, extractType: ExtractType): MutableList<UiComponentDto> {
+    fun getUiComponents(context: GraphContext): AllUiComponentDto {
         //ui extractor에게 이미지 파싱 요청
         val captureDto = notificationService.sendCaptureCommand(context.kioskId)
         val imageBytes = captureDto.content
         val imageType = captureDto.type
-        val uiResponse = queryUiExtractor(imageBytes, imageType, extractType.title)
+        val uiResponse = queryUiExtractor(imageBytes, imageType)
 
         val uiElements = uiResponse.uiComponents
         val ocrElements = uiResponse.ocrComponents
@@ -54,31 +56,18 @@ class UiDetectorManager @Autowired constructor(
         )
 
         //옴니파서에게 받은 이미지 적절히 변환
-        val llmUiList = mutableListOf<UiComponentDto>()
-        for (ele in uiElements) {
-            var title = ""
-            for (str in ele.contents) {
-                title += str
-            }
+        val allUiComponentDto = AllUiComponentDto(
+            uiElements = convertComponent(uiElements),
+            ocrElements = convertComponent(ocrElements),
+            yoloElements = convertComponent(yoloElements)
+        )
 
-            val pixelCoordinate = ele.bbox.coordinate
-
-            val cord = pixelCoordinate.getCenter()
-            llmUiList.add(
-                UiComponentDto(
-                    x = cord.first, y = cord.second,
-                    title = title,
-                    minX = ele.bbox.coordinate.minX, minY = ele.bbox.coordinate.minY,
-                    maxX = ele.bbox.coordinate.maxX, maxY = ele.bbox.coordinate.maxY,
-                )
-            )
-        }
-        return llmUiList
+        return allUiComponentDto
     }
 
-    fun queryUiExtractor(imageByte: ByteArray, type: String, endpoint: String): DetectorResponse {
+    fun queryUiExtractor(imageByte: ByteArray, type: String): DetectorResponse {
         val restTemplate = RestTemplate()
-        val url = "$UI_EXCTRACTOR_HOST/v2/$endpoint"
+        val url = "$UI_EXCTRACTOR_HOST/v2/extract-ui"
 
         val fileContent = object : ByteArrayResource(imageByte) {
             override fun getFilename(): String {
@@ -111,10 +100,34 @@ class UiDetectorManager @Autowired constructor(
             } catch (e: RuntimeException) {
                 log.error(e.message)
                 log.info("UI extractor service오류로 인해 재시도합니다. 대기 시간: $waitTime")
-                Thread.sleep(waitTime)
-                waitTime *= 2
             }
+            Thread.sleep(waitTime)
+            waitTime *= 2
         }
         throw UiExtractException()
+    }
+
+    private fun convertComponent(uiElements: List<DetectorUiComponentDto>): List<UiComponentDto> {
+        val result = mutableListOf<UiComponentDto>()
+        for (ele in uiElements) {
+            var title = ""
+            for (str in ele.contents) {
+                title += str
+            }
+
+            val pixelCoordinate = ele.bbox.coordinate
+
+            val cord = pixelCoordinate.getCenter()
+            result.add(
+                UiComponentDto(
+                    x = cord.first, y = cord.second,
+                    title = title,
+                    minX = ele.bbox.coordinate.minX, minY = ele.bbox.coordinate.minY,
+                    maxX = ele.bbox.coordinate.maxX, maxY = ele.bbox.coordinate.maxY,
+                )
+            )
+        }
+
+        return result
     }
 }
