@@ -94,9 +94,9 @@ class UiDetectorManager @Autowired constructor(
         headers.setBearerAuth(UI_EXTRACTOR_API_KEY)
 
         //ui extractor service에게 UI 추출 요청
-        var requestCount = 0
-        val maxRequest = 4
-        while (requestCount < maxRequest) {
+        var waitTime = 2L
+        val maxWaitTime = 16L
+        while (waitTime <= maxWaitTime) {
             try {
                 val requestEntity = HttpEntity(body, headers)
                 val responseEntity = restTemplate.exchange(
@@ -110,9 +110,10 @@ class UiDetectorManager @Autowired constructor(
                 return uiComponents
             } catch (e: RuntimeException) {
                 log.error(e.message)
-                log.info("UI extractor service오류로 인해 재시도합니다. 현재횟수: $requestCount")
+                log.info("UI extractor service오류로 인해 재시도합니다. 대기 시간: $waitTime")
+                Thread.sleep(waitTime)
+                waitTime *= 2
             }
-            requestCount++
         }
         throw UiExtractException()
     }
