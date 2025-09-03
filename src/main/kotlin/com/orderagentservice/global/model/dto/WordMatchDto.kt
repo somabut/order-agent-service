@@ -9,7 +9,7 @@ data class WordMatchDto(
     val minY: Int,
     val maxX: Int,
     val maxY: Int,
-    val title: String,
+    var title: String,
     val score: Double
 ) {
     fun toCoordinateDto(text: String) = CoordinateDto(

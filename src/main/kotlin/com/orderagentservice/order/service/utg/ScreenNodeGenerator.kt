@@ -72,9 +72,10 @@ class ScreenNodeGenerator @Autowired constructor(
         }
     }
 
-    fun linkNode(nodeId: String, screenNodeId: String, somParams: SomParams) {
+    fun linkNode(kioskId: String, nodeId: String, screenNodeId: String, somParams: SomParams) {
         //match 노드와 관계, screen 노드와 관계 연결
         val somNodeId = somGraphService.findNode(
+            kioskId = kioskId,
             minX = somParams.minX, minY = somParams.minY,
             maxX = somParams.maxX, maxY = somParams.maxY,
             title = somParams.title

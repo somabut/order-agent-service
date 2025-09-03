@@ -25,13 +25,13 @@ class MenuNodeGenerator @Autowired constructor(
     private val somGraphService: SomGraphService,
     private val screenNodeGenerator: ScreenNodeGenerator,
 ) {
-    fun createCategoryNode(matchDto: WordMatchDto, context: GraphContext): String {
+    fun createCategoryNode(matchDto: WordMatchDto, title: String, context: GraphContext): String {
         logService.printLog(
             NodeSaveLog(
                 kioskId = context.kioskId,
                 nodeType = NodeType.CATEGORY,
                 x = matchDto.x, y = matchDto.y,
-                title = matchDto.title, imageName = context.imageName
+                title = title, imageName = context.imageName
             )
         )
 
@@ -39,7 +39,7 @@ class MenuNodeGenerator @Autowired constructor(
             UiDto(
                 isNext = true,
                 x = matchDto.x, y = matchDto.y,
-                title = matchDto.title,
+                title = title,
                 kioskId = context.kioskId
             )
         )
@@ -49,6 +49,7 @@ class MenuNodeGenerator @Autowired constructor(
 
         //match 노드와 관계, screen 노드와 관계 연결
         screenNodeGenerator.linkNode(
+            kioskId = context.kioskId,
             nodeId = node.id, screenNodeId = context.screenNodeId,
             SomParams(
                 minX = matchDto.minX, minY = matchDto.minY,
@@ -63,20 +64,20 @@ class MenuNodeGenerator @Autowired constructor(
         return node.id
     }
 
-    fun createMenuNode(matchDto: WordMatchDto, context: GraphContext): String {
+    fun createMenuNode(matchDto: WordMatchDto, title: String, context: GraphContext): String {
         logService.printLog(
             NodeSaveLog(
                 kioskId = context.kioskId,
                 nodeType = NodeType.MENU,
                 x = matchDto.x, y = matchDto.y,
-                title = matchDto.title, imageName = context.imageName
+                title = title, imageName = context.imageName
             )
         )
         val node = uiGraphService.saveNode(
             UiDto(
                 isNext = false,
                 x = matchDto.x, y = matchDto.y,
-                title = matchDto.title,
+                title = title,
                 kioskId = context.kioskId
             )
         )
@@ -84,6 +85,7 @@ class MenuNodeGenerator @Autowired constructor(
 
         //match 노드와 관계, screen 노드와 관계 연결
         screenNodeGenerator.linkNode(
+            kioskId = context.kioskId,
             nodeId = node.id, screenNodeId = context.screenNodeId,
             SomParams(
                 minX = matchDto.minX, minY = matchDto.minY,
@@ -97,6 +99,7 @@ class MenuNodeGenerator @Autowired constructor(
 
     fun createOptionNode(
         matchDto: WordMatchDto,
+        title: String,
         menuNodeId: String,
         context: GraphContext
     ) {
@@ -105,14 +108,14 @@ class MenuNodeGenerator @Autowired constructor(
                 kioskId = context.kioskId,
                 nodeType = NodeType.OPTION,
                 x = matchDto.x, y = matchDto.y,
-                title = matchDto.title, imageName = context.imageName
+                title = title, imageName = context.imageName
             )
         )
         val node = uiGraphService.saveNode(
             UiDto(
                 isNext = false,
                 x = matchDto.x, y = matchDto.y,
-                title = matchDto.title,
+                title = title,
                 kioskId = context.kioskId
             )
         )
@@ -120,6 +123,7 @@ class MenuNodeGenerator @Autowired constructor(
 
         //match 노드와 관계, screen 노드와 관계 연결
         screenNodeGenerator.linkNode(
+            kioskId = context.kioskId,
             nodeId = node.id, screenNodeId = context.screenNodeId,
             SomParams(
                 minX = matchDto.minX, minY = matchDto.minY,
@@ -156,6 +160,7 @@ class MenuNodeGenerator @Autowired constructor(
 
         //match 노드와 관계, screen 노드와 관계 연결
         screenNodeGenerator.linkNode(
+            kioskId = context.kioskId,
             nodeId = node.id, screenNodeId = context.screenNodeId,
             SomParams(
                 minX = minX, minY = minY,
@@ -192,6 +197,7 @@ class MenuNodeGenerator @Autowired constructor(
 
         //match 노드와 관계, screen 노드와 관계 연결
         screenNodeGenerator.linkNode(
+            kioskId = context.kioskId,
             nodeId = node.id, screenNodeId = context.screenNodeId,
             SomParams(
                 minX = matchDto.minX, minY = matchDto.minY,
