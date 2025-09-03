@@ -11,4 +11,8 @@ enum class NodeType{
     ROOT,
     STATION,
     COMPLETE,
+    SCREEN,
+    SOM,
+    OCR,
+    YOLO
 }

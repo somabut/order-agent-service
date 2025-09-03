@@ -9,6 +9,7 @@ import com.orderagentservice.order.model.dto.SomDto
 import com.orderagentservice.order.model.dto.UiComponentParams
 import com.orderagentservice.order.model.dto.YoloDto
 import com.orderagentservice.order.model.type.NodeRelationType
+import com.orderagentservice.order.model.type.NodeType
 import com.orderagentservice.order.service.graph.ocr.OcrGraphService
 import com.orderagentservice.order.service.graph.screen.ScreenGraphService
 import com.orderagentservice.order.service.graph.som.SomGraphService
@@ -51,7 +52,7 @@ class ScreenNodeGenerator @Autowired constructor(
                     content = uiComponent.contents
                 )
             )
-            screenGraphService.saveRel(screenNodeId, somNodeId)
+            screenGraphService.saveRel(screenNodeId, somNodeId, NodeType.SOM)
         }
         for (ocrComponent in ocrComponents) {
             val ocrNodeId = ocrGraphService.saveNode(
@@ -61,7 +62,7 @@ class ScreenNodeGenerator @Autowired constructor(
                     content = ocrComponent.contents
                 )
             ).id
-            screenGraphService.saveRel(screenNodeId, ocrNodeId)
+            screenGraphService.saveRel(screenNodeId, ocrNodeId, NodeType.OCR)
         }
         for (yoloComponent in yoloComponents) {
             val yoloNode = yoloGraphService.saveNode(
@@ -71,7 +72,7 @@ class ScreenNodeGenerator @Autowired constructor(
                     maxX = yoloComponent.bbox.coordinate.maxX, maxY = yoloComponent.bbox.coordinate.maxY,
                 )
             ).id
-            screenGraphService.saveRel(screenNodeId, yoloNode)
+            screenGraphService.saveRel(screenNodeId, yoloNode, NodeType.YOLO)
         }
     }
 
