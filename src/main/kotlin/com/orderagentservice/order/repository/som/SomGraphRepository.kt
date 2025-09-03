@@ -7,7 +7,7 @@ import org.springframework.data.neo4j.repository.query.Query
 interface SomGraphRepository : Neo4jRepository<SomEntity, String> {
 
     @Query(
-        "MATCH(n: SOM{kioskId: \$kioskId, min_x: \$minX, min_y: \$minY, max_x: \$maxX, max_y: \$maxY, content: \$title})\n" +
+        "MATCH(n: BOX:SOM{kioskId: \$kioskId, min_x: \$minX, min_y: \$minY, max_x: \$maxX, max_y: \$maxY, content: \$title})\n" +
         "RETURN n\n" +
         "LIMIT 1"
     )

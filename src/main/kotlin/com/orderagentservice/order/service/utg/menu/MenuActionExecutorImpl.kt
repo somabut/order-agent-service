@@ -35,7 +35,7 @@ class MenuActionExecutorImpl @Autowired constructor(
         val matchDto = wordSimilarityService.findBestMatch(menuDto.category, uiList)
 
         //노드 생성
-        val nodeId = nodeGenerator.createCategoryNode(matchDto, menuDto.title, context)
+        val nodeId = nodeGenerator.createCategoryNode(matchDto, menuDto.category, context)
         context.lastNodeId = nodeId
 
         //현재 카테고리 좌표 클릭
