@@ -19,6 +19,7 @@ class PaymentActionExecutorImpl(
     override fun selectPayment(context: GraphContext): Boolean {
         val llmUiList = uiDetectorManager.getUiComponents(context).ocrElements
         val action = paymentAgent.determineAction(llmUiList)
+        if (action.goNext == false) return false
 
         //노드 저장
         paymentNodeGenerator.createPaymentNode(action, context)
@@ -26,6 +27,6 @@ class PaymentActionExecutorImpl(
         //클릭 액션 요청
         notificationService.sendActionCommand(context.kioskId, CoordinateDto(x = action.coordinate[0], y = action.coordinate[1], title = action.title))
 
-        return action.goNext
+        return true
     }
 }

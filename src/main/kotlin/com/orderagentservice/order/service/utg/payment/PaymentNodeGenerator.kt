@@ -45,28 +45,15 @@ class PaymentNodeGenerator @Autowired constructor(
         graphService.saveRel(context.lastNodeId!!, node.id, NodeRelationType.PATH_TO)
 
         //match 노드와 관계, screen 노드와 관계 연결
-        if (action.goNext) {
-            screenNodeGenerator.linkNode(
-                kioskId = context.kioskId,
-                nodeId = node.id, screenNodeId = context.screenNodeId,
-                UiComponentParams(
-                    minX = minX, minY = minY,
-                    maxX = maxX, maxY = maxY,
-                    title = action.title
-                )
+        screenNodeGenerator.linkNode(
+            kioskId = context.kioskId,
+            nodeId = node.id, screenNodeId = context.screenNodeId,
+            UiComponentParams(
+                minX = minX, minY = minY,
+                maxX = maxX, maxY = maxY,
+                title = action.title
             )
-        } else {
-            ocrNodeGenerator.linkNode(
-                kioskId = context.kioskId,
-                nodeId = node.id, screenNodeId = context.screenNodeId,
-                UiComponentParams(
-                    minX = minX, minY = minY,
-                    maxX = maxX, maxY = maxY,
-                    title = action.title
-                )
-            )
-        }
-
+        )
 
         context.lastNodeId = node.id
     }
