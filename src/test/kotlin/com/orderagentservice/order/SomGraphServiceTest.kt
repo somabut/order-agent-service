@@ -14,6 +14,7 @@ class SomGraphServiceTest @Autowired constructor(
     fun `som 노드가 저장된다`() {
         somGraphService.saveNode(
             SomDto(
+                kioskId = "kiosk",
                 minX = -1, minY = -1, maxX = -1, maxY = -1,
                 content = "test"
             )
