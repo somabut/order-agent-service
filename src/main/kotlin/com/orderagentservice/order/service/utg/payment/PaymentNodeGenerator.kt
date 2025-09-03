@@ -3,13 +3,14 @@ package com.orderagentservice.order.service.utg.payment
 import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.global.service.LogService
 import com.orderagentservice.order.model.GraphContext
-import com.orderagentservice.order.model.dto.SomParams
+import com.orderagentservice.order.model.dto.UiComponentParams
 import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.log.NodeSaveLog
 import com.orderagentservice.order.model.type.NodeType
 import com.orderagentservice.order.model.type.SpecialNodeType
 import com.orderagentservice.order.service.graph.ui.UiGraphService
+import com.orderagentservice.order.service.utg.OcrNodeGenerator
 import com.orderagentservice.order.service.utg.ScreenNodeGenerator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -19,6 +20,7 @@ class PaymentNodeGenerator @Autowired constructor(
     private val graphService: UiGraphService,
     private val logService: LogService,
     private val screenNodeGenerator: ScreenNodeGenerator,
+    private val ocrNodeGenerator: OcrNodeGenerator
 ) {
     fun createPaymentNode(action: AgentActionDto, context: GraphContext) {
         val (x, y) = action.coordinate
@@ -43,15 +45,28 @@ class PaymentNodeGenerator @Autowired constructor(
         graphService.saveRel(context.lastNodeId!!, node.id, NodeRelationType.PATH_TO)
 
         //match 노드와 관계, screen 노드와 관계 연결
-        screenNodeGenerator.linkNode(
-            kioskId = context.kioskId,
-            nodeId = node.id, screenNodeId = context.screenNodeId,
-            SomParams(
-                minX = minX, minY = minY,
-                maxX = maxX, maxY = maxY,
-                title = action.title
+        if (action.goNext) {
+            screenNodeGenerator.linkNode(
+                kioskId = context.kioskId,
+                nodeId = node.id, screenNodeId = context.screenNodeId,
+                UiComponentParams(
+                    minX = minX, minY = minY,
+                    maxX = maxX, maxY = maxY,
+                    title = action.title
+                )
             )
-        )
+        } else {
+            ocrNodeGenerator.linkNode(
+                kioskId = context.kioskId,
+                nodeId = node.id, screenNodeId = context.screenNodeId,
+                UiComponentParams(
+                    minX = minX, minY = minY,
+                    maxX = maxX, maxY = maxY,
+                    title = action.title
+                )
+            )
+        }
+
 
         context.lastNodeId = node.id
     }

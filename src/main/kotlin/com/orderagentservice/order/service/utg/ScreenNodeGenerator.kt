@@ -6,7 +6,7 @@ import com.orderagentservice.order.model.dto.KioskCaptureDto
 import com.orderagentservice.order.model.dto.OcrDto
 import com.orderagentservice.order.model.dto.ScreenDto
 import com.orderagentservice.order.model.dto.SomDto
-import com.orderagentservice.order.model.dto.SomParams
+import com.orderagentservice.order.model.dto.UiComponentParams
 import com.orderagentservice.order.model.dto.YoloDto
 import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.service.graph.ocr.OcrGraphService
@@ -75,13 +75,13 @@ class ScreenNodeGenerator @Autowired constructor(
         }
     }
 
-    fun linkNode(kioskId: String, nodeId: String, screenNodeId: String, somParams: SomParams) {
+    fun linkNode(kioskId: String, nodeId: String, screenNodeId: String, uiComponentParams: UiComponentParams) {
         //match 노드와 관계, screen 노드와 관계 연결
         val somNodeId = somGraphService.findNode(
             kioskId = kioskId,
-            minX = somParams.minX, minY = somParams.minY,
-            maxX = somParams.maxX, maxY = somParams.maxY,
-            title = somParams.title
+            minX = uiComponentParams.minX, minY = uiComponentParams.minY,
+            maxX = uiComponentParams.maxX, maxY = uiComponentParams.maxY,
+            title = uiComponentParams.title
         )
         uiGraphService.saveRel(nodeId, somNodeId, NodeRelationType.MATCH_TO)
         uiGraphService.saveRel(nodeId, screenNodeId, NodeRelationType.IMAGE_TO)

@@ -1,13 +1,11 @@
 package com.orderagentservice.order.service.utg.place
 
 import com.orderagentservice.agent.PlaceAgent
-import com.orderagentservice.agent.model.dto.AgentUiDto
 import com.orderagentservice.global.service.LogService
-import com.orderagentservice.order.model.type.ExtractType
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.dto.CoordinateDto
-import com.orderagentservice.order.model.dto.SomParams
+import com.orderagentservice.order.model.dto.UiComponentParams
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.log.NodeSaveLog
 import com.orderagentservice.order.model.log.UtgProcessLog
@@ -64,7 +62,7 @@ class PlaceUtgService @Autowired constructor(
             screenNodeGenerator.linkNode(
                 kioskId = context.kioskId,
                 nodeId = node.id, screenNodeId = context.screenNodeId,
-                SomParams(
+                UiComponentParams(
                     minX = minX, minY = minY,
                     maxX = maxX, maxY = maxY,
                     title = act.title

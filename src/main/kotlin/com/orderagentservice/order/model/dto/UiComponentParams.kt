@@ -1,6 +1,6 @@
 package com.orderagentservice.order.model.dto
 
-data class SomParams (
+data class UiComponentParams (
     val minX: Int,
     val minY: Int,
     val maxX: Int,
