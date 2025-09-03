@@ -50,7 +50,7 @@ class PaymentAgent @Autowired constructor(
 
             The final goal is to reach a page that contains phrases like '카드를 넣어주세요' or '카드를 삽입해주세요' or '입구에 꽂아주세요'
             
-            Respond in JSON: {'coordinate': [x, y], 'title': 'UI Title', 'goNext': bool, 'score': float}. 
+            Respond in JSON: {'coordinate': [x, y], 'bbox': [min_x, min_y, max_x, max_y],'title': 'UI Title', 'goNext': bool, 'score': float}. 
             if you get a sentence that means to put a card in like '카드를 넣어주세요' or '카드를 삽입해주세요', write response of 'isNext' false, or true. 
             'coordinate', 'bbox' and 'title' must be from 'uiList'. These values must never be returned to empty values.
             Assign a score (0.0-1.0) for response accuracy.

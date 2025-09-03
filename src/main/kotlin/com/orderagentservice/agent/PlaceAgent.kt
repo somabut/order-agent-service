@@ -48,7 +48,7 @@ class PlaceAgent @Autowired constructor(
                - Not found: [{"title": "", "coordinate": [-1, -1], "bbox": [-1, -1, -1, -1]}] (See the example below for more detailed formatting)
             
             'goNext' is always false, 'score' is the accuracy score, 'coordinate' is the UI coordinate, 'title' is a string that follows Rule 5.
-            'bbox' must be from 'uiList'.
+            'bbox' must be from 'uiList'. These value must never be returned to empty values.
              
              One Example(
                 ui_list: [
