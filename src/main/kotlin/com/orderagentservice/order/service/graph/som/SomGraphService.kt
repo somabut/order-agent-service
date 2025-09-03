@@ -7,5 +7,5 @@ import com.orderagentservice.order.model.type.NodeRelationType
 interface SomGraphService {
     fun saveNode(somDto: SomDto): String
 
-    fun findNode(minX: Int, minY: Int, maxX: Int, maxY: Int, title: String): String
+    fun findNode(kioskId: String, minX: Int, minY: Int, maxX: Int, maxY: Int, title: String): String
 }

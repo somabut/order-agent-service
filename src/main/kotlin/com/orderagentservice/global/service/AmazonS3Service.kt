@@ -21,6 +21,7 @@ class AmazonS3Service @Autowired constructor(
     private val env: Environment
 ) {
     private val bucket: String = env.getProperty("cloud.aws.credentials.s3.bucket")!!
+    private val AWS_S3_URL = "https://alike-image.s3.ap-southeast-2.amazonaws.com"
 
     private val allowTypes = listOf("image/png", "image/jpeg", "image/jpg")
 
@@ -52,7 +53,8 @@ class AmazonS3Service @Autowired constructor(
             )
         }
 
-        return getImagePath(kioskId, commandId, formattedDate, formattedTime, extension)
+        val path = getImagePath(kioskId, commandId, formattedDate, formattedTime, extension)
+        return "$AWS_S3_URL/$path"
     }
 
     private fun getImagePath(kioskId: String, commandId: String, formattedDate: String, formattedTime: String, extension: String)
