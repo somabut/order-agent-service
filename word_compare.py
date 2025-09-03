@@ -110,7 +110,7 @@ class KoreanSimilarityCalculator:
         if not need_list:
             return 0
 
-        candidates = [(-1, -1, title) for title in page_list]
+        candidates = [(-1, -1, -1, -1, -1, -1, title) for title in page_list]
         count = 0
         for need in need_list:
             result = self.find_best_match(need, candidates)
