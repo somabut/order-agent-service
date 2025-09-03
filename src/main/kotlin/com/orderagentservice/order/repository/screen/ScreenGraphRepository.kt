@@ -6,6 +6,12 @@ import org.springframework.data.neo4j.repository.query.Query
 
 interface ScreenGraphRepository : Neo4jRepository<ScreenEntity, String> {
 
-    @Query("MATCH (a:Screen {id: \$sourceId}), (b:Screen {id: \$targetId}) MERGE (a)-[:BOX_TO]->(b)")
-    fun saveBoxRelation(sourceId: String, targetId: String)
+    @Query("MATCH (a:Screen {id: \$sourceId}), (b:SOM {id: \$targetId}) MERGE (a)-[:BOX_TO]->(b)")
+    fun saveBoxSomRelation(sourceId: String, targetId: String)
+
+    @Query("MATCH (a:Screen {id: \$sourceId}), (b:OCR {id: \$targetId}) MERGE (a)-[:BOX_TO]->(b)")
+    fun saveBoxOcrRelation(sourceId: String, targetId: String)
+
+    @Query("MATCH (a:Screen {id: \$sourceId}), (b:YOLO {id: \$targetId}) MERGE (a)-[:BOX_TO]->(b)")
+    fun saveBoxYoloRelation(sourceId: String, targetId: String)
 }

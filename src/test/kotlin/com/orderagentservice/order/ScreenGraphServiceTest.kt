@@ -4,13 +4,16 @@ import com.orderagentservice.order.model.dto.ScreenDto
 import com.orderagentservice.order.model.dto.SomDto
 import com.orderagentservice.order.service.graph.screen.ScreenGraphService
 import com.orderagentservice.order.service.graph.som.SomGraphService
+import com.orderagentservice.order.service.graph.ui.UiGraphService
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
 class ScreenGraphServiceTest @Autowired constructor(
-    private val screenGraphService: ScreenGraphService
+    private val screenGraphService: ScreenGraphService,
+    private val somGraphService: SomGraphService,
+    private val uiGraphService: UiGraphService
 ){
     @Test
     fun `screen 노드가 저장된다`() {
@@ -19,5 +22,22 @@ class ScreenGraphServiceTest @Autowired constructor(
             imageUrl = "test"
         ))
         print(entity)
+    }
+
+    @Test
+    fun `관계가 설정된다`() {
+        val screenNodeId = screenGraphService.saveNode(ScreenDto(
+            kioskId = "kiosk",
+            imageUrl = "test"
+        )).id
+        val somNodeId = somGraphService.saveNode(
+            SomDto(
+            kioskId = "kiosk",
+            minX = -1, minY = -1, maxX = -1, maxY = -1,
+            content = "test"
+        )
+        )
+        println("$screenNodeId -> $somNodeId")
+        screenGraphService.saveRel(screenNodeId, somNodeId)
     }
 }
