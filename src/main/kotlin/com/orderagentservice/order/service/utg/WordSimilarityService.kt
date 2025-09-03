@@ -37,10 +37,10 @@ class WordSimilarityService {
             val x = (resultMap["x"] as Number).toInt()
             val y = (resultMap["y"] as Number).toInt()
 
-            val minX = (resultMap["minX"] as Number).toInt()
-            val minY = (resultMap["minY"] as Number).toInt()
-            val maxX = (resultMap["maxX"] as Number).toInt()
-            val maxY = (resultMap["maxY"] as Number).toInt()
+            val minX = (resultMap["min_x"] as Number).toInt()
+            val minY = (resultMap["min_y"] as Number).toInt()
+            val maxX = (resultMap["max_x"] as Number).toInt()
+            val maxY = (resultMap["max_y"] as Number).toInt()
 
             val word = resultMap["word"] as String
             val score = (resultMap["score"] as Number).toDouble()
