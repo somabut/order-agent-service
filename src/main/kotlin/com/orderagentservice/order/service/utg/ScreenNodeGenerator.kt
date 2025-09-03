@@ -34,6 +34,7 @@ class ScreenNodeGenerator @Autowired constructor(
     ) {
         val screenNodeId = screenGraphService.saveNode(
             ScreenDto(
+                kioskId = context.kioskId,
                 imageUrl = captureDto.url
             )
         ).id
@@ -44,6 +45,7 @@ class ScreenNodeGenerator @Autowired constructor(
         for (uiComponent in uiComponents) {
             val somNodeId = somGraphService.saveNode(
                 SomDto(
+                    kioskId = context.kioskId,
                     minX = uiComponent.bbox.coordinate.minX, minY = uiComponent.bbox.coordinate.minY,
                     maxX = uiComponent.bbox.coordinate.maxX, maxY = uiComponent.bbox.coordinate.maxY,
                     content = uiComponent.contents
@@ -64,6 +66,7 @@ class ScreenNodeGenerator @Autowired constructor(
         for (yoloComponent in yoloComponents) {
             val yoloNode = yoloGraphService.saveNode(
                 YoloDto(
+                    kioskId = context.kioskId,
                     minX = yoloComponent.bbox.coordinate.minX, minY = yoloComponent.bbox.coordinate.minY,
                     maxX = yoloComponent.bbox.coordinate.maxX, maxY = yoloComponent.bbox.coordinate.maxY,
                 )

@@ -14,6 +14,8 @@ class YoloEntity (
     @Id
     val id: String = UUID.randomUUID().toString(),
 
+    val kioskId: String,
+
     @Version
     val version: Long? = null,
 
