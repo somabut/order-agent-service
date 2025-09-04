@@ -81,16 +81,16 @@ class MenuNodeGenerator @Autowired constructor(
         )
         uiGraphService.saveRel(context.lastNodeId!!, node.id, NodeRelationType.HAS_TO)
 
-        //match 노드와 관계, screen 노드와 관계 연결
-        screenNodeGenerator.linkNode(
-            kioskId = context.kioskId,
-            nodeId = node.id, screenNodeId = context.screenNodeId,
-            UiComponentParams(
-                minX = matchDto.minX, minY = matchDto.minY,
-                maxX = matchDto.maxX, maxY = matchDto.maxY,
-                title = matchDto.title
-            )
-        )
+        //메뉴 노드는 Screen과 연결할 필요 없음
+//        screenNodeGenerator.linkNode(
+//            kioskId = context.kioskId,
+//            nodeId = node.id, screenNodeId = context.screenNodeId,
+//            UiComponentParams(
+//                minX = matchDto.minX, minY = matchDto.minY,
+//                maxX = matchDto.maxX, maxY = matchDto.maxY,
+//                title = matchDto.title
+//            )
+//        )
 
         return node.id
     }
