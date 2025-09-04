@@ -1,16 +1,17 @@
 package com.orderagentservice.order.service.utg.menu
 
 import com.orderagentservice.agent.BackAgent
-import com.orderagentservice.agent.model.dto.AgentUiDto
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.service.LogService
-import com.orderagentservice.order.model.type.ExtractType
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
+import com.orderagentservice.order.model.dto.NodeCreationResult
+import com.orderagentservice.order.model.dto.UiComponentParams
 import com.orderagentservice.order.model.log.UtgProcessLog
 import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.graph.ui.UiGraphService
+import com.orderagentservice.order.service.utg.ScreenNodeGenerator
 import com.orderagentservice.order.service.utg.UiDetectorManager
 import com.orderagentservice.order.service.utg.WordSimilarityService
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,7 +21,8 @@ import org.springframework.stereotype.Component
 class MenuActionExecutorImpl @Autowired constructor(
     private val wordSimilarityService: WordSimilarityService,
     private val notificationService: NotificationService,
-    private val nodeGenerator: MenuNodeGenerator,
+    private val menuNodeGenerator: MenuNodeGenerator,
+    private val screenNodeGenerator: ScreenNodeGenerator,
     private val uiDetectorManager: UiDetectorManager,
     private val backAgent: BackAgent,
     private val graphService: UiGraphService,
@@ -31,15 +33,17 @@ class MenuActionExecutorImpl @Autowired constructor(
         context: GraphContext,
         menuDto: MenuInfoDto,
         uiList: List<UiComponentDto>
-    ) {
+    ): NodeCreationResult {
         val matchDto = wordSimilarityService.findBestMatch(menuDto.category, uiList)
 
         //노드 생성
-        val nodeId = nodeGenerator.createCategoryNode(matchDto, menuDto.category, context)
-        context.lastNodeId = nodeId
+        val nodeCreationResult = menuNodeGenerator.createCategoryNode(matchDto, menuDto.category, context)
+        context.lastNodeId = nodeCreationResult.nodeId
 
         //현재 카테고리 좌표 클릭
         notificationService.sendActionCommand(context.kioskId, CoordinateDto(matchDto.x, matchDto.y, matchDto.title))
+
+        return nodeCreationResult
     }
 
     override fun selectMenu(
@@ -50,7 +54,7 @@ class MenuActionExecutorImpl @Autowired constructor(
         val matchDto = wordSimilarityService.findBestMatch(menuDto.title, uiList)
 
         //노드 생성
-        val nodeId = nodeGenerator.createMenuNode(matchDto, menuDto.title, context)
+        val nodeId = menuNodeGenerator.createMenuNode(matchDto, menuDto.title, context)
 
         //현재 메뉴 좌표 클릭
         notificationService.sendActionCommand(context.kioskId, CoordinateDto(matchDto.x, matchDto.y, matchDto.title))
@@ -70,7 +74,14 @@ class MenuActionExecutorImpl @Autowired constructor(
             val matchDto = wordSimilarityService.findBestMatch(opt, llmOptList)
 
             //노드 생성
-            nodeGenerator.createOptionNode(matchDto, opt, menuNodeId, context)
+            val creationResult = menuNodeGenerator.createOptionNode(matchDto, opt, menuNodeId, context)
+
+            //match 노드와 관계, screen 노드와 관계 연결
+            screenNodeGenerator.linkNode(
+                kioskId = context.kioskId,
+                nodeId = creationResult.nodeId, screenNodeId = context.screenNodeId,
+                uiComponentParams = creationResult.uiComponentParams,
+            )
         }
     }
 
@@ -86,7 +97,14 @@ class MenuActionExecutorImpl @Autowired constructor(
         val backAction = backAgent.determineAction(agentUiList)
 
         //노드 생성
-        val backNodeId = nodeGenerator.createBackNode(backAction, menuNodeId, context)
+        val creationResult = menuNodeGenerator.createBackNode(backAction, menuNodeId, context)
+
+        //match 노드와 관계, screen 노드와 관계 연결
+        screenNodeGenerator.linkNode(
+            kioskId = context.kioskId,
+            nodeId = creationResult.nodeId, screenNodeId = context.screenNodeId,
+            uiComponentParams = creationResult.uiComponentParams,
+        )
 
         //sse를 통해 클라이언트에게 원래 페이지로 돌아가는 좌표 클릭하도록 하기
         logService.printLog(UtgProcessLog(
@@ -95,7 +113,7 @@ class MenuActionExecutorImpl @Autowired constructor(
         ))
         notificationService.sendActionCommand(kioskId, CoordinateDto(backAction.coordinate[0], backAction.coordinate[1], backAction.title))
 
-        return backNodeId
+        return creationResult.nodeId
     }
 
     override fun selectModal(
@@ -114,11 +132,19 @@ class MenuActionExecutorImpl @Autowired constructor(
             graphService.changeTitle(nodeId, context.kioskId, "modal:${menuDto.title}")
 
             //모달 노드 저장
-            nodeId = nodeGenerator.createModalNode(
+            val creationResult = menuNodeGenerator.createModalNode(
                 context = context,
                 matchDto = matchDto,
                 menuDto = menuDto,
                 menuNodeId = nodeId
+            )
+            nodeId = creationResult.nodeId
+
+            //match 노드와 관계, screen 노드와 관계 연결
+            screenNodeGenerator.linkNode(
+                kioskId = context.kioskId,
+                nodeId = nodeId, screenNodeId = context.screenNodeId,
+                uiComponentParams = creationResult.uiComponentParams,
             )
         }
 

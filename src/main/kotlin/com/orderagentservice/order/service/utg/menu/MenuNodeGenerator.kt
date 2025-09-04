@@ -6,6 +6,7 @@ import com.orderagentservice.global.service.LogService
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.dto.MenuInfoDto
+import com.orderagentservice.order.model.dto.NodeCreationResult
 import com.orderagentservice.order.model.dto.UiComponentParams
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.log.NodeSaveLog
@@ -20,10 +21,9 @@ import org.springframework.stereotype.Component
 class MenuNodeGenerator @Autowired constructor(
     private val uiGraphService: UiGraphService,
     private val logService: LogService,
-    private val somGraphService: SomGraphService,
     private val screenNodeGenerator: ScreenNodeGenerator,
 ) {
-    fun createCategoryNode(matchDto: WordMatchDto, title: String, context: GraphContext): String {
+    fun createCategoryNode(matchDto: WordMatchDto, title: String, context: GraphContext): NodeCreationResult {
         logService.printLog(
             NodeSaveLog(
                 kioskId = context.kioskId,
@@ -45,21 +45,17 @@ class MenuNodeGenerator @Autowired constructor(
         uiGraphService.saveRel(context.stationNodeId!!, node.id, NodeRelationType.PATH_TO)
         uiGraphService.saveRel(node.id, context.stationNodeId!!, NodeRelationType.PATH_TO)
 
-        //match 노드와 관계, screen 노드와 관계 연결
-        screenNodeGenerator.linkNode(
-            kioskId = context.kioskId,
-            nodeId = node.id, screenNodeId = context.screenNodeId,
-            UiComponentParams(
+        context.currentCategory = node.title
+        context.lastNodeId = node.id
+
+        return NodeCreationResult(
+            nodeId = node.id,
+            uiComponentParams = UiComponentParams(
                 minX = matchDto.minX, minY = matchDto.minY,
                 maxX = matchDto.maxX, maxY = matchDto.maxY,
                 title = matchDto.title
             )
         )
-
-        context.currentCategory = node.title
-        context.lastNodeId = node.id
-
-        return node.id
     }
 
     fun createMenuNode(matchDto: WordMatchDto, title: String, context: GraphContext): String {
@@ -82,16 +78,6 @@ class MenuNodeGenerator @Autowired constructor(
         uiGraphService.saveRel(context.lastNodeId!!, node.id, NodeRelationType.HAS_TO)
 
         //메뉴 노드는 Screen과 연결할 필요 없음
-//        screenNodeGenerator.linkNode(
-//            kioskId = context.kioskId,
-//            nodeId = node.id, screenNodeId = context.screenNodeId,
-//            UiComponentParams(
-//                minX = matchDto.minX, minY = matchDto.minY,
-//                maxX = matchDto.maxX, maxY = matchDto.maxY,
-//                title = matchDto.title
-//            )
-//        )
-
         return node.id
     }
 
@@ -100,7 +86,7 @@ class MenuNodeGenerator @Autowired constructor(
         title: String,
         menuNodeId: String,
         context: GraphContext
-    ) {
+    ): NodeCreationResult {
         logService.printLog(
             NodeSaveLog(
                 kioskId = context.kioskId,
@@ -119,11 +105,9 @@ class MenuNodeGenerator @Autowired constructor(
         )
         uiGraphService.saveRel(menuNodeId, node.id, NodeRelationType.OPT_TO)
 
-        //match 노드와 관계, screen 노드와 관계 연결
-        screenNodeGenerator.linkNode(
-            kioskId = context.kioskId,
-            nodeId = node.id, screenNodeId = context.screenNodeId,
-            UiComponentParams(
+        return NodeCreationResult(
+            nodeId = node.id,
+            uiComponentParams = UiComponentParams(
                 minX = matchDto.minX, minY = matchDto.minY,
                 maxX = matchDto.maxX, maxY = matchDto.maxY,
                 title = matchDto.title
@@ -135,7 +119,7 @@ class MenuNodeGenerator @Autowired constructor(
         action: AgentBackDto,
         menuNodeId: String,
         context: GraphContext
-    ): String {
+    ): NodeCreationResult {
         val (x, y) = action.coordinate
         val (minX, minY, maxX, maxY) = action.bbox
         logService.printLog(
@@ -156,18 +140,14 @@ class MenuNodeGenerator @Autowired constructor(
         )
         uiGraphService.saveRel(menuNodeId, node.id, NodeRelationType.BACK_TO)
 
-        //match 노드와 관계, screen 노드와 관계 연결
-        screenNodeGenerator.linkNode(
-            kioskId = context.kioskId,
-            nodeId = node.id, screenNodeId = context.screenNodeId,
-            UiComponentParams(
+        return NodeCreationResult(
+            nodeId = node.id,
+            uiComponentParams = UiComponentParams(
                 minX = minX, minY = minY,
                 maxX = maxX, maxY = maxY,
                 title = action.title
             )
         )
-
-        return node.id
     }
 
     fun createModalNode(
@@ -175,7 +155,7 @@ class MenuNodeGenerator @Autowired constructor(
         matchDto: WordMatchDto,
         menuDto: MenuInfoDto,
         menuNodeId: String
-    ): String {
+    ): NodeCreationResult {
         logService.printLog(
             NodeSaveLog(
                 kioskId = context.kioskId,
@@ -193,16 +173,13 @@ class MenuNodeGenerator @Autowired constructor(
         )
         uiGraphService.saveRel(menuNodeId, node.id, NodeRelationType.HAS_TO)
 
-        //match 노드와 관계, screen 노드와 관계 연결
-        screenNodeGenerator.linkNode(
-            kioskId = context.kioskId,
-            nodeId = node.id, screenNodeId = context.screenNodeId,
-            UiComponentParams(
+        return NodeCreationResult(
+            nodeId = node.id,
+            uiComponentParams = UiComponentParams(
                 minX = matchDto.minX, minY = matchDto.minY,
                 maxX = matchDto.maxX, maxY = matchDto.maxY,
                 title = matchDto.title
             )
         )
-        return node.id
     }
 }
