@@ -15,9 +15,9 @@ interface UiGraphSaveRepository {
     @Query("MATCH (a:UI {id: \$sourceId}), (b:UI {id: \$targetId}) MERGE (a)-[:BACK_TO]->(b)")
     fun saveBackRelation(sourceId: String, targetId: String)
 
-    @Query("MATCH (a:UI {id: \$sourceId}), (b:UI {id: \$targetId}) MERGE (a)-[:MATCH_TO]->(b)")
-    fun saveMathRelation(sourceId: String, targetId: String)
+    @Query("MATCH (a:UI {id: \$sourceId}), (b:SOM {id: \$targetId}) MERGE (a)-[:MATCH_TO]->(b)")
+    fun saveMatchRelation(sourceId: String, targetId: String)
 
-    @Query("MATCH (a:UI {id: \$sourceId}), (b:UI {id: \$targetId}) MERGE (a)-[:IMAGE_TO]->(b)")
+    @Query("MATCH (a:UI {id: \$sourceId}), (b:Screen {id: \$targetId}) MERGE (a)-[:IMAGE_TO]->(b)")
     fun saveImageRelation(sourceId: String, targetId: String)
 }

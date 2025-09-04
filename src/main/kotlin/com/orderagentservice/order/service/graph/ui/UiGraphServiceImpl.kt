@@ -36,7 +36,7 @@ class UiGraphServiceImpl @Autowired constructor(
             NodeRelationType.HAS_TO -> graphRepository.saveHasRelation(sourceId, targetId)
             NodeRelationType.OPT_TO -> graphRepository.saveOptRelation(sourceId, targetId)
             NodeRelationType.BACK_TO -> graphRepository.saveBackRelation(sourceId, targetId)
-            NodeRelationType.MATCH_TO -> graphRepository.saveMathRelation(sourceId, targetId)
+            NodeRelationType.MATCH_TO -> graphRepository.saveMatchRelation(sourceId, targetId)
             NodeRelationType.IMAGE_TO -> graphRepository.saveImageRelation(sourceId, targetId)
             else -> NodeRelationType.NONE
         }
