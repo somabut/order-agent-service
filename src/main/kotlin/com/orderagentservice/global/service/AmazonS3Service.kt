@@ -28,7 +28,7 @@ class AmazonS3Service @Autowired constructor(
     fun saveFile(kioskId:String, commandId: String, fileBytes: ByteArray, contentType: String): String {
         val now = LocalDateTime.now(ZoneId.of("Asia/Seoul"))
         val dayFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-        val timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
+        val timeFormatter = DateTimeFormatter.ofPattern("HH-mm-ss")
         val formattedDate = now.format(dayFormatter)
         val formattedTime = now.format(timeFormatter)
 

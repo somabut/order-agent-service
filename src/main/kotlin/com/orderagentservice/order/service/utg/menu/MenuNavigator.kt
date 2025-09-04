@@ -8,10 +8,12 @@ import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
+import com.orderagentservice.order.model.dto.UiComponentParams
 import com.orderagentservice.order.model.log.UtgNowMenuLog
 import com.orderagentservice.order.model.log.UtgProcessLog
 import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.graph.ui.UiGraphService
+import com.orderagentservice.order.service.utg.ScreenNodeGenerator
 import com.orderagentservice.order.service.utg.UiDetectorManager
 import com.orderagentservice.order.service.utg.WordSimilarityService
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,6 +26,7 @@ class MenuNavigator @Autowired constructor(
     private val graphService: UiGraphService,
     private val wordSimilarityService: WordSimilarityService,
     private val notificationService: NotificationService,
+    private val screenNodeGenerator: ScreenNodeGenerator,
     private val logService: LogService
 ) {
     private val MAX_LOOP = 5
@@ -33,8 +36,15 @@ class MenuNavigator @Autowired constructor(
         for (menuDto in menuList) {
             if (menuDto.category != context.currentCategory) {
                 //카테고리가 다르다면 해당 카테고리로 이동
-                menuActionExecutor.selectCategory(context, menuDto, uiList)
+                val creationResult = menuActionExecutor.selectCategory(context, menuDto, uiList)
                 uiList = uiDetectorManager.getUiComponents(context).uiElements
+
+                //match 노드와 관계, screen 노드와 관계 연결
+                screenNodeGenerator.linkNode(
+                    kioskId = context.kioskId,
+                    nodeId = creationResult.nodeId, screenNodeId = context.screenNodeId,
+                    uiComponentParams = creationResult.uiComponentParams,
+                )
             }
 
             logService.printLog(
