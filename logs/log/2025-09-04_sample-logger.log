@@ -86,3 +86,17 @@
 {"@timestamp":"2025-09-04T18:49:34.387236+09:00","level":"INFO","logger_name":"org.springframework.boot.web.embedded.tomcat.GracefulShutdown","message":"Commencing graceful shutdown. Waiting for active requests to complete"}
 {"@timestamp":"2025-09-04T18:49:34.390637+09:00","level":"INFO","logger_name":"org.springframework.boot.web.embedded.tomcat.GracefulShutdown","message":"Graceful shutdown complete"}
 {"@timestamp":"2025-09-04T18:49:34.393309+09:00","level":"INFO","logger_name":"org.neo4j.driver.internal.InternalDriver","message":"Closing driver instance 726025092"}
+{"@timestamp":"2025-09-04T19:13:41.216309+09:00","level":"INFO","logger_name":"com.orderagentservice.agent.PaymentAgentTest","message":"Starting PaymentAgentTest using Java 21.0.7 with PID 58621 (started by moodtrbl in /Users/moodtrbl/IdeaProjects/order-agent-service)"}
+{"@timestamp":"2025-09-04T19:13:41.220603+09:00","level":"INFO","logger_name":"com.orderagentservice.agent.PaymentAgentTest","message":"The following 1 profile is active: \"local\""}
+{"@timestamp":"2025-09-04T19:13:41.486649+09:00","level":"INFO","logger_name":"org.springframework.data.repository.config.RepositoryConfigurationDelegate","message":"Bootstrapping Spring Data Neo4j repositories in DEFAULT mode."}
+{"@timestamp":"2025-09-04T19:13:41.53626+09:00","level":"INFO","logger_name":"org.springframework.data.repository.config.RepositoryConfigurationDelegate","message":"Finished Spring Data repository scanning in 46 ms. Found 0 Neo4j repository interfaces."}
+{"@timestamp":"2025-09-04T19:13:41.539083+09:00","level":"INFO","logger_name":"org.springframework.data.repository.config.RepositoryConfigurationDelegate","message":"Bootstrapping Spring Data Neo4j repositories in DEFAULT mode."}
+{"@timestamp":"2025-09-04T19:13:41.552245+09:00","level":"INFO","logger_name":"org.springframework.data.repository.config.RepositoryConfigurationDelegate","message":"Finished Spring Data repository scanning in 12 ms. Found 5 Neo4j repository interfaces."}
+{"@timestamp":"2025-09-04T19:13:41.856025+09:00","level":"INFO","logger_name":"org.neo4j.driver.internal.DriverFactory","message":"Direct driver instance 1763619721 created for server address 3.106.253.59:7687"}
+{"@timestamp":"2025-09-04T19:13:42.248312+09:00","level":"INFO","logger_name":"com.orderagentservice.agent.PaymentAgentTest","message":"Started PaymentAgentTest in 1.307 seconds (process running for 1.705)"}
+{"@timestamp":"2025-09-04T19:13:44.846719+09:00","level":"INFO","logger_name":"com.orderagentservice.agent.util.LlmManager","message":"claude-sonnet-4-20250514: [2295]의 토큰을 사용했습니다."}
+{"@timestamp":"2025-09-04T19:13:48.03084+09:00","level":"INFO","logger_name":"com.orderagentservice.agent.util.LlmManager","message":"claude-sonnet-4-20250514: [2329]의 토큰을 사용했습니다."}
+{"@timestamp":"2025-09-04T19:13:50.773893+09:00","level":"INFO","logger_name":"com.orderagentservice.agent.util.LlmManager","message":"claude-sonnet-4-20250514: [2350]의 토큰을 사용했습니다."}
+{"@timestamp":"2025-09-04T19:13:54.152563+09:00","level":"INFO","logger_name":"com.orderagentservice.agent.util.LlmManager","message":"claude-sonnet-4-20250514: [2333]의 토큰을 사용했습니다."}
+{"@timestamp":"2025-09-04T19:13:57.132201+09:00","level":"INFO","logger_name":"com.orderagentservice.agent.util.LlmManager","message":"claude-sonnet-4-20250514: [2295]의 토큰을 사용했습니다."}
+{"@timestamp":"2025-09-04T19:13:58.158246+09:00","level":"INFO","logger_name":"org.neo4j.driver.internal.InternalDriver","message":"Closing driver instance 1763619721"}

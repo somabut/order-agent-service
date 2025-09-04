@@ -33,7 +33,7 @@ class PaymentAgent @Autowired constructor(
             To select the correct UI, you must follow this strict priority order:
             
                 Priority 1 (Very Highest): Insert Card
-                    First, look for a keyword that includes the meaning of inserting a card: '카드를 넣어주세요', '카드를 삽입해주세요', '입구에 꽃아주세요'.
+                    First, look for a keyword that includes the meaning of inserting a card: '카드를 넣어주세요', '카드를 삽입해주세요', '입구에 꽂아주세요', '투입구에 꽂아주세요.'
                     If you find any of these, you must select one of them and ignore all other options below.
                     
                 Priority 2 (Highest): General Progression
