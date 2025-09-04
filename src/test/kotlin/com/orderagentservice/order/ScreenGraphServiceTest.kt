@@ -48,7 +48,6 @@ class ScreenGraphServiceTest @Autowired constructor(
         )
         )
 
-//        screenGraphService.saveRel(screenNodeId, somNodeId, NodeType.SOM)
         uiGraphService.saveRel(nodeId, somNodeId, NodeRelationType.MATCH_TO)
         uiGraphService.saveRel(nodeId, screenNodeId, NodeRelationType.IMAGE_TO)
     }
