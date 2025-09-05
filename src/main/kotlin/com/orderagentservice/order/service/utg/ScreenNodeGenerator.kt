@@ -43,37 +43,9 @@ class ScreenNodeGenerator @Autowired constructor(
         context.screenNodeId = screenNodeId
 
         //screen 노드에 박스 연결
-        for (uiComponent in uiComponents) {
-            val somNodeId = somGraphService.saveNode(
-                SomDto(
-                    kioskId = context.kioskId,
-                    minX = uiComponent.bbox.coordinate.minX, minY = uiComponent.bbox.coordinate.minY,
-                    maxX = uiComponent.bbox.coordinate.maxX, maxY = uiComponent.bbox.coordinate.maxY,
-                    content = uiComponent.contents
-                )
-            )
-            screenGraphService.saveRel(screenNodeId, somNodeId, NodeType.SOM)
-        }
-        for (ocrComponent in ocrComponents) {
-            val ocrNodeId = ocrGraphService.saveNode(
-                OcrDto(
-                    minX = ocrComponent.bbox.coordinate.minX, minY = ocrComponent.bbox.coordinate.minY,
-                    maxX = ocrComponent.bbox.coordinate.maxX, maxY = ocrComponent.bbox.coordinate.maxY,
-                    content = ocrComponent.contents
-                )
-            ).id
-            screenGraphService.saveRel(screenNodeId, ocrNodeId, NodeType.OCR)
-        }
-        for (yoloComponent in yoloComponents) {
-            val yoloNode = yoloGraphService.saveNode(
-                YoloDto(
-                    kioskId = context.kioskId,
-                    minX = yoloComponent.bbox.coordinate.minX, minY = yoloComponent.bbox.coordinate.minY,
-                    maxX = yoloComponent.bbox.coordinate.maxX, maxY = yoloComponent.bbox.coordinate.maxY,
-                )
-            ).id
-            screenGraphService.saveRel(screenNodeId, yoloNode, NodeType.YOLO)
-        }
+        connectSom(context, uiComponents)
+        connectOcr(context, ocrComponents)
+        connectYolo(context, ocrComponents)
     }
 
     fun linkNode(kioskId: String, nodeId: String, screenNodeId: String, uiComponentParams: UiComponentParams) {
@@ -86,5 +58,45 @@ class ScreenNodeGenerator @Autowired constructor(
         )
         uiGraphService.saveRel(nodeId, somNodeId, NodeRelationType.MATCH_TO)
         uiGraphService.saveRel(nodeId, screenNodeId, NodeRelationType.IMAGE_TO)
+    }
+
+    private fun connectSom(context: GraphContext, uiComponents: List<DetectorUiComponentDto>) {
+        for (uiComponent in uiComponents) {
+            val somNodeId = somGraphService.saveNode(
+                SomDto(
+                    kioskId = context.kioskId,
+                    minX = uiComponent.bbox.coordinate.minX, minY = uiComponent.bbox.coordinate.minY,
+                    maxX = uiComponent.bbox.coordinate.maxX, maxY = uiComponent.bbox.coordinate.maxY,
+                    content = uiComponent.contents
+                )
+            )
+            screenGraphService.saveRel(context.screenNodeId, somNodeId, NodeType.SOM)
+        }
+    }
+
+    private fun connectOcr(context: GraphContext, ocrComponents: List<DetectorUiComponentDto>) {
+        for (ocrComponent in ocrComponents) {
+            val ocrNodeId = ocrGraphService.saveNode(
+                OcrDto(
+                    minX = ocrComponent.bbox.coordinate.minX, minY = ocrComponent.bbox.coordinate.minY,
+                    maxX = ocrComponent.bbox.coordinate.maxX, maxY = ocrComponent.bbox.coordinate.maxY,
+                    content = ocrComponent.contents
+                )
+            ).id
+            screenGraphService.saveRel(context.screenNodeId, ocrNodeId, NodeType.OCR)
+        }
+    }
+
+    private fun connectYolo(context: GraphContext, yoloComponents: List<DetectorUiComponentDto>) {
+        for (yoloComponent in yoloComponents) {
+            val yoloNode = yoloGraphService.saveNode(
+                YoloDto(
+                    kioskId = context.kioskId,
+                    minX = yoloComponent.bbox.coordinate.minX, minY = yoloComponent.bbox.coordinate.minY,
+                    maxX = yoloComponent.bbox.coordinate.maxX, maxY = yoloComponent.bbox.coordinate.maxY,
+                )
+            ).id
+            screenGraphService.saveRel(context.screenNodeId, yoloNode, NodeType.YOLO)
+        }
     }
 }
