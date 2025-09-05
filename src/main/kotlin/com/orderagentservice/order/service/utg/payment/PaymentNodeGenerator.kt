@@ -10,7 +10,6 @@ import com.orderagentservice.order.model.log.NodeSaveLog
 import com.orderagentservice.order.model.type.NodeType
 import com.orderagentservice.order.model.type.SpecialNodeType
 import com.orderagentservice.order.service.graph.ui.UiGraphService
-import com.orderagentservice.order.service.utg.OcrNodeGenerator
 import com.orderagentservice.order.service.utg.ScreenNodeGenerator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -20,7 +19,6 @@ class PaymentNodeGenerator @Autowired constructor(
     private val graphService: UiGraphService,
     private val logService: LogService,
     private val screenNodeGenerator: ScreenNodeGenerator,
-    private val ocrNodeGenerator: OcrNodeGenerator
 ) {
     fun createPaymentNode(action: AgentActionDto, context: GraphContext) {
         val (x, y) = action.coordinate

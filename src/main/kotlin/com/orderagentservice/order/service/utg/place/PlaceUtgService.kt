@@ -1,6 +1,7 @@
 package com.orderagentservice.order.service.utg.place
 
 import com.orderagentservice.agent.PlaceAgent
+import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.global.service.LogService
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.type.NodeRelationType
@@ -44,7 +45,15 @@ class PlaceUtgService @Autowired constructor(
         }
 
         //포장 / 매장 UI 탐색
-        for (act in action) {
+        navigatePlace(context, action)
+        context.isPlaceDetermined = true
+
+        //키오스크에 따라 버튼을 클릭해야 넘어가는 경우가 있으므로 클릭
+        notificationService.sendActionCommand(kioskId, CoordinateDto(action[0].coordinate[0], action[0].coordinate[1], action[0].title))
+    }
+
+    private fun navigatePlace(context: GraphContext, actions: List<AgentActionDto>) {
+        for (act in actions) {
             val (x, y) = act.coordinate
             val (minX, minY, maxX, maxY) = act.bbox
 
@@ -53,7 +62,7 @@ class PlaceUtgService @Autowired constructor(
                     isNext = false,
                     x = x, y = y,
                     title = act.title,
-                    kioskId = kioskId
+                    kioskId = context.kioskId
                 )
             )
             graphService.saveRel(context.lastNodeId!!, node.id, NodeRelationType.HAS_TO)
@@ -79,9 +88,5 @@ class PlaceUtgService @Autowired constructor(
                 )
             )
         }
-        context.isPlaceDetermined = true
-
-        //키오스크에 따라 버튼을 클릭해야 넘어가는 경우가 있으므로 클릭
-        notificationService.sendActionCommand(kioskId, CoordinateDto(action[0].coordinate[0], action[0].coordinate[1], action[0].title))
     }
 }

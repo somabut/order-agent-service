@@ -21,7 +21,6 @@ import org.springframework.stereotype.Component
 class MenuNodeGenerator @Autowired constructor(
     private val uiGraphService: UiGraphService,
     private val logService: LogService,
-    private val screenNodeGenerator: ScreenNodeGenerator,
 ) {
     fun createCategoryNode(matchDto: WordMatchDto, title: String, context: GraphContext): NodeCreationResult {
         logService.printLog(
@@ -45,6 +44,7 @@ class MenuNodeGenerator @Autowired constructor(
         uiGraphService.saveRel(context.stationNodeId!!, node.id, NodeRelationType.PATH_TO)
         uiGraphService.saveRel(node.id, context.stationNodeId!!, NodeRelationType.PATH_TO)
 
+        //현재 노드 갱신
         context.currentCategory = node.title
         context.lastNodeId = node.id
 
