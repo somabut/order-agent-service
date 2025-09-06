@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class PaymentUtgService @Autowired constructor(
     private val paymentNavigator: PaymentNavigator,
+    private val paymentEditor: PaymentEditor,
     private val logService: LogService,
     private val usageTracker: UsageTracker
 ) {
@@ -40,5 +41,9 @@ class PaymentUtgService @Autowired constructor(
                 totalTokenUsage = usageTracker.totalUsage
             )
         )
+    }
+
+    fun updatePayment(context: GraphContext, updatedUi: String) {
+        paymentEditor.editPayment(context, updatedUi)
     }
 }

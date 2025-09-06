@@ -4,8 +4,10 @@ import com.orderagentservice.agent.model.UsageTracker
 import com.orderagentservice.global.model.response.ApiResponse
 import com.orderagentservice.logger
 import com.orderagentservice.order.exception.KioskAdminSignInException
+import com.orderagentservice.order.model.request.CategoryUtgUpdateRequest
+import com.orderagentservice.order.model.request.MenuUtgUpdateRequest
+import com.orderagentservice.order.model.request.PaymentUtgUpdateRequest
 import com.orderagentservice.order.model.type.OverlayType
-import com.orderagentservice.order.model.request.UtgUpdateRequest
 import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.auto.RandomTaskService
 import com.orderagentservice.order.service.utg.UtgService
@@ -31,20 +33,47 @@ class UtgController @Autowired constructor(
         notificationService.sendOverlayCommand(kioskId, OverlayType.UTG_START.title)
         val history = utgService.initializeGraph(kioskId, accessToken)
         notificationService.sendOverlayCommand(kioskId, OverlayType.UTG_END.title)
+
         log.info("전체 토큰 사용량: ${usageTracker.totalUsage}")
         return ApiResponse.success(history)
     }
 
-    @PostMapping("/utg/update/{kioskId}")
-    fun updateUtg(
+    @PostMapping("/utg/update/category/{kioskId}")
+    fun updateCategoryUtg(
         @PathVariable kioskId: String,
-        @RequestHeader("Authorization", required = false) accessToken: String?,
-        @RequestBody utgUpdateRequest: UtgUpdateRequest
+        @RequestBody categoryUtgUpdateRequest: CategoryUtgUpdateRequest
     ): ApiResponse<*> {
-        if (accessToken == null) throw KioskAdminSignInException()
+        val history = utgService.updateCategoryGraph(
+            kioskId = kioskId,
+            categoryList = categoryUtgUpdateRequest.categoryList,
+            pendingMenus = categoryUtgUpdateRequest.pendingList,
+            isInitPayment = categoryUtgUpdateRequest.initPayment
+        )
 
-        val history = utgService.updateGraph(kioskId, utgUpdateRequest.editCategories, accessToken)
-        log.info("전체 토큰 사용량: ${usageTracker.totalUsage}")
+        return ApiResponse.success(history)
+    }
+
+    @PostMapping("/utg/update/menu/{kioskId}")
+    fun updateMenuUtg(
+        @PathVariable kioskId: String,
+        @RequestBody menuUtgUpdateRequest: MenuUtgUpdateRequest
+    ): ApiResponse<*> {
+        val history = utgService.updateMenuGraph(
+            kioskId = kioskId,
+            updatedMenus = menuUtgUpdateRequest.updatedMenus,
+            pendingMenus = menuUtgUpdateRequest.pendingMenus,
+            isInitPayment = menuUtgUpdateRequest.initPayment
+        )
+
+        return ApiResponse.success(history)
+    }
+
+    @PostMapping("/utg/update/menu/{kioskId}")
+    fun updatePaymentUtg(
+        @PathVariable kioskId: String,
+        @RequestBody paymentUtgUpdateRequest: PaymentUtgUpdateRequest
+    ): ApiResponse<*> {
+        val history = utgService.updatePaymentGraph(kioskId, paymentUtgUpdateRequest.updatedTitle)
         return ApiResponse.success(history)
     }
 

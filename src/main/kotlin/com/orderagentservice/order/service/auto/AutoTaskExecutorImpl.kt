@@ -11,6 +11,7 @@ import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.graph.ui.UiGraphService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import javax.swing.Action
 
 @Component
 class AutoTaskExecutorImpl @Autowired constructor(
@@ -18,6 +19,16 @@ class AutoTaskExecutorImpl @Autowired constructor(
     private val notificationService: NotificationService,
     private val orderLogSender: OrderLogSender
 ) : AutoTaskExecutor {
+    override fun clickCategory(context: AutoOrderContext, category: String): String {
+        val actionList = graphService.findPath(context.kioskId, context.nodeId, category)
+
+        val last = actionList.last()
+        for (act in actionList) {
+            notificationService.sendActionCommand(context.kioskId, CoordinateDto(act.x, act.y, act.title))
+        }
+        return last.id
+    }
+
     override fun clickMenu(context: AutoOrderContext, menu: AutoOrderMenu): ActionPathDto {
         orderLogSender.logOrder(
             kioskId = context.kioskId, taskId = context.taskId,

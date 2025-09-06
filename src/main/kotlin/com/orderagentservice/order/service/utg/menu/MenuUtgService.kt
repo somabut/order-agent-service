@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class MenuUtgService @Autowired constructor(
     private val menuNavigator: MenuNavigator,
+    private val menuEditor: MenuEditor,
     private val placeUtgService: PlaceUtgService,
     private val graphService: UiGraphService,
     private val logService: LogService,
@@ -60,6 +61,23 @@ class MenuUtgService @Autowired constructor(
                 totalTokenUsage = usageTracker.totalUsage
             )
         )
+    }
+
+    fun updateCategory(context: GraphContext, categoryList: List<String>, pendingList: List<MenuInfoDto>) {
+        //수정된 카테고리까지 가서 메뉴 노드 그리기
+        menuEditor.editCategories(context, categoryList, pendingList)
+
+        //남은 노드는 일반 탐색
+        val remainList = pendingList.filter { it.category !in categoryList }
+        menuNavigator.navigateMenus(context, remainList)
+    }
+
+    fun updateMenu(context: GraphContext, updatedMenus: List<MenuInfoDto>, pendingMenus: List<MenuInfoDto>) {
+        //수정된 메뉴까지 가서 옵션 노드 그리기
+        menuEditor.editMenus(context, updatedMenus)
+
+        //이후 아직 탐색 못한 메뉴 탐색
+        menuNavigator.navigateMenus(context, pendingMenus)
     }
 
     @Transactional
