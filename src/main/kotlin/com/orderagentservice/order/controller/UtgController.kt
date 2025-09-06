@@ -68,7 +68,7 @@ class UtgController @Autowired constructor(
         return ApiResponse.success(history)
     }
 
-    @PostMapping("/utg/update/menu/{kioskId}")
+    @PostMapping("/utg/update/payment/{kioskId}")
     fun updatePaymentUtg(
         @PathVariable kioskId: String,
         @RequestBody paymentUtgUpdateRequest: PaymentUtgUpdateRequest
