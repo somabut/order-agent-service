@@ -6,6 +6,7 @@ import com.orderagentservice.order.model.request.AutoOrderMenu
 import com.orderagentservice.order.model.request.AutoOrderOption
 
 interface AutoTaskExecutor {
+    fun clickCategory(context: AutoOrderContext, category: String): String
     fun clickMenu(context: AutoOrderContext, menu: AutoOrderMenu): ActionPathDto
     fun clickOption(context: AutoOrderContext, options: List<AutoOrderOption>, menuNodeId: String): String
     fun clickBack(context: AutoOrderContext, menuNodeId: String): String

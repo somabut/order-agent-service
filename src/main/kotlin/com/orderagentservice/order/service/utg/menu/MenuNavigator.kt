@@ -13,6 +13,7 @@ import com.orderagentservice.order.model.log.UtgNowMenuLog
 import com.orderagentservice.order.model.log.UtgProcessLog
 import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.graph.ui.UiGraphService
+import com.orderagentservice.order.service.utg.PageChecker
 import com.orderagentservice.order.service.utg.ScreenNodeGenerator
 import com.orderagentservice.order.service.utg.UiDetectorManager
 import com.orderagentservice.order.service.utg.WordSimilarityService
@@ -24,9 +25,9 @@ class MenuNavigator @Autowired constructor(
     private val menuActionExecutor: MenuActionExecutor,
     private val uiDetectorManager: UiDetectorManager,
     private val graphService: UiGraphService,
-    private val wordSimilarityService: WordSimilarityService,
     private val notificationService: NotificationService,
     private val screenNodeGenerator: ScreenNodeGenerator,
+    private val pageChecker: PageChecker,
     private val logService: LogService
 ) {
     private val MAX_LOOP = 5
@@ -69,7 +70,7 @@ class MenuNavigator @Autowired constructor(
         context.lastNodeId = context.stationNodeId
     }
 
-    private fun handleModal(
+    fun handleModal(
         context: GraphContext,
         menuDto: MenuInfoDto,
         menuList: List<MenuInfoDto>,
@@ -83,7 +84,7 @@ class MenuNavigator @Autowired constructor(
             //옵션이 없는 경우
 
             //모달처리
-            if (checkMenuPage(menuDto, menuList, uiList) == false) {
+            if (pageChecker.checkMenuPage(menuDto, menuList, uiList) == false) {
                 logService.printLog(
                     UtgProcessLog(
                         kioskId = context.kioskId,
@@ -102,7 +103,7 @@ class MenuNavigator @Autowired constructor(
             //옵션이 있는 경우
 
             //모달처리
-            if (checkOptionPage(menuDto.options, uiList) == false) {
+            if (pageChecker.checkOptionPage(menuDto.options, uiList) == false) {
                 logService.printLog(
                     UtgProcessLog(
                         kioskId = context.kioskId,
@@ -123,7 +124,7 @@ class MenuNavigator @Autowired constructor(
             //옵션을 선택하고 원래 페이지도 이동
             var count = 0
             uiList = uiDetectorManager.getUiComponents(context).uiElements
-            while (checkMenuPage(menuDto, menuList, uiList) == false) {
+            while (pageChecker.checkMenuPage(menuDto, menuList, uiList) == false) {
                 if (count >= MAX_LOOP) {
                     throw UtgInfiniteLoopException()
                 }
@@ -151,25 +152,5 @@ class MenuNavigator @Autowired constructor(
         //해당 카테고리의 메뉴 제거
         val categoryId = actionList.last().id
         graphService.deleteMenusByCategory(context.kioskId, categoryId)
-    }
-
-    private fun checkMenuPage(menuDto: MenuInfoDto, menuList: List<MenuInfoDto>, uiList: List<UiComponentDto>): Boolean {
-        val sourceList = getMenusByCategory(menuDto, menuList)
-
-        val result = wordSimilarityService.determinePage(sourceList, uiList)
-        return result
-    }
-
-    private fun checkOptionPage(optionList: List<String>, uiList: List<UiComponentDto>): Boolean {
-        val result = wordSimilarityService.determinePage(optionList, uiList)
-        return result
-    }
-
-    private fun getMenusByCategory(menuDto: MenuInfoDto, menuList: List<MenuInfoDto>): List<String> {
-        val filteredList = menuList
-            .filter { it.category == menuDto.category }
-            .map { it.title }
-
-        return filteredList
     }
 }

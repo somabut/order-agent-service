@@ -3,10 +3,11 @@ package com.orderagentservice.order.service.utg
 import com.orderagentservice.agent.model.UsageTracker
 import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.global.service.LogService
-import com.orderagentservice.logger
 import com.orderagentservice.order.model.GraphContext
+import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.log.UtgEndLog
 import com.orderagentservice.order.model.log.UtgStartLog
+import com.orderagentservice.order.model.type.UpdateType
 import com.orderagentservice.order.model.type.UtgType
 import com.orderagentservice.order.service.MenuService
 import com.orderagentservice.order.service.utg.menu.MenuUtgService
@@ -18,12 +19,11 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class UtgService @Autowired constructor(
     private val menuService: MenuService,
-    private val menuGraphService: MenuUtgService,
+    private val menuUtgService: MenuUtgService,
     private val paymentUtgService: PaymentUtgService,
     private val logService: LogService,
     private val usageTracker: UsageTracker
 ) {
-    @Transactional
     fun initializeGraph(kioskId: String, accessToken: String): List<AgentActionDto> {
         logService.printLog(
             UtgStartLog(
@@ -38,7 +38,7 @@ class UtgService @Autowired constructor(
 
         val context = GraphContext.toBasicContext(kioskId)
 
-        menuGraphService.initializeGraph(
+        menuUtgService.initializeGraph(
             context = context,
             menuList = menuList
         )
@@ -57,13 +57,30 @@ class UtgService @Autowired constructor(
         return context.history
     }
 
-    @Transactional
-    fun updateGraph(kioskId: String, editCategories: List<String>, accessToken: String) {
+    fun updateCategoryGraph(kioskId: String, categoryList: List<String>, pendingMenus: List<MenuInfoDto>, isInitPayment: Boolean): List<AgentActionDto> {
         val context = GraphContext.toBasicContext(kioskId)
-
-        for (category in editCategories) {
-            val menuList = menuService.getMenusByCategory(kioskId, category, accessToken)
-            menuGraphService.updateGraph(context, menuList)
+        menuUtgService.updateCategory(context, categoryList, pendingMenus)
+        if (isInitPayment) {
+            paymentUtgService.initializeGraph(context)
         }
+
+        return context.history
+    }
+
+    fun updateMenuGraph(kioskId: String, updatedMenus: List<MenuInfoDto>, pendingMenus: List<MenuInfoDto>, isInitPayment: Boolean): List<AgentActionDto> {
+        val context = GraphContext.toBasicContext(kioskId)
+        menuUtgService.updateMenu(context, updatedMenus, pendingMenus)
+        if (isInitPayment) {
+            paymentUtgService.initializeGraph(context)
+        }
+
+        return context.history
+    }
+
+    fun updatePaymentGraph(kioskId: String, updatedUi: String): List<AgentActionDto> {
+        val context = GraphContext.toBasicContext(kioskId)
+        paymentUtgService.updatePayment(context, updatedUi)
+
+        return context.history
     }
 }
