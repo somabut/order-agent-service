@@ -27,8 +27,6 @@ class MenuUtgService @Autowired constructor(
     private val logService: LogService,
     private val usageTracker: UsageTracker
 )  {
-
-    @Transactional
     fun initializeGraph(context: GraphContext, menuList: List<MenuInfoDto>) {
         logService.printLog(
             UtgStartLog(
@@ -78,36 +76,6 @@ class MenuUtgService @Autowired constructor(
 
         //이후 아직 탐색 못한 메뉴 탐색
         menuNavigator.navigateMenus(context, pendingMenus)
-    }
-
-    @Transactional
-    fun updateGraph(context: GraphContext, categoryMenuList: List<MenuInfoDto>) {
-        logService.printLog(
-            UtgStartLog(
-                kioskId = context.kioskId,
-                utgType = UtgType.UPDATE
-            )
-        )
-        val startTime = System.nanoTime()
-
-        val nowNodeId = graphService.findRoot(context.kioskId).id
-        context.lastNodeId = nowNodeId
-
-        //카테고리로 이동
-        menuNavigator.moveCategory(context, categoryMenuList)
-
-        //해당 페이지에서 메뉴 탐색
-        menuNavigator.navigateMenus(context, categoryMenuList)
-
-        val endTime = System.nanoTime()
-        logService.printLog(
-            UtgEndLog(
-                kioskId = context.kioskId,
-                utgType = UtgType.UPDATE,
-                processingTime = (endTime - startTime) / 1000000,
-                totalTokenUsage = usageTracker.totalUsage
-            )
-        )
     }
 
     private fun setupNode(context: GraphContext) {

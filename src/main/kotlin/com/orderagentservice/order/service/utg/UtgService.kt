@@ -24,7 +24,6 @@ class UtgService @Autowired constructor(
     private val logService: LogService,
     private val usageTracker: UsageTracker
 ) {
-    @Transactional
     fun initializeGraph(kioskId: String, accessToken: String): List<AgentActionDto> {
         logService.printLog(
             UtgStartLog(

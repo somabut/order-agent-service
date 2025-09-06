@@ -20,7 +20,6 @@ class PaymentUtgService @Autowired constructor(
     private val logService: LogService,
     private val usageTracker: UsageTracker
 ) {
-    @Transactional
     fun initializeGraph(context: GraphContext) {
         logService.printLog(
             UtgStartLog(
