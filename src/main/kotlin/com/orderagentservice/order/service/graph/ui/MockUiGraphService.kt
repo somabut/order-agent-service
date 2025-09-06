@@ -4,6 +4,7 @@ import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.dto.ActionPathDto
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.entity.UiEntity
+import com.orderagentservice.order.model.type.NodeType
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
 
@@ -13,7 +14,8 @@ class MockUiGraphService : UiGraphService {
     override fun saveNode(uiDto: UiDto): UiEntity {
         val uiEntity = UiEntity(
             x = uiDto.x, y = uiDto.y, isNext = uiDto.isNext,
-            title = uiDto.title, kioskId = uiDto.kioskId
+            title = uiDto.title, kioskId = uiDto.kioskId,
+            type = NodeType.ROOT.name
         )
         return uiEntity
     }

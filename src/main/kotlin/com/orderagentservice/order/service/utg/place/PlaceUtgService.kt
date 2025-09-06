@@ -62,7 +62,8 @@ class PlaceUtgService @Autowired constructor(
                     isNext = false,
                     x = x, y = y,
                     title = act.title,
-                    kioskId = context.kioskId
+                    kioskId = context.kioskId,
+                    type = NodeType.PLACE
                 )
             )
             graphService.saveRel(context.lastNodeId!!, node.id, NodeRelationType.HAS_TO)
