@@ -1,6 +1,7 @@
 package com.orderagentservice.order.service.utg.menu
 
 import com.orderagentservice.agent.BackAgent
+import com.orderagentservice.agent.model.dto.AgentBackDto
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.service.LogService
 import com.orderagentservice.order.model.GraphContext
@@ -92,12 +93,11 @@ class MenuActionExecutorImpl @Autowired constructor(
     ): String {
         val kioskId = context.kioskId
 
-        //다시 원래 페이지로 돌아가야 하므로 backAgent를 통해 이전 페이지로 돌아가기
-        val agentUiList = uiList
-        val backAction = backAgent.determineAction(agentUiList)
+        //캐시된 것이 있는 지 확인
+        val backUi = cacheBackUi(context, uiList)
 
         //노드 생성
-        val creationResult = menuNodeGenerator.createBackNode(backAction, menuNodeId, context)
+        val creationResult = menuNodeGenerator.createBackNode(backUi, menuNodeId, context)
 
         //match 노드와 관계, screen 노드와 관계 연결
         screenNodeGenerator.linkNode(
@@ -109,9 +109,10 @@ class MenuActionExecutorImpl @Autowired constructor(
         //sse를 통해 클라이언트에게 원래 페이지로 돌아가는 좌표 클릭하도록 하기
         logService.printLog(UtgProcessLog(
             kioskId = kioskId,
-            message = "돌아가는 좌표를 클릭중입니다. 좌표: ${backAction.coordinate}"
+            message = "돌아가는 좌표를 클릭중입니다. 좌표: ${backUi.coordinate}"
         ))
-        notificationService.sendActionCommand(kioskId, CoordinateDto(backAction.coordinate[0], backAction.coordinate[1], backAction.title))
+        val (x, y) = backUi.coordinate
+        notificationService.sendActionCommand(kioskId, CoordinateDto(x, y, backUi.title))
 
         return creationResult.nodeId
     }
@@ -153,5 +154,31 @@ class MenuActionExecutorImpl @Autowired constructor(
         nodeId = selectBack(context, nodeId, nextUiList)
 
         return nodeId
+    }
+
+    private fun cacheBackUi(context: GraphContext, uiList: List<UiComponentDto>): AgentBackDto {
+        var backUi: AgentBackDto
+        if (context.menuBackUi == null) {
+            //다시 원래 페이지로 돌아가야 하므로 backAgent를 통해 이전 페이지로 돌아가기
+            val agentUiList = uiList
+            val backAction = backAgent.determineAction(agentUiList)
+            context.menuBackUi = backAction.title
+
+            backUi = AgentBackDto(
+                score = backAction.score,
+                coordinate = backAction.coordinate, bbox = backAction.bbox,
+                title = backAction.title
+            )
+        } else {
+            //UI가 캐싱된 경우
+            val matchDto = wordSimilarityService.findBestMatch(context.menuBackUi!!, uiList)
+            backUi = AgentBackDto(
+                score = 1.0F,
+                coordinate = listOf(matchDto.x, matchDto.y), bbox = listOf(matchDto.minX, matchDto.minY, matchDto.maxX, matchDto.maxY),
+                title = matchDto.title
+            )
+        }
+
+        return backUi
     }
 }

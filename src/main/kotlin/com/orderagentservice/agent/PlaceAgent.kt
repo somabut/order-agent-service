@@ -1,6 +1,7 @@
 package com.orderagentservice.agent
 
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.orderagentservice.agent.model.UsageTracker
 import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.model.dto.AgentPlaceDto
 import com.orderagentservice.agent.model.dto.AgentUiDto
@@ -14,13 +15,15 @@ import org.springframework.stereotype.Component
 
 @Component
 class PlaceAgent @Autowired constructor(
-    private val llmManager: LlmManager
+    private val llmManager: LlmManager,
+    private val usageTracker: UsageTracker
 ) {
-    private val log = logger()
-
     fun determineAction(uiList: List<UiComponentDto>): List<AgentPlaceDto> {
         val prompt = getPrompt(uiList)
-        val json = llmManager.query(prompt)
+        val answer = llmManager.query(prompt)
+        val json = answer.content
+        usageTracker.totalUsage += answer.usage
+
         val response: List<AgentPlaceDto> = jsonMapper.readValue<List<AgentPlaceDto>>(json)
         return response
     }

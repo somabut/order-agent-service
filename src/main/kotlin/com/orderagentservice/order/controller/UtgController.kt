@@ -46,7 +46,7 @@ class UtgController @Autowired constructor(
         val history = utgService.updateCategoryGraph(
             kioskId = kioskId,
             categoryList = categoryUtgUpdateRequest.categoryList,
-            pendingMenus = categoryUtgUpdateRequest.pendingList,
+            pendingMenus = categoryUtgUpdateRequest.pendingMenus,
             isInitPayment = categoryUtgUpdateRequest.initPayment
         )
 

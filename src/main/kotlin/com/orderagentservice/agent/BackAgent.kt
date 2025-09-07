@@ -1,31 +1,67 @@
 package com.orderagentservice.agent
 
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.orderagentservice.agent.model.UsageTracker
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.agent.model.dto.AgentBackDto
 import com.orderagentservice.agent.model.dto.AgentUiDto
+import com.orderagentservice.agent.model.response.LlmResponse
 import com.orderagentservice.agent.util.LlmManager
 import com.orderagentservice.jsonMapper
 import com.orderagentservice.logger
 import com.orderagentservice.order.exception.LlmParseException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.runBlocking
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import java.util.concurrent.atomic.AtomicInteger
 
 @Component
 class BackAgent @Autowired constructor(
-    private val llmManager: LlmManager
+    private val llmManager: LlmManager,
+    private val usageTracker: UsageTracker
 ) {
-    private val log = logger()
-
     fun determineAction(uiList: List<UiComponentDto>): AgentBackDto {
-        val prompt = getPrompt(uiList)
-        val json = llmManager.query(prompt)
-        try {
-            val response: AgentBackDto = jsonMapper.readValue<AgentBackDto>(json)
-            return response
-        } catch (e: Exception) {
-            throw LlmParseException()
+        var responses: List<LlmResponse>
+        runBlocking {
+            val jobs = (1..5).map {
+                async(Dispatchers.IO) {
+                    val prompt = getPrompt(uiList)
+                    val answer = llmManager.query(prompt)
+
+                    answer
+                }
+            }
+
+            responses = jobs.awaitAll()
         }
+
+        val sum = responses.sumOf { it.usage }
+        val backList = responses.map {
+            try {
+                val response: AgentBackDto = jsonMapper.readValue<AgentBackDto>(it.content)
+                response
+            } catch (e: Exception) {
+                throw LlmParseException()
+            }
+        }
+
+        usageTracker.totalUsage += sum
+        val result = findMostAnswer(backList)
+
+        return result
+    }
+
+    private fun findMostAnswer(responses: List<AgentBackDto>): AgentBackDto {
+        val mostTitle = responses
+            .groupingBy { it.title }
+            .eachCount()
+            .maxByOrNull { it.value } ?.key
+
+        val result = responses.first { it.title == mostTitle }
+        return result
     }
 
     private fun getPrompt(uiList: List<UiComponentDto>): String {
@@ -82,7 +118,6 @@ class BackAgent @Autowired constructor(
                     {"coordinate":[123, 87], "title":"결제하기", "bbox":[75, 77, 171, 97]},
                     {"coordinate":[788, 43], "title":"취소", "bbox":[764, 33, 812, 63]},
                     {"coordinate":[129, 74], "title":"차슈 추가 5000원-", "bbox":[57, 64, 201, 84]}
-]
                 ]):
             ```json
             {

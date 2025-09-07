@@ -24,6 +24,7 @@ class MenuEditor @Autowired constructor(
     private val graphService: UiGraphService
 ) {
     fun editCategories(context: GraphContext, categoryList: List<String>, pendingList: List<MenuInfoDto>) {
+        //root와 station 가져오기
         val nowNodeId = graphService.findRoot(context.kioskId).id
         context.stationNodeId = graphService.findStation(context.kioskId).id
         val autoContext = AutoOrderContext.toBasicContext(
@@ -48,6 +49,7 @@ class MenuEditor @Autowired constructor(
     }
 
     fun editMenus(context: GraphContext, menuList: List<MenuInfoDto>) {
+        //root와 station 가져오기
         val nowNodeId = graphService.findRoot(context.kioskId).id
         context.stationNodeId = graphService.findStation(context.kioskId).id
         val autoContext = AutoOrderContext.toBasicContext(

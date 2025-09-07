@@ -27,8 +27,11 @@ class BackAgentTest @Autowired constructor(
         )
 
         //when: llm에게 질의
+        val start = System.currentTimeMillis()
         val response = backAgent.determineAction(uiList)
+        val end = System.currentTimeMillis()
         println(response)
+        println("실행 시간: ${end - start} ms")
 
         //then: 올바른 액션 반환
         assertThat(response.title).isEqualTo("다음으로")

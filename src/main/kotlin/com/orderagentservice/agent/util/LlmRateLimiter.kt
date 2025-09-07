@@ -28,7 +28,6 @@ class LlmRateLimiter @Autowired constructor(
     private val geminiCurrentKeyIndex = AtomicInteger(0)
 
     private val GPT_API_KEY = env.getProperty("agent.openai.api-key")!!
-
     private val CLAUD_API_KEY = env.getProperty("agent.claud.api-key")!!
 
     init {
