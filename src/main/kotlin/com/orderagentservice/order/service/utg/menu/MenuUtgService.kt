@@ -91,7 +91,8 @@ class MenuUtgService @Autowired constructor(
             isNext = true,
             x = -1, y = -1,
             kioskId = kioskId,
-            title = SpecialNodeType.ROOT.title
+            title = SpecialNodeType.ROOT.title,
+            type = NodeType.ROOT
         )
         context.lastNodeId = graphService.saveNode(rootUiDto).id
 
@@ -106,7 +107,8 @@ class MenuUtgService @Autowired constructor(
             isNext = true,
             x = -1, y = -1,
             kioskId = kioskId,
-            title = SpecialNodeType.STATION.title
+            title = SpecialNodeType.STATION.title,
+            type = NodeType.STATION
         )
         context.stationNodeId = graphService.saveNode(stationNode).id
 

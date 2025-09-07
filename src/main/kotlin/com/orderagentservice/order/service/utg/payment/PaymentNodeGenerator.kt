@@ -37,7 +37,8 @@ class PaymentNodeGenerator @Autowired constructor(
                 isNext = action.goNext,
                 x = x, y = y,
                 title = action.title,
-                kioskId = context.kioskId
+                kioskId = context.kioskId,
+                type = NodeType.PAYMENT
             )
         )
         graphService.saveRel(context.lastNodeId!!, node.id, NodeRelationType.PATH_TO)
@@ -69,7 +70,8 @@ class PaymentNodeGenerator @Autowired constructor(
                 isNext = false,
                 x = -1, y = -1,
                 title = SpecialNodeType.COMPLETE.title,
-                kioskId = context.kioskId
+                kioskId = context.kioskId,
+                type = NodeType.COMPLETE
             )
         )
         graphService.saveRel(context.lastNodeId!!, completeEntity.id, NodeRelationType.PATH_TO)

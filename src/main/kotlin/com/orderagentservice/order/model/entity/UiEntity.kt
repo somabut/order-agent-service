@@ -30,6 +30,9 @@ class UiEntity(
     @Property("kioskId")
     val kioskId: String,
 
+    @Property("type")
+    val type: String,
+
     @Property("created_at")
     val createdAt: OffsetDateTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toOffsetDateTime(),
 

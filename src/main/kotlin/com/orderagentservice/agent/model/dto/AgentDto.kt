@@ -23,11 +23,19 @@ data class AgentBackDto(
     )
 }
 
-data class AgentPageDto(
+data class AgentPlaceDto(
+    val goNext: Boolean,
     val score: Float,
-    val contain: Boolean
-)
-
-data class AgentStepDto(
-    val steps: List<String>
-)
+    val coordinate: List<Int>,
+    val bbox: List<Int>,
+    val origin: String,
+    val title: String
+) {
+    fun toActionDto() = AgentActionDto(
+        goNext = false,
+        score = score,
+        coordinate = coordinate,
+        bbox = bbox,
+        title = title
+    )
+}

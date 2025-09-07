@@ -2,6 +2,7 @@ package com.orderagentservice.agent
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.orderagentservice.agent.model.dto.AgentActionDto
+import com.orderagentservice.agent.model.dto.AgentPlaceDto
 import com.orderagentservice.agent.model.dto.AgentUiDto
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.agent.util.LlmManager
@@ -17,10 +18,10 @@ class PlaceAgent @Autowired constructor(
 ) {
     private val log = logger()
 
-    fun determineAction(uiList: List<UiComponentDto>): List<AgentActionDto> {
+    fun determineAction(uiList: List<UiComponentDto>): List<AgentPlaceDto> {
         val prompt = getPrompt(uiList)
         val json = llmManager.query(prompt)
-        val response: List<AgentActionDto> = jsonMapper.readValue<List<AgentActionDto>>(json)
+        val response: List<AgentPlaceDto> = jsonMapper.readValue<List<AgentPlaceDto>>(json)
         return response
     }
 
@@ -43,12 +44,13 @@ class PlaceAgent @Autowired constructor(
             9. Response logic:
                - If BOTH dine-in AND take-out UI are found: return both
                - If NEITHER can be found: return empty string
-               - Success: [{"title": "매장", "coordinate": [x, y], "bbox": [min_x, min_y, max_x, max_y]}, {"title": "포장", "coordinate": [x, y], "bbox": [min_x, min_y, max_x, max_y]}] 
+               - Success: [{"title": "매장", "coordinate": [x, y], "bbox": [min_x, min_y, max_x, max_y], "origin": ""}, {"title": "포장", "coordinate": [x, y], "bbox": [min_x, min_y, max_x, max_y], "origin": ""}] 
                  (See the example below for more detailed formatting)
-               - Not found: [{"title": "", "coordinate": [-1, -1], "bbox": [-1, -1, -1, -1]}] (See the example below for more detailed formatting)
+               - Not found: [{"title": "", "coordinate": [-1, -1], "bbox": [-1, -1, -1, -1], "origin": ""}] (See the example below for more detailed formatting)
+            10. Please add a field called 'origin' to each JSON object and put the original title value of the UI matched in the uiList in this field.
             
             'goNext' is always false, 'score' is the accuracy score, 'coordinate' is the UI coordinate, 'title' is a string that follows Rule 5.
-            'bbox' must be from 'uiList'. These value must never be returned to empty values.
+            'bbox' and 'origin' must be from 'uiList'. These value must never be returned to empty values.
              
              One Example(
                 ui_list: [
@@ -65,6 +67,7 @@ class PlaceAgent @Autowired constructor(
                     "score": 1.0,
                     "coordinate": [123, 87],
                     "bbox":[51, 77, 195, 97],
+                    "origin": "먹고가기",
                     "title": "매장"
                 },
                 {
@@ -72,6 +75,7 @@ class PlaceAgent @Autowired constructor(
                     "score": 1.0,
                     "coordinate": [120, 74],
                     "bbox":[36, 64, 204, 84],
+                    "origin": "포장하기",
                     "title": "포장"
                 }
             ]
@@ -92,6 +96,7 @@ class PlaceAgent @Autowired constructor(
                     "score": 1.0,
                     "coordinate": [210, 364],
                     "bbox":[186, 354, 234, 374],
+                    "origin": "매장",
                     "title": "매장"
                 },
                 {
@@ -99,6 +104,7 @@ class PlaceAgent @Autowired constructor(
                     "score": 1.0,
                     "coordinate": [123, 87],
                     "bbox":[99, 77, 147, 97],
+                    "origin": "포장"
                     "title": "포장"
                 }
             ]
@@ -119,6 +125,7 @@ class PlaceAgent @Autowired constructor(
                     "score": 0.9,
                     "coordinate": [-1, -1],
                     "bbox": [-1, -1, -1, -1],
+                    "origin": "",
                     "title": ""
                 }
             ]

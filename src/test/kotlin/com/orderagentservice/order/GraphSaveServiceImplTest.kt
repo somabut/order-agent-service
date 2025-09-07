@@ -2,6 +2,7 @@ package com.orderagentservice.order
 
 import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.dto.UiDto
+import com.orderagentservice.order.model.type.NodeType
 import com.orderagentservice.order.service.graph.ui.UiGraphService
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
@@ -99,7 +100,8 @@ class GraphSaveServiceImplTest @Autowired constructor(
             isNext = true,
             x = -1, y = -1,
             kioskId = "url",
-            title = "root"
+            title = "root",
+            type = NodeType.ROOT
         )
 
         //when: UI 노드를 저장한다.
@@ -115,13 +117,15 @@ class GraphSaveServiceImplTest @Autowired constructor(
             isNext = true,
             x = -1, y = -1,
             kioskId = "url",
-            title = "root1"
+            title = "root1",
+            type = NodeType.ROOT
         )
         val uiDto2 = UiDto(
             isNext = true,
             x = -1, y = -1,
             kioskId = "url",
-            title = "root2"
+            title = "root2",
+            type = NodeType.ROOT
         )
 
         //when: UI 노드를 저장하고 관계를 맺는다

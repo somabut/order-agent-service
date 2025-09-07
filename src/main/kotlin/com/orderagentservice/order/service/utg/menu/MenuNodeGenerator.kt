@@ -37,7 +37,8 @@ class MenuNodeGenerator @Autowired constructor(
                 isNext = true,
                 x = matchDto.x, y = matchDto.y,
                 title = title,
-                kioskId = context.kioskId
+                kioskId = context.kioskId,
+                type = NodeType.CATEGORY
             )
         )
 
@@ -72,7 +73,8 @@ class MenuNodeGenerator @Autowired constructor(
                 isNext = false,
                 x = matchDto.x, y = matchDto.y,
                 title = title,
-                kioskId = context.kioskId
+                kioskId = context.kioskId,
+                type = NodeType.MENU
             )
         )
         uiGraphService.saveRel(context.lastNodeId!!, node.id, NodeRelationType.HAS_TO)
@@ -100,7 +102,8 @@ class MenuNodeGenerator @Autowired constructor(
                 isNext = false,
                 x = matchDto.x, y = matchDto.y,
                 title = title,
-                kioskId = context.kioskId
+                kioskId = context.kioskId,
+                type = NodeType.OPTION
             )
         )
         uiGraphService.saveRel(menuNodeId, node.id, NodeRelationType.OPT_TO)
@@ -135,7 +138,8 @@ class MenuNodeGenerator @Autowired constructor(
                 isNext = false,
                 x = x, y = y,
                 title = action.title,
-                kioskId = context.kioskId
+                kioskId = context.kioskId,
+                type = NodeType.BACK
             )
         )
         uiGraphService.saveRel(menuNodeId, node.id, NodeRelationType.BACK_TO)
@@ -168,7 +172,8 @@ class MenuNodeGenerator @Autowired constructor(
             UiDto(
                 isNext = true, kioskId = context.kioskId,
                 x = matchDto.x, y = matchDto.y,
-                title = menuDto.title
+                title = menuDto.title,
+                type = NodeType.MODAL
             )
         )
         uiGraphService.saveRel(menuNodeId, node.id, NodeRelationType.HAS_TO)

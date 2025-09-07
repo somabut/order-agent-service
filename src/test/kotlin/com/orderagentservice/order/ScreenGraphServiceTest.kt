@@ -34,6 +34,7 @@ class ScreenGraphServiceTest @Autowired constructor(
                 isNext = false,
                 x = -1, y = -1, title = "",
                 kioskId = "kiosk",
+                type = NodeType.ROOT
             )
         ).id
         val screenNodeId = screenGraphService.saveNode(ScreenDto(
