@@ -1,6 +1,7 @@
 package com.orderagentservice.order
 
 import com.orderagentservice.order.model.dto.UiDto
+import com.orderagentservice.order.model.type.NodeType
 import com.orderagentservice.order.repository.ui.UiGraphRepository
 import com.orderagentservice.order.service.graph.ui.UiGraphService
 import org.assertj.core.api.Assertions
@@ -37,7 +38,8 @@ class GraphRepositoryTest @Autowired constructor(
             UiDto(
                 isNext = false,
                 x = -1, y = -1,
-                title = "test", kioskId = kioskId
+                title = "test", kioskId = kioskId,
+                type = NodeType.ROOT
             )
         )
         println(entity)
@@ -99,7 +101,8 @@ class GraphRepositoryTest @Autowired constructor(
         val dto = UiDto(
             isNext = false,
             x = -1, y = -1,
-            title = "title", kioskId = "id"
+            title = "title", kioskId = "id",
+            type = NodeType.ROOT
         )
         val result = graphService.saveNode(dto)
 //        Assertions.assertThat(result.kioskId).isEqualTo("TEST")

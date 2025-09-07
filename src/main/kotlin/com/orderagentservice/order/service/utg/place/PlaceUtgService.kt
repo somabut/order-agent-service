@@ -2,6 +2,7 @@ package com.orderagentservice.order.service.utg.place
 
 import com.orderagentservice.agent.PlaceAgent
 import com.orderagentservice.agent.model.dto.AgentActionDto
+import com.orderagentservice.agent.model.dto.AgentPlaceDto
 import com.orderagentservice.global.service.LogService
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.type.NodeRelationType
@@ -52,7 +53,7 @@ class PlaceUtgService @Autowired constructor(
         notificationService.sendActionCommand(kioskId, CoordinateDto(action[0].coordinate[0], action[0].coordinate[1], action[0].title))
     }
 
-    private fun navigatePlace(context: GraphContext, actions: List<AgentActionDto>) {
+    private fun navigatePlace(context: GraphContext, actions: List<AgentPlaceDto>) {
         for (act in actions) {
             val (x, y) = act.coordinate
             val (minX, minY, maxX, maxY) = act.bbox
@@ -75,11 +76,11 @@ class PlaceUtgService @Autowired constructor(
                 UiComponentParams(
                     minX = minX, minY = minY,
                     maxX = maxX, maxY = maxY,
-                    title = act.title
+                    title = act.origin
                 )
             )
 
-            context.history.add(act)
+            context.history.add(act.toActionDto())
             logService.printLog(
                 NodeSaveLog(
                     kioskId = context.kioskId,

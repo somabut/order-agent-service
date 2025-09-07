@@ -101,7 +101,7 @@ class UiDetectorManager @Autowired constructor(
                 log.error(e.message)
                 log.info("UI extractor service오류로 인해 재시도합니다. 대기 시간: $waitTime")
             }
-            Thread.sleep(waitTime)
+            Thread.sleep(waitTime * 1000L)
             waitTime *= 2
         }
         throw UiExtractException()
