@@ -4,7 +4,7 @@ import com.orderagentservice.order.model.dto.MenuInfoDto
 
 data class CategoryUtgUpdateRequest(
     val categoryList: List<String>,
-    val pendingList: List<MenuInfoDto>,
+    val pendingMenus: List<MenuInfoDto>,
     val initPayment: Boolean
 )
 

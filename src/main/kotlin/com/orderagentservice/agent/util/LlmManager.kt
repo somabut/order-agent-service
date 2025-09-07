@@ -25,7 +25,6 @@ import org.springframework.web.client.RestTemplate
 class LlmManager @Autowired constructor(
     private val env: Environment,
     private val llmRateLimiter: LlmRateLimiter,
-    private val usageTracker: UsageTracker
 ){
     private val log = logger()
 
@@ -33,9 +32,7 @@ class LlmManager @Autowired constructor(
     private val GPT_MODEL_NAME = env.getProperty("agent.openai.model-name")
     private val CLAUD_MODEL_NAME = env.getProperty("agent.claud.model-name")
 
-    private val CLAUD_API_KEY = env.getProperty("agent.claud.api-key")
-
-    fun query(prompt: String): String {
+    fun query(prompt: String): LlmResponse {
         return queryClaud(prompt)
 //        return queryGpt(prompt)
 //        return llmRateLimiter.executeWithLimit { apiKey ->
@@ -102,7 +99,7 @@ class LlmManager @Autowired constructor(
         }
     }
 
-    fun queryClaud(prompt: String, waitTime: Long = 2): String {
+    fun queryClaud(prompt: String, waitTime: Long = 2): LlmResponse {
         val request = ClaudRequest(
             model = CLAUD_MODEL_NAME!!,
             maxTokens = 2048,
@@ -130,9 +127,8 @@ class LlmManager @Autowired constructor(
         val text = response.content?.get(0)!!.text
         val usage = response.usage!!.inputTokens + response.usage.outputTokens
         log.info("$CLAUD_MODEL_NAME: [$usage]의 토큰을 사용했습니다.")
-        usageTracker.totalUsage += usage
 
         val json = text.replace("```json", "").replace("```", "").trim()
-        return json
+        return LlmResponse(json, usage)
     }
 }

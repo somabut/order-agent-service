@@ -68,7 +68,7 @@ class ScreenNodeGenerator @Autowired constructor(
     }
 
     private fun connectSom(context: GraphContext, uiComponents: List<DetectorUiComponentDto>) {
-        log.info("SOM을 Screen에 연결. {${context.screenNodeId}}")
+        log.info("SOM을 Screen에 연결. screen: ${context.screenNodeId}")
         for (uiComponent in uiComponents) {
             val somNodeId = somGraphService.saveNode(
                 SomDto(
@@ -83,7 +83,7 @@ class ScreenNodeGenerator @Autowired constructor(
     }
 
     private fun connectOcr(context: GraphContext, ocrComponents: List<DetectorUiComponentDto>) {
-        log.info("OCR을 Screen에 연결. {${context.screenNodeId}}")
+        log.info("OCR을 Screen에 연결. screen: ${context.screenNodeId}")
         for (ocrComponent in ocrComponents) {
             val ocrNodeId = ocrGraphService.saveNode(
                 OcrDto(
@@ -97,7 +97,7 @@ class ScreenNodeGenerator @Autowired constructor(
     }
 
     private fun connectYolo(context: GraphContext, yoloComponents: List<DetectorUiComponentDto>) {
-        log.info("YOLO을 Screen에 연결. {${context.screenNodeId}}")
+        log.info("YOLO을 Screen에 연결. screen: ${context.screenNodeId}")
         for (yoloComponent in yoloComponents) {
             val yoloNode = yoloGraphService.saveNode(
                 YoloDto(

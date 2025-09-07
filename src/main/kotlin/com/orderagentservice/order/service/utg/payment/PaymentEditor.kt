@@ -14,11 +14,12 @@ class PaymentEditor @Autowired constructor(
     private val graphService: UiGraphService
 ) {
     fun editPayment(context: GraphContext, nowUi: String) {
+        //root와 station 가져오기
         val nowNodeId = graphService.findRoot(context.kioskId).id
         context.stationNodeId = graphService.findStation(context.kioskId).id
         val autoContext = AutoOrderContext.toBasicContext(
             kioskId = context.kioskId, taskId = "EDIT", nodeId = nowNodeId,
-            place = "EDIT"
+            place = "매장"
         )
 
         //메뉴 가기전에 포장/매장 클릭해야할 수도 있음
