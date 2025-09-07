@@ -42,7 +42,8 @@ class UiDetectorManager @Autowired constructor(
         val imageType = captureDto.type
         val uiResponse = queryUiExtractor(imageBytes, imageType)
 
-        val uiElements = uiResponse.uiComponents
+//        val uiElements = uiResponse.uiComponents
+        val uiElements = uiResponse.ocrComponents
         val ocrElements = uiResponse.ocrComponents
         val yoloElements = uiResponse.yoloComponents
 
