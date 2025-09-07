@@ -15,6 +15,7 @@ class PaymentEditor @Autowired constructor(
 ) {
     fun editPayment(context: GraphContext, nowUi: String) {
         val nowNodeId = graphService.findRoot(context.kioskId).id
+        context.stationNodeId = graphService.findStation(context.kioskId).id
         val autoContext = AutoOrderContext.toBasicContext(
             kioskId = context.kioskId, taskId = "EDIT", nodeId = nowNodeId,
             place = "EDIT"

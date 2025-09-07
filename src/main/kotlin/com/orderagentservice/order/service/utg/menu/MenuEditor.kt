@@ -25,6 +25,7 @@ class MenuEditor @Autowired constructor(
 ) {
     fun editCategories(context: GraphContext, categoryList: List<String>, pendingList: List<MenuInfoDto>) {
         val nowNodeId = graphService.findRoot(context.kioskId).id
+        context.stationNodeId = graphService.findStation(context.kioskId).id
         val autoContext = AutoOrderContext.toBasicContext(
             kioskId = context.kioskId, taskId = "EDIT", nodeId = nowNodeId,
             place = "매장"
@@ -48,6 +49,7 @@ class MenuEditor @Autowired constructor(
 
     fun editMenus(context: GraphContext, menuList: List<MenuInfoDto>) {
         val nowNodeId = graphService.findRoot(context.kioskId).id
+        context.stationNodeId = graphService.findStation(context.kioskId).id
         val autoContext = AutoOrderContext.toBasicContext(
             kioskId = context.kioskId, taskId = "EDIT", nodeId = nowNodeId,
             place = "매장"
