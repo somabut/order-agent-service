@@ -4,6 +4,7 @@ import com.orderagentservice.agent.BackAgent
 import com.orderagentservice.agent.model.dto.AgentBackDto
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.service.LogService
+import com.orderagentservice.logger
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
@@ -29,6 +30,7 @@ class MenuActionExecutorImpl @Autowired constructor(
     private val graphService: UiGraphService,
     private val logService: LogService
 ) : MenuActionExecutor {
+    private val log = logger()
 
     override fun selectCategory(
         context: GraphContext,
@@ -171,6 +173,7 @@ class MenuActionExecutorImpl @Autowired constructor(
             )
         } else {
             //UI가 캐싱된 경우
+            log.info("back UI 캐시 히트")
             val matchDto = wordSimilarityService.findBestMatch(context.menuBackUi!!, uiList)
             backUi = AgentBackDto(
                 score = 1.0F,
