@@ -14,8 +14,6 @@ import org.springframework.stereotype.Service
 class ScreenGraphServiceImpl @Autowired constructor(
     private val screenGraphRepository: ScreenGraphRepository
 ) : ScreenGraphService {
-    private val log = logger()
-
     override fun saveNode(screenDto: ScreenDto): ScreenEntity {
         val screenEntity = screenGraphRepository.save(screenDto.toEntity())
         return screenEntity
@@ -26,7 +24,6 @@ class ScreenGraphServiceImpl @Autowired constructor(
         targetId: String,
         nodeType: NodeType
     ) {
-        log.info("관계 설정. ${sourceId} [${NodeRelationType.BOX_TO}]-> ${targetId}")
         when(nodeType) {
             NodeType.SOM -> screenGraphRepository.saveBoxSomRelation(sourceId, targetId)
             NodeType.OCR -> screenGraphRepository.saveBoxOcrRelation(sourceId, targetId)

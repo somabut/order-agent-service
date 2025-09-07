@@ -20,6 +20,9 @@ class PaymentEditor @Autowired constructor(
             place = "EDIT"
         )
 
+        //메뉴 가기전에 포장/매장 클릭해야할 수도 있음
+        autoTaskExecutor.clickPlace(autoContext)
+
         //고친 곳까지 이동
         val actionList = graphService.findPath(context.kioskId, nowNodeId, nowUi)
         val last = actionList.last()
