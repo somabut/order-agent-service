@@ -1,5 +1,6 @@
 package com.orderagentservice.order.service.utg
 
+import com.orderagentservice.logger
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.dto.DetectorUiComponentDto
 import com.orderagentservice.order.model.dto.KioskCaptureDto
@@ -15,6 +16,7 @@ import com.orderagentservice.order.service.graph.screen.ScreenGraphService
 import com.orderagentservice.order.service.graph.som.SomGraphService
 import com.orderagentservice.order.service.graph.ui.UiGraphService
 import com.orderagentservice.order.service.graph.yolo.YoloGraphService
+import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -26,6 +28,9 @@ class ScreenNodeGenerator @Autowired constructor(
     private val yoloGraphService: YoloGraphService,
     private val uiGraphService: UiGraphService
 ) {
+    private val log = logger()
+
+    @Transactional
     fun createScreenNode(
         context: GraphContext,
         captureDto: KioskCaptureDto,
@@ -48,8 +53,10 @@ class ScreenNodeGenerator @Autowired constructor(
         connectYolo(context, ocrComponents)
     }
 
+    @Transactional
     fun linkNode(kioskId: String, nodeId: String, screenNodeId: String, uiComponentParams: UiComponentParams) {
         //match 노드와 관계, screen 노드와 관계 연결
+        log.info("${uiComponentParams.title} 의 연결을 조회합니다.")
         val somNodeId = somGraphService.findNode(
             kioskId = kioskId,
             minX = uiComponentParams.minX, minY = uiComponentParams.minY,
