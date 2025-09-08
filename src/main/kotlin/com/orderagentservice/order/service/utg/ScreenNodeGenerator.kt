@@ -50,7 +50,7 @@ class ScreenNodeGenerator @Autowired constructor(
         //screen 노드에 박스 연결
         connectSom(context, uiComponents)
         connectOcr(context, ocrComponents)
-        connectYolo(context, ocrComponents)
+        connectYolo(context, yoloComponents)
     }
 
     @Transactional
