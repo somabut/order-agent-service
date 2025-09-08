@@ -59,7 +59,7 @@ class MenuNodeGenerator @Autowired constructor(
         )
     }
 
-    fun createMenuNode(matchDto: WordMatchDto, title: String, context: GraphContext): String {
+    fun createMenuNode(matchDto: WordMatchDto, title: String, context: GraphContext): NodeCreationResult {
         logService.printLog(
             NodeSaveLog(
                 kioskId = context.kioskId,
@@ -80,7 +80,14 @@ class MenuNodeGenerator @Autowired constructor(
         uiGraphService.saveRel(context.lastNodeId!!, node.id, NodeRelationType.HAS_TO)
 
         //메뉴 노드는 Screen과 연결할 필요 없음
-        return node.id
+        return NodeCreationResult(
+            nodeId = node.id,
+            uiComponentParams = UiComponentParams(
+                minX = matchDto.minX, minY = matchDto.minY,
+                maxX = matchDto.maxX, maxY = matchDto.maxY,
+                title = title
+            )
+        )
     }
 
     fun createOptionNode(

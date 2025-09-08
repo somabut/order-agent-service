@@ -57,7 +57,15 @@ class MenuActionExecutorImpl @Autowired constructor(
         val matchDto = wordSimilarityService.findBestMatch(menuDto.title, uiList)
 
         //노드 생성
-        val nodeId = menuNodeGenerator.createMenuNode(matchDto, menuDto.title, context)
+        val creationResult = menuNodeGenerator.createMenuNode(matchDto, menuDto.title, context)
+        val nodeId = creationResult.nodeId
+
+        //match 노드와 관계, screen 노드와 관계 연결
+        screenNodeGenerator.linkNode(
+            kioskId = context.kioskId,
+            nodeId = nodeId, screenNodeId = context.screenNodeId,
+            uiComponentParams = creationResult.uiComponentParams,
+        )
 
         //현재 메뉴 좌표 클릭
         notificationService.sendActionCommand(context.kioskId, CoordinateDto(matchDto.x, matchDto.y, matchDto.title))
