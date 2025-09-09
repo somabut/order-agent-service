@@ -41,12 +41,15 @@ class UtgController @Autowired constructor(
     @PostMapping("/utg/update/category/{kioskId}")
     fun updateCategoryUtg(
         @PathVariable kioskId: String,
-        @RequestBody categoryUtgUpdateRequest: CategoryUtgUpdateRequest
+        @RequestBody categoryUtgUpdateRequest: CategoryUtgUpdateRequest,
+        @RequestHeader("Authorization", required = false) accessToken: String?
     ): ApiResponse<*> {
+        if (accessToken == null) throw KioskAdminSignInException()
+
         val history = utgService.updateCategoryGraph(
-            kioskId = kioskId,
-            categoryList = categoryUtgUpdateRequest.categoryList,
-            pendingMenus = categoryUtgUpdateRequest.pendingMenus,
+            kioskId = kioskId, accessToken = accessToken,
+            completeMenus = categoryUtgUpdateRequest.completeMenus,
+            updatedCategories = categoryUtgUpdateRequest.updatedCategories,
             isInitPayment = categoryUtgUpdateRequest.initPayment
         )
 
@@ -56,12 +59,15 @@ class UtgController @Autowired constructor(
     @PostMapping("/utg/update/menu/{kioskId}")
     fun updateMenuUtg(
         @PathVariable kioskId: String,
-        @RequestBody menuUtgUpdateRequest: MenuUtgUpdateRequest
+        @RequestBody menuUtgUpdateRequest: MenuUtgUpdateRequest,
+        @RequestHeader("Authorization", required = false) accessToken: String?
     ): ApiResponse<*> {
+        if (accessToken == null) throw KioskAdminSignInException()
+
         val history = utgService.updateMenuGraph(
-            kioskId = kioskId,
+            kioskId = kioskId, accessToken = accessToken,
             updatedMenus = menuUtgUpdateRequest.updatedMenus,
-            pendingMenus = menuUtgUpdateRequest.pendingMenus,
+            completeMenus = menuUtgUpdateRequest.completeMenus,
             isInitPayment = menuUtgUpdateRequest.initPayment
         )
 

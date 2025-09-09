@@ -57,9 +57,18 @@ class UtgService @Autowired constructor(
         return context.history
     }
 
-    fun updateCategoryGraph(kioskId: String, categoryList: List<String>, pendingMenus: List<MenuInfoDto>, isInitPayment: Boolean): List<AgentActionDto> {
+    fun updateCategoryGraph(
+        kioskId: String, accessToken: String,
+        completeMenus: List<String>, updatedCategories: List<String>,
+        isInitPayment: Boolean
+    ): List<AgentActionDto> {
         val context = GraphContext.toBasicContext(kioskId)
-        menuUtgService.updateCategory(context, categoryList, pendingMenus)
+
+        //수정된 메뉴, 완료된 메뉴 가져오기
+        val menuList = menuService.getMenus(kioskId, accessToken)
+        val pendingList = menuList.filter { it.title in completeMenus }
+
+        menuUtgService.updateCategory(context, updatedCategories, pendingList)
         if (isInitPayment) {
             paymentUtgService.initializeGraph(context)
         }
@@ -67,9 +76,19 @@ class UtgService @Autowired constructor(
         return context.history
     }
 
-    fun updateMenuGraph(kioskId: String, updatedMenus: List<MenuInfoDto>, pendingMenus: List<MenuInfoDto>, isInitPayment: Boolean): List<AgentActionDto> {
+    fun updateMenuGraph(
+        kioskId: String, accessToken: String,
+        completeMenus: List<String>, updatedMenus: List<String>,
+        isInitPayment: Boolean
+    ): List<AgentActionDto> {
         val context = GraphContext.toBasicContext(kioskId)
-        menuUtgService.updateMenu(context, updatedMenus, pendingMenus)
+
+        //수정된 메뉴, 완료된 메뉴 가져오기
+        val menuList = menuService.getMenus(kioskId, accessToken)
+        val updatedList = menuList.filter { it.title in updatedMenus }
+        val pendingList = menuList.filter { it.title !in completeMenus }
+
+        menuUtgService.updateMenu(context, updatedList, pendingList)
         if (isInitPayment) {
             paymentUtgService.initializeGraph(context)
         }

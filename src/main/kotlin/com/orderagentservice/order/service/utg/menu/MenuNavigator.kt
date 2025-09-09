@@ -121,36 +121,27 @@ class MenuNavigator @Autowired constructor(
             //옵션으로 왔으므로 옵션선택
             menuActionExecutor.selectOption(context, menuDto, nodeId)
 
-            //옵션을 선택하고 원래 페이지도 이동
-            var count = 0
-            uiList = uiDetectorManager.getUiComponents(context).uiElements
-            while (pageChecker.checkMenuPage(menuDto, menuList, uiList) == false) {
-                if (count >= MAX_LOOP) {
-                    throw UtgInfiniteLoopException()
-                }
+//            //옵션을 선택하고 원래 페이지도 이동
+//            var count = 0
+//            uiList = uiDetectorManager.getUiComponents(context).uiElements
+//            while (pageChecker.checkMenuPage(menuDto, menuList, uiList) == false) {
+//                if (count >= MAX_LOOP) {
+//                    throw UtgInfiniteLoopException()
+//                }
+//
+//                nodeId = menuActionExecutor.selectBack(context, nodeId, uiList)
+//                uiList = uiDetectorManager.getUiComponents(context).uiElements
+//                count++
+//            }
+//            graphService.saveRel(nodeId, context.lastNodeId!!, NodeRelationType.BACK_TO)
 
-                nodeId = menuActionExecutor.selectBack(context, nodeId, uiList)
-                uiList = uiDetectorManager.getUiComponents(context).uiElements
-                count++
-            }
+            //옵션 처리
+            menuActionExecutor.selectOption(context, menuDto, nodeId)
+
+            uiList = uiDetectorManager.getUiComponents(context).uiElements
+            menuActionExecutor.selectBack(context, nodeId, uiList)
+
             graphService.saveRel(nodeId, context.lastNodeId!!, NodeRelationType.BACK_TO)
         }
-    }
-
-    fun moveCategory(context: GraphContext, categoryMenuList: List<MenuInfoDto>) {
-        val category = categoryMenuList[0].category
-
-        //변경이 일어난 카테고리까지 이동
-        val actionList = graphService.findPath(context.kioskId, context.lastNodeId!!, category)
-        for (act in actionList) {
-            notificationService.sendActionCommand(context.kioskId, CoordinateDto(act.x, act.y, act.title))
-        }
-
-        context.lastNodeId = actionList.last().id
-        context.currentCategory = category
-
-        //해당 카테고리의 메뉴 제거
-        val categoryId = actionList.last().id
-        graphService.deleteMenusByCategory(context.kioskId, categoryId)
     }
 }
