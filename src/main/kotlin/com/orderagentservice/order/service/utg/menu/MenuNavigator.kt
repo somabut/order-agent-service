@@ -122,7 +122,7 @@ class MenuNavigator @Autowired constructor(
             menuActionExecutor.selectOption(context, menuDto, nodeId)
 
             uiList = uiDetectorManager.getUiComponents(context).uiElements
-            menuActionExecutor.selectBack(context, nodeId, uiList)
+            nodeId = menuActionExecutor.selectBack(context, nodeId, uiList)
 
             graphService.saveRel(nodeId, context.lastNodeId!!, NodeRelationType.BACK_TO)
         }
