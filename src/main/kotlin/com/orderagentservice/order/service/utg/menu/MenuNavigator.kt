@@ -118,23 +118,6 @@ class MenuNavigator @Autowired constructor(
                 )
             }
 
-            //옵션으로 왔으므로 옵션선택
-            menuActionExecutor.selectOption(context, menuDto, nodeId)
-
-//            //옵션을 선택하고 원래 페이지도 이동
-//            var count = 0
-//            uiList = uiDetectorManager.getUiComponents(context).uiElements
-//            while (pageChecker.checkMenuPage(menuDto, menuList, uiList) == false) {
-//                if (count >= MAX_LOOP) {
-//                    throw UtgInfiniteLoopException()
-//                }
-//
-//                nodeId = menuActionExecutor.selectBack(context, nodeId, uiList)
-//                uiList = uiDetectorManager.getUiComponents(context).uiElements
-//                count++
-//            }
-//            graphService.saveRel(nodeId, context.lastNodeId!!, NodeRelationType.BACK_TO)
-
             //옵션 처리
             menuActionExecutor.selectOption(context, menuDto, nodeId)
 
