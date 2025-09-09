@@ -52,7 +52,8 @@ class MenuActionExecutorImpl @Autowired constructor(
     override fun selectMenu(
         context: GraphContext,
         menuDto: MenuInfoDto,
-        uiList: List<UiComponentDto>
+        uiList: List<UiComponentDto>,
+        categoryScreenId: String
     ): String {
         val matchDto = wordSimilarityService.findBestMatch(menuDto.title, uiList)
 
@@ -63,7 +64,7 @@ class MenuActionExecutorImpl @Autowired constructor(
         //match 노드와 관계, screen 노드와 관계 연결
         screenNodeGenerator.linkNode(
             kioskId = context.kioskId,
-            nodeId = nodeId, screenNodeId = context.screenNodeId,
+            nodeId = nodeId, screenNodeId = categoryScreenId,
             uiComponentParams = creationResult.uiComponentParams,
         )
 
