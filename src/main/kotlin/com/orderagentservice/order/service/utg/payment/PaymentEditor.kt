@@ -2,6 +2,7 @@ package com.orderagentservice.order.service.utg.payment
 
 import com.orderagentservice.order.model.AutoOrderContext
 import com.orderagentservice.order.model.GraphContext
+import com.orderagentservice.order.model.dto.ActionPathDto
 import com.orderagentservice.order.model.type.SpecialNodeType
 import com.orderagentservice.order.service.auto.AutoTaskExecutor
 import com.orderagentservice.order.service.graph.ui.UiGraphService
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component
 @Component
 class PaymentEditor @Autowired constructor(
     private val autoTaskExecutor: AutoTaskExecutor,
+    private val paymentNavigator: PaymentNavigator,
     private val graphService: UiGraphService
 ) {
     fun editPayment(context: GraphContext, nowUi: String) {
@@ -29,13 +31,10 @@ class PaymentEditor @Autowired constructor(
         val actionList = graphService.findPath(context.kioskId, nowNodeId, nowUi)
         val last = actionList.last()
         for (action in actionList) {
-            autoTaskExecutor.clickPlace(autoContext)
+            autoTaskExecutor.clickPayment(autoContext, action)
         }
 
         //complete까지 이동
-        val endList = graphService.findPath(context.kioskId, last.id, SpecialNodeType.COMPLETE.title)
-        for (action in endList) {
-            autoTaskExecutor.clickPlace(autoContext)
-        }
+        paymentNavigator.processPayment(context)
     }
 }

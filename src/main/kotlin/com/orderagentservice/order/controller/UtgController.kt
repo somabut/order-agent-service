@@ -77,7 +77,7 @@ class UtgController @Autowired constructor(
         @PathVariable kioskId: String,
         @RequestBody paymentUtgUpdateRequest: PaymentUtgUpdateRequest
     ): ApiResponse<*> {
-        val history = utgService.updatePaymentGraph(kioskId, paymentUtgUpdateRequest.updatedTitle)
+        val history = utgService.updatePaymentGraph(kioskId)
         return ApiResponse.success(history)
     }
 

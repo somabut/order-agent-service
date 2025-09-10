@@ -83,10 +83,8 @@ class UtgService @Autowired constructor(
 
         //수정된 메뉴, 완료된 메뉴 가져오기
         val menuList = menuService.getMenus(kioskId, accessToken)
-        val updatedList = menuList.filter { it.title in updatedMenus }
-        val pendingList = menuList.filter { it.title !in completeMenus }
 
-        menuUtgService.updateMenu(context, updatedList, pendingList)
+        menuUtgService.updateMenu(context, menuList)
         if (isInitPayment) {
             paymentUtgService.initializeGraph(context)
         }
@@ -94,9 +92,9 @@ class UtgService @Autowired constructor(
         return context.history
     }
 
-    fun updatePaymentGraph(kioskId: String, updatedUi: String): List<AgentActionDto> {
+    fun updatePaymentGraph(kioskId: String): List<AgentActionDto> {
         val context = GraphContext.toBasicContext(kioskId)
-        paymentUtgService.updatePayment(context, updatedUi)
+        paymentUtgService.updatePayment(context)
 
         return context.history
     }

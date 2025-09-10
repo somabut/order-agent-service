@@ -7,7 +7,9 @@ import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.log.UtgEndLog
 import com.orderagentservice.order.model.log.UtgProcessLog
 import com.orderagentservice.order.model.log.UtgStartLog
+import com.orderagentservice.order.model.type.NodeType
 import com.orderagentservice.order.model.type.UtgType
+import com.orderagentservice.order.service.graph.ui.UiGraphService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Service
@@ -18,7 +20,8 @@ class PaymentUtgService @Autowired constructor(
     private val paymentNavigator: PaymentNavigator,
     private val paymentEditor: PaymentEditor,
     private val logService: LogService,
-    private val usageTracker: UsageTracker
+    private val graphService: UiGraphService,
+    private val usageTracker: UsageTracker,
 ) {
     fun initializeGraph(context: GraphContext) {
         logService.printLog(
@@ -42,7 +45,14 @@ class PaymentUtgService @Autowired constructor(
         )
     }
 
-    fun updatePayment(context: GraphContext, updatedUi: String) {
-        paymentEditor.editPayment(context, updatedUi)
+    fun updatePayment(context: GraphContext) {
+        val uiDtoList = graphService.findModified(context.kioskId)
+
+        val modifiedPayment = uiDtoList
+            .filter { it.type == NodeType.PAYMENT }
+            .map { it.title }
+            .first()
+
+        paymentEditor.editPayment(context, modifiedPayment)
     }
 }
