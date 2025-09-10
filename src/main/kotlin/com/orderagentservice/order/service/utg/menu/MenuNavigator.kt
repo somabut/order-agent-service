@@ -121,9 +121,8 @@ class MenuNavigator @Autowired constructor(
             }
 
             //옵션 처리
-            menuActionExecutor.selectOption(context, menuDto, nodeId)
+            menuActionExecutor.selectOption(context, menuDto, nodeId, uiList)
 
-            uiList = uiDetectorManager.getUiComponents(context).uiElements
             nodeId = menuActionExecutor.selectBack(context, nodeId, uiList)
 
             graphService.saveRel(nodeId, context.lastNodeId!!, NodeRelationType.BACK_TO)

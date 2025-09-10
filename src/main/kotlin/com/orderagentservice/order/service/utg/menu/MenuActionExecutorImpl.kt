@@ -78,12 +78,11 @@ class MenuActionExecutorImpl @Autowired constructor(
         context: GraphContext,
         menuDto: MenuInfoDto,
         menuNodeId: String,
+        uiList: List<UiComponentDto>
     ) {
         //메뉴의 옵션 노드 추가
-        val llmOptList = uiDetectorManager.getUiComponents(context).uiElements
-
         for (opt in menuDto.options) {
-            val matchDto = wordSimilarityService.findBestMatch(opt, llmOptList)
+            val matchDto = wordSimilarityService.findBestMatch(opt, uiList)
 
             //노드 생성
             val creationResult = menuNodeGenerator.createOptionNode(matchDto, opt, menuNodeId, context)
