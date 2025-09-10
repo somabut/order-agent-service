@@ -33,6 +33,9 @@ class UiEntity(
     @Property("type")
     val type: String,
 
+    @Property("modified")
+    val modified: Boolean,
+
     @Property("created_at")
     val createdAt: OffsetDateTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toOffsetDateTime(),
 

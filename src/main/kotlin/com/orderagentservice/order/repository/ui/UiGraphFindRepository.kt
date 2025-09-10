@@ -106,6 +106,23 @@ interface UiGraphFindRepository {
     ): UiEntity?
 
     @Query(
+        "MATCH(n: UI{kioskId: \$kioskId})\n" +
+        "WHERE n.modified = true\n" +
+        "RETURN n"
+    )
+    fun findModifiedNode(
+        @Param("kioskId") kioskId: String,
+    ): List<UiEntity>
+
+    @Query(
+        "MATCH(n: UI{kioskId: \$kioskId})\n" +
+        "RETURN n"
+    )
+    fun findAllNode(
+        @Param("kioskId") kioskId: String,
+    ): List<UiEntity>
+
+    @Query(
         "MATCH (n {kioskId: \$kioskId, id: \$sourceId})-[:BACK_TO]->()\n" +
                 "RETURN COUNT(*) > 0 AS hasBackTo"
     )

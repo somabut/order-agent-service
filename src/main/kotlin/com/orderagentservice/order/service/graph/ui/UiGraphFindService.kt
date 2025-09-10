@@ -1,6 +1,7 @@
 package com.orderagentservice.order.service.graph.ui
 
 import com.orderagentservice.order.model.dto.ActionPathDto
+import com.orderagentservice.order.model.dto.UiDto
 
 interface UiGraphFindService {
     fun findNodeByTitle(kioskId: String, title: String): String
@@ -12,6 +13,8 @@ interface UiGraphFindService {
     fun findPlace(kioskId: String, id: String, place: String): ActionPathDto?
     fun findRoot(kioskId: String): ActionPathDto
     fun findStation(kioskId: String): ActionPathDto
+    fun findModified(kioskId: String): List<UiDto>
+    fun findAll(kioskId: String): List<UiDto>
 
     fun isBackRel(kioskId: String, sourceId: String): Boolean
 }

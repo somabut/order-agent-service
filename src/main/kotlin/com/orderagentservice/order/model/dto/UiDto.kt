@@ -9,7 +9,8 @@ data class UiDto(
     val y: Int,
     val title: String,
     val kioskId: String,
-    val type: NodeType
+    val type: NodeType,
+    val modified: Boolean = true
 ) {
     fun toEntity(): UiEntity = UiEntity(
         isNext = isNext,
@@ -17,6 +18,7 @@ data class UiDto(
         y = y,
         title = title,
         kioskId = kioskId,
-        type = type.name
+        type = type.name,
+        modified = modified
     )
 }

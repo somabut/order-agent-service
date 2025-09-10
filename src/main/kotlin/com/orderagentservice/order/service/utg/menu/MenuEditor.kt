@@ -1,12 +1,9 @@
 package com.orderagentservice.order.service.utg.menu
 
-import com.orderagentservice.agent.model.dto.UiComponentDto
+import com.orderagentservice.logger
 import com.orderagentservice.order.model.AutoOrderContext
 import com.orderagentservice.order.model.GraphContext
-import com.orderagentservice.order.model.dto.AllUiComponentDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
-import com.orderagentservice.order.model.log.UtgProcessLog
-import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.service.auto.AutoTaskExecutor
 import com.orderagentservice.order.service.graph.ui.UiGraphService
 import com.orderagentservice.order.service.utg.PageChecker
@@ -23,7 +20,9 @@ class MenuEditor @Autowired constructor(
     private val pageChecker: PageChecker,
     private val graphService: UiGraphService
 ) {
-    fun editCategories(context: GraphContext, categoryList: List<String>, pendingList: List<MenuInfoDto>) {
+    val log = logger()
+
+    fun editCategories(context: GraphContext, modifiedCategoryList: List<String>, pendingList: List<MenuInfoDto>) {
         //root와 station 가져오기
         val nowNodeId = graphService.findRoot(context.kioskId).id
         context.stationNodeId = graphService.findStation(context.kioskId).id
@@ -35,7 +34,7 @@ class MenuEditor @Autowired constructor(
         //메뉴 가기전에 포장/매장 클릭해야할 수도 있음
         autoTaskExecutor.clickPlace(autoContext)
 
-        for (category in categoryList) {
+        for (category in modifiedCategoryList) {
             //카테고리로 이동
             val nodeId = autoTaskExecutor.clickCategory(autoContext, category)
 
@@ -48,7 +47,7 @@ class MenuEditor @Autowired constructor(
         }
     }
 
-    fun editMenus(context: GraphContext, menuList: List<MenuInfoDto>) {
+    fun editMenus(context: GraphContext, modifiedMenuList: List<MenuInfoDto>, menuList: List<MenuInfoDto>) {
         //root와 station 가져오기
         val nowNodeId = graphService.findRoot(context.kioskId).id
         context.stationNodeId = graphService.findStation(context.kioskId).id
@@ -60,12 +59,13 @@ class MenuEditor @Autowired constructor(
         //메뉴 가기전에 포장/매장 클릭해야할 수도 있음
         autoTaskExecutor.clickPlace(autoContext)
 
-        for (menuDto in menuList) {
+        for (menuDto in modifiedMenuList) {
             //해당 메뉴로 이동. 카테고리 노드 아이디로 업데이트
             val nodeId = autoTaskExecutor.clickMenu(autoContext, menuDto.toAutoOrderMenu()).id
             val categoryNodeId = graphService.findNodeByTitle(context.kioskId, menuDto.category)
             context.lastNodeId = categoryNodeId
 
+            //같은 페이지(카테고리)의 메뉴
             menuNavigator.handleModal(context, menuDto, menuList, nodeId)
         }
     }

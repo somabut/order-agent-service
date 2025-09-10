@@ -177,4 +177,11 @@ class GraphSaveServiceImplTest @Autowired constructor(
         //then: 올바른 카테고리가 반환된다
         assertThat(categoryNodeId).isEqualTo("사이드")
     }
+
+    @Test
+    fun `모든 노드를 가져온다`() {
+        val kioskId = "kiosk-494cbae2-0681-46e6-ba59-88726509fd88"
+        val nodes = graphService.findAll(kioskId)
+        for (node in nodes) println(node)
+    }
 }
