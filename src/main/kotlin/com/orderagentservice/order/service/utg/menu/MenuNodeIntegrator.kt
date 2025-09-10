@@ -11,18 +11,16 @@ import com.orderagentservice.order.model.dto.UiComponentParams
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.log.NodeSaveLog
 import com.orderagentservice.order.model.type.NodeType
-import com.orderagentservice.order.service.graph.som.SomGraphService
 import com.orderagentservice.order.service.graph.ui.UiGraphService
-import com.orderagentservice.order.service.utg.ScreenNodeGenerator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class MenuNodeGenerator @Autowired constructor(
+class MenuNodeIntegrator @Autowired constructor(
     private val uiGraphService: UiGraphService,
     private val logService: LogService,
 ) {
-    fun createCategoryNode(matchDto: WordMatchDto, title: String, context: GraphContext): NodeCreationResult {
+    fun integrateCategoryNode(matchDto: WordMatchDto, title: String, context: GraphContext): NodeCreationResult {
         logService.printLog(
             NodeSaveLog(
                 kioskId = context.kioskId,
@@ -59,7 +57,7 @@ class MenuNodeGenerator @Autowired constructor(
         )
     }
 
-    fun createMenuNode(matchDto: WordMatchDto, title: String, context: GraphContext): NodeCreationResult {
+    fun integrateMenuNode(matchDto: WordMatchDto, title: String, context: GraphContext): NodeCreationResult {
         logService.printLog(
             NodeSaveLog(
                 kioskId = context.kioskId,
@@ -90,7 +88,7 @@ class MenuNodeGenerator @Autowired constructor(
         )
     }
 
-    fun createOptionNode(
+    fun integrateOptionNode(
         matchDto: WordMatchDto,
         title: String,
         menuNodeId: String,
@@ -125,7 +123,7 @@ class MenuNodeGenerator @Autowired constructor(
         )
     }
 
-    fun createBackNode(
+    fun integrateBackNode(
         action: AgentBackDto,
         menuNodeId: String,
         context: GraphContext
@@ -161,7 +159,7 @@ class MenuNodeGenerator @Autowired constructor(
         )
     }
 
-    fun createModalNode(
+    fun integrateModalNode(
         context: GraphContext,
         matchDto: WordMatchDto,
         menuDto: MenuInfoDto,

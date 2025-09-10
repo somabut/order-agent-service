@@ -80,7 +80,7 @@ class MenuNavigator @Autowired constructor(
     ) {
         //현재 메뉴를 일단 클릭한 상황
         var nodeId = menuNodeId
-        var uiList = uiDetectorManager.getUiComponents(context).uiElements
+        val uiList = uiDetectorManager.getUiComponents(context).uiElements
 
         if (menuDto.options.isEmpty()) {
             //옵션이 없는 경우
@@ -104,26 +104,8 @@ class MenuNavigator @Autowired constructor(
         } else {
             //옵션이 있는 경우
 
-            //모달처리
-            if (pageChecker.checkOptionPage(menuDto.options, uiList) == false) {
-                logService.printLog(
-                    UtgProcessLog(
-                        kioskId = context.kioskId,
-                        message = "모달이 감지되어 모달을 처리합니다."
-                    )
-                )
-                nodeId = menuActionExecutor.selectModal(
-                    context = context,
-                    menuDto = menuDto,
-                    menuNodeId = menuNodeId,
-                    uiList = uiList
-                )
-            }
-
             //옵션 처리
-            menuActionExecutor.selectOption(context, menuDto, nodeId)
-
-            uiList = uiDetectorManager.getUiComponents(context).uiElements
+            menuActionExecutor.selectOption(context, menuDto, nodeId, uiList)
             nodeId = menuActionExecutor.selectBack(context, nodeId, uiList)
 
             graphService.saveRel(nodeId, context.lastNodeId!!, NodeRelationType.BACK_TO)
