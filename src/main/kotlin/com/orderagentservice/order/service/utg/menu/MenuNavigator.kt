@@ -34,6 +34,7 @@ class MenuNavigator @Autowired constructor(
 
     fun navigateMenus(context: GraphContext, menuList: List<MenuInfoDto>) {
         var uiList = uiDetectorManager.getUiComponents(context).uiElements
+        var categoryScreenId = ""
         for (menuDto in menuList) {
             if (menuDto.category != context.currentCategory) {
                 //카테고리가 다르다면 해당 카테고리로 이동
@@ -46,6 +47,7 @@ class MenuNavigator @Autowired constructor(
                     nodeId = creationResult.nodeId, screenNodeId = context.screenNodeId,
                     uiComponentParams = creationResult.uiComponentParams,
                 )
+                categoryScreenId = context.screenNodeId
             }
 
             logService.printLog(
@@ -55,7 +57,7 @@ class MenuNavigator @Autowired constructor(
                     category = menuDto.category
                 )
             )
-            val menuNodeId = menuActionExecutor.selectMenu(context, menuDto, uiList)
+            val menuNodeId = menuActionExecutor.selectMenu(context, menuDto, uiList, categoryScreenId)
 
             //모달 처리
             handleModal(
