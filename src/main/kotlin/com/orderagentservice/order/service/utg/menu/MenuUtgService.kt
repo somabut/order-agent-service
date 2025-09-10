@@ -13,6 +13,7 @@ import com.orderagentservice.order.model.log.UtgStartLog
 import com.orderagentservice.order.model.type.NodeType
 import com.orderagentservice.order.model.type.UtgType
 import com.orderagentservice.order.service.graph.ui.UiGraphService
+import com.orderagentservice.order.service.utg.UiDetectorManager
 import com.orderagentservice.order.service.utg.place.PlaceUtgService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional
 class MenuUtgService @Autowired constructor(
     private val menuNavigator: MenuNavigator,
     private val menuEditor: MenuEditor,
+    private val uiDetectorManager: UiDetectorManager,
     private val placeUtgService: PlaceUtgService,
     private val graphService: UiGraphService,
     private val logService: LogService,
@@ -40,14 +42,16 @@ class MenuUtgService @Autowired constructor(
         setupNode(context)
 
         //포장/매장 찾기
-        placeUtgService.initializeGraph(context)
+        val uiList = uiDetectorManager.getUiComponents(context).ocrElements
+        placeUtgService.initializeGraph(context, uiList)
 
         //루프를 돌며 메뉴들을 모두 탐색
         menuNavigator.navigateMenus(context, menuList)
 
         //포장/매장 찾기
         if (context.isPlaceDetermined == false) {
-            placeUtgService.initializeGraph(context)
+            val uiList = uiDetectorManager.getUiComponents(context).ocrElements
+            placeUtgService.initializeGraph(context, uiList)
         }
 
         val endTime = System.nanoTime()

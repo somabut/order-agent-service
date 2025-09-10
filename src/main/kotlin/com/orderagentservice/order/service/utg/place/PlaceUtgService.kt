@@ -3,6 +3,7 @@ package com.orderagentservice.order.service.utg.place
 import com.orderagentservice.agent.PlaceAgent
 import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.model.dto.AgentPlaceDto
+import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.service.LogService
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.type.NodeRelationType
@@ -30,9 +31,8 @@ class PlaceUtgService @Autowired constructor(
     private val logService: LogService
 ) {
     @Transactional
-    fun initializeGraph(context: GraphContext) {
+    fun initializeGraph(context: GraphContext, uiList: List<UiComponentDto>) {
         val kioskId = context.kioskId
-        val uiList = uiDetectorManager.getUiComponents(context).ocrElements
         val action = placeAgent.determineAction(uiList)
 
         if (action.size <= 1) {
