@@ -57,40 +57,16 @@ class MenuEditor @Autowired constructor(
             place = "매장"
         )
 
-        var uiList: List<UiComponentDto>
-        var nodeId: String
-
         //메뉴 가기전에 포장/매장 클릭해야할 수도 있음
         autoTaskExecutor.clickPlace(autoContext)
 
         for (menuDto in menuList) {
             //해당 메뉴로 이동. 카테고리 노드 아이디로 업데이트
-            nodeId = autoTaskExecutor.clickMenu(autoContext, menuDto.toAutoOrderMenu()).id
+            val nodeId = autoTaskExecutor.clickMenu(autoContext, menuDto.toAutoOrderMenu()).id
             val categoryNodeId = graphService.findNodeByTitle(context.kioskId, menuDto.category)
+            context.lastNodeId = categoryNodeId
 
-            //옵션 처리
-            if (menuDto.options.isEmpty()) {
-
-                //모달처리
-                uiList = uiDetectorManager.getUiComponents(context).uiElements
-                if (pageChecker.checkMenuPage(menuDto, menuList, uiList) == false) {
-                    nodeId = menuActionExecutor.selectModal(
-                        context = context,
-                        menuDto = menuDto,
-                        menuNodeId = nodeId,
-                        uiList = uiList
-                    )
-                    graphService.saveRel(nodeId, categoryNodeId, NodeRelationType.BACK_TO)
-                }
-            } else {
-                //옵션 처리
-                menuActionExecutor.selectOption(context, menuDto, nodeId)
-
-                uiList = uiDetectorManager.getUiComponents(context).uiElements
-                menuActionExecutor.selectBack(context, nodeId, uiList)
-
-                graphService.saveRel(nodeId, categoryNodeId, NodeRelationType.BACK_TO)
-            }
+            menuNavigator.handleModal(context, menuDto, menuList, nodeId)
         }
     }
 }
