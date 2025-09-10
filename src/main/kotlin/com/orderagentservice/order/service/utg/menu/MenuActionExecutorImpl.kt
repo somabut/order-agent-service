@@ -9,7 +9,6 @@ import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.dto.NodeCreationResult
-import com.orderagentservice.order.model.dto.UiComponentParams
 import com.orderagentservice.order.model.log.UtgProcessLog
 import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.graph.ui.UiGraphService
@@ -23,7 +22,7 @@ import org.springframework.stereotype.Component
 class MenuActionExecutorImpl @Autowired constructor(
     private val wordSimilarityService: WordSimilarityService,
     private val notificationService: NotificationService,
-    private val menuNodeGenerator: MenuNodeGenerator,
+    private val menuNodeIntegrator: MenuNodeIntegrator,
     private val screenNodeGenerator: ScreenNodeGenerator,
     private val uiDetectorManager: UiDetectorManager,
     private val backAgent: BackAgent,
@@ -40,7 +39,7 @@ class MenuActionExecutorImpl @Autowired constructor(
         val matchDto = wordSimilarityService.findBestMatch(menuDto.category, uiList)
 
         //노드 생성
-        val nodeCreationResult = menuNodeGenerator.createCategoryNode(matchDto, menuDto.category, context)
+        val nodeCreationResult = menuNodeIntegrator.integrateCategoryNode(matchDto, menuDto.category, context)
         context.lastNodeId = nodeCreationResult.nodeId
 
         //현재 카테고리 좌표 클릭
@@ -58,7 +57,7 @@ class MenuActionExecutorImpl @Autowired constructor(
         val matchDto = wordSimilarityService.findBestMatch(menuDto.title, uiList)
 
         //노드 생성
-        val creationResult = menuNodeGenerator.createMenuNode(matchDto, menuDto.title, context)
+        val creationResult = menuNodeIntegrator.integrateMenuNode(matchDto, menuDto.title, context)
         val nodeId = creationResult.nodeId
 
         //match 노드와 관계, screen 노드와 관계 연결
@@ -85,7 +84,7 @@ class MenuActionExecutorImpl @Autowired constructor(
             val matchDto = wordSimilarityService.findBestMatch(opt, uiList)
 
             //노드 생성
-            val creationResult = menuNodeGenerator.createOptionNode(matchDto, opt, menuNodeId, context)
+            val creationResult = menuNodeIntegrator.integrateOptionNode(matchDto, opt, menuNodeId, context)
 
             //match 노드와 관계, screen 노드와 관계 연결
             screenNodeGenerator.linkNode(
@@ -107,7 +106,7 @@ class MenuActionExecutorImpl @Autowired constructor(
         val backUi = cacheBackUi(context, uiList)
 
         //노드 생성
-        val creationResult = menuNodeGenerator.createBackNode(backUi, menuNodeId, context)
+        val creationResult = menuNodeIntegrator.integrateBackNode(backUi, menuNodeId, context)
 
         //match 노드와 관계, screen 노드와 관계 연결
         screenNodeGenerator.linkNode(
@@ -143,7 +142,7 @@ class MenuActionExecutorImpl @Autowired constructor(
             graphService.changeTitle(nodeId, context.kioskId, "modal:${menuDto.title}")
 
             //모달 노드 저장
-            val creationResult = menuNodeGenerator.createModalNode(
+            val creationResult = menuNodeIntegrator.integrateModalNode(
                 context = context,
                 matchDto = matchDto,
                 menuDto = menuDto,
