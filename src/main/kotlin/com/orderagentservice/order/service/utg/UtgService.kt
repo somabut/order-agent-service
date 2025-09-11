@@ -76,7 +76,6 @@ class UtgService @Autowired constructor(
 
     fun updateMenuGraph(
         kioskId: String, accessToken: String,
-        completeMenus: List<String>, updatedMenus: List<String>,
         isInitPayment: Boolean
     ): List<AgentActionDto> {
         val context = GraphContext.toBasicContext(kioskId)

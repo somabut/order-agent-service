@@ -20,79 +20,6 @@ class GraphSaveServiceImplTest @Autowired constructor(
 ) {
     private val testKioskId = "TEST-MOODTRBL"
 
-    @BeforeEach
-    fun setUp() {
-        val delQuery = """
-            MATCH (n:UI {kioskId: '$testKioskId'}) DETACH DELETE n
-        """.trimIndent()
-        neo4jClient.query(delQuery)
-            .run()
-
-        val createNodesQuery = """
-            CREATE
-            (category1:UI {id: '면', is_next: true, x: 0, y: 0, title: '면', kioskId: '${testKioskId}'}),
-            (category2:UI {id: '사이드', is_next: true, x: 100, y: 100, title: '사이드', kioskId: '${testKioskId}'}),
-            (category3:UI {id: '음료', is_next: true, x: 200, y: 200, title: '음료', kioskId: '${testKioskId}'}),
-        
-            (menu1:UI {id: '시오라멘', is_next: false, x: 300, y: 300, title: '시오라멘', kioskId: '${testKioskId}'}),
-            (menu2:UI {id: '쇼유라멘', is_next: false, x: 400, y: 400, title: '쇼유라멘', kioskId: '${testKioskId}'}),
-            (menu3:UI {id: '교자', is_next: false, x: 300, y: 300, title: '교자', kioskId: '${testKioskId}'}),
-            (menu4:UI {id: '가라아케', is_next: false, x: 400, y: 400, title: '가라아케', kioskId: '${testKioskId}'}),
-            (menu5:UI {id: '콜라', is_next: false, x: 300, y: 300, title: '콜라', kioskId: '${testKioskId}'}),
-            (menu6:UI {id: '사이다', is_next: false, x: 400, y: 400, title: '사이다', kioskId: '${testKioskId}'}),
-        
-            (opt1:UI {id: '면추가1', is_next: false, x: 300, y: 300, title: '면추가1', kioskId: '${testKioskId}'}),
-            (opt2:UI {id: '면추가2', is_next: false, x: 400, y: 400, title: '면추가2', kioskId: '${testKioskId}'}),
-            (opt3:UI {id: '제로1', is_next: false, x: 300, y: 300, title: '제로1', kioskId: '${testKioskId}'}),
-            (opt4:UI {id: '제로2', is_next: false, x: 400, y: 400, title: '제로2', kioskId: '${testKioskId}'}),
-        
-            (back1:UI {id: '선택완료1', is_next: false, x: 300, y: 300, title: '선택완료1', kioskId: '${testKioskId}'}),
-            (back2:UI {id: '선택완료2', is_next: false, x: 400, y: 400, title: '선택완료2', kioskId: '${testKioskId}'}),
-            (back3:UI {id: '선택완료3', is_next: false, x: 300, y: 300, title: '선택완료3', kioskId: '${testKioskId}'}),
-            (back4:UI {id: '선택완료4', is_next: false, x: 400, y: 400, title: '선택완료4', kioskId: '${testKioskId}'})
-        """.trimIndent()
-
-        val createRelQuery = """
-            MATCH
-            (category1:UI {id: '면', kioskId: '${testKioskId}'}),
-            (category2:UI {id: '사이드', kioskId: '${testKioskId}'}),
-            (category3:UI {id: '음료', kioskId: '${testKioskId}'}),
-            (menu1:UI {id: '시오라멘', kioskId: '${testKioskId}'}),
-            (menu2:UI {id: '쇼유라멘', kioskId: '${testKioskId}'}),
-            (menu3:UI {id: '교자', kioskId: '${testKioskId}'}),
-            (menu4:UI {id: '가라아케', kioskId: '${testKioskId}'}),
-            (menu5:UI {id: '콜라', kioskId: '${testKioskId}'}),
-            (menu6:UI {id: '사이다', kioskId: '${testKioskId}'}),
-            (opt1:UI {id: '면추가1', kioskId: '${testKioskId}'}),
-            (opt2:UI {id: '면추가2', kioskId: '${testKioskId}'}),
-            (opt3:UI {id: '제로1', kioskId: '${testKioskId}'}),
-            (opt4:UI {id: '제로2', kioskId: '${testKioskId}'}),
-            (back1:UI {id: '선택완료1', kioskId: '${testKioskId}'}),
-            (back2:UI {id: '선택완료2', kioskId: '${testKioskId}'}),
-            (back3:UI {id: '선택완료3', kioskId: '${testKioskId}'}),
-            (back4:UI {id: '선택완료4', kioskId: '${testKioskId}'})
-            CREATE
-            (category1)-[:HAS_TO]->(menu1), (category1)-[:HAS_TO]->(menu2),
-            (category2)-[:HAS_TO]->(menu3), (category2)-[:HAS_TO]->(menu4),
-            (category3)-[:HAS_TO]->(menu5), (category3)-[:HAS_TO]->(menu6),
-        
-            (menu1)-[:OPT_TO]->(opt1), (menu2)-[:OPT_TO]->(opt2),
-            (menu5)-[:OPT_TO]->(opt3), (menu6)-[:OPT_TO]->(opt4),
-        
-            (menu1)-[:BACK_TO]->(back1), (back1)-[:BACK_TO]->(category1),
-            (menu2)-[:BACK_TO]->(back2), (back2)-[:BACK_TO]->(category1),
-            (menu5)-[:BACK_TO]->(back3), (back3)-[:BACK_TO]->(category3),
-            (menu6)-[:BACK_TO]->(back4), (back4)-[:BACK_TO]->(category3),
-        
-            (category1)-[:PATH_TO]->(category2), (category2)-[:PATH_TO]->(category1),
-            (category2)-[:PATH_TO]->(category3), (category3)-[:PATH_TO]->(category1),
-            (category3)-[:PATH_TO]->(category1), (category1)-[:PATH_TO]->(category3)
-        """.trimIndent()
-
-        neo4jClient.query(createNodesQuery).run()
-        neo4jClient.query(createRelQuery).run()
-    }
-
     @Test
     fun `neo4j에 노드를 저장한다`() {
         //then: UI 노드가 주어진다
@@ -180,8 +107,18 @@ class GraphSaveServiceImplTest @Autowired constructor(
 
     @Test
     fun `모든 노드를 가져온다`() {
-        val kioskId = "kiosk-494cbae2-0681-46e6-ba59-88726509fd88"
+        val kioskId = "kiosk-2303452c-8454-4b9f-add2-47314cfd3911"
         val nodes = graphService.findAll(kioskId)
+        for (node in nodes) println(node)
+    }
+
+    @Test
+    fun `변경된 노드를 가져온다`() {
+        val kioskId = "kiosk-2303452c-8454-4b9f-add2-47314cfd3911"
+        val nodes = graphService.findModified(kioskId)
+            .filter { it.type == NodeType.CATEGORY }
+            .map { it.title }
+
         for (node in nodes) println(node)
     }
 }

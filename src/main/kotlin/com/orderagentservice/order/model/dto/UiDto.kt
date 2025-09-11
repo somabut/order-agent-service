@@ -10,7 +10,7 @@ data class UiDto(
     val title: String,
     val kioskId: String,
     val type: NodeType,
-    val modified: Boolean = true
+    val modified: Boolean = false
 ) {
     fun toEntity(): UiEntity = UiEntity(
         isNext = isNext,

@@ -15,9 +15,6 @@ import org.springframework.stereotype.Service
 class MenuEditor @Autowired constructor(
     private val autoTaskExecutor: AutoTaskExecutor,
     private val menuNavigator: MenuNavigator,
-    private val menuActionExecutor: MenuActionExecutor,
-    private val uiDetectorManager: UiDetectorManager,
-    private val pageChecker: PageChecker,
     private val graphService: UiGraphService
 ) {
     val log = logger()
@@ -36,6 +33,7 @@ class MenuEditor @Autowired constructor(
 
         for (category in modifiedCategoryList) {
             //카테고리로 이동
+            log.info("수정된 카테고리 노드로 이동합니다 -> ${category}")
             val nodeId = autoTaskExecutor.clickCategory(autoContext, category)
 
             context.currentCategory = category
@@ -43,6 +41,7 @@ class MenuEditor @Autowired constructor(
 
             //메뉴 클릭
             val menuList = pendingList.filter { it.category == category }
+            log.info("카테고리에 도달 후 메뉴 UTG를 초기화합니다. 메뉴: ${menuList}")
             menuNavigator.navigateMenus(context, menuList)
         }
     }
@@ -61,11 +60,13 @@ class MenuEditor @Autowired constructor(
 
         for (menuDto in modifiedMenuList) {
             //해당 메뉴로 이동. 카테고리 노드 아이디로 업데이트
+            log.info("수정된 메뉴 노드로 이동합니다 -> ${menuDto.title}")
             val nodeId = autoTaskExecutor.clickMenu(autoContext, menuDto.toAutoOrderMenu()).id
             val categoryNodeId = graphService.findNodeByTitle(context.kioskId, menuDto.category)
             context.lastNodeId = categoryNodeId
 
-            //같은 페이지(카테고리)의 메뉴
+            //옵션 처리
+            log.info("메뉴에 도달 후 옵션 UTG를 초기화합니다. 옵션: ${menuDto.options}")
             menuNavigator.handleModal(context, menuDto, menuList, nodeId)
         }
     }
