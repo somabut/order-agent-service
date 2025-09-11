@@ -1,5 +1,6 @@
 package com.orderagentservice.order.service.utg.payment
 
+import com.orderagentservice.logger
 import com.orderagentservice.order.model.AutoOrderContext
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.dto.ActionPathDto
@@ -15,6 +16,8 @@ class PaymentEditor @Autowired constructor(
     private val paymentNavigator: PaymentNavigator,
     private val graphService: UiGraphService
 ) {
+    private val log = logger()
+
     fun editPayment(context: GraphContext, nowUi: String) {
         //root와 station 가져오기
         val nowNodeId = graphService.findRoot(context.kioskId).id
@@ -34,6 +37,7 @@ class PaymentEditor @Autowired constructor(
             autoTaskExecutor.clickPayment(autoContext, action)
         }
         context.lastNodeId = last.id
+        log.info("수정된 결제 노드로 이동합니다 -> ${last.title}")
 
         //complete까지 이동
         paymentNavigator.processPayment(context)
