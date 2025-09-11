@@ -10,7 +10,7 @@ import com.orderagentservice.order.model.log.NodeSaveLog
 import com.orderagentservice.order.model.type.NodeType
 import com.orderagentservice.order.model.type.SpecialNodeType
 import com.orderagentservice.order.service.graph.ui.UiGraphService
-import com.orderagentservice.order.service.utg.ScreenNodeGenerator
+import com.orderagentservice.order.service.utg.ScreenNodeIntegrator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component
 class PaymentNodeIntegrator @Autowired constructor(
     private val graphService: UiGraphService,
     private val logService: LogService,
-    private val screenNodeGenerator: ScreenNodeGenerator,
+    private val screenNodeIntegrator: ScreenNodeIntegrator,
 ) {
     fun integratePaymentNode(action: AgentActionDto, context: GraphContext) {
         val (x, y) = action.coordinate
@@ -44,7 +44,7 @@ class PaymentNodeIntegrator @Autowired constructor(
         graphService.saveRel(context.lastNodeId!!, node.id, NodeRelationType.PATH_TO)
 
         //match 노드와 관계, screen 노드와 관계 연결
-        screenNodeGenerator.linkNode(
+        screenNodeIntegrator.linkNode(
             kioskId = context.kioskId,
             nodeId = node.id, screenNodeId = context.screenNodeId,
             UiComponentParams(

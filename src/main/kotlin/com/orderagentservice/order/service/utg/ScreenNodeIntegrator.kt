@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class ScreenNodeGenerator @Autowired constructor(
+class ScreenNodeIntegrator @Autowired constructor(
     private val screenGraphService: ScreenGraphService,
     private val somGraphService: SomGraphService,
     private val ocrGraphService: OcrGraphService,
@@ -31,7 +31,7 @@ class ScreenNodeGenerator @Autowired constructor(
     private val log = logger()
 
     @Transactional
-    fun createScreenNode(
+    fun integrateScreenNode(
         context: GraphContext,
         captureDto: KioskCaptureDto,
         uiComponents: List<DetectorUiComponentDto>,

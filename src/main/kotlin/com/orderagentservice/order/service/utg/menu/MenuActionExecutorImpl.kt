@@ -12,7 +12,7 @@ import com.orderagentservice.order.model.dto.NodeCreationResult
 import com.orderagentservice.order.model.log.UtgProcessLog
 import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.graph.ui.UiGraphService
-import com.orderagentservice.order.service.utg.ScreenNodeGenerator
+import com.orderagentservice.order.service.utg.ScreenNodeIntegrator
 import com.orderagentservice.order.service.utg.UiDetectorManager
 import com.orderagentservice.order.service.utg.WordSimilarityService
 import org.springframework.beans.factory.annotation.Autowired
@@ -23,7 +23,7 @@ class MenuActionExecutorImpl @Autowired constructor(
     private val wordSimilarityService: WordSimilarityService,
     private val notificationService: NotificationService,
     private val menuNodeIntegrator: MenuNodeIntegrator,
-    private val screenNodeGenerator: ScreenNodeGenerator,
+    private val screenNodeIntegrator: ScreenNodeIntegrator,
     private val uiDetectorManager: UiDetectorManager,
     private val backAgent: BackAgent,
     private val graphService: UiGraphService,
@@ -61,7 +61,7 @@ class MenuActionExecutorImpl @Autowired constructor(
         val nodeId = creationResult.nodeId
 
         //match 노드와 관계, screen 노드와 관계 연결
-        screenNodeGenerator.linkNode(
+        screenNodeIntegrator.linkNode(
             kioskId = context.kioskId,
             nodeId = nodeId, screenNodeId = categoryScreenId,
             uiComponentParams = creationResult.uiComponentParams,
@@ -87,7 +87,7 @@ class MenuActionExecutorImpl @Autowired constructor(
             val creationResult = menuNodeIntegrator.integrateOptionNode(matchDto, opt, menuNodeId, context)
 
             //match 노드와 관계, screen 노드와 관계 연결
-            screenNodeGenerator.linkNode(
+            screenNodeIntegrator.linkNode(
                 kioskId = context.kioskId,
                 nodeId = creationResult.nodeId, screenNodeId = context.screenNodeId,
                 uiComponentParams = creationResult.uiComponentParams,
@@ -109,7 +109,7 @@ class MenuActionExecutorImpl @Autowired constructor(
         val creationResult = menuNodeIntegrator.integrateBackNode(backUi, menuNodeId, context)
 
         //match 노드와 관계, screen 노드와 관계 연결
-        screenNodeGenerator.linkNode(
+        screenNodeIntegrator.linkNode(
             kioskId = context.kioskId,
             nodeId = creationResult.nodeId, screenNodeId = context.screenNodeId,
             uiComponentParams = creationResult.uiComponentParams,
@@ -151,7 +151,7 @@ class MenuActionExecutorImpl @Autowired constructor(
             nodeId = creationResult.nodeId
 
             //match 노드와 관계, screen 노드와 관계 연결
-            screenNodeGenerator.linkNode(
+            screenNodeIntegrator.linkNode(
                 kioskId = context.kioskId,
                 nodeId = nodeId, screenNodeId = context.screenNodeId,
                 uiComponentParams = creationResult.uiComponentParams,

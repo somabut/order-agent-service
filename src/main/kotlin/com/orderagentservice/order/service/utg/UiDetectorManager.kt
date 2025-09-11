@@ -5,7 +5,6 @@ import com.orderagentservice.global.model.response.ApiResponse
 import com.orderagentservice.global.util.ImageUtils
 import com.orderagentservice.logger
 import com.orderagentservice.order.exception.UiExtractException
-import com.orderagentservice.order.model.type.ExtractType
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.dto.AllUiComponentDto
 import com.orderagentservice.order.model.dto.DetectorUiComponentDto
@@ -28,7 +27,7 @@ import org.springframework.web.client.RestTemplate
 class UiDetectorManager @Autowired constructor(
     private val env: Environment,
     private val notificationService: NotificationService,
-    private val screenNodeGenerator: ScreenNodeGenerator
+    private val screenNodeIntegrator: ScreenNodeIntegrator
 ) {
     private val log = logger()
 
@@ -42,8 +41,8 @@ class UiDetectorManager @Autowired constructor(
         val imageType = captureDto.type
         val uiResponse = queryUiExtractor(imageBytes, imageType)
 
-//        val uiElements = uiResponse.uiComponents
-        val uiElements = uiResponse.ocrComponents
+        val uiElements = uiResponse.uiComponents
+//        val uiElements = uiResponse.ocrComponents
         val ocrElements = uiResponse.ocrComponents
         val yoloElements = uiResponse.yoloComponents
 
@@ -51,7 +50,7 @@ class UiDetectorManager @Autowired constructor(
         context.imageName = captureDto.url
 
         //노드 생성
-        screenNodeGenerator.createScreenNode(
+        screenNodeIntegrator.integrateScreenNode(
             context = context, captureDto = captureDto,
             uiComponents = uiElements, ocrComponents = ocrElements, yoloComponents = yoloElements,
         )
