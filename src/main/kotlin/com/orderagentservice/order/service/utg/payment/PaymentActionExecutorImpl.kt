@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component
 class PaymentActionExecutorImpl(
     private val uiDetectorManager: UiDetectorManager,
     private val paymentAgent: PaymentAgent,
-    private val paymentNodeGenerator: PaymentNodeGenerator,
+    private val paymentNodeIntegrator: PaymentNodeIntegrator,
     private val notificationService: NotificationService
 ) : PaymentActionExecutor {
     override fun selectPayment(context: GraphContext, uiList: List<UiComponentDto>): Boolean {
@@ -20,7 +20,7 @@ class PaymentActionExecutorImpl(
         if (action.goNext == false) return false
 
         //노드 저장
-        paymentNodeGenerator.createPaymentNode(action, context)
+        paymentNodeIntegrator.integratePaymentNode(action, context)
 
         //클릭 액션 요청
         notificationService.sendActionCommand(context.kioskId, CoordinateDto(x = action.coordinate[0], y = action.coordinate[1], title = action.title))

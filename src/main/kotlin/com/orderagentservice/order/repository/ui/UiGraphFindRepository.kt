@@ -1,5 +1,6 @@
 package com.orderagentservice.order.repository.ui
 
+import com.orderagentservice.order.model.entity.ScreenEntity
 import com.orderagentservice.order.model.entity.UiEntity
 import com.orderagentservice.order.model.type.SpecialNodeType
 import org.springframework.data.neo4j.repository.query.Query

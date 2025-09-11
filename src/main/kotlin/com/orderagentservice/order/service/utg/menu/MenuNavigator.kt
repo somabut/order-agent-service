@@ -25,16 +25,15 @@ class MenuNavigator @Autowired constructor(
     private val menuActionExecutor: MenuActionExecutor,
     private val uiDetectorManager: UiDetectorManager,
     private val graphService: UiGraphService,
-    private val notificationService: NotificationService,
     private val screenNodeGenerator: ScreenNodeGenerator,
     private val pageChecker: PageChecker,
     private val logService: LogService
 ) {
     private val MAX_LOOP = 5
 
-    fun navigateMenus(context: GraphContext, menuList: List<MenuInfoDto>) {
+    fun navigateMenus(context: GraphContext, menuList: List<MenuInfoDto>, screenNodeId: String = "") {
         var uiList = uiDetectorManager.getUiComponents(context).uiElements
-        var categoryScreenId = ""
+        var categoryScreenId = screenNodeId
         for (menuDto in menuList) {
             if (menuDto.category != context.currentCategory) {
                 //카테고리가 다르다면 해당 카테고리로 이동

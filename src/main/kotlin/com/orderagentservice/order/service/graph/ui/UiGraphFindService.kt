@@ -1,6 +1,7 @@
 package com.orderagentservice.order.service.graph.ui
 
 import com.orderagentservice.order.model.dto.ActionPathDto
+import com.orderagentservice.order.model.dto.ScreenDto
 import com.orderagentservice.order.model.dto.UiDto
 
 interface UiGraphFindService {

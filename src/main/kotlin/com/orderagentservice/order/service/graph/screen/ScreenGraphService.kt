@@ -6,6 +6,6 @@ import com.orderagentservice.order.model.type.NodeType
 
 interface ScreenGraphService {
     fun saveNode(screenDto: ScreenDto): ScreenEntity
-
     fun saveRel(sourceId: String, targetId: String, nodeType: NodeType)
+    fun findLinkedScreen(kioskId: String, sourceId: String): String
 }

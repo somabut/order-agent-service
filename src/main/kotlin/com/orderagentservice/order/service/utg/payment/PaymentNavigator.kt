@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component
 class PaymentNavigator @Autowired constructor(
     private val placeUtgService: PlaceUtgService,
     private val paymentActionExecutor: PaymentActionExecutor,
-    private val paymentNodeGenerator: PaymentNodeGenerator,
+    private val paymentNodeIntegrator: PaymentNodeIntegrator,
     private val uiDetectorManager: UiDetectorManager
 ) {
     private val MAX_LOOP = 5
@@ -28,7 +28,7 @@ class PaymentNavigator @Autowired constructor(
             }
             val paymentEnd = paymentActionExecutor.selectPayment(context, uiList)
             if (paymentEnd == false) {
-                paymentNodeGenerator.createCompleteNode(context)
+                paymentNodeIntegrator.integrateCompleteNode(context)
                 return
             }
             loopTime += 1

@@ -33,6 +33,7 @@ class PaymentEditor @Autowired constructor(
         for (action in actionList) {
             autoTaskExecutor.clickPayment(autoContext, action)
         }
+        context.lastNodeId = last.id
 
         //complete까지 이동
         paymentNavigator.processPayment(context)

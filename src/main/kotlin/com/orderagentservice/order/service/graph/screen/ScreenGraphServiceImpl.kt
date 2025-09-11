@@ -31,4 +31,9 @@ class ScreenGraphServiceImpl @Autowired constructor(
             else -> throw NodeNotFoundException()
         }
     }
+
+    override fun findLinkedScreen(kioskId: String, sourceId: String): String {
+        val screenNode = screenGraphRepository.findLinkedScreenNode(kioskId, sourceId) ?: throw NodeNotFoundException()
+        return screenNode.id
+    }
 }

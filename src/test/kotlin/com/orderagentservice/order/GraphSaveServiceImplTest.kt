@@ -3,6 +3,7 @@ package com.orderagentservice.order
 import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.type.NodeType
+import com.orderagentservice.order.service.graph.screen.ScreenGraphService
 import com.orderagentservice.order.service.graph.ui.UiGraphService
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
@@ -16,6 +17,7 @@ import org.springframework.data.neo4j.core.Neo4jClient
 @SpringBootTest
 class GraphSaveServiceImplTest @Autowired constructor(
     private val graphService: UiGraphService,
+    private val screenGraphService: ScreenGraphService,
     private val neo4jClient: Neo4jClient
 ) {
     private val testKioskId = "TEST-MOODTRBL"
@@ -120,5 +122,13 @@ class GraphSaveServiceImplTest @Autowired constructor(
             .map { it.title }
 
         for (node in nodes) println(node)
+    }
+
+    @Test
+    fun `카테고리와 연결된 screenNode를 가져온다`() {
+        val kioskId = "kiosk-2303452c-8454-4b9f-add2-47314cfd3911"
+        val sourceId = "bceece28-1224-461f-97f5-e7bea499cd5b"
+        val screenNodeId = screenGraphService.findLinkedScreen(kioskId, sourceId)
+        println(screenNodeId)
     }
 }
