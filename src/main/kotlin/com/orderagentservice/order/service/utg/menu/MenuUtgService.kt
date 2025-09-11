@@ -68,6 +68,7 @@ class MenuUtgService @Autowired constructor(
         //수정된 카테고리까지 가서 메뉴 노드 그리기
         val uiDtoList = graphService.findModified(context.kioskId)
 
+
         val modifiedCategoryList = uiDtoList
             .filter { it.type == NodeType.CATEGORY }
             .map { it.title }

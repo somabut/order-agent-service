@@ -15,9 +15,6 @@ import org.springframework.stereotype.Service
 class MenuEditor @Autowired constructor(
     private val autoTaskExecutor: AutoTaskExecutor,
     private val menuNavigator: MenuNavigator,
-    private val menuActionExecutor: MenuActionExecutor,
-    private val uiDetectorManager: UiDetectorManager,
-    private val pageChecker: PageChecker,
     private val graphService: UiGraphService
 ) {
     val log = logger()

@@ -64,8 +64,6 @@ class UtgController @Autowired constructor(
 
         val history = utgService.updateMenuGraph(
             kioskId = kioskId, accessToken = accessToken,
-            updatedMenus = menuUtgUpdateRequest.updatedMenus,
-            completeMenus = menuUtgUpdateRequest.completeMenus,
             isInitPayment = menuUtgUpdateRequest.initPayment
         )
 
@@ -75,7 +73,6 @@ class UtgController @Autowired constructor(
     @PostMapping("/utg/update/payment/{kioskId}")
     fun updatePaymentUtg(
         @PathVariable kioskId: String,
-        @RequestBody paymentUtgUpdateRequest: PaymentUtgUpdateRequest
     ): ApiResponse<*> {
         val history = utgService.updatePaymentGraph(kioskId)
         return ApiResponse.success(history)
