@@ -2,6 +2,7 @@ package com.orderagentservice.order.service.utg.menu
 
 import com.orderagentservice.agent.model.UsageTracker
 import com.orderagentservice.global.service.LogService
+import com.orderagentservice.logger
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.type.SpecialNodeType
@@ -28,6 +29,8 @@ class MenuUtgService @Autowired constructor(
     private val logService: LogService,
     private val usageTracker: UsageTracker
 )  {
+    private val log = logger()
+
     fun initializeGraph(context: GraphContext, menuList: List<MenuInfoDto>) {
         logService.printLog(
             UtgStartLog(
@@ -66,8 +69,8 @@ class MenuUtgService @Autowired constructor(
 
     fun updateCategory(context: GraphContext, menuList: List<MenuInfoDto>) {
         //수정된 카테고리까지 가서 메뉴 노드 그리기
+        log.info("카테고리를 수정합니다")
         val uiDtoList = graphService.findModified(context.kioskId)
-
 
         val modifiedCategoryList = uiDtoList
             .filter { it.type == NodeType.CATEGORY }
@@ -82,11 +85,14 @@ class MenuUtgService @Autowired constructor(
             .map { it.title }
         val remainList = menuList.filter { it.title !in completeMenuList }
 
-        menuNavigator.navigateMenus(context, remainList)
+        if (remainList.isNotEmpty()) {
+            menuNavigator.navigateMenus(context, remainList)
+        }
     }
 
     fun updateMenu(context: GraphContext, menuList: List<MenuInfoDto>) {
         //수정된 메뉴까지 가서 옵션 노드 그리기
+        log.info("메뉴를 수정합니다")
         val uiDtoList = graphService.findModified(context.kioskId)
 
         val modifiedMenuList = uiDtoList
@@ -102,7 +108,9 @@ class MenuUtgService @Autowired constructor(
             .map { it.title }
         val remainList = menuList.filter { it.title !in completeMenuList }
 
-        menuNavigator.navigateMenus(context, remainList)
+        if (remainList.isNotEmpty()) {
+            menuNavigator.navigateMenus(context, remainList)
+        }
     }
 
     private fun setupNode(context: GraphContext) {

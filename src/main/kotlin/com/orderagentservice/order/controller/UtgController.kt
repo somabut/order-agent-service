@@ -6,7 +6,6 @@ import com.orderagentservice.logger
 import com.orderagentservice.order.exception.KioskAdminSignInException
 import com.orderagentservice.order.model.request.CategoryUtgUpdateRequest
 import com.orderagentservice.order.model.request.MenuUtgUpdateRequest
-import com.orderagentservice.order.model.request.PaymentUtgUpdateRequest
 import com.orderagentservice.order.model.type.OverlayType
 import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.auto.RandomTaskService
@@ -79,7 +78,7 @@ class UtgController @Autowired constructor(
     }
 
     @GetMapping("/utg/benchmark/{kioskId}")
-    fun updateUtg(
+    fun benchmarkUtg(
         @PathVariable kioskId: String,
         @RequestHeader("Authorization", required = false) accessToken: String?
     ): ApiResponse<*> {

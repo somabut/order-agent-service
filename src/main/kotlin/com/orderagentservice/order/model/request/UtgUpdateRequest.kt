@@ -1,7 +1,5 @@
 package com.orderagentservice.order.model.request
 
-import com.orderagentservice.order.model.dto.MenuInfoDto
-
 data class CategoryUtgUpdateRequest(
     val initPayment: Boolean
 )
