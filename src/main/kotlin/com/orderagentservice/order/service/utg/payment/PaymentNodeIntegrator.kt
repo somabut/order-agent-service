@@ -15,12 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class PaymentNodeGenerator @Autowired constructor(
+class PaymentNodeIntegrator @Autowired constructor(
     private val graphService: UiGraphService,
     private val logService: LogService,
     private val screenNodeGenerator: ScreenNodeGenerator,
 ) {
-    fun createPaymentNode(action: AgentActionDto, context: GraphContext) {
+    fun integratePaymentNode(action: AgentActionDto, context: GraphContext) {
         val (x, y) = action.coordinate
         val (minX, minY, maxX, maxY) = action.bbox
 
@@ -57,7 +57,7 @@ class PaymentNodeGenerator @Autowired constructor(
         context.lastNodeId = node.id
     }
 
-    fun createCompleteNode(context: GraphContext) {
+    fun integrateCompleteNode(context: GraphContext) {
         logService.printLog(
             NodeSaveLog(
                 kioskId = context.kioskId, nodeType = NodeType.COMPLETE,
