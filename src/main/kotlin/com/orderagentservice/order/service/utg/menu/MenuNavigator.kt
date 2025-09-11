@@ -1,22 +1,15 @@
 package com.orderagentservice.order.service.utg.menu
 
-import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.service.LogService
-import com.orderagentservice.order.exception.UtgInfiniteLoopException
-import com.orderagentservice.order.model.type.ExtractType
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.type.NodeRelationType
-import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
-import com.orderagentservice.order.model.dto.UiComponentParams
 import com.orderagentservice.order.model.log.UtgNowMenuLog
 import com.orderagentservice.order.model.log.UtgProcessLog
-import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.graph.ui.UiGraphService
 import com.orderagentservice.order.service.utg.PageChecker
-import com.orderagentservice.order.service.utg.ScreenNodeGenerator
+import com.orderagentservice.order.service.utg.ScreenNodeIntegrator
 import com.orderagentservice.order.service.utg.UiDetectorManager
-import com.orderagentservice.order.service.utg.WordSimilarityService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -25,7 +18,7 @@ class MenuNavigator @Autowired constructor(
     private val menuActionExecutor: MenuActionExecutor,
     private val uiDetectorManager: UiDetectorManager,
     private val graphService: UiGraphService,
-    private val screenNodeGenerator: ScreenNodeGenerator,
+    private val screenNodeIntegrator: ScreenNodeIntegrator,
     private val pageChecker: PageChecker,
     private val logService: LogService
 ) {
@@ -41,7 +34,7 @@ class MenuNavigator @Autowired constructor(
                 uiList = uiDetectorManager.getUiComponents(context).uiElements
 
                 //match 노드와 관계, screen 노드와 관계 연결
-                screenNodeGenerator.linkNode(
+                screenNodeIntegrator.linkNode(
                     kioskId = context.kioskId,
                     nodeId = creationResult.nodeId, screenNodeId = context.screenNodeId,
                     uiComponentParams = creationResult.uiComponentParams,

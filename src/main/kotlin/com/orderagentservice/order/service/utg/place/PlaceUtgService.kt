@@ -1,7 +1,6 @@
 package com.orderagentservice.order.service.utg.place
 
 import com.orderagentservice.agent.PlaceAgent
-import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.agent.model.dto.AgentPlaceDto
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.service.LogService
@@ -15,7 +14,7 @@ import com.orderagentservice.order.model.log.UtgProcessLog
 import com.orderagentservice.order.model.type.NodeType
 import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.graph.ui.UiGraphService
-import com.orderagentservice.order.service.utg.ScreenNodeGenerator
+import com.orderagentservice.order.service.utg.ScreenNodeIntegrator
 import com.orderagentservice.order.service.utg.UiDetectorManager
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -25,9 +24,8 @@ import org.springframework.transaction.annotation.Transactional
 class PlaceUtgService @Autowired constructor(
     private val placeAgent: PlaceAgent,
     private val notificationService: NotificationService,
-    private val uiDetectorManager: UiDetectorManager,
     private val graphService: UiGraphService,
-    private val screenNodeGenerator: ScreenNodeGenerator,
+    private val screenNodeIntegrator: ScreenNodeIntegrator,
     private val logService: LogService
 ) {
     @Transactional
@@ -70,7 +68,7 @@ class PlaceUtgService @Autowired constructor(
             graphService.saveRel(context.lastNodeId!!, node.id, NodeRelationType.HAS_TO)
 
             //match 노드와 관계, screen 노드와 관계 연결
-            screenNodeGenerator.linkNode(
+            screenNodeIntegrator.linkNode(
                 kioskId = context.kioskId,
                 nodeId = node.id, screenNodeId = context.screenNodeId,
                 UiComponentParams(
