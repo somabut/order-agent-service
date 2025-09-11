@@ -8,6 +8,7 @@ import com.orderagentservice.order.model.type.SpecialNodeType
 import com.orderagentservice.order.model.dto.ActionPathDto
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.entity.UiEntity
+import com.orderagentservice.order.model.type.NodeType
 import com.orderagentservice.order.repository.ui.UiGraphRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Profile
@@ -117,6 +118,32 @@ class UiGraphServiceImpl @Autowired constructor(
             id = entity.id, title = entity.title,
             x = entity.x, y = entity.y
         )
+    }
+
+    override fun findModified(kioskId: String): List<UiDto> {
+        val uiDtoList = graphRepository.findModifiedNode(kioskId)
+            .map { UiDto(
+                kioskId = it.kioskId,
+                isNext = it.isNext,
+                x = it.x, y = it.y,
+                title = it.title,
+                type = NodeType.valueOf(it.type), modified = it.modified
+            ) }
+
+        return uiDtoList
+    }
+
+    override fun findAll(kioskId: String): List<UiDto> {
+        val uiDtoList = graphRepository.findAllNode(kioskId)
+            .map { UiDto(
+                kioskId = it.kioskId,
+                isNext = it.isNext,
+                x = it.x, y = it.y,
+                title = it.title,
+                type = NodeType.valueOf(it.type), modified = it.modified
+            ) }
+
+        return uiDtoList
     }
 
     override fun isBackRel(kioskId: String, sourceId: String): Boolean {

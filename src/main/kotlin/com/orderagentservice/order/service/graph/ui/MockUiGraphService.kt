@@ -15,10 +15,14 @@ class MockUiGraphService : UiGraphService {
         val uiEntity = UiEntity(
             x = uiDto.x, y = uiDto.y, isNext = uiDto.isNext,
             title = uiDto.title, kioskId = uiDto.kioskId,
-            type = NodeType.ROOT.name
+            type = NodeType.ROOT.name, modified = true
         )
         return uiEntity
     }
+
+    override fun findAll(kioskId: String): List<UiDto> = listOf()
+
+    override fun findModified(kioskId: String): List<UiDto> = listOf()
 
     override fun findNodeByTitle(kioskId: String, title: String) = ""
 

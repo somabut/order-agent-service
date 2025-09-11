@@ -48,8 +48,6 @@ class UtgController @Autowired constructor(
 
         val history = utgService.updateCategoryGraph(
             kioskId = kioskId, accessToken = accessToken,
-            completeMenus = categoryUtgUpdateRequest.completeMenus,
-            updatedCategories = categoryUtgUpdateRequest.updatedCategories,
             isInitPayment = categoryUtgUpdateRequest.initPayment
         )
 
@@ -79,7 +77,7 @@ class UtgController @Autowired constructor(
         @PathVariable kioskId: String,
         @RequestBody paymentUtgUpdateRequest: PaymentUtgUpdateRequest
     ): ApiResponse<*> {
-        val history = utgService.updatePaymentGraph(kioskId, paymentUtgUpdateRequest.updatedTitle)
+        val history = utgService.updatePaymentGraph(kioskId)
         return ApiResponse.success(history)
     }
 

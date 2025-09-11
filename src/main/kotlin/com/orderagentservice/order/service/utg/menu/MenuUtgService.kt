@@ -17,7 +17,6 @@ import com.orderagentservice.order.service.utg.UiDetectorManager
 import com.orderagentservice.order.service.utg.place.PlaceUtgService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class MenuUtgService @Autowired constructor(
@@ -65,21 +64,44 @@ class MenuUtgService @Autowired constructor(
         )
     }
 
-    fun updateCategory(context: GraphContext, categoryList: List<String>, pendingList: List<MenuInfoDto>) {
+    fun updateCategory(context: GraphContext, menuList: List<MenuInfoDto>) {
         //수정된 카테고리까지 가서 메뉴 노드 그리기
-        menuEditor.editCategories(context, categoryList, pendingList)
+        val uiDtoList = graphService.findModified(context.kioskId)
 
-        //남은 노드는 일반 탐색
-        val remainList = pendingList.filter { it.category !in categoryList }
+        val modifiedCategoryList = uiDtoList
+            .filter { it.type == NodeType.CATEGORY }
+            .map { it.title }
+        val pendingList = menuList.filter { it.category in modifiedCategoryList }
+
+        menuEditor.editCategories(context, modifiedCategoryList, pendingList)
+
+        //완료 된 노드를 파악하고 완료하지 못한 노드를 순회
+        val completeMenuList = graphService.findAll(context.kioskId)
+            .filter { it.type == NodeType.MENU }
+            .map { it.title }
+        val remainList = menuList.filter { it.title !in completeMenuList }
+
         menuNavigator.navigateMenus(context, remainList)
     }
 
-    fun updateMenu(context: GraphContext, updatedMenus: List<MenuInfoDto>, pendingMenus: List<MenuInfoDto>) {
+    fun updateMenu(context: GraphContext, menuList: List<MenuInfoDto>) {
         //수정된 메뉴까지 가서 옵션 노드 그리기
-        menuEditor.editMenus(context, updatedMenus)
+        val uiDtoList = graphService.findModified(context.kioskId)
+
+        val modifiedMenuList = uiDtoList
+            .filter { it.type == NodeType.MENU }
+            .map { it.title }
+        val pendingList = menuList.filter { it.title in modifiedMenuList }
+
+        menuEditor.editMenus(context, pendingList, menuList)
 
         //이후 아직 탐색 못한 메뉴 탐색
-        menuNavigator.navigateMenus(context, pendingMenus)
+        val completeMenuList = graphService.findAll(context.kioskId)
+            .filter { it.type == NodeType.MENU }
+            .map { it.title }
+        val remainList = menuList.filter { it.title !in completeMenuList }
+
+        menuNavigator.navigateMenus(context, remainList)
     }
 
     private fun setupNode(context: GraphContext) {
