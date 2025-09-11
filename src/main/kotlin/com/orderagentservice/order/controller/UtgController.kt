@@ -29,6 +29,7 @@ class UtgController @Autowired constructor(
         @RequestHeader("Authorization", required = false) accessToken: String?
     ): ApiResponse<*> {
         if (accessToken == null) throw KioskAdminSignInException()
+
         notificationService.sendOverlayCommand(kioskId, OverlayType.UTG_START.title)
         val history = utgService.initializeGraph(kioskId, accessToken)
         notificationService.sendOverlayCommand(kioskId, OverlayType.UTG_END.title)
@@ -45,10 +46,12 @@ class UtgController @Autowired constructor(
     ): ApiResponse<*> {
         if (accessToken == null) throw KioskAdminSignInException()
 
+        notificationService.sendOverlayCommand(kioskId, OverlayType.UTG_START.title)
         val history = utgService.updateCategoryGraph(
             kioskId = kioskId, accessToken = accessToken,
             isInitPayment = categoryUtgUpdateRequest.initPayment
         )
+        notificationService.sendOverlayCommand(kioskId, OverlayType.UTG_END.title)
 
         return ApiResponse.success(history)
     }
@@ -61,10 +64,12 @@ class UtgController @Autowired constructor(
     ): ApiResponse<*> {
         if (accessToken == null) throw KioskAdminSignInException()
 
+        notificationService.sendOverlayCommand(kioskId, OverlayType.UTG_START.title)
         val history = utgService.updateMenuGraph(
             kioskId = kioskId, accessToken = accessToken,
             isInitPayment = menuUtgUpdateRequest.initPayment
         )
+        notificationService.sendOverlayCommand(kioskId, OverlayType.UTG_END.title)
 
         return ApiResponse.success(history)
     }
@@ -73,7 +78,10 @@ class UtgController @Autowired constructor(
     fun updatePaymentUtg(
         @PathVariable kioskId: String,
     ): ApiResponse<*> {
+        notificationService.sendOverlayCommand(kioskId, OverlayType.UTG_START.title)
         val history = utgService.updatePaymentGraph(kioskId)
+        notificationService.sendOverlayCommand(kioskId, OverlayType.UTG_END.title)
+
         return ApiResponse.success(history)
     }
 

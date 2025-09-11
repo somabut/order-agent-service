@@ -41,15 +41,6 @@ class UiEntity(
 
     @Property("updated_at")
     val updatedAt: OffsetDateTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toOffsetDateTime(),
-
-    @Relationship(type = "PATH_TO", direction = Relationship.Direction.OUTGOING)
-    val connectedTo: Set<UiEntity>? = null,
-
-    @Relationship(type = "HAS_TO", direction = Relationship.Direction.OUTGOING)
-    val hasTo: Set<UiEntity>? = null,
-
-    @Relationship(type = "BACK_TO", direction = Relationship.Direction.OUTGOING)
-    val backTo: Set<UiEntity>? = null,
 ) {
     fun toAgentActionDto(minX: Int, minY: Int, maxX: Int, maxY: Int) = AgentActionDto(
         goNext = isNext,

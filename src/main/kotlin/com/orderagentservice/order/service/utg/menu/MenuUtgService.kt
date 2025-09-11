@@ -85,6 +85,7 @@ class MenuUtgService @Autowired constructor(
             .map { it.title }
         val remainList = menuList.filter { it.title !in completeMenuList }
 
+        log.info("남은 노드를 초기화합니다. 남은 노드: ${remainList}")
         if (remainList.isNotEmpty()) {
             menuNavigator.navigateMenus(context, remainList)
         }
@@ -108,6 +109,7 @@ class MenuUtgService @Autowired constructor(
             .map { it.title }
         val remainList = menuList.filter { it.title !in completeMenuList }
 
+        log.info("남은 노드를 초기화합니다. 남은 노드: ${remainList}")
         if (remainList.isNotEmpty()) {
             menuNavigator.navigateMenus(context, remainList)
         }
