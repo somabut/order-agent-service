@@ -17,4 +17,14 @@ interface UiGraphEditRepository {
         @Param("kioskId") kioskId: String,
         @Param("title") title: String,
     ): UiEntity?
+
+    @Query(
+        "MATCH (n:UI {kioskId: \$kioskId, title: \$title})\n" +
+        "SET n.modified = \$modified"
+    )
+    fun changeModifiedByTitle(
+        @Param("kioskId") kioskId: String,
+        @Param("title") title: String,
+        @Param("modified") modified: Boolean,
+    )
 }
