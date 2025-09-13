@@ -17,12 +17,14 @@ class SomGraphServiceImpl @Autowired constructor(
     }
 
     override fun findNode(
+        sourceId: String,
         kioskId: String,
         minX: Int, minY: Int,
         maxX: Int, maxY: Int,
         title: String
     ): String {
         val somEntity = somGraphRepository.findByBboxAndTitle(
+            sourceId = sourceId,
             kioskId = kioskId,
             minX = minX, minY = minY,
             maxX = maxX, maxY = maxY,
