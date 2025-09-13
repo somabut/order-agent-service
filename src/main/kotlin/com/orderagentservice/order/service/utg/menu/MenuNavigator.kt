@@ -27,9 +27,9 @@ class MenuNavigator @Autowired constructor(
     private val log = logger()
     private val MAX_LOOP = 5
 
-    fun navigateMenus(context: GraphContext, menuList: List<MenuInfoDto>, screenNodeId: String = "") {
-        var categoryScreenId = screenNodeId
+    fun navigateMenus(context: GraphContext, menuList: List<MenuInfoDto>) {
         var uiList: List<UiComponentDto> = uiDetectorManager.getUiComponents(context).uiElements
+        var categoryScreenId = context.screenNodeId
         for (menuDto in menuList) {
             if (menuDto.category != context.currentCategory) {
                 //카테고리가 다르다면 해당 카테고리로 이동

@@ -40,7 +40,6 @@ class MenuEditor @Autowired constructor(
             context.lastNodeId = nodeId
 
             //메뉴 클릭
-//            val screenNodeId = screenGraphService.findLinkedScreen(context.kioskId, nodeId)
             val menuList = pendingList.filter { it.category == category }
             log.info("카테고리에 도달 후 메뉴 UTG를 초기화합니다. 메뉴: ${menuList}")
             menuNavigator.navigateMenus(context, menuList)

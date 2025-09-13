@@ -61,7 +61,7 @@ class ScreenNodeIntegrator @Autowired constructor(
         val minY = uiComponentParams.minY
         val maxX = uiComponentParams.maxX
         val maxY = uiComponentParams.maxY
-        log.info("${uiComponentParams.title} 의 연결을 조회합니다. bbox: [${minX}, ${minY}, ${maxX}, ${maxY}]")
+        log.info("${screenNodeId}에서 ${uiComponentParams.title} 의 연결을 조회합니다. bbox: [${minX}, ${minY}, ${maxX}, ${maxY}]")
         val somNodeId = somGraphService.findNode(
             sourceId = screenNodeId,
             kioskId = kioskId,
