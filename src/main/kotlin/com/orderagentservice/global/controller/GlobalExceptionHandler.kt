@@ -28,6 +28,9 @@ class GlobalExceptionHandler {
     @ExceptionHandler(OrderAgentException::class)
     fun handleOrderAgentException(e: OrderAgentException): ApiResponse<*> {
         log.info("${e.errorCode.name}: ${e.message}")
+        for (ele in e.stackTrace) {
+            println(ele)
+        }
         return ApiResponse.fail<OrderAgentException>(e)
     }
 }
