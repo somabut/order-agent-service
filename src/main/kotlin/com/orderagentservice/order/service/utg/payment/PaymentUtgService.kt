@@ -54,5 +54,7 @@ class PaymentUtgService @Autowired constructor(
             .first()
 
         paymentEditor.editPayment(context, modifiedPayment)
+
+        graphService.changeModified(context.kioskId, modifiedPayment)
     }
 }
