@@ -31,7 +31,6 @@ class MenuNavigator @Autowired constructor(
             if (menuDto.category != context.currentCategory) {
                 //카테고리가 다르다면 해당 카테고리로 이동
                 val creationResult = menuActionExecutor.selectCategory(context, menuDto, uiList)
-                uiList = uiDetectorManager.getUiComponents(context).uiElements
 
                 //match 노드와 관계, screen 노드와 관계 연결
                 screenNodeIntegrator.linkNode(
@@ -39,6 +38,8 @@ class MenuNavigator @Autowired constructor(
                     nodeId = creationResult.nodeId, screenNodeId = context.screenNodeId,
                     uiComponentParams = creationResult.uiComponentParams,
                 )
+
+                uiList = uiDetectorManager.getUiComponents(context).uiElements
                 categoryScreenId = context.screenNodeId
             }
 
