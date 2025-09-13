@@ -56,12 +56,16 @@ class ScreenNodeIntegrator @Autowired constructor(
     @Transactional
     fun linkNode(kioskId: String, nodeId: String, screenNodeId: String, uiComponentParams: UiComponentParams) {
         //match 노드와 관계, screen 노드와 관계 연결
-        log.info("${uiComponentParams.title} 의 연결을 조회합니다.")
+        val minX = uiComponentParams.minX
+        val minY = uiComponentParams.minY
+        val maxX = uiComponentParams.maxX
+        val maxY = uiComponentParams.maxY
+        log.info("${uiComponentParams.title} 의 연결을 조회합니다. bbox: [${minX}, ${minY}, ${maxX}, ${maxY}]")
         val somNodeId = somGraphService.findNode(
             sourceId = screenNodeId,
             kioskId = kioskId,
-            minX = uiComponentParams.minX, minY = uiComponentParams.minY,
-            maxX = uiComponentParams.maxX, maxY = uiComponentParams.maxY,
+            minX = minX, minY = minY,
+            maxX = maxX, maxY = maxY,
             title = uiComponentParams.title
         )
         uiGraphService.saveRel(nodeId, somNodeId, NodeRelationType.MATCH_TO)
