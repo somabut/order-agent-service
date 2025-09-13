@@ -20,6 +20,8 @@ class MockUiGraphService : UiGraphService {
         return uiEntity
     }
 
+    override fun changeModified(kioskId: String, title: String, modified: Boolean) {  }
+
     override fun findAll(kioskId: String): List<UiDto> = listOf()
 
     override fun findModified(kioskId: String): List<UiDto> = listOf()

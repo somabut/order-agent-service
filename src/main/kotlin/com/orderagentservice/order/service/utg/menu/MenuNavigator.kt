@@ -32,7 +32,7 @@ class MenuNavigator @Autowired constructor(
                 //카테고리가 다르다면 해당 카테고리로 이동
                 val creationResult = menuActionExecutor.selectCategory(context, menuDto, uiList)
 
-                //match 노드와 관계, screen 노드와 관계 연결
+                //카테고리와 match 노드와 관계, screen 노드와 관계 연결
                 screenNodeIntegrator.linkNode(
                     kioskId = context.kioskId,
                     nodeId = creationResult.nodeId, screenNodeId = context.screenNodeId,

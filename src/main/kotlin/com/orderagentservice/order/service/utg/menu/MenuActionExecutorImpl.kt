@@ -59,6 +59,7 @@ class MenuActionExecutorImpl @Autowired constructor(
         //노드 생성
         val creationResult = menuNodeIntegrator.integrateMenuNode(matchDto, menuDto.title, context)
         val nodeId = creationResult.nodeId
+        creationResult.uiComponentParams.title = matchDto.title
 
         //match 노드와 관계, screen 노드와 관계 연결
         screenNodeIntegrator.linkNode(

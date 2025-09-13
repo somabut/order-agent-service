@@ -157,6 +157,10 @@ class UiGraphServiceImpl @Autowired constructor(
         graphRepository.changeTitleById(nodeId, kioskId, title) ?: throw NodeNotFoundException()
     }
 
+    override fun changeModified(kioskId: String, title: String, modified: Boolean) {
+        graphRepository.changeModifiedByTitle(kioskId, title, modified)
+    }
+
     override fun deleteMenusByCategory(kioskId: String, id: String) {
         graphRepository.deleteMenuNode(id, kioskId)
     }

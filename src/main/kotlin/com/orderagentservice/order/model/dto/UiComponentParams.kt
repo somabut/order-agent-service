@@ -5,5 +5,5 @@ data class UiComponentParams (
     val minY: Int,
     val maxX: Int,
     val maxY: Int,
-    val title: String
+    var title: String
 )
