@@ -58,6 +58,7 @@ class ScreenNodeIntegrator @Autowired constructor(
         //match 노드와 관계, screen 노드와 관계 연결
         log.info("${uiComponentParams.title} 의 연결을 조회합니다.")
         val somNodeId = somGraphService.findNode(
+            sourceId = screenNodeId,
             kioskId = kioskId,
             minX = uiComponentParams.minX, minY = uiComponentParams.minY,
             maxX = uiComponentParams.maxX, maxY = uiComponentParams.maxY,
