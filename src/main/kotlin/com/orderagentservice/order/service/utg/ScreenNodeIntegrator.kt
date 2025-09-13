@@ -44,6 +44,7 @@ class ScreenNodeIntegrator @Autowired constructor(
                 imageUrl = captureDto.url
             )
         ).id
+        log.info("Screen 노드 생성: ${screenNodeId}")
 
         context.screenNodeId = screenNodeId
 

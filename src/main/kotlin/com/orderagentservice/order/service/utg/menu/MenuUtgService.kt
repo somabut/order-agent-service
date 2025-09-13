@@ -89,6 +89,11 @@ class MenuUtgService @Autowired constructor(
         if (remainList.isNotEmpty()) {
             menuNavigator.navigateMenus(context, remainList)
         }
+
+        //수정된 노드의 modified 원상 복구
+        modifiedCategoryList.forEach {
+            graphService.changeModified(context.kioskId, it)
+        }
     }
 
     fun updateMenu(context: GraphContext, menuList: List<MenuInfoDto>) {
@@ -112,6 +117,11 @@ class MenuUtgService @Autowired constructor(
         log.info("남은 노드를 초기화합니다. 남은 노드: ${remainList}")
         if (remainList.isNotEmpty()) {
             menuNavigator.navigateMenus(context, remainList)
+        }
+
+        //수정된 노드의 modified 원상 복구
+        modifiedMenuList.forEach {
+            graphService.changeModified(context.kioskId, it)
         }
     }
 
