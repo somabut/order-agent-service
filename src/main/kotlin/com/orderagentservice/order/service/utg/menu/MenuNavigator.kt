@@ -1,6 +1,7 @@
 package com.orderagentservice.order.service.utg.menu
 
 import com.orderagentservice.global.service.LogService
+import com.orderagentservice.logger
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.dto.MenuInfoDto
@@ -22,6 +23,7 @@ class MenuNavigator @Autowired constructor(
     private val pageChecker: PageChecker,
     private val logService: LogService
 ) {
+    private val log = logger()
     private val MAX_LOOP = 5
 
     fun navigateMenus(context: GraphContext, menuList: List<MenuInfoDto>, screenNodeId: String = "") {
@@ -30,6 +32,7 @@ class MenuNavigator @Autowired constructor(
         for (menuDto in menuList) {
             if (menuDto.category != context.currentCategory) {
                 //카테고리가 다르다면 해당 카테고리로 이동
+                log.info("카테고리 이동: ${menuDto.category}")
                 val creationResult = menuActionExecutor.selectCategory(context, menuDto, uiList)
 
                 //카테고리와 match 노드와 관계, screen 노드와 관계 연결
