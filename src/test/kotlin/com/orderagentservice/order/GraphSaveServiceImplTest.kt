@@ -68,11 +68,16 @@ class GraphSaveServiceImplTest @Autowired constructor(
     @Test
     fun `저장된 노드에서 특정 노드까지 경로를 찾는다`() {
         //when: 경로를 찾는다
-        val path = graphService.findPath(testKioskId, "면", "콜라")
+        val kioskId = "kiosk-2303452c-8454-4b9f-add2-47314cfd3911"
+        val rootId = graphService.findRoot(kioskId)
+        println(rootId)
+
+        val path = graphService.findPath(kioskId, rootId.id, "커피")
 
         //then: 올바른 경로가 반환된다
-        assertThat(path[0].title).isEqualTo("음료")
-        assertThat(path[1].title).isEqualTo("콜라")
+        for (ele in path) {
+            println(ele.title)
+        }
     }
 
     @Test

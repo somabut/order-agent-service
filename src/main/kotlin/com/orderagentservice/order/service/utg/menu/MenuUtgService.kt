@@ -80,15 +80,7 @@ class MenuUtgService @Autowired constructor(
         menuEditor.editCategories(context, modifiedCategoryList, pendingList)
 
         //완료 된 노드를 파악하고 완료하지 못한 노드를 순회
-        val completeMenuList = graphService.findAll(context.kioskId)
-            .filter { it.type == NodeType.MENU }
-            .map { it.title }
-        val remainList = menuList.filter { it.title !in completeMenuList }
-
-        log.info("남은 노드를 초기화합니다. 남은 노드: ${remainList}")
-        if (remainList.isNotEmpty()) {
-            menuNavigator.navigateMenus(context, remainList)
-        }
+        navigateRemain(context, menuList)
 
         //수정된 노드의 modified 원상 복구
         modifiedCategoryList.forEach {
@@ -109,6 +101,15 @@ class MenuUtgService @Autowired constructor(
         menuEditor.editMenus(context, pendingList, menuList)
 
         //이후 아직 탐색 못한 메뉴 탐색
+        navigateRemain(context, menuList)
+
+        //수정된 노드의 modified 원상 복구
+        modifiedMenuList.forEach {
+            graphService.changeModified(context.kioskId, it)
+        }
+    }
+
+    private fun navigateRemain(context: GraphContext, menuList: List<MenuInfoDto>) {//이후 아직 탐색 못한 메뉴 탐색
         val completeMenuList = graphService.findAll(context.kioskId)
             .filter { it.type == NodeType.MENU }
             .map { it.title }
@@ -117,11 +118,6 @@ class MenuUtgService @Autowired constructor(
         log.info("남은 노드를 초기화합니다. 남은 노드: ${remainList}")
         if (remainList.isNotEmpty()) {
             menuNavigator.navigateMenus(context, remainList)
-        }
-
-        //수정된 노드의 modified 원상 복구
-        modifiedMenuList.forEach {
-            graphService.changeModified(context.kioskId, it)
         }
     }
 
