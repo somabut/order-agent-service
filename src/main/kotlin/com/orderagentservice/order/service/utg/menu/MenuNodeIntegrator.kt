@@ -52,7 +52,7 @@ class MenuNodeIntegrator @Autowired constructor(
             uiComponentParams = UiComponentParams(
                 minX = matchDto.minX, minY = matchDto.minY,
                 maxX = matchDto.maxX, maxY = matchDto.maxY,
-                title = title
+                title = matchDto.title,
             )
         )
     }
@@ -83,7 +83,7 @@ class MenuNodeIntegrator @Autowired constructor(
             uiComponentParams = UiComponentParams(
                 minX = matchDto.minX, minY = matchDto.minY,
                 maxX = matchDto.maxX, maxY = matchDto.maxY,
-                title = title
+                title = matchDto.title
             )
         )
     }
