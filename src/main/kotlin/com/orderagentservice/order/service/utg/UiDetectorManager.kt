@@ -34,7 +34,7 @@ class UiDetectorManager @Autowired constructor(
     private val UI_EXCTRACTOR_HOST = env.getProperty("ui-extractor.host")
     private val UI_EXTRACTOR_API_KEY = env.getProperty("ui-extractor.api-key")!!
 
-    fun getUiComponents(context: GraphContext): AllUiComponentDto {
+    fun getUiComponents(context: GraphContext, isOcr: Boolean = false): AllUiComponentDto {
         //ui extractor에게 이미지 파싱 요청
         val captureDto = notificationService.sendCaptureCommand(context.kioskId)
         val imageBytes = captureDto.content
@@ -52,7 +52,7 @@ class UiDetectorManager @Autowired constructor(
         //노드 생성
         screenNodeIntegrator.integrateScreenNode(
             context = context, captureDto = captureDto,
-            uiComponents = uiElements, ocrComponents = ocrElements, yoloComponents = yoloElements,
+            uiComponents = if (isOcr) ocrElements else uiElements, ocrComponents = ocrElements, yoloComponents = yoloElements,
         )
 
         //옴니파서에게 받은 이미지 적절히 변환

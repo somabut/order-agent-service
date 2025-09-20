@@ -44,7 +44,7 @@ class MenuUtgService @Autowired constructor(
         setupNode(context)
 
         //포장/매장 찾기
-        val uiList = uiDetectorManager.getUiComponents(context).ocrElements
+        val uiList = uiDetectorManager.getUiComponents(context, true).ocrElements
         placeUtgService.initializeGraph(context, uiList)
 
         //루프를 돌며 메뉴들을 모두 탐색
@@ -52,7 +52,7 @@ class MenuUtgService @Autowired constructor(
 
         //포장/매장 찾기
         if (context.isPlaceDetermined == false) {
-            val uiList = uiDetectorManager.getUiComponents(context).ocrElements
+            val uiList = uiDetectorManager.getUiComponents(context, true).ocrElements
             placeUtgService.initializeGraph(context, uiList)
         }
 
