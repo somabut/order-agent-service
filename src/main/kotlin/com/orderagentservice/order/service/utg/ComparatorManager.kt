@@ -27,8 +27,6 @@ import org.springframework.web.client.RestTemplate
 class ComparatorManager @Autowired constructor(
     private val env: Environment
 ) {
-    private val log = logger()
-
     private val COMPARATOR_HOST = env.getProperty("comparator.host")
 
     fun imageCompare(source: ByteArray, sourceType: String, target: ByteArray, targetType: String): Boolean {
