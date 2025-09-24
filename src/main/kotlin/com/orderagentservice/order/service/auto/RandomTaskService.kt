@@ -2,7 +2,7 @@ package com.orderagentservice.order.service.auto
 
 import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.order.model.AutoOrderResultDto
-import com.orderagentservice.order.model.GraphContext
+import com.orderagentservice.order.model.UtgContext
 import com.orderagentservice.order.model.dto.AutoOrderBenchMarkDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.request.AutoOrderMenu
@@ -106,7 +106,7 @@ class RandomTaskService @Autowired constructor(
             category = menu.category
         )
 
-        val context = GraphContext.toBasicContext(kioskId)
+        val context = UtgContext.toBasicContext(kioskId)
         menuUtgService.initializeGraph(context, listOf(dto))
 
         return context.history

@@ -3,7 +3,7 @@ package com.orderagentservice.order.service.utg.menu
 import com.orderagentservice.agent.model.dto.AgentBackDto
 import com.orderagentservice.global.model.dto.WordMatchDto
 import com.orderagentservice.global.service.LogService
-import com.orderagentservice.order.model.GraphContext
+import com.orderagentservice.order.model.UtgContext
 import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.dto.NodeCreationResult
@@ -20,7 +20,7 @@ class MenuNodeIntegrator @Autowired constructor(
     private val uiGraphService: UiGraphService,
     private val logService: LogService,
 ) {
-    fun integrateCategoryNode(matchDto: WordMatchDto, title: String, context: GraphContext): NodeCreationResult {
+    fun integrateCategoryNode(matchDto: WordMatchDto, title: String, context: UtgContext): NodeCreationResult {
         logService.printLog(
             NodeSaveLog(
                 kioskId = context.kioskId,
@@ -57,7 +57,7 @@ class MenuNodeIntegrator @Autowired constructor(
         )
     }
 
-    fun integrateMenuNode(matchDto: WordMatchDto, title: String, context: GraphContext): NodeCreationResult {
+    fun integrateMenuNode(matchDto: WordMatchDto, title: String, context: UtgContext): NodeCreationResult {
         logService.printLog(
             NodeSaveLog(
                 kioskId = context.kioskId,
@@ -92,7 +92,7 @@ class MenuNodeIntegrator @Autowired constructor(
         matchDto: WordMatchDto,
         title: String,
         menuNodeId: String,
-        context: GraphContext
+        context: UtgContext
     ): NodeCreationResult {
         logService.printLog(
             NodeSaveLog(
@@ -126,7 +126,7 @@ class MenuNodeIntegrator @Autowired constructor(
     fun integrateBackNode(
         action: AgentBackDto,
         menuNodeId: String,
-        context: GraphContext
+        context: UtgContext
     ): NodeCreationResult {
         val (x, y) = action.coordinate
         val (minX, minY, maxX, maxY) = action.bbox
@@ -160,7 +160,7 @@ class MenuNodeIntegrator @Autowired constructor(
     }
 
     fun integrateModalNode(
-        context: GraphContext,
+        context: UtgContext,
         matchDto: WordMatchDto,
         menuDto: MenuInfoDto,
         menuNodeId: String

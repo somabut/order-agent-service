@@ -4,7 +4,7 @@ import com.orderagentservice.agent.PlaceAgent
 import com.orderagentservice.agent.model.dto.AgentPlaceDto
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.service.LogService
-import com.orderagentservice.order.model.GraphContext
+import com.orderagentservice.order.model.UtgContext
 import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.UiComponentParams
@@ -15,7 +15,6 @@ import com.orderagentservice.order.model.type.NodeType
 import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.graph.ui.UiGraphService
 import com.orderagentservice.order.service.utg.ScreenNodeIntegrator
-import com.orderagentservice.order.service.utg.UiDetectorManager
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -29,7 +28,7 @@ class PlaceUtgService @Autowired constructor(
     private val logService: LogService
 ) {
     @Transactional
-    fun initializeGraph(context: GraphContext, uiList: List<UiComponentDto>) {
+    fun initializeGraph(context: UtgContext, uiList: List<UiComponentDto>) {
         val kioskId = context.kioskId
         val action = placeAgent.determineAction(uiList)
 
@@ -51,7 +50,7 @@ class PlaceUtgService @Autowired constructor(
         notificationService.sendActionCommand(kioskId, CoordinateDto(action[0].coordinate[0], action[0].coordinate[1], action[0].title))
     }
 
-    private fun navigatePlace(context: GraphContext, actions: List<AgentPlaceDto>) {
+    private fun navigatePlace(context: UtgContext, actions: List<AgentPlaceDto>) {
         for (act in actions) {
             val (x, y) = act.coordinate
             val (minX, minY, maxX, maxY) = act.bbox
@@ -78,7 +77,6 @@ class PlaceUtgService @Autowired constructor(
                 )
             )
 
-            context.history.add(act.toActionDto())
             logService.printLog(
                 NodeSaveLog(
                     kioskId = context.kioskId,

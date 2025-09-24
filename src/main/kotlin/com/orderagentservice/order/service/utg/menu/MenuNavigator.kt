@@ -3,7 +3,7 @@ package com.orderagentservice.order.service.utg.menu
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.service.LogService
 import com.orderagentservice.logger
-import com.orderagentservice.order.model.GraphContext
+import com.orderagentservice.order.model.UtgContext
 import com.orderagentservice.order.model.dto.KioskCaptureDto
 import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.dto.MenuInfoDto
@@ -32,7 +32,7 @@ class MenuNavigator @Autowired constructor(
     private val log = logger()
     private val MAX_LOOP = 5
 
-    fun navigateMenus(context: GraphContext, menuList: List<MenuInfoDto>) {
+    fun navigateMenus(context: UtgContext, menuList: List<MenuInfoDto>) {
         var uiList: List<UiComponentDto> = uiDetectorManager.getUiComponents(context).uiElements
         var categoryScreenId = context.screenNodeId
         for (menuDto in menuList) {
@@ -80,7 +80,7 @@ class MenuNavigator @Autowired constructor(
     }
 
     fun handleModal(
-        context: GraphContext,
+        context: UtgContext,
         sourceCapture: KioskCaptureDto,
         targetCapture: KioskCaptureDto,
         menuDto: MenuInfoDto,

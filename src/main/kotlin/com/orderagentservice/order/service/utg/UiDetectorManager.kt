@@ -6,7 +6,7 @@ import com.orderagentservice.global.util.ImageUtils
 import com.orderagentservice.logger
 import com.orderagentservice.order.exception.UiExtractException
 import com.orderagentservice.order.model.ByteArrayMultiPartFile
-import com.orderagentservice.order.model.GraphContext
+import com.orderagentservice.order.model.UtgContext
 import com.orderagentservice.order.model.dto.AllUiComponentDto
 import com.orderagentservice.order.model.dto.DetectorUiComponentDto
 import com.orderagentservice.order.model.response.DetectorResponse
@@ -23,7 +23,6 @@ import org.springframework.stereotype.Component
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.multipart.MultipartFile
-import java.util.UUID
 
 
 @Component
@@ -37,7 +36,7 @@ class UiDetectorManager @Autowired constructor(
     private val UI_EXCTRACTOR_HOST = env.getProperty("ui-extractor.host")
     private val UI_EXTRACTOR_API_KEY = env.getProperty("ui-extractor.api-key")!!
 
-    fun getUiComponents(context: GraphContext, isOcr: Boolean = false): AllUiComponentDto {
+    fun getUiComponents(context: UtgContext, isOcr: Boolean = false): AllUiComponentDto {
         //ui extractor에게 이미지 파싱 요청
         val captureDto = notificationService.sendCaptureCommand(context.kioskId)
         val imageBytes = captureDto.content

@@ -1,7 +1,7 @@
 package com.orderagentservice.order.service.utg.payment
 
 import com.orderagentservice.order.exception.UtgInfiniteLoopException
-import com.orderagentservice.order.model.GraphContext
+import com.orderagentservice.order.model.UtgContext
 import com.orderagentservice.order.service.utg.UiDetectorManager
 import com.orderagentservice.order.service.utg.place.PlaceUtgService
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,7 +16,7 @@ class PaymentNavigator @Autowired constructor(
 ) {
     private val MAX_LOOP = 5
 
-    fun processPayment(context: GraphContext) {
+    fun processPayment(context: UtgContext) {
         var loopTime = 0
 
         while (loopTime <= MAX_LOOP) {

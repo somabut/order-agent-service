@@ -2,7 +2,7 @@ package com.orderagentservice.order.service.utg.payment
 
 import com.orderagentservice.agent.PaymentAgent
 import com.orderagentservice.agent.model.dto.UiComponentDto
-import com.orderagentservice.order.model.GraphContext
+import com.orderagentservice.order.model.UtgContext
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.utg.UiDetectorManager
@@ -15,7 +15,7 @@ class PaymentActionExecutorImpl(
     private val paymentNodeIntegrator: PaymentNodeIntegrator,
     private val notificationService: NotificationService
 ) : PaymentActionExecutor {
-    override fun selectPayment(context: GraphContext, uiList: List<UiComponentDto>): Boolean {
+    override fun selectPayment(context: UtgContext, uiList: List<UiComponentDto>): Boolean {
         val action = paymentAgent.determineAction(uiList)
         if (action.goNext == false) return false
 
