@@ -5,6 +5,7 @@ import com.orderagentservice.global.model.response.ApiResponse
 import com.orderagentservice.global.util.ImageUtils
 import com.orderagentservice.logger
 import com.orderagentservice.order.exception.UiExtractException
+import com.orderagentservice.order.model.ByteArrayMultiPartFile
 import com.orderagentservice.order.model.GraphContext
 import com.orderagentservice.order.model.dto.AllUiComponentDto
 import com.orderagentservice.order.model.dto.DetectorUiComponentDto
@@ -21,13 +22,15 @@ import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.client.RestTemplate
+import org.springframework.web.multipart.MultipartFile
+import java.util.UUID
 
 
 @Component
 class UiDetectorManager @Autowired constructor(
     private val env: Environment,
     private val notificationService: NotificationService,
-    private val screenNodeIntegrator: ScreenNodeIntegrator
+    private val screenNodeIntegrator: ScreenNodeIntegrator,
 ) {
     private val log = logger()
 
@@ -63,6 +66,14 @@ class UiDetectorManager @Autowired constructor(
         )
 
         return allUiComponentDto
+    }
+
+    private fun convertMultipartFile(imageByte: ByteArray, type: String): MultipartFile {
+        return ByteArrayMultiPartFile(
+            fileContent = imageByte,
+            fileName = "capture.${ImageUtils.getExtension(type)}",
+            contentType = type
+        )
     }
 
     fun queryUiExtractor(imageByte: ByteArray, type: String): DetectorResponse {
