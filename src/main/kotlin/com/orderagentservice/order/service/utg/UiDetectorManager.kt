@@ -5,7 +5,8 @@ import com.orderagentservice.global.model.response.ApiResponse
 import com.orderagentservice.global.util.ImageUtils
 import com.orderagentservice.logger
 import com.orderagentservice.order.exception.UiExtractException
-import com.orderagentservice.order.model.GraphContext
+import com.orderagentservice.order.model.ByteArrayMultiPartFile
+import com.orderagentservice.order.model.UtgContext
 import com.orderagentservice.order.model.dto.AllUiComponentDto
 import com.orderagentservice.order.model.dto.DetectorUiComponentDto
 import com.orderagentservice.order.model.response.DetectorResponse
@@ -21,20 +22,21 @@ import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.client.RestTemplate
+import org.springframework.web.multipart.MultipartFile
 
 
 @Component
 class UiDetectorManager @Autowired constructor(
     private val env: Environment,
     private val notificationService: NotificationService,
-    private val screenNodeIntegrator: ScreenNodeIntegrator
+    private val screenNodeIntegrator: ScreenNodeIntegrator,
 ) {
     private val log = logger()
 
     private val UI_EXCTRACTOR_HOST = env.getProperty("ui-extractor.host")
     private val UI_EXTRACTOR_API_KEY = env.getProperty("ui-extractor.api-key")!!
 
-    fun getUiComponents(context: GraphContext, isOcr: Boolean = false): AllUiComponentDto {
+    fun getUiComponents(context: UtgContext, isOcr: Boolean = false): AllUiComponentDto {
         //ui extractor에게 이미지 파싱 요청
         val captureDto = notificationService.sendCaptureCommand(context.kioskId)
         val imageBytes = captureDto.content
@@ -63,6 +65,14 @@ class UiDetectorManager @Autowired constructor(
         )
 
         return allUiComponentDto
+    }
+
+    private fun convertMultipartFile(imageByte: ByteArray, type: String): MultipartFile {
+        return ByteArrayMultiPartFile(
+            fileContent = imageByte,
+            fileName = "capture.${ImageUtils.getExtension(type)}",
+            contentType = type
+        )
     }
 
     fun queryUiExtractor(imageByte: ByteArray, type: String): DetectorResponse {

@@ -3,18 +3,16 @@ package com.orderagentservice.order.service.utg
 import com.orderagentservice.agent.model.UsageTracker
 import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.global.service.LogService
-import com.orderagentservice.order.model.GraphContext
-import com.orderagentservice.order.model.dto.MenuInfoDto
+import com.orderagentservice.order.model.UtgContext
 import com.orderagentservice.order.model.log.UtgEndLog
 import com.orderagentservice.order.model.log.UtgStartLog
-import com.orderagentservice.order.model.type.UpdateType
-import com.orderagentservice.order.model.type.UtgType
+import com.orderagentservice.order.model.type.LogicType
+import com.orderagentservice.order.model.type.UtgForLogType
 import com.orderagentservice.order.service.MenuService
 import com.orderagentservice.order.service.utg.menu.MenuUtgService
 import com.orderagentservice.order.service.utg.payment.PaymentUtgService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UtgService @Autowired constructor(
@@ -28,7 +26,7 @@ class UtgService @Autowired constructor(
         logService.printLog(
             UtgStartLog(
                 kioskId = kioskId,
-                utgType = UtgType.TOTAL
+                utgForLogType = UtgForLogType.TOTAL
             )
         )
         val startTime = System.nanoTime()
@@ -36,7 +34,7 @@ class UtgService @Autowired constructor(
         //관리자 페이지로부터 메뉴를 얻어온다
         val menuList = menuService.getMenus(kioskId, accessToken)
 
-        val context = GraphContext.toBasicContext(kioskId)
+        val context = UtgContext.toBasicContext(kioskId)
 
         menuUtgService.initializeGraph(
             context = context,
@@ -48,7 +46,7 @@ class UtgService @Autowired constructor(
         logService.printLog(
             UtgEndLog(
                 kioskId = context.kioskId,
-                utgType = UtgType.TOTAL,
+                utgForLogType = UtgForLogType.TOTAL,
                 processingTime = (endTime - startTime) / 1000000,
                 totalTokenUsage = usageTracker.totalUsage
             )
@@ -60,8 +58,8 @@ class UtgService @Autowired constructor(
     fun updateCategoryGraph(
         kioskId: String, accessToken: String,
         isInitPayment: Boolean
-    ): List<AgentActionDto> {
-        val context = GraphContext.toBasicContext(kioskId)
+    ): List<String> {
+        val context = UtgContext.toBasicContext(kioskId, LogicType.UPDATE)
 
         //수정된 메뉴, 완료된 메뉴 가져오기
         val menuList = menuService.getMenus(kioskId, accessToken)
@@ -71,14 +69,14 @@ class UtgService @Autowired constructor(
             paymentUtgService.initializeGraph(context)
         }
 
-        return context.history
+        return context.pushedImages
     }
 
     fun updateMenuGraph(
         kioskId: String, accessToken: String,
         isInitPayment: Boolean
-    ): List<AgentActionDto> {
-        val context = GraphContext.toBasicContext(kioskId)
+    ): List<String> {
+        val context = UtgContext.toBasicContext(kioskId, LogicType.UPDATE)
 
         //수정된 메뉴, 완료된 메뉴 가져오기
         val menuList = menuService.getMenus(kioskId, accessToken)
@@ -88,13 +86,13 @@ class UtgService @Autowired constructor(
             paymentUtgService.initializeGraph(context)
         }
 
-        return context.history
+        return context.pushedImages
     }
 
-    fun updatePaymentGraph(kioskId: String): List<AgentActionDto> {
-        val context = GraphContext.toBasicContext(kioskId)
+    fun updatePaymentGraph(kioskId: String): List<String> {
+        val context = UtgContext.toBasicContext(kioskId, LogicType.UPDATE)
         paymentUtgService.updatePayment(context)
 
-        return context.history
+        return context.pushedImages
     }
 }

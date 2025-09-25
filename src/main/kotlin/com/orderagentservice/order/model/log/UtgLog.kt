@@ -3,7 +3,7 @@ package com.orderagentservice.order.model.log
 import com.orderagentservice.order.model.type.LogType
 import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.type.NodeType
-import com.orderagentservice.order.model.type.UtgType
+import com.orderagentservice.order.model.type.UtgForLogType
 
 data class UtgProcessLog(
     val type: LogType = LogType.UTG_PROCESS,
@@ -13,7 +13,7 @@ data class UtgProcessLog(
 
 data class UtgStartLog(
     val type: LogType = LogType.UTG_START,
-    val utgType: UtgType,
+    val utgForLogType: UtgForLogType,
     val kioskId: String,
 )
 
@@ -26,7 +26,7 @@ data class UtgNowMenuLog(
 
 data class UtgEndLog(
     val type: LogType = LogType.UTG_END,
-    val utgType: UtgType,
+    val utgForLogType: UtgForLogType,
     val kioskId: String,
     val processingTime: Long,
     val totalTokenUsage: Int

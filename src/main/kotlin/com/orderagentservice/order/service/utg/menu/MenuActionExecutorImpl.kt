@@ -5,7 +5,7 @@ import com.orderagentservice.agent.model.dto.AgentBackDto
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.service.LogService
 import com.orderagentservice.logger
-import com.orderagentservice.order.model.GraphContext
+import com.orderagentservice.order.model.UtgContext
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.dto.NodeCreationResult
@@ -32,7 +32,7 @@ class MenuActionExecutorImpl @Autowired constructor(
     private val log = logger()
 
     override fun selectCategory(
-        context: GraphContext,
+        context: UtgContext,
         menuDto: MenuInfoDto,
         uiList: List<UiComponentDto>
     ): NodeCreationResult {
@@ -49,7 +49,7 @@ class MenuActionExecutorImpl @Autowired constructor(
     }
 
     override fun selectMenu(
-        context: GraphContext,
+        context: UtgContext,
         menuDto: MenuInfoDto,
         uiList: List<UiComponentDto>,
         categoryScreenId: String
@@ -74,7 +74,7 @@ class MenuActionExecutorImpl @Autowired constructor(
     }
 
     override fun selectOption(
-        context: GraphContext,
+        context: UtgContext,
         menuDto: MenuInfoDto,
         menuNodeId: String,
         uiList: List<UiComponentDto>
@@ -96,7 +96,7 @@ class MenuActionExecutorImpl @Autowired constructor(
     }
 
     override fun selectBack(
-        context: GraphContext,
+        context: UtgContext,
         menuNodeId: String,
         uiList: List<UiComponentDto>
     ): String {
@@ -127,7 +127,7 @@ class MenuActionExecutorImpl @Autowired constructor(
     }
 
     override fun selectModal(
-        context: GraphContext,
+        context: UtgContext,
         menuDto: MenuInfoDto,
         menuNodeId: String,
         uiList: List<UiComponentDto>
@@ -165,7 +165,7 @@ class MenuActionExecutorImpl @Autowired constructor(
         return nodeId
     }
 
-    private fun cacheBackUi(context: GraphContext, uiList: List<UiComponentDto>): AgentBackDto {
+    private fun cacheBackUi(context: UtgContext, uiList: List<UiComponentDto>): AgentBackDto {
         var backUi: AgentBackDto
         if (context.menuBackUi == null) {
             //다시 원래 페이지로 돌아가야 하므로 backAgent를 통해 이전 페이지로 돌아가기

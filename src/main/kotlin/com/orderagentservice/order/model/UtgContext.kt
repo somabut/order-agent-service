@@ -1,9 +1,11 @@
 package com.orderagentservice.order.model
 
 import com.orderagentservice.agent.model.dto.AgentActionDto
-import com.orderagentservice.agent.model.dto.AgentBackDto
+import com.orderagentservice.order.model.type.LogicType
 
-data class GraphContext(
+data class UtgContext(
+    val logicState: LogicType,
+
     val kioskId: String,
     var lastNodeId: String?,
     var stationNodeId: String?,
@@ -15,18 +17,21 @@ data class GraphContext(
     var menuBackUi: String?,
 
     val history: MutableList<AgentActionDto>,
+    val pushedImages: MutableList<String>
 ) {
     companion object {
-        fun toBasicContext(kioskId: String) = GraphContext(
+        fun toBasicContext(kioskId: String, logicState: LogicType = LogicType.INITIALIZE) = UtgContext(
+            logicState = logicState,
             kioskId = kioskId,
             isPlaceDetermined = false,
             lastNodeId = null,
             stationNodeId = null,
             currentCategory = null,
-            history = mutableListOf<AgentActionDto>(),
+            history = mutableListOf(),
             imageName = "",
             screenNodeId = "",
-            menuBackUi = null
+            menuBackUi = null,
+            pushedImages = mutableListOf()
         )
     }
 }

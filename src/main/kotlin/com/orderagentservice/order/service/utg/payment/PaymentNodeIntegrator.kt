@@ -2,7 +2,7 @@ package com.orderagentservice.order.service.utg.payment
 
 import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.global.service.LogService
-import com.orderagentservice.order.model.GraphContext
+import com.orderagentservice.order.model.UtgContext
 import com.orderagentservice.order.model.dto.UiComponentParams
 import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.dto.UiDto
@@ -20,7 +20,7 @@ class PaymentNodeIntegrator @Autowired constructor(
     private val logService: LogService,
     private val screenNodeIntegrator: ScreenNodeIntegrator,
 ) {
-    fun integratePaymentNode(action: AgentActionDto, context: GraphContext) {
+    fun integratePaymentNode(action: AgentActionDto, context: UtgContext) {
         val (x, y) = action.coordinate
         val (minX, minY, maxX, maxY) = action.bbox
 
@@ -57,7 +57,7 @@ class PaymentNodeIntegrator @Autowired constructor(
         context.lastNodeId = node.id
     }
 
-    fun integrateCompleteNode(context: GraphContext) {
+    fun integrateCompleteNode(context: UtgContext) {
         logService.printLog(
             NodeSaveLog(
                 kioskId = context.kioskId, nodeType = NodeType.COMPLETE,

@@ -3,7 +3,7 @@ package com.orderagentservice.order.service.utg.menu
 import com.orderagentservice.agent.model.UsageTracker
 import com.orderagentservice.global.service.LogService
 import com.orderagentservice.logger
-import com.orderagentservice.order.model.GraphContext
+import com.orderagentservice.order.model.UtgContext
 import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.type.SpecialNodeType
 import com.orderagentservice.order.model.dto.MenuInfoDto
@@ -12,7 +12,7 @@ import com.orderagentservice.order.model.log.NodeSaveLog
 import com.orderagentservice.order.model.log.UtgEndLog
 import com.orderagentservice.order.model.log.UtgStartLog
 import com.orderagentservice.order.model.type.NodeType
-import com.orderagentservice.order.model.type.UtgType
+import com.orderagentservice.order.model.type.UtgForLogType
 import com.orderagentservice.order.service.graph.ui.UiGraphService
 import com.orderagentservice.order.service.utg.UiDetectorManager
 import com.orderagentservice.order.service.utg.place.PlaceUtgService
@@ -31,11 +31,11 @@ class MenuUtgService @Autowired constructor(
 )  {
     private val log = logger()
 
-    fun initializeGraph(context: GraphContext, menuList: List<MenuInfoDto>) {
+    fun initializeGraph(context: UtgContext, menuList: List<MenuInfoDto>) {
         logService.printLog(
             UtgStartLog(
                 kioskId = context.kioskId,
-                utgType = UtgType.MENU
+                utgForLogType = UtgForLogType.MENU
             )
         )
         val startTime = System.nanoTime()
@@ -60,14 +60,14 @@ class MenuUtgService @Autowired constructor(
         logService.printLog(
             UtgEndLog(
                 kioskId = context.kioskId,
-                utgType = UtgType.MENU,
+                utgForLogType = UtgForLogType.MENU,
                 processingTime = (endTime - startTime) / 1000000,
                 totalTokenUsage = usageTracker.totalUsage
             )
         )
     }
 
-    fun updateCategory(context: GraphContext, menuList: List<MenuInfoDto>) {
+    fun updateCategory(context: UtgContext, menuList: List<MenuInfoDto>) {
         //수정된 카테고리까지 가서 메뉴 노드 그리기
         log.info("카테고리를 수정합니다")
         val uiDtoList = graphService.findModified(context.kioskId)
@@ -88,7 +88,7 @@ class MenuUtgService @Autowired constructor(
         }
     }
 
-    fun updateMenu(context: GraphContext, menuList: List<MenuInfoDto>) {
+    fun updateMenu(context: UtgContext, menuList: List<MenuInfoDto>) {
         //수정된 메뉴까지 가서 옵션 노드 그리기
         log.info("메뉴를 수정합니다")
         val uiDtoList = graphService.findModified(context.kioskId)
@@ -109,7 +109,7 @@ class MenuUtgService @Autowired constructor(
         }
     }
 
-    private fun navigateRemain(context: GraphContext, menuList: List<MenuInfoDto>) {//이후 아직 탐색 못한 메뉴 탐색
+    private fun navigateRemain(context: UtgContext, menuList: List<MenuInfoDto>) {//이후 아직 탐색 못한 메뉴 탐색
         val completeMenuList = graphService.findAll(context.kioskId)
             .filter { it.type == NodeType.MENU }
             .map { it.title }
@@ -121,7 +121,7 @@ class MenuUtgService @Autowired constructor(
         }
     }
 
-    private fun setupNode(context: GraphContext) {
+    private fun setupNode(context: UtgContext) {
         logService.printLog(
             NodeSaveLog(
                 kioskId = context.kioskId, nodeType = NodeType.ROOT,

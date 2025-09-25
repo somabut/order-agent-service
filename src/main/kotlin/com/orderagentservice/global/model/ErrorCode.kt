@@ -25,4 +25,6 @@ enum class ErrorCode(
     ORDER_LLM_RESPONSE_PARSE_FAIL(209, "llm의 응답이 json형식이 아니여서 파싱 에러가 발생하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
     ORDER_INFINITE_LOOP(210, "모달을 제대로 빠져나가지 못했습니다", HttpStatus.INTERNAL_SERVER_ERROR),
     ORDER_LLM_SERVER_OVERLOAD(211, "LLM 서버의 과부하로 인해 현재 요청이 불가능합니다.", HttpStatus.SERVICE_UNAVAILABLE),
+    ORDER_WORD_COMPARE_FAIL(212, "유사도 검사 요청중 오류가 발생했습니다", HttpStatus.BAD_REQUEST),
+    ORDER_IMAGE_COMPARE_FAIL(213, "이미지 비교 요청중 오류가 발생했습니다", HttpStatus.BAD_REQUEST),
 }

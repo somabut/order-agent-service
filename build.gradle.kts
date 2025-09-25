@@ -8,6 +8,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.noarg") version "1.7.22"
 }
 val springAiVersion by extra("1.0.0")
+val springCloudVersion by extra("2025.0.0")
 
 group = "com"
 version = "0.0.1-SNAPSHOT"
@@ -47,6 +48,9 @@ dependencies {
     implementation ("com.github.loki4j:loki-logback-appender:1.5.1")
     implementation ("net.logstash.logback:logstash-logback-encoder:7.4")
 
+    //feign client
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+
     implementation ("org.springframework.boot:spring-boot-starter:3.5.3")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -67,6 +71,7 @@ kotlin {
 dependencyManagement {
     imports {
         mavenBom("org.springframework.ai:spring-ai-bom:$springAiVersion")
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion")
     }
 }
 

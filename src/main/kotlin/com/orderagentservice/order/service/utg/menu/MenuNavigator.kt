@@ -3,12 +3,15 @@ package com.orderagentservice.order.service.utg.menu
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.service.LogService
 import com.orderagentservice.logger
-import com.orderagentservice.order.model.GraphContext
+import com.orderagentservice.order.model.UtgContext
+import com.orderagentservice.order.model.dto.KioskCaptureDto
 import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.log.UtgNowMenuLog
 import com.orderagentservice.order.model.log.UtgProcessLog
+import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.graph.ui.UiGraphService
+import com.orderagentservice.order.service.utg.ComparatorManager
 import com.orderagentservice.order.service.utg.PageChecker
 import com.orderagentservice.order.service.utg.ScreenNodeIntegrator
 import com.orderagentservice.order.service.utg.UiDetectorManager
@@ -22,12 +25,14 @@ class MenuNavigator @Autowired constructor(
     private val graphService: UiGraphService,
     private val screenNodeIntegrator: ScreenNodeIntegrator,
     private val pageChecker: PageChecker,
+    private val notificationService: NotificationService,
+    private val comparatorManager: ComparatorManager,
     private val logService: LogService
 ) {
     private val log = logger()
     private val MAX_LOOP = 5
 
-    fun navigateMenus(context: GraphContext, menuList: List<MenuInfoDto>) {
+    fun navigateMenus(context: UtgContext, menuList: List<MenuInfoDto>) {
         var uiList: List<UiComponentDto> = uiDetectorManager.getUiComponents(context).uiElements
         var categoryScreenId = context.screenNodeId
         for (menuDto in menuList) {
@@ -55,11 +60,15 @@ class MenuNavigator @Autowired constructor(
                     category = menuDto.category
                 )
             )
+            val sourceCapture = notificationService.sendCaptureCommand(context.kioskId)
             val menuNodeId = menuActionExecutor.selectMenu(context, menuDto, uiList, categoryScreenId)
+            val targetCapture = notificationService.sendCaptureCommand(context.kioskId)
 
             //모달 처리
             handleModal(
                 context = context,
+                sourceCapture = sourceCapture,
+                targetCapture = targetCapture,
                 menuDto = menuDto,
                 menuNodeId = menuNodeId,
                 menuList = menuList,
@@ -71,7 +80,9 @@ class MenuNavigator @Autowired constructor(
     }
 
     fun handleModal(
-        context: GraphContext,
+        context: UtgContext,
+        sourceCapture: KioskCaptureDto,
+        targetCapture: KioskCaptureDto,
         menuDto: MenuInfoDto,
         menuList: List<MenuInfoDto>,
         menuNodeId: String,
@@ -84,7 +95,10 @@ class MenuNavigator @Autowired constructor(
             //옵션이 없는 경우
 
             //모달처리
-            if (pageChecker.checkMenuPage(menuDto, menuList, uiList) == false) {
+            if (comparatorManager.imageCompare(
+                    sourceCapture.content, sourceCapture.type,
+                    targetCapture.content, targetCapture.type
+            ) == false) {
                 logService.printLog(
                     UtgProcessLog(
                         kioskId = context.kioskId,
@@ -99,6 +113,23 @@ class MenuNavigator @Autowired constructor(
                 )
                 graphService.saveRel(nodeId, context.lastNodeId!!, NodeRelationType.BACK_TO)
             }
+
+//            //모달처리
+//            if (pageChecker.checkMenuPage(menuDto, menuList, uiList) == false) {
+//                logService.printLog(
+//                    UtgProcessLog(
+//                        kioskId = context.kioskId,
+//                        message = "모달이 감지되어 모달을 처리합니다."
+//                    )
+//                )
+//                nodeId = menuActionExecutor.selectModal(
+//                    context = context,
+//                    menuDto = menuDto,
+//                    menuNodeId = menuNodeId,
+//                    uiList = uiList
+//                )
+//                graphService.saveRel(nodeId, context.lastNodeId!!, NodeRelationType.BACK_TO)
+//            }
         } else {
             //옵션이 있는 경우
 

@@ -1,7 +1,7 @@
 package com.orderagentservice.order.service.utg
 
 import com.orderagentservice.logger
-import com.orderagentservice.order.model.GraphContext
+import com.orderagentservice.order.model.UtgContext
 import com.orderagentservice.order.model.dto.DetectorUiComponentDto
 import com.orderagentservice.order.model.dto.KioskCaptureDto
 import com.orderagentservice.order.model.dto.OcrDto
@@ -30,9 +30,8 @@ class ScreenNodeIntegrator @Autowired constructor(
 ) {
     private val log = logger()
 
-    @Transactional
     fun integrateScreenNode(
-        context: GraphContext,
+        context: UtgContext,
         captureDto: KioskCaptureDto,
         uiComponents: List<DetectorUiComponentDto>,
         ocrComponents: List<DetectorUiComponentDto>,
@@ -47,6 +46,7 @@ class ScreenNodeIntegrator @Autowired constructor(
         log.info("Screen 노드 생성: ${screenNodeId}")
 
         context.screenNodeId = screenNodeId
+        context.pushedImages.add(screenNodeId)
 
         //screen 노드에 박스 연결
         connectSom(context, uiComponents)
@@ -54,7 +54,6 @@ class ScreenNodeIntegrator @Autowired constructor(
         connectYolo(context, yoloComponents)
     }
 
-    @Transactional
     fun linkNode(kioskId: String, nodeId: String, screenNodeId: String, uiComponentParams: UiComponentParams) {
         //match 노드와 관계, screen 노드와 관계 연결
         val minX = uiComponentParams.minX
@@ -73,7 +72,7 @@ class ScreenNodeIntegrator @Autowired constructor(
         uiGraphService.saveRel(nodeId, screenNodeId, NodeRelationType.IMAGE_TO)
     }
 
-    private fun connectSom(context: GraphContext, uiComponents: List<DetectorUiComponentDto>) {
+    private fun connectSom(context: UtgContext, uiComponents: List<DetectorUiComponentDto>) {
         log.info("SOM을 Screen에 연결. screen: ${context.screenNodeId}")
         for (uiComponent in uiComponents) {
             val somNodeId = somGraphService.saveNode(
@@ -88,7 +87,7 @@ class ScreenNodeIntegrator @Autowired constructor(
         }
     }
 
-    private fun connectOcr(context: GraphContext, ocrComponents: List<DetectorUiComponentDto>) {
+    private fun connectOcr(context: UtgContext, ocrComponents: List<DetectorUiComponentDto>) {
         log.info("OCR을 Screen에 연결. screen: ${context.screenNodeId}")
         for (ocrComponent in ocrComponents) {
             val ocrNodeId = ocrGraphService.saveNode(
@@ -102,7 +101,7 @@ class ScreenNodeIntegrator @Autowired constructor(
         }
     }
 
-    private fun connectYolo(context: GraphContext, yoloComponents: List<DetectorUiComponentDto>) {
+    private fun connectYolo(context: UtgContext, yoloComponents: List<DetectorUiComponentDto>) {
         log.info("YOLO을 Screen에 연결. screen: ${context.screenNodeId}")
         for (yoloComponent in yoloComponents) {
             val yoloNode = yoloGraphService.saveNode(

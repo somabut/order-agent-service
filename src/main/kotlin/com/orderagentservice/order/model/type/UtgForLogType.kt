@@ -1,6 +1,6 @@
 package com.orderagentservice.order.model.type
 
-enum class UtgType {
+enum class UtgForLogType {
     MENU,
     UPDATE,
     PAYMENT,
