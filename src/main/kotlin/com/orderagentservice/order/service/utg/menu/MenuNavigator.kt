@@ -94,7 +94,7 @@ class MenuNavigator @Autowired constructor(
         if (menuDto.options.isEmpty()) {
             //옵션이 없는 경우
 
-            //모달처리
+            //모달처리 (이미지 기반)
             if (comparatorManager.imageCompare(
                     sourceCapture.content, sourceCapture.type,
                     targetCapture.content, targetCapture.type
@@ -114,7 +114,7 @@ class MenuNavigator @Autowired constructor(
                 graphService.saveRel(nodeId, context.lastNodeId!!, NodeRelationType.BACK_TO)
             }
 
-//            //모달처리
+//            //유사도검사로 페이지의 메뉴 단어 개수기반 알고리즘
 //            if (pageChecker.checkMenuPage(menuDto, menuList, uiList) == false) {
 //                logService.printLog(
 //                    UtgProcessLog(
