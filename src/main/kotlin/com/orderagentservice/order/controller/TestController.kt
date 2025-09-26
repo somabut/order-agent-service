@@ -6,6 +6,7 @@ import com.orderagentservice.order.model.type.OverlayType
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.service.utg.WordSimilarityService
 import com.orderagentservice.order.service.NotificationService
+import com.orderagentservice.order.service.utg.ComparatorManager
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController
 class TestController @Autowired constructor(
     private val notificationService: NotificationService,
     private val wordSimilarityService: WordSimilarityService,
+    private val compareManager: ComparatorManager,
 ) {
     @GetMapping("/")
     fun test(): String {
@@ -71,7 +73,8 @@ class TestController @Autowired constructor(
         )
         val target = "녹차 빽스치노"
 
-        return wordSimilarityService.findBestMatch(target, optUiList)
+        return compareManager.wordCompare(target, optUiList)
+//        return wordSimilarityService.findBestMatch(target, optUiList)
     }
 
     @GetMapping("/test/determine")
