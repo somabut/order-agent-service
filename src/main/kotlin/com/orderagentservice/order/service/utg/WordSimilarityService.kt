@@ -27,31 +27,31 @@ class WordSimilarityService {
         }
     }
 
-    fun findBestMatch(targetWord: String, uiList: List<UiComponentDto>): WordMatchDto {
-        return load { jep ->
-            val candidates = uiList.map { listOf(it.x, it.y, it.minX, it.minY, it.maxX, it.maxY, it.title) }
-            jep.set("candidates", candidates)
-            jep.eval("result = calculator.find_best_match('$targetWord', candidates)")
-
-            val resultMap = jep.getValue("result", Map::class.java) as Map<String, Any>
-            val x = (resultMap["x"] as Number).toInt()
-            val y = (resultMap["y"] as Number).toInt()
-
-            val minX = (resultMap["min_x"] as Number).toInt()
-            val minY = (resultMap["min_y"] as Number).toInt()
-            val maxX = (resultMap["max_x"] as Number).toInt()
-            val maxY = (resultMap["max_y"] as Number).toInt()
-
-            val word = resultMap["word"] as String
-            val score = (resultMap["score"] as Number).toDouble()
-
-            WordMatchDto(
-                x = x, y = y,
-                minX = minX, minY = minY, maxX = maxX, maxY = maxY,
-                title = word, score = score
-            )
-        }
-    }
+//    fun findBestMatch(targetWord: String, uiList: List<UiComponentDto>): WordMatchDto {
+//        return load { jep ->
+//            val candidates = uiList.map { listOf(it.x, it.y, it.minX, it.minY, it.maxX, it.maxY, it.title) }
+//            jep.set("candidates", candidates)
+//            jep.eval("result = calculator.find_best_match('$targetWord', candidates)")
+//
+//            val resultMap = jep.getValue("result", Map::class.java) as Map<String, Any>
+//            val x = (resultMap["x"] as Number).toInt()
+//            val y = (resultMap["y"] as Number).toInt()
+//
+//            val minX = (resultMap["min_x"] as Number).toInt()
+//            val minY = (resultMap["min_y"] as Number).toInt()
+//            val maxX = (resultMap["max_x"] as Number).toInt()
+//            val maxY = (resultMap["max_y"] as Number).toInt()
+//
+//            val word = resultMap["word"] as String
+//            val score = (resultMap["score"] as Number).toDouble()
+//
+//            WordMatchDto(
+//                x = x, y = y,
+//                minX = minX, minY = minY, maxX = maxX, maxY = maxY,
+//                title = word, score = score
+//            )
+//        }
+//    }
 
     fun determinePage(sourceList: List<String>, uiList: List<UiComponentDto>): Boolean {
         return load { jep ->

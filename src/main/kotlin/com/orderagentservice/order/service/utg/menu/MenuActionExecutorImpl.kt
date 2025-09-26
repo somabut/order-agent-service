@@ -12,6 +12,7 @@ import com.orderagentservice.order.model.dto.NodeCreationResult
 import com.orderagentservice.order.model.log.UtgProcessLog
 import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.graph.ui.UiGraphService
+import com.orderagentservice.order.service.utg.ComparatorManager
 import com.orderagentservice.order.service.utg.ScreenNodeIntegrator
 import com.orderagentservice.order.service.utg.UiDetectorManager
 import com.orderagentservice.order.service.utg.WordSimilarityService
@@ -20,7 +21,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class MenuActionExecutorImpl @Autowired constructor(
-    private val wordSimilarityService: WordSimilarityService,
+    private val comparatorManager: ComparatorManager,
     private val notificationService: NotificationService,
     private val menuNodeIntegrator: MenuNodeIntegrator,
     private val screenNodeIntegrator: ScreenNodeIntegrator,
@@ -36,7 +37,7 @@ class MenuActionExecutorImpl @Autowired constructor(
         menuDto: MenuInfoDto,
         uiList: List<UiComponentDto>
     ): NodeCreationResult {
-        val matchDto = wordSimilarityService.findBestMatch(menuDto.category, uiList)
+        val matchDto = comparatorManager.wordCompare(menuDto.category, uiList)
 
         //노드 생성
         val nodeCreationResult = menuNodeIntegrator.integrateCategoryNode(matchDto, menuDto.category, context)
@@ -54,7 +55,7 @@ class MenuActionExecutorImpl @Autowired constructor(
         uiList: List<UiComponentDto>,
         categoryScreenId: String
     ): String {
-        val matchDto = wordSimilarityService.findBestMatch(menuDto.title, uiList)
+        val matchDto = comparatorManager.wordCompare(menuDto.title, uiList)
 
         //노드 생성
         val creationResult = menuNodeIntegrator.integrateMenuNode(matchDto, menuDto.title, context)
@@ -81,7 +82,7 @@ class MenuActionExecutorImpl @Autowired constructor(
     ) {
         //메뉴의 옵션 노드 추가
         for (opt in menuDto.options) {
-            val matchDto = wordSimilarityService.findBestMatch(opt, uiList)
+            val matchDto = comparatorManager.wordCompare(opt, uiList)
 
             //노드 생성
             val creationResult = menuNodeIntegrator.integrateOptionNode(matchDto, opt, menuNodeId, context)
@@ -183,7 +184,7 @@ class MenuActionExecutorImpl @Autowired constructor(
         } else {
             //UI가 캐싱된 경우
             log.info("back UI 캐시 히트")
-            val matchDto = wordSimilarityService.findBestMatch(context.menuBackUi!!, uiList)
+            val matchDto = comparatorManager.wordCompare(context.menuBackUi!!, uiList)
             backUi = AgentBackDto(
                 score = 1.0F,
                 coordinate = listOf(matchDto.x, matchDto.y), bbox = listOf(matchDto.minX, matchDto.minY, matchDto.maxX, matchDto.maxY),

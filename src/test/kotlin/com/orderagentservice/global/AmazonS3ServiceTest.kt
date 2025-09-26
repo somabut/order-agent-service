@@ -14,7 +14,7 @@ class AmazonS3ServiceTest @Autowired constructor(
     fun `이미지를 s3에 저장한다`() {
         val kioskId = "moodtrbl"
         val commandId = "command"
-        val file = File("C:\\Users\\hachi\\IdeaProjects\\OrderAgentService\\src\\test\\resources\\modal.png")
+        val file = File("C:\\Users\\hachi\\IdeaProjects\\OrderAgentService\\src\\test\\resources\\main.png")
         val byteArray: ByteArray = file.readBytes()
         val path = amazonS3Service.saveFile(kioskId, commandId, byteArray, "image/png")
         println("https://alike-image.s3.ap-southeast-2.amazonaws.com/$path")

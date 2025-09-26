@@ -13,13 +13,13 @@ class CompareManagerTest @Autowired constructor(
 ) {
     @Test
     fun `이미지 비교를 수행한다`() {
-//        val sourcePath = "/Users/moodtrbl/IdeaProjects/order-agent-service/src/test/resources/main.png"
-        val sourcePath = "C:\\Users\\hachi\\IdeaProjects\\OrderAgentService\\src\\test\\resources\\main.png"
+        val sourcePath = "/Users/moodtrbl/IdeaProjects/order-agent-service/src/test/resources/main.png"
+//        val sourcePath = "C:\\Users\\hachi\\IdeaProjects\\OrderAgentService\\src\\test\\resources\\main.png"
         val sourceFile = File(sourcePath)
         val source = sourceFile.readBytes()
 
-//        val targetPath = "/Users/moodtrbl/IdeaProjects/order-agent-service/src/test/resources/side_menu.png"
-        val targetPath = "C:\\Users\\hachi\\IdeaProjects\\OrderAgentService\\src\\test\\resources\\side_menu.png"
+        val targetPath = "/Users/moodtrbl/IdeaProjects/order-agent-service/src/test/resources/side_menu.png"
+//        val targetPath = "C:\\Users\\hachi\\IdeaProjects\\OrderAgentService\\src\\test\\resources\\side_menu.png"
         val targetFile = File(targetPath)
         val target = targetFile.readBytes()
 
