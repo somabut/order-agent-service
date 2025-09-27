@@ -31,8 +31,8 @@ class WordSimilarityService @Autowired constructor(
         )
         val target = "녹차 빽스치노"
 
-        val result = wordSimilarityService.findBestMatch(target, optUiList)
+//        val result = wordSimilarityService.findBestMatch(target, optUiList)
 
-        println(result)
+//        println(result)
     }
 }
