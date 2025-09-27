@@ -31,7 +31,15 @@ class NotificationService @Autowired constructor(
     fun connectAction(kioskId: String): SseEmitter {
         val emitter = notificationRepository.saveEmitter(kioskId, SseEmitter(CONNECT_TIMEOUT))
         log.info("액션 SSE 연결성공: ${kioskId}")
-        emitter.send("[order agent service]: 연결 성공")
+        val request = jsonMapper.writeValueAsString(
+            CommandRequest(
+                kioskId = kioskId,
+                commandId = "connect",
+                commandType = CommandType.CONNECT,
+                data = "[order agent service]: 연결 성공"
+            )
+        )
+        emitter.send(request)
 
         return emitter
     }
