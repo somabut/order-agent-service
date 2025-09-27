@@ -25,13 +25,13 @@ class AutoOrderService @Autowired constructor(
     fun execute(kioskId: String, taskId: String, orderRequest: AutoOrderRequest): AutoOrderResultDto {
         val requestJson = jsonMapper.writeValueAsString(orderRequest)
 
-        orderLogSender.logOrder(
-            kioskId = kioskId, taskId = taskId,
-            message = "자동 주문을 시작합니다. 주문: ${requestJson}",
-            OrderStartLog(
-                kioskId = kioskId, menus = requestJson
-            )
-        )
+//        orderLogSender.logOrder(
+//            kioskId = kioskId, taskId = taskId,
+//            message = "자동 주문을 시작합니다. 주문: ${requestJson}",
+//            OrderStartLog(
+//                kioskId = kioskId, menus = requestJson
+//            )
+//        )
         globalLogger.loggingOrderStart(kioskId, taskId)
         val startTime = System.nanoTime()
 
