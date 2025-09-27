@@ -17,6 +17,7 @@ data class UiComponentDto(
 
     @JsonProperty("max_y")
     val maxY: Int,
+
     val title: String
 ) {
     override fun toString(): String = "{\"coordinate\": [$x, $y], \"title\": \"$title\", \"bbox\": [$minX, $minY, $maxX, $maxY]}"

@@ -14,7 +14,8 @@ class UiDetectorManagerTest @Autowired constructor(
     @Test
     fun `uiExtractorService에게서 이미지 파싱 결과를 가져온다`() {
         //given: 이미지를 가져옴
-        val imagePath = "C:\\Users\\hachi\\IdeaProjects\\OrderAgentService\\src\\test\\resources\\main.png"
+//        val imagePath = "C:\\Users\\hachi\\IdeaProjects\\OrderAgentService\\src\\test\\resources\\main.png"
+        val imagePath = "/Users/moodtrbl/IdeaProjects/order-agent-service/src/test/resources/back_dessert.png"
         val imageFile = File(imagePath)
         val imageBytes = imageFile.readBytes()
 
