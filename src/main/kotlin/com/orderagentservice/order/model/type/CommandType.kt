@@ -1,5 +1,5 @@
 package com.orderagentservice.order.model.type
 
 enum class CommandType {
-    CLICK, CAPTURE, OVERLAY
+    CLICK, CAPTURE, OVERLAY, CONNECT
 }
