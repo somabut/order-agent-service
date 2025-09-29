@@ -28,75 +28,12 @@ class LlmManager @Autowired constructor(
 ){
     private val log = logger()
 
-    private val GEMINI_MODEL_NAME = env.getProperty("agent.gemini.model-name")
-    private val GPT_MODEL_NAME = env.getProperty("agent.openai.model-name")
+//    private val GEMINI_MODEL_NAME = env.getProperty("agent.gemini.model-name")
+//    private val GPT_MODEL_NAME = env.getProperty("agent.openai.model-name")
     private val CLAUD_MODEL_NAME = env.getProperty("agent.claud.model-name")
 
     fun query(prompt: String): LlmResponse {
         return queryClaud(prompt)
-//        return queryGpt(prompt)
-//        return llmRateLimiter.executeWithLimit { apiKey ->
-//            callGeminiApi(prompt, apiKey)
-//        }
-    }
-
-    fun queryGemini(prompt: String): String {
-        val request = GeminiRequest(
-            contents = listOf(
-                Content(
-                    parts = listOf(
-                        Part(text = prompt)
-                    )
-                )
-            ),
-            GenerationConfig(
-                temperature = 0.2,
-                topP = 1.0,
-                maxOutputTokens = 256
-            )
-        )
-        
-        return llmRateLimiter.executeWithLimit(LlmProvider.GEMINI) { apiKey ->
-            val restTemplate = RestTemplate()
-            val url = "https://generativelanguage.googleapis.com/v1beta/models/$GEMINI_MODEL_NAME:generateContent?key=$apiKey"
-
-            try {
-                val response: GeminiResponse = restTemplate.postForObject(url, request, GeminiResponse::class.java)!!
-                val text = response.candidates[0].content.parts[0].text
-                val json = text.replace("```json", "").replace("```", "").trim()
-                json
-            } catch (e: HttpClientErrorException.TooManyRequests) {
-                throw AgentManyRequestException()
-            }
-        }
-    }
-
-    fun queryGpt(prompt: String): String {
-        val request = GptRequest(
-            model = GPT_MODEL_NAME!!,
-            messages = listOf(
-                Message(
-                    role = "user",
-                    content = prompt
-                )
-            )
-        )
-
-        return llmRateLimiter.executeWithLimit(LlmProvider.GPT) { apiKey ->
-            val headers = HttpHeaders().apply {
-                set("Authorization", "Bearer $apiKey")
-                set("Content-Type", "application/json")
-            }
-
-            val restTemplate = RestTemplate()
-            val url = "https://api.openai.com/v1/chat/completions"
-            val httpEntity = HttpEntity(request, headers)
-            val response = restTemplate.postForObject(url, httpEntity, GptResponse::class.java)!!
-            val text = response.choices[0].message.content
-            val json = text.replace("```json", "").replace("```", "").trim()
-
-            json
-        }
     }
 
     fun queryClaud(prompt: String, waitTime: Long = 2): LlmResponse {

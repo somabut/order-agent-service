@@ -17,7 +17,9 @@ data class ClaudResponse(
     @JsonProperty("stop_sequence")
     val stopSequence: String? = null,
     val usage: Usage?
-)
+) {
+    companion object {}
+}
 
 data class ClaudContent(
     val type: String,

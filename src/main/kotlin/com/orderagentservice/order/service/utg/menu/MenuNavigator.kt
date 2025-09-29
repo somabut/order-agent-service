@@ -113,23 +113,6 @@ class MenuNavigator @Autowired constructor(
                 )
                 graphService.saveRel(nodeId, context.lastNodeId!!, NodeRelationType.BACK_TO)
             }
-
-//            //유사도검사로 페이지의 메뉴 단어 개수기반 알고리즘
-//            if (pageChecker.checkMenuPage(menuDto, menuList, uiList) == false) {
-//                logService.printLog(
-//                    UtgProcessLog(
-//                        kioskId = context.kioskId,
-//                        message = "모달이 감지되어 모달을 처리합니다."
-//                    )
-//                )
-//                nodeId = menuActionExecutor.selectModal(
-//                    context = context,
-//                    menuDto = menuDto,
-//                    menuNodeId = menuNodeId,
-//                    uiList = uiList
-//                )
-//                graphService.saveRel(nodeId, context.lastNodeId!!, NodeRelationType.BACK_TO)
-//            }
         } else {
             //옵션이 있는 경우
 
