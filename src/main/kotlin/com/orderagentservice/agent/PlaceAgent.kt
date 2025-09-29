@@ -24,8 +24,12 @@ class PlaceAgent @Autowired constructor(
         val json = answer.content
         usageTracker.totalUsage += answer.usage
 
-        val response: List<AgentPlaceDto> = jsonMapper.readValue<List<AgentPlaceDto>>(json)
-        return response
+        try {
+            val response: List<AgentPlaceDto> = jsonMapper.readValue<List<AgentPlaceDto>>(json)
+            return response
+        } catch (e: Exception) {
+            throw LlmParseException()
+        }
     }
 
     private fun getPrompt(uiList: List<UiComponentDto>): String {

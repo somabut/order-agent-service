@@ -7,6 +7,7 @@ import com.orderagentservice.agent.model.dto.AgentUiDto
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.agent.util.LlmManager
 import com.orderagentservice.jsonMapper
+import com.orderagentservice.order.exception.LlmParseException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -21,8 +22,12 @@ class PaymentAgent @Autowired constructor(
         val json = answer.content
         usageTracker.totalUsage += answer.usage
 
-        val response: AgentActionDto = jsonMapper.readValue<AgentActionDto>(json)
-        return response
+        try {
+            val response: AgentActionDto = jsonMapper.readValue<AgentActionDto>(json)
+            return response
+        } catch (e: Exception) {
+            throw LlmParseException()
+        }
     }
 
     private fun getPrompt(uiList: List<UiComponentDto>): String {
