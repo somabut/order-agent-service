@@ -1,5 +1,6 @@
 package com.orderagentservice.order.service.utg.menu
 
+import com.orderagentservice.agent.model.dto.AgentBackDto
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.order.model.UtgContext
 import com.orderagentservice.order.model.dto.MenuInfoDto
@@ -11,4 +12,5 @@ interface MenuActionExecutor {
     fun selectOption(context: UtgContext, menuDto: MenuInfoDto, menuNodeId: String, uiList: List<UiComponentDto>)
     fun selectBack(context: UtgContext, menuNodeId: String, uiList: List<UiComponentDto>): String
     fun selectModal(context: UtgContext, menuDto: MenuInfoDto, menuNodeId: String, uiList: List<UiComponentDto>): String
+    fun cacheBackUi(context: UtgContext, uiList: List<UiComponentDto>): AgentBackDto
 }

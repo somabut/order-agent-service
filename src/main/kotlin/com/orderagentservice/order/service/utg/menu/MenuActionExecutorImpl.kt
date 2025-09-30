@@ -136,31 +136,6 @@ class MenuActionExecutorImpl @Autowired constructor(
         //메뉴를 다시 선택(모달 처리)해야 할 수도 있으므로 클릭
         var nodeId = menuNodeId
 
-        //모달 깊이가 긴경우를 반영하는 로직. 임시 바활성
-//        val matchDto = wordSimilarityService.findBestMatch(menuDto.title, uiList)
-//
-//        //모달인 경우에만 모달노드 저장과 액션수행
-//        if (matchDto.score >= 0.65) {
-//            notificationService.sendActionCommand(context.kioskId, CoordinateDto(x = matchDto.x, y = matchDto.y, title = matchDto.title))
-//            graphService.changeTitle(nodeId, context.kioskId, "modal:${menuDto.title}")
-//
-//            //모달 노드 저장
-//            val creationResult = menuNodeIntegrator.integrateModalNode(
-//                context = context,
-//                matchDto = matchDto,
-//                menuDto = menuDto,
-//                menuNodeId = nodeId
-//            )
-//            nodeId = creationResult.nodeId
-//
-//            //match 노드와 관계, screen 노드와 관계 연결
-//            screenNodeIntegrator.linkNode(
-//                kioskId = context.kioskId,
-//                nodeId = nodeId, screenNodeId = context.screenNodeId,
-//                uiComponentParams = creationResult.uiComponentParams,
-//            )
-//        }
-
         //다음으로 이동
         val nextUiList = uiDetectorManager.getUiComponents(context).uiElements
         nodeId = selectBack(context, nodeId, nextUiList)
@@ -168,7 +143,7 @@ class MenuActionExecutorImpl @Autowired constructor(
         return nodeId
     }
 
-    private fun cacheBackUi(context: UtgContext, uiList: List<UiComponentDto>): AgentBackDto {
+    override fun cacheBackUi(context: UtgContext, uiList: List<UiComponentDto>): AgentBackDto {
         var backUi: AgentBackDto
         if (context.menuBackUi == null) {
             //다시 원래 페이지로 돌아가야 하므로 backAgent를 통해 이전 페이지로 돌아가기

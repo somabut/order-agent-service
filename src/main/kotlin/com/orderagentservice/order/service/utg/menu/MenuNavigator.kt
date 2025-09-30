@@ -71,7 +71,6 @@ class MenuNavigator @Autowired constructor(
                 targetCapture = targetCapture,
                 menuDto = menuDto,
                 menuNodeId = menuNodeId,
-                menuList = menuList,
             )
         }
 
@@ -84,7 +83,6 @@ class MenuNavigator @Autowired constructor(
         sourceCapture: KioskCaptureDto,
         targetCapture: KioskCaptureDto,
         menuDto: MenuInfoDto,
-        menuList: List<MenuInfoDto>,
         menuNodeId: String,
     ) {
         //현재 메뉴를 일단 클릭한 상황
