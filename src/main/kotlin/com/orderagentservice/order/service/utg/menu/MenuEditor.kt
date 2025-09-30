@@ -75,7 +75,6 @@ class MenuEditor @Autowired constructor(
                 sourceCapture = sourceCapture,
                 targetCapture = targetCapture,
                 menuDto = menuDto,
-                menuList = menuList,
                 menuNodeId = nodeId
             )
         }

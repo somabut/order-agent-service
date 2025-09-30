@@ -1,4 +1,4 @@
-package com.orderagentservice.order.service.utg.menu
+package com.orderagentservice.order.service.utg.strategy
 
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.order.model.UtgContext
@@ -7,6 +7,7 @@ import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.utg.ComparatorManager
 import com.orderagentservice.order.service.utg.ScreenNodeIntegrator
+import com.orderagentservice.order.service.utg.menu.MenuNodeIntegrator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -15,7 +16,7 @@ interface MenuSelectStrategy {
 }
 
 @Component
-class MenuSelectStrategyImpl @Autowired constructor(
+class DefaultMenuSelectStrategy @Autowired constructor(
     private val comparatorManager: ComparatorManager,
     private val notificationService: NotificationService,
     private val menuNodeIntegrator: MenuNodeIntegrator,

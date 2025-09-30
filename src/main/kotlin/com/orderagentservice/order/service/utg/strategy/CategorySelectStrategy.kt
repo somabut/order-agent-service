@@ -1,13 +1,13 @@
-package com.orderagentservice.order.service.utg.menu
+package com.orderagentservice.order.service.utg.strategy
 
 import com.orderagentservice.agent.model.dto.UiComponentDto
-import com.orderagentservice.global.service.LogService
 import com.orderagentservice.order.model.UtgContext
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.dto.NodeCreationResult
 import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.utg.ComparatorManager
+import com.orderagentservice.order.service.utg.menu.MenuNodeIntegrator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 

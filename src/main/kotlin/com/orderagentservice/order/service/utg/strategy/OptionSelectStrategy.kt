@@ -1,24 +1,21 @@
-package com.orderagentservice.order.service.utg.menu
+package com.orderagentservice.order.service.utg.strategy
 
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.order.model.UtgContext
-import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
-import com.orderagentservice.order.model.log.UtgProcessLog
-import com.orderagentservice.order.service.NotificationService
+import com.orderagentservice.order.model.type.StrategyType
 import com.orderagentservice.order.service.utg.ComparatorManager
 import com.orderagentservice.order.service.utg.ScreenNodeIntegrator
+import com.orderagentservice.order.service.utg.menu.MenuNodeIntegrator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import kotlin.collections.component1
-import kotlin.collections.component2
 
 interface OptionSelectStrategy {
     fun execute(context: UtgContext, menuDto: MenuInfoDto, menuNodeId: String, uiList: List<UiComponentDto>)
 }
 
-@Component
-class BackOptionSelectStrategy @Autowired constructor(
+@Component(StrategyType.IN_OPTION)
+class DefaultOptionSelectStrategy @Autowired constructor(
     private val comparatorManager: ComparatorManager,
     private val screenNodeIntegrator: ScreenNodeIntegrator,
     private val menuNodeIntegrator: MenuNodeIntegrator,
@@ -43,7 +40,12 @@ class BackOptionSelectStrategy @Autowired constructor(
                 uiComponentParams = creationResult.uiComponentParams,
             )
         }
+    }
+}
 
-        //TODO(back UI선택 해야함)
+@Component(StrategyType.EX_OPTION)
+class NoneOptionSelectStrategy : OptionSelectStrategy {
+    override fun execute(context: UtgContext, menuDto: MenuInfoDto, menuNodeId: String, uiList: List<UiComponentDto>) {
+
     }
 }
