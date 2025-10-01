@@ -9,6 +9,12 @@ import org.springframework.stereotype.Component
 
 @Component
 class UtgActionFactory @Autowired constructor(
+    @Qualifier(StrategyType.EX_START_PLACE)
+    private val startSelectStrategy: StartSelectStrategy,
+
+    @Qualifier(StrategyType.IN_START_PLACE)
+    private val placeStartSelectStrategy: StartSelectStrategy,
+
     private val categorySelectStrategy: CategorySelectStrategy,
     private val menuSelectStrategy: MenuSelectStrategy,
 
@@ -22,9 +28,21 @@ class UtgActionFactory @Autowired constructor(
     private val excludeBackSelectStrategy: BackSelectStrategy,
 
     @Qualifier(StrategyType.IN_BACK)
-    private val includeBackSelectStrategy: BackSelectStrategy
+    private val includeBackSelectStrategy: BackSelectStrategy,
+
+    @Qualifier(StrategyType.IN_PAYMENT_PLACE)
+    private val placePaymentSelectStrategy: PlacePaymentSelectStrategy,
+
+    @Qualifier(StrategyType.EX_PAYMENT_PLACE)
+    private val paymentSelectStrategy: PaymentSelectStrategy
 ) {
     fun createProfile(utgStrategyRequest: UtgStrategyRequest): UtgActionProfile {
+        val startSelectStrategy = if (utgStrategyRequest.startStrategy == StrategyType.IN_START_PLACE) {
+            this.placeStartSelectStrategy
+        } else {
+            this.startSelectStrategy
+        }
+
         val optionSelectStrategy = if (utgStrategyRequest.optionStrategy == StrategyType.IN_OPTION) {
             this.includeOptionSelectStrategy
         } else {
@@ -37,11 +55,19 @@ class UtgActionFactory @Autowired constructor(
             this.excludeBackSelectStrategy
         }
 
+        val paymentSelectStrategy = if (utgStrategyRequest.paymentStrategy == StrategyType.IN_PAYMENT_PLACE) {
+            this.placePaymentSelectStrategy
+        } else {
+            this.paymentSelectStrategy
+        }
+
         return UtgActionProfile(
+            startSelectStrategy = startSelectStrategy,
             categorySelectStrategy = categorySelectStrategy,
             menuSelectStrategy = menuSelectStrategy,
             optionSelectStrategy = optionSelectStrategy,
-            backSelectStrategy = backSelectStrategy
+            backSelectStrategy = backSelectStrategy,
+            paymentSelectStrategy = paymentSelectStrategy,
         )
     }
 }

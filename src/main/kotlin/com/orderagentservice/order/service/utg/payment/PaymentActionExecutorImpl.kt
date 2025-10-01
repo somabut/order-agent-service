@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component
 
 @Component
 class PaymentActionExecutorImpl(
-    private val uiDetectorManager: UiDetectorManager,
     private val paymentAgent: PaymentAgent,
     private val paymentNodeIntegrator: PaymentNodeIntegrator,
     private val notificationService: NotificationService

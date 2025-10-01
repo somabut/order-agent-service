@@ -12,7 +12,6 @@ import com.orderagentservice.order.model.log.UtgProcessLog
 import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.graph.ui.UiGraphService
 import com.orderagentservice.order.service.utg.ComparatorManager
-import com.orderagentservice.order.service.utg.PageChecker
 import com.orderagentservice.order.service.utg.ScreenNodeIntegrator
 import com.orderagentservice.order.service.utg.UiDetectorManager
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,7 +23,6 @@ class MenuNavigator @Autowired constructor(
     private val uiDetectorManager: UiDetectorManager,
     private val graphService: UiGraphService,
     private val screenNodeIntegrator: ScreenNodeIntegrator,
-    private val pageChecker: PageChecker,
     private val notificationService: NotificationService,
     private val comparatorManager: ComparatorManager,
     private val logService: LogService

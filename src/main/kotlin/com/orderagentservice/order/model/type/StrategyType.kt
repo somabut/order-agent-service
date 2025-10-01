@@ -7,6 +7,9 @@ object StrategyType {
     const val EX_OPTION = "excludeOption"
     const val IN_OPTION = "includeOption"
 
-    const val EX_PLACE = "excludePlace"
-    const val IN_PLACE = "includePlace"
+    const val EX_PAYMENT_PLACE = "excludePaymentPlace"
+    const val IN_PAYMENT_PLACE = "includePaymentPlace"
+
+    const val EX_START_PLACE = "excludeStartPlace"
+    const val IN_START_PLACE = "includeStartPlace"
 }
