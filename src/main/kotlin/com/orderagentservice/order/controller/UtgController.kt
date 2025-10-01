@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/v1")
+@RequestMapping("/v1/utg")
 class UtgController @Autowired constructor(
     private val utgService: UtgService,
     private val randomTaskService: RandomTaskService,
@@ -23,7 +23,7 @@ class UtgController @Autowired constructor(
 ) {
     private val log = logger()
 
-    @GetMapping("/utg/init/{kioskId}")
+    @GetMapping("/init/{kioskId}")
     fun initializeUtg(
         @PathVariable kioskId: String,
         @RequestHeader("Authorization", required = false) accessToken: String?
@@ -38,7 +38,7 @@ class UtgController @Autowired constructor(
         return ApiResponse.success(history)
     }
 
-    @PostMapping("/utg/update/category/{kioskId}")
+    @PostMapping("/update/category/{kioskId}")
     fun updateCategoryUtg(
         @PathVariable kioskId: String,
         @RequestBody categoryUtgUpdateRequest: CategoryUtgUpdateRequest,
@@ -56,7 +56,7 @@ class UtgController @Autowired constructor(
         return ApiResponse.success(history)
     }
 
-    @PostMapping("/utg/update/menu/{kioskId}")
+    @PostMapping("/update/menu/{kioskId}")
     fun updateMenuUtg(
         @PathVariable kioskId: String,
         @RequestBody menuUtgUpdateRequest: MenuUtgUpdateRequest,
@@ -74,7 +74,7 @@ class UtgController @Autowired constructor(
         return ApiResponse.success(history)
     }
 
-    @PostMapping("/utg/update/payment/{kioskId}")
+    @PostMapping("/update/payment/{kioskId}")
     fun updatePaymentUtg(
         @PathVariable kioskId: String,
     ): ApiResponse<*> {
@@ -85,7 +85,7 @@ class UtgController @Autowired constructor(
         return ApiResponse.success(history)
     }
 
-    @GetMapping("/utg/benchmark/{kioskId}")
+    @GetMapping("/benchmark/{kioskId}")
     fun benchmarkUtg(
         @PathVariable kioskId: String,
         @RequestHeader("Authorization", required = false) accessToken: String?
