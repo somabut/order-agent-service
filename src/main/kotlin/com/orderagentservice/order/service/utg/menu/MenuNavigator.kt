@@ -12,7 +12,6 @@ import com.orderagentservice.order.model.log.UtgProcessLog
 import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.graph.ui.UiGraphService
 import com.orderagentservice.order.service.utg.ComparatorManager
-import com.orderagentservice.order.service.utg.PageChecker
 import com.orderagentservice.order.service.utg.ScreenNodeIntegrator
 import com.orderagentservice.order.service.utg.UiDetectorManager
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,7 +23,6 @@ class MenuNavigator @Autowired constructor(
     private val uiDetectorManager: UiDetectorManager,
     private val graphService: UiGraphService,
     private val screenNodeIntegrator: ScreenNodeIntegrator,
-    private val pageChecker: PageChecker,
     private val notificationService: NotificationService,
     private val comparatorManager: ComparatorManager,
     private val logService: LogService
@@ -71,7 +69,6 @@ class MenuNavigator @Autowired constructor(
                 targetCapture = targetCapture,
                 menuDto = menuDto,
                 menuNodeId = menuNodeId,
-                menuList = menuList,
             )
         }
 
@@ -84,7 +81,6 @@ class MenuNavigator @Autowired constructor(
         sourceCapture: KioskCaptureDto,
         targetCapture: KioskCaptureDto,
         menuDto: MenuInfoDto,
-        menuList: List<MenuInfoDto>,
         menuNodeId: String,
     ) {
         //현재 메뉴를 일단 클릭한 상황
@@ -113,23 +109,6 @@ class MenuNavigator @Autowired constructor(
                 )
                 graphService.saveRel(nodeId, context.lastNodeId!!, NodeRelationType.BACK_TO)
             }
-
-//            //유사도검사로 페이지의 메뉴 단어 개수기반 알고리즘
-//            if (pageChecker.checkMenuPage(menuDto, menuList, uiList) == false) {
-//                logService.printLog(
-//                    UtgProcessLog(
-//                        kioskId = context.kioskId,
-//                        message = "모달이 감지되어 모달을 처리합니다."
-//                    )
-//                )
-//                nodeId = menuActionExecutor.selectModal(
-//                    context = context,
-//                    menuDto = menuDto,
-//                    menuNodeId = menuNodeId,
-//                    uiList = uiList
-//                )
-//                graphService.saveRel(nodeId, context.lastNodeId!!, NodeRelationType.BACK_TO)
-//            }
         } else {
             //옵션이 있는 경우
 

@@ -3,6 +3,7 @@ plugins {
     kotlin("plugin.spring") version "1.9.25"
     kotlin("kapt") version "2.0.21"
     kotlin("plugin.jpa") version "1.9.25"
+    id("jacoco")
     id("org.springframework.boot") version "3.5.3"
     id("io.spring.dependency-management") version "1.1.7"
     id("org.jetbrains.kotlin.plugin.noarg") version "1.7.22"
@@ -61,6 +62,8 @@ dependencies {
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
     testImplementation("org.mockito:mockito-core:5.2.0")
     testImplementation("org.mockito:mockito-inline:5.2.0")
+    testImplementation("io.mockk:mockk:1.13.13")
+    testImplementation("io.mockk:mockk-agent-jvm:1.13.11")
 
     //junit5
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
@@ -81,8 +84,9 @@ dependencyManagement {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    finalizedBy(tasks.jacocoTestReport)
 
-//    include("**/mocktest/**")
+    include("**/unit/**")
 }
 
 tasks.jar {
@@ -101,4 +105,34 @@ tasks.test {
 
 tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
     requiresUnpack("**/jep-*.jar")
+}
+
+jacoco {
+    toolVersion = "0.8.12"
+}
+
+tasks.withType<JacocoReport> {
+    dependsOn(tasks.test)
+
+    reports {
+        xml.required.set(false)
+        csv.required.set(false)
+        html.required.set(true)
+    }
+
+    val mainSrc = "${project.projectDir}/src/main/kotlin"
+    sourceDirectories.setFrom(files(mainSrc))
+    classDirectories.setFrom(
+        files(
+            layout.buildDirectory.dir("classes/kotlin/main").map {
+                fileTree(it) {
+                    exclude(
+                        "**/model/**",
+                        "**/exception/**"
+                    )
+                }
+            }
+        )
+    )
+    executionData.setFrom(layout.buildDirectory.file("jacoco/test.exec"))
 }
