@@ -6,11 +6,13 @@ import com.orderagentservice.global.service.LogService
 import com.orderagentservice.order.model.UtgContext
 import com.orderagentservice.order.model.log.UtgEndLog
 import com.orderagentservice.order.model.log.UtgStartLog
+import com.orderagentservice.order.model.request.UtgStrategyRequest
 import com.orderagentservice.order.model.type.LogicType
 import com.orderagentservice.order.model.type.UtgForLogType
 import com.orderagentservice.order.service.MenuService
 import com.orderagentservice.order.service.utg.menu.MenuUtgService
 import com.orderagentservice.order.service.utg.payment.PaymentUtgService
+import com.orderagentservice.order.service.utg.strategy.UtgOrchestrator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -20,7 +22,9 @@ class UtgService @Autowired constructor(
     private val menuUtgService: MenuUtgService,
     private val paymentUtgService: PaymentUtgService,
     private val logService: LogService,
-    private val usageTracker: UsageTracker
+    private val usageTracker: UsageTracker,
+
+    private val utgOrchestrator: UtgOrchestrator
 ) {
     fun initializeGraph(kioskId: String, accessToken: String): List<AgentActionDto> {
         logService.printLog(
@@ -41,6 +45,34 @@ class UtgService @Autowired constructor(
             menuList = menuList
         )
         paymentUtgService.initializeGraph(context = context)
+
+        val endTime = System.nanoTime()
+        logService.printLog(
+            UtgEndLog(
+                kioskId = context.kioskId,
+                utgForLogType = UtgForLogType.TOTAL,
+                processingTime = (endTime - startTime) / 1000000,
+                totalTokenUsage = usageTracker.totalUsage
+            )
+        )
+
+        return context.history
+    }
+
+    fun init(kioskId: String, accessToken: String, utgStrategyRequest: UtgStrategyRequest): List<AgentActionDto> {
+        logService.printLog(
+            UtgStartLog(
+                kioskId = kioskId,
+                utgForLogType = UtgForLogType.TOTAL
+            )
+        )
+        val startTime = System.nanoTime()
+
+        //관리자 페이지로부터 메뉴를 얻어온다
+        val menuList = menuService.getMenus(kioskId, accessToken)
+
+        val context = UtgContext.toBasicContext(kioskId)
+        utgOrchestrator.execute(context, menuList, utgStrategyRequest)
 
         val endTime = System.nanoTime()
         logService.printLog(
