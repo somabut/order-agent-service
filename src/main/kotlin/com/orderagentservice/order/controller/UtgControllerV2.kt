@@ -18,9 +18,7 @@ import org.springframework.web.bind.annotation.*
 class UtgControllerV2 @Autowired constructor(
     private val notificationService: NotificationService,
     private val usageTracker: UsageTracker,
-    private val utgService: UtgService,
-
-    private val utgActionFactory: UtgActionFactory
+    private val utgService: UtgService
 ) {
     private val log = logger()
 
