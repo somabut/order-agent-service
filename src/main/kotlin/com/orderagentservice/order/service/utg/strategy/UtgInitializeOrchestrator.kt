@@ -2,7 +2,6 @@ package com.orderagentservice.order.service.utg.strategy
 
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.service.LogService
-import com.orderagentservice.logger
 import com.orderagentservice.order.exception.UtgInfiniteLoopException
 import com.orderagentservice.order.model.UtgActionProfile
 import com.orderagentservice.order.model.UtgContext
@@ -16,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class UtgOrchestrator @Autowired constructor(
+class UtgInitializeOrchestrator @Autowired constructor(
     private val utgActionFactory: UtgActionFactory,
     private val logService: LogService,
     private val categoryActionSequencer: CategoryActionSequencer,
