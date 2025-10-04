@@ -15,4 +15,13 @@ interface InfoGraphRepository : Neo4jRepository<InfoEntity, String> {
         @Param("kioskId") kioskId: String,
         @Param("infoId") infoId: String
     )
+
+    @Query(
+        "MATCH(n: UI{kioskId: \$kioskId, title: 'root'})-[r:INFO_TO]->(m:INFO)\n" +
+        "RETURN m\n" +
+        "LIMIT 1"
+    )
+    fun findLinkedInfoNode(
+        @Param("kioskId") kioskId: String,
+    ): InfoEntity?
 }

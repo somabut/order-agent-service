@@ -6,7 +6,7 @@ import com.orderagentservice.global.service.LogService
 import com.orderagentservice.order.model.UtgContext
 import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.dto.MenuInfoDto
-import com.orderagentservice.order.model.dto.NodeCreationResult
+import com.orderagentservice.order.model.result.NodeCreationResult
 import com.orderagentservice.order.model.dto.UiComponentParams
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.log.NodeSaveLog

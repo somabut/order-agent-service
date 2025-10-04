@@ -4,7 +4,7 @@ import com.orderagentservice.agent.model.dto.AgentBackDto
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.order.model.UtgContext
 import com.orderagentservice.order.model.dto.MenuInfoDto
-import com.orderagentservice.order.model.dto.NodeCreationResult
+import com.orderagentservice.order.model.result.NodeCreationResult
 
 interface MenuActionExecutor {
     fun selectCategory(context: UtgContext, menuDto: MenuInfoDto, uiList: List<UiComponentDto>): NodeCreationResult

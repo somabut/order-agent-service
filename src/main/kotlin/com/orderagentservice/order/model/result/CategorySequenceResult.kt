@@ -1,4 +1,4 @@
-package com.orderagentservice.order.model.dto
+package com.orderagentservice.order.model.result
 
 import com.orderagentservice.agent.model.dto.UiComponentDto
 

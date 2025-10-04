@@ -4,7 +4,7 @@ import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.order.model.UtgContext
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
-import com.orderagentservice.order.model.dto.NodeCreationResult
+import com.orderagentservice.order.model.result.NodeCreationResult
 import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.utg.ComparatorManager
 import com.orderagentservice.order.service.utg.menu.MenuNodeIntegrator
