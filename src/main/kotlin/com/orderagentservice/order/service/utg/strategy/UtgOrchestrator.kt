@@ -36,6 +36,7 @@ class UtgOrchestrator @Autowired constructor(
                 menuDto = menuDto,
                 actionProfile = actionProfile,
                 uiList = uiList,
+                originCategoryScreenId = categoryScreenId
             )
 
             uiList = categoryNavigationResult.uiList

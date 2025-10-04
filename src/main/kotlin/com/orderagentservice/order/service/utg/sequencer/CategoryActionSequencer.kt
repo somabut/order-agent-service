@@ -22,7 +22,8 @@ class CategoryActionSequencer @Autowired constructor(
         context: UtgContext,
         menuDto: MenuInfoDto,
         actionProfile: UtgActionProfile,
-        uiList: List<UiComponentDto>
+        uiList: List<UiComponentDto>,
+        originCategoryScreenId: String
     ): CategorySequenceResult {
         if (menuDto.category != context.currentCategory) {
             log.info("카테고리 이동: ${menuDto.category}")
@@ -46,7 +47,7 @@ class CategoryActionSequencer @Autowired constructor(
         // 카테고리 이동이 필요 없는 경우 기존 상태를 그대로 반환
         return CategorySequenceResult(
             uiList = uiList,
-            categoryScreenId = context.screenNodeId
+            categoryScreenId = originCategoryScreenId
         )
     }
 }
