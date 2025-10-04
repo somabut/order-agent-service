@@ -12,7 +12,7 @@ import com.orderagentservice.order.model.type.UtgForLogType
 import com.orderagentservice.order.service.MenuService
 import com.orderagentservice.order.service.utg.menu.MenuUtgService
 import com.orderagentservice.order.service.utg.payment.PaymentUtgService
-import com.orderagentservice.order.service.utg.strategy.UtgOrchestrator
+import com.orderagentservice.order.service.utg.strategy.UtgInitializeOrchestrator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -24,7 +24,7 @@ class UtgService @Autowired constructor(
     private val logService: LogService,
     private val usageTracker: UsageTracker,
 
-    private val utgOrchestrator: UtgOrchestrator
+    private val utgInitializeOrchestrator: UtgInitializeOrchestrator
 ) {
     fun initializeGraph(kioskId: String, accessToken: String): List<AgentActionDto> {
         logService.printLog(
@@ -72,7 +72,7 @@ class UtgService @Autowired constructor(
         val menuList = menuService.getMenus(kioskId, accessToken)
 
         val context = UtgContext.toBasicContext(kioskId)
-        utgOrchestrator.execute(context, menuList, utgStrategyRequest)
+        utgInitializeOrchestrator.execute(context, menuList, utgStrategyRequest)
 
         val endTime = System.nanoTime()
         logService.printLog(

@@ -2,8 +2,8 @@ package com.orderagentservice.order.service.utg.strategy
 
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.service.LogService
-import com.orderagentservice.logger
 import com.orderagentservice.order.exception.UtgInfiniteLoopException
+import com.orderagentservice.order.model.UtgActionProfile
 import com.orderagentservice.order.model.UtgContext
 import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.log.UtgNowMenuLog
@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class UtgOrchestrator @Autowired constructor(
+class UtgInitializeOrchestrator @Autowired constructor(
     private val utgActionFactory: UtgActionFactory,
     private val logService: LogService,
     private val categoryActionSequencer: CategoryActionSequencer,
@@ -26,8 +26,16 @@ class UtgOrchestrator @Autowired constructor(
         val actionProfile = utgActionFactory.createProfile(utgStrategyRequest)
 
         //root, station, 첫 매장/포장 선택등을 진행
-        actionProfile.startSelectStrategy.execute(context)
+        actionProfile.startSelectStrategy.execute(context, utgStrategyRequest)
 
+        //메뉴 노드 초기화
+        navigateMenus(context, menuList, actionProfile)
+
+        //결제 노드 초기화
+        navigatePayment(context, actionProfile)
+    }
+
+    fun navigateMenus(context: UtgContext, menuList: List<MenuInfoDto>, actionProfile: UtgActionProfile) {
         var uiList: List<UiComponentDto> = listOf()
         var categoryScreenId = context.screenNodeId
         for (menuDto in menuList) {
@@ -58,8 +66,9 @@ class UtgOrchestrator @Autowired constructor(
                 categoryScreenId = categoryScreenId
             )
         }
+    }
 
-        //결제 노드 초기화
+    fun navigatePayment(context: UtgContext, actionProfile: UtgActionProfile) {
         val paymentNavigateResult = paymentActionSequencer.run(context = context, actionProfile = actionProfile)
         if (paymentNavigateResult == false) {
             throw UtgInfiniteLoopException()

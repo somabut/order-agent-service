@@ -8,5 +8,6 @@ enum class NodeRelationType {
     NONE,
     BOX_TO,
     IMAGE_TO,
-    MATCH_TO
+    MATCH_TO,
+    INFO_TO
 }

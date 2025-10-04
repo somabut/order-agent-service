@@ -4,7 +4,7 @@ import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.logger
 import com.orderagentservice.order.model.UtgActionProfile
 import com.orderagentservice.order.model.UtgContext
-import com.orderagentservice.order.model.dto.CategorySequenceResult
+import com.orderagentservice.order.model.result.CategorySequenceResult
 import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.service.utg.ScreenNodeIntegrator
 import com.orderagentservice.order.service.utg.UiDetectorManager

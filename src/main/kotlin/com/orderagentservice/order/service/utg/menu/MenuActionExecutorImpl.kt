@@ -8,7 +8,7 @@ import com.orderagentservice.logger
 import com.orderagentservice.order.model.UtgContext
 import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.dto.MenuInfoDto
-import com.orderagentservice.order.model.dto.NodeCreationResult
+import com.orderagentservice.order.model.result.NodeCreationResult
 import com.orderagentservice.order.model.log.UtgProcessLog
 import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.graph.ui.UiGraphService
