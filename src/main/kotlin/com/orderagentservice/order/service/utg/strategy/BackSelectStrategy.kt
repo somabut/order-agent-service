@@ -54,9 +54,9 @@ class DefaultBackSelectStrategy @Autowired constructor(
         //sse를 통해 클라이언트에게 원래 페이지로 돌아가는 좌표 클릭하도록 하기
         logService.printLog(
             UtgProcessLog(
-            kioskId = kioskId,
-            message = "돌아가는 좌표를 클릭중입니다. 좌표: ${backUi.coordinate}"
-        )
+                kioskId = kioskId,
+                message = "돌아가는 좌표를 클릭중입니다. 좌표: ${backUi.coordinate}"
+            )
         )
         val (x, y) = backUi.coordinate
         notificationService.sendActionCommand(kioskId, CoordinateDto(x, y, backUi.title))

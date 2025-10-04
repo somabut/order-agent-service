@@ -4,10 +4,12 @@ import com.orderagentservice.agent.model.UsageTracker
 import com.orderagentservice.global.model.response.ApiResponse
 import com.orderagentservice.logger
 import com.orderagentservice.order.exception.KioskAdminSignInException
+import com.orderagentservice.order.model.UtgContext
 import com.orderagentservice.order.model.request.UtgStrategyRequest
 import com.orderagentservice.order.model.type.OverlayType
 import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.utg.UtgService
+import com.orderagentservice.order.service.utg.strategy.UtgActionFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 
@@ -16,7 +18,9 @@ import org.springframework.web.bind.annotation.*
 class UtgControllerV2 @Autowired constructor(
     private val notificationService: NotificationService,
     private val usageTracker: UsageTracker,
-    private val utgService: UtgService
+    private val utgService: UtgService,
+
+    private val utgActionFactory: UtgActionFactory
 ) {
     private val log = logger()
 

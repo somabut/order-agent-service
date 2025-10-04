@@ -46,6 +46,6 @@ class DefaultOptionSelectStrategy @Autowired constructor(
 @Component(StrategyType.EX_OPTION)
 class NoneOptionSelectStrategy : OptionSelectStrategy {
     override fun execute(context: UtgContext, menuDto: MenuInfoDto, menuNodeId: String, uiList: List<UiComponentDto>) {
-
+        //옵션이 없으므로 아무 동작도 하지 않음
     }
 }

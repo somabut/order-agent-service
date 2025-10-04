@@ -29,16 +29,8 @@ class MenuActionSequencer @Autowired constructor(
         var nodeId = actionProfile.menuSelectStrategy.execute(context, menuDto, uiList, categoryScreenId)
         val updatedUiList = uiDetectorManager.getUiComponents(context).uiElements
 
-        // 옵션 처리 또는 모달 처리
-        if (menuDto.options.isEmpty()) {
-            logService.printLog(
-                UtgProcessLog(
-                    kioskId = context.kioskId,
-                    message = "모달이 감지되어 모달을 처리합니다."
-                )
-            )
-        } else {
-            // 옵션이 있는 경우 처리
+        // 옵션이 있는 경우 처리
+        if (menuDto.options.isNotEmpty()) {
             actionProfile.optionSelectStrategy.execute(context, menuDto, nodeId, updatedUiList)
         }
 
