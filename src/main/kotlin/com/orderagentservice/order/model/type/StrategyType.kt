@@ -2,6 +2,7 @@ package com.orderagentservice.order.model.type
 
 object StrategyType {
     const val EX_BACK = "excludeBack"
+    const val OP_BACK = "optionalBack"
     const val IN_BACK = "includeBack"
 
     const val EX_OPTION = "excludeOption"

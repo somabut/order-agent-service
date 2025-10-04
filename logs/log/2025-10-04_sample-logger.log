@@ -141,3 +141,15 @@
 {"@timestamp":"2025-10-04T14:30:48.9068948+09:00","level":"INFO","logger_name":"com.orderagentservice.order.service.utg.strategy.UtgActionFactory","message":"EX_BACK 선택"}
 {"@timestamp":"2025-10-04T14:30:48.9068948+09:00","level":"INFO","logger_name":"com.orderagentservice.order.service.utg.strategy.UtgActionFactory","message":"EX_PAYMENT_PLACE 선택"}
 {"@timestamp":"2025-10-04T14:30:48.9078932+09:00","level":"INFO","logger_name":"com.orderagentservice.order.service.utg.strategy.DefaultStartSelectStrategy","message":"hidifahidfhiahfiladshfioasdilfhasilfaliasdfhilasdfhiladshfail"}
+{"@timestamp":"2025-10-04T14:52:54.3899656+09:00","level":"INFO","logger_name":"com.orderagentservice.order.service.utg.strategy.UtgActionFactory","message":"IN_START_PLACE 선택"}
+{"@timestamp":"2025-10-04T14:52:54.3955812+09:00","level":"INFO","logger_name":"com.orderagentservice.order.service.utg.strategy.UtgActionFactory","message":"IN_OPTION 선택"}
+{"@timestamp":"2025-10-04T14:52:54.3955812+09:00","level":"INFO","logger_name":"com.orderagentservice.order.service.utg.strategy.UtgActionFactory","message":"IN_BACK 선택"}
+{"@timestamp":"2025-10-04T14:52:54.3955812+09:00","level":"INFO","logger_name":"com.orderagentservice.order.service.utg.strategy.UtgActionFactory","message":"EX_PAYMENT_PLACE 선택"}
+{"@timestamp":"2025-10-04T14:52:54.5298485+09:00","level":"INFO","logger_name":"com.orderagentservice.global.service.LogService","message":"{\"type\":\"UTG_NODE_SAVE\",\"kioskId\":\"kiosk-494cbae2-0681-46e6-ba59-88726509fd88\",\"nodeType\":\"ROOT\",\"x\":-1,\"y\":-1,\"title\":\"root\",\"imageName\":\"\"}"}
+{"@timestamp":"2025-10-04T14:52:54.7083519+09:00","level":"INFO","logger_name":"com.orderagentservice.order.service.graph.ui.UiGraphServiceImpl","message":"UI 노드 저장. root"}
+{"@timestamp":"2025-10-04T14:52:55.7582889+09:00","level":"INFO","logger_name":"com.orderagentservice.global.service.LogService","message":"{\"type\":\"UTG_NODE_SAVE\",\"kioskId\":\"kiosk-494cbae2-0681-46e6-ba59-88726509fd88\",\"nodeType\":\"STATION\",\"x\":-1,\"y\":-1,\"title\":\"station\",\"imageName\":\"\"}"}
+{"@timestamp":"2025-10-04T14:52:55.9106249+09:00","level":"INFO","logger_name":"com.orderagentservice.order.service.graph.ui.UiGraphServiceImpl","message":"UI 노드 저장. station"}
+{"@timestamp":"2025-10-04T14:52:56.5305836+09:00","level":"INFO","logger_name":"com.orderagentservice.order.service.graph.ui.UiGraphServiceImpl","message":"관계 설정. 468b2c74-4116-494d-975c-1bb132995cdf [PATH_TO]-> 80eab128-c6d1-40c4-bd51-2bbf63cce3d4"}
+{"@timestamp":"2025-10-04T14:52:56.5437635+09:00","level":"INFO","logger_name":"org.springframework.data.projection.DefaultProjectionInformation$PropertyDescriptorSource","message":"Couldn't read class metadata for void. Input property calculation might fail"}
+{"@timestamp":"2025-10-04T14:52:57.1631949+09:00","level":"INFO","logger_name":"com.orderagentservice.order.service.NotificationService","message":"클라이언트에게 캡쳐 요청을 보냅니다."}
+{"@timestamp":"2025-10-04T14:52:57.1762081+09:00","level":"INFO","logger_name":"com.orderagentservice.global.controller.GlobalExceptionHandler","message":"ORDER_NO_SUCH_KIOSK: null"}

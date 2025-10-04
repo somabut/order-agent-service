@@ -28,6 +28,9 @@ class UtgActionFactory @Autowired constructor(
     @Qualifier(StrategyType.EX_BACK)
     private val excludeBackSelectStrategy: BackSelectStrategy,
 
+    @Qualifier(StrategyType.OP_BACK)
+    private val optionalBackSelectStrategy: BackSelectStrategy,
+
     @Qualifier(StrategyType.IN_BACK)
     private val includeBackSelectStrategy: BackSelectStrategy,
 
@@ -59,6 +62,9 @@ class UtgActionFactory @Autowired constructor(
         val backSelectStrategy = if (utgStrategyRequest.backStrategy == StrategyType.IN_BACK) {
             log.info("IN_BACK 선택")
             this.includeBackSelectStrategy
+        } else if (utgStrategyRequest.backStrategy == StrategyType.OP_BACK) {
+            log.info("OP_BACK 선택")
+            this.optionalBackSelectStrategy
         } else {
             log.info("EX_BACK 선택")
             this.excludeBackSelectStrategy

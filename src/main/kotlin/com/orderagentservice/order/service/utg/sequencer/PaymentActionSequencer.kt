@@ -2,6 +2,7 @@ package com.orderagentservice.order.service.utg.sequencer
 
 import com.orderagentservice.order.model.UtgActionProfile
 import com.orderagentservice.order.model.UtgContext
+import com.orderagentservice.order.service.graph.ui.UiGraphService
 import com.orderagentservice.order.service.utg.UiDetectorManager
 import com.orderagentservice.order.service.utg.payment.PaymentNodeIntegrator
 import org.springframework.beans.factory.annotation.Autowired
@@ -10,7 +11,8 @@ import org.springframework.stereotype.Component
 @Component
 class PaymentActionSequencer @Autowired constructor(
     private val uiDetectorManager: UiDetectorManager,
-    private val paymentNodeIntegrator: PaymentNodeIntegrator
+    private val paymentNodeIntegrator: PaymentNodeIntegrator,
+    private val graphService: UiGraphService
 ) {
     private val PAYMENT_MAX_LOOP = 5
 
@@ -19,6 +21,7 @@ class PaymentActionSequencer @Autowired constructor(
         actionProfile: UtgActionProfile,
     ): Boolean {
         var loopTime = 0
+        context.lastNodeId = graphService.findStation(context.kioskId).id
         while (loopTime <= PAYMENT_MAX_LOOP) {
             val uiList = uiDetectorManager.getUiComponents(context).ocrElements
 
