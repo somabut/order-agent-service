@@ -16,22 +16,19 @@ import com.orderagentservice.order.service.utg.menu.MenuNodeIntegrator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
-interface BackSelectStrategy {
-    fun execute(context: UtgContext, menuNodeId: String, uiList: List<UiComponentDto>): String
-}
+abstract class BackSelectStrategy {
+    protected abstract val notificationService: NotificationService
+    protected abstract val menuNodeIntegrator: MenuNodeIntegrator
+    protected abstract val screenNodeIntegrator: ScreenNodeIntegrator
+    protected abstract val comparatorManager: ComparatorManager
+    protected abstract val backAgent: BackAgent
+    protected abstract val logService: LogService
 
-@Component(StrategyType.IN_BACK)
-class DefaultBackSelectStrategy @Autowired constructor(
-    private val notificationService: NotificationService,
-    private val menuNodeIntegrator: MenuNodeIntegrator,
-    private val screenNodeIntegrator: ScreenNodeIntegrator,
-    private val comparatorManager: ComparatorManager,
-    private val backAgent: BackAgent,
-    private val logService: LogService
-) : BackSelectStrategy {
     private val log = logger()
 
-    override fun execute(
+    abstract fun execute(context: UtgContext, menuNodeId: String, uiList: List<UiComponentDto>, hasOption: Boolean): String
+
+    protected fun navigateBack(
         context: UtgContext,
         menuNodeId: String,
         uiList: List<UiComponentDto>
@@ -92,9 +89,61 @@ class DefaultBackSelectStrategy @Autowired constructor(
     }
 }
 
+@Component(StrategyType.IN_BACK)
+class IncludeBackSelectStrategy @Autowired constructor(
+    override val notificationService: NotificationService,
+    override val menuNodeIntegrator: MenuNodeIntegrator,
+    override val screenNodeIntegrator: ScreenNodeIntegrator,
+    override val comparatorManager: ComparatorManager,
+    override val backAgent: BackAgent,
+    override val logService: LogService
+) : BackSelectStrategy() {
+    override fun execute(
+        context: UtgContext, menuNodeId: String,
+        uiList: List<UiComponentDto>, hasOption: Boolean
+    ): String {
+        return navigateBack(
+            context = context,
+            menuNodeId = menuNodeId,
+            uiList = uiList
+        )
+    }
+}
+
+@Component(StrategyType.OP_BACK)
+class OptionalBackSelectStrategy @Autowired constructor(
+    override val notificationService: NotificationService,
+    override val menuNodeIntegrator: MenuNodeIntegrator,
+    override val screenNodeIntegrator: ScreenNodeIntegrator,
+    override val comparatorManager: ComparatorManager,
+    override val backAgent: BackAgent,
+    override val logService: LogService
+) : BackSelectStrategy() {
+    override fun execute(
+        context: UtgContext, menuNodeId: String,
+        uiList: List<UiComponentDto>, hasOption: Boolean
+    ): String {
+        if (hasOption) {
+            return navigateBack(
+                context = context,
+                menuNodeId = menuNodeId,
+                uiList = uiList
+            )
+        }
+        return ""
+    }
+}
+
 @Component(StrategyType.EX_BACK)
-class NoneBackSelectStrategy : BackSelectStrategy {
-    override fun execute(context: UtgContext, menuNodeId: String, uiList: List<UiComponentDto>): String {
+class NoneBackSelectStrategy @Autowired constructor(
+    override val notificationService: NotificationService,
+    override val menuNodeIntegrator: MenuNodeIntegrator,
+    override val screenNodeIntegrator: ScreenNodeIntegrator,
+    override val comparatorManager: ComparatorManager,
+    override val backAgent: BackAgent,
+    override val logService: LogService
+): BackSelectStrategy() {
+    override fun execute(context: UtgContext, menuNodeId: String, uiList: List<UiComponentDto>, hasOption: Boolean): String {
         return ""
     }
 }
