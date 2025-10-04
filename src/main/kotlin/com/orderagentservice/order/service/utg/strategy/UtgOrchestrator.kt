@@ -22,13 +22,10 @@ class UtgOrchestrator @Autowired constructor(
     private val menuActionSequencer: MenuActionSequencer,
     private val paymentActionSequencer: PaymentActionSequencer
 ) {
-    private val log = logger()
-
-    private val PAYMENT_MAX_LOOP = 5
-
     fun execute(context: UtgContext, menuList: List<MenuInfoDto>, utgStrategyRequest: UtgStrategyRequest) {
         val actionProfile = utgActionFactory.createProfile(utgStrategyRequest)
 
+        //root, station, 첫 매장/포장 선택등을 진행
         actionProfile.startSelectStrategy.execute(context)
 
         var uiList: List<UiComponentDto> = listOf()

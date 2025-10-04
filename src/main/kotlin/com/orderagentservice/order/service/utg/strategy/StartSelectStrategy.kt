@@ -1,6 +1,7 @@
 package com.orderagentservice.order.service.utg.strategy
 
 import com.orderagentservice.global.service.LogService
+import com.orderagentservice.logger
 import com.orderagentservice.order.model.UtgContext
 import com.orderagentservice.order.model.dto.UiDto
 import com.orderagentservice.order.model.log.NodeSaveLog
@@ -80,6 +81,8 @@ class DefaultStartSelectStrategy @Autowired constructor(
     override val logService: LogService,
     override val graphService: UiGraphService,
 ) : StartSelectStrategy() {
+    private val log = logger();
+
     override fun execute(context: UtgContext) {
         // root, station노드 초기화
         setupNode(context)
