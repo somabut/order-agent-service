@@ -35,7 +35,7 @@ class MenuActionSequencer @Autowired constructor(
         }
 
         // 처리 후 뒤로가기 및 관계 저장
-        nodeId = actionProfile.backSelectStrategy.execute(context, nodeId, updatedUiList)
+        nodeId = actionProfile.backSelectStrategy.execute(context, nodeId, updatedUiList, menuDto.options.isNotEmpty())
         graphService.saveRel(nodeId, context.lastNodeId!!, NodeRelationType.BACK_TO)
     }
 }
