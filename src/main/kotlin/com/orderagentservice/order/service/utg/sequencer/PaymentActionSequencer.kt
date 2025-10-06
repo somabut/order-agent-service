@@ -21,7 +21,6 @@ class PaymentActionSequencer @Autowired constructor(
         actionProfile: UtgActionProfile,
     ): Boolean {
         var loopTime = 0
-        context.lastNodeId = context.stationNodeId
         while (loopTime <= PAYMENT_MAX_LOOP) {
             val uiList = uiDetectorManager.getUiComponents(context).ocrElements
 

@@ -32,6 +32,7 @@ class UtgInitializeOrchestrator @Autowired constructor(
         navigateMenus(context, menuList, actionProfile)
 
         //결제 노드 초기화
+        context.lastNodeId = context.stationNodeId
         navigatePayment(context, actionProfile)
     }
 
