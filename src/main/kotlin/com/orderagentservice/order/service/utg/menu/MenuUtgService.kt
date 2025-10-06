@@ -98,7 +98,7 @@ class MenuUtgService @Autowired constructor(
             .map { it.title }
         val pendingList = menuList.filter { it.title in modifiedMenuList }
 
-        menuEditor.editMenus(context, pendingList, menuList)
+        menuEditor.editMenus(context, pendingList)
 
         //이후 아직 탐색 못한 메뉴 탐색
         navigateRemain(context, menuList)
@@ -109,7 +109,7 @@ class MenuUtgService @Autowired constructor(
         }
     }
 
-    private fun navigateRemain(context: UtgContext, menuList: List<MenuInfoDto>) {//이후 아직 탐색 못한 메뉴 탐색
+    private fun navigateRemain(context: UtgContext, menuList: List<MenuInfoDto>) {
         val completeMenuList = graphService.findAll(context.kioskId)
             .filter { it.type == NodeType.MENU }
             .map { it.title }

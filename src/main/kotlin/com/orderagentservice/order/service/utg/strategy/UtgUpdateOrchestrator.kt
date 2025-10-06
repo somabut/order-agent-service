@@ -2,9 +2,11 @@ package com.orderagentservice.order.service.utg.strategy
 
 import com.orderagentservice.logger
 import com.orderagentservice.order.model.AutoOrderContext
+import com.orderagentservice.order.model.UtgActionProfile
 import com.orderagentservice.order.model.UtgContext
 import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.result.UtgEditPrepareResult
+import com.orderagentservice.order.model.type.NodeType
 import com.orderagentservice.order.service.auto.AutoTaskExecutor
 import com.orderagentservice.order.service.graph.info.InfoGraphService
 import com.orderagentservice.order.service.graph.ui.UiGraphService
@@ -25,7 +27,7 @@ class UtgUpdateOrchestrator @Autowired constructor(
 ) {
     private val log = logger()
 
-    fun editCategories(context: UtgContext, modifiedCategoryList: List<String>, pendingList: List<MenuInfoDto>) {
+    fun editCategories(context: UtgContext, modifiedCategoryList: List<String>, pendingList: List<MenuInfoDto>, menuList: List<MenuInfoDto>, isInitPayment: Boolean) {
         val prepareResult = prepareEdit(context)
         val autoContext = prepareResult.autoContext
         val utgActionProfile = prepareResult.actionProfile
@@ -43,14 +45,26 @@ class UtgUpdateOrchestrator @Autowired constructor(
             log.info("카테고리에 도달 후 메뉴 UTG를 초기화합니다. 메뉴: ${menuList}")
             utgInitializeOrchestrator.navigateMenus(context, menuList, utgActionProfile)
         }
+
+        //완료 된 노드를 파악하고 완료하지 못한 노드를 순회
+        navigateRemain(context, menuList, utgActionProfile)
+
+        //수정된 노드의 modified 원상 복구
+        modifiedCategoryList.forEach {
+            uiGraphService.changeModified(context.kioskId, it)
+        }
+
+        if (isInitPayment) {
+            utgInitializeOrchestrator.navigatePayment(context, utgActionProfile)
+        }
     }
 
-    fun editMenus(context: UtgContext, modifiedMenuList: List<MenuInfoDto>) {
+    fun editMenus(context: UtgContext, pendingList: List<MenuInfoDto>, menuList: List<MenuInfoDto>, modifiedMenuList: List<String>, isInitPayment: Boolean) {
         val prepareResult = prepareEdit(context)
         val autoContext = prepareResult.autoContext
         val utgActionProfile = prepareResult.actionProfile
 
-        for (menuDto in modifiedMenuList) {
+        for (menuDto in pendingList) {
             //해당 메뉴로 이동. 카테고리 노드 아이디로 업데이트
             log.info("수정된 메뉴 노드로 이동합니다 -> ${menuDto.title}")
             val nodeId = autoTaskExecutor.clickMenu(autoContext, menuDto.toAutoOrderMenu()).id
@@ -67,6 +81,48 @@ class UtgUpdateOrchestrator @Autowired constructor(
                 uiList = uiList,
                 categoryScreenId = context.screenNodeId
             )
+        }
+
+        //완료 된 노드를 파악하고 완료하지 못한 노드를 순회
+        navigateRemain(context, menuList, utgActionProfile)
+
+        //수정된 노드의 modified 원상 복구
+        modifiedMenuList.forEach {
+            uiGraphService.changeModified(context.kioskId, it)
+        }
+
+        if (isInitPayment) {
+            utgInitializeOrchestrator.navigatePayment(context, utgActionProfile)
+        }
+    }
+
+    fun editPayment(context: UtgContext, nowUi: String) {
+        val prepareResult = prepareEdit(context)
+        val autoContext = prepareResult.autoContext
+        val utgActionProfile = prepareResult.actionProfile
+
+        //고친 곳까지 이동
+        val actionList = uiGraphService.findPath(context.kioskId, autoContext.nodeId, nowUi)
+        val last = actionList.last()
+        for (action in actionList) {
+            autoTaskExecutor.clickPayment(autoContext, action)
+        }
+        context.lastNodeId = last.id
+        log.info("수정된 결제 노드로 이동합니다 -> ${last.title}")
+
+        //complete까지 이동
+        utgInitializeOrchestrator.navigatePayment(context, utgActionProfile)
+    }
+
+    private fun navigateRemain(context: UtgContext, menuList: List<MenuInfoDto>, utgActionProfile: UtgActionProfile) {
+        val completeMenuList = uiGraphService.findAll(context.kioskId)
+            .filter { it.type == NodeType.MENU }
+            .map { it.title }
+        val remainList = menuList.filter { it.title !in completeMenuList }
+
+        log.info("남은 노드를 초기화합니다. 남은 노드: ${remainList}")
+        if (remainList.isNotEmpty()) {
+            utgInitializeOrchestrator.navigateMenus(context, menuList, utgActionProfile)
         }
     }
 

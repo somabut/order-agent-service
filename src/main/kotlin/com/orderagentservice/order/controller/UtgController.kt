@@ -23,20 +23,20 @@ class UtgController @Autowired constructor(
 ) {
     private val log = logger()
 
-    @GetMapping("/init/{kioskId}")
-    fun initializeUtg(
-        @PathVariable kioskId: String,
-        @RequestHeader("Authorization", required = false) accessToken: String?
-    ): ApiResponse<*> {
-        if (accessToken == null) throw KioskAdminSignInException()
-
-        notificationService.sendOverlayCommand(kioskId, OverlayType.UTG_START.title)
-        val history = utgService.initializeGraph(kioskId, accessToken)
-        notificationService.sendOverlayCommand(kioskId, OverlayType.UTG_END.title)
-
-        log.info("전체 토큰 사용량: ${usageTracker.totalUsage}")
-        return ApiResponse.success(history)
-    }
+//    @GetMapping("/init/{kioskId}")
+//    fun initializeUtg(
+//        @PathVariable kioskId: String,
+//        @RequestHeader("Authorization", required = false) accessToken: String?
+//    ): ApiResponse<*> {
+//        if (accessToken == null) throw KioskAdminSignInException()
+//
+//        notificationService.sendOverlayCommand(kioskId, OverlayType.UTG_START.title)
+//        val history = utgService.initializeGraph(kioskId, accessToken)
+//        notificationService.sendOverlayCommand(kioskId, OverlayType.UTG_END.title)
+//
+//        log.info("전체 토큰 사용량: ${usageTracker.totalUsage}")
+//        return ApiResponse.success(history)
+//    }
 
     @PostMapping("/update/category/{kioskId}")
     fun updateCategoryUtg(
