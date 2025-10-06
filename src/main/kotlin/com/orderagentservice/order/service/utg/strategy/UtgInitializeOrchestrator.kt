@@ -8,6 +8,7 @@ import com.orderagentservice.order.model.UtgContext
 import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.log.UtgNowMenuLog
 import com.orderagentservice.order.model.request.UtgStrategyRequest
+import com.orderagentservice.order.service.utg.UiDetectorManager
 import com.orderagentservice.order.service.utg.sequencer.CategoryActionSequencer
 import com.orderagentservice.order.service.utg.sequencer.MenuActionSequencer
 import com.orderagentservice.order.service.utg.sequencer.PaymentActionSequencer
@@ -17,10 +18,11 @@ import org.springframework.stereotype.Component
 @Component
 class UtgInitializeOrchestrator @Autowired constructor(
     private val utgActionFactory: UtgActionFactory,
-    private val logService: LogService,
     private val categoryActionSequencer: CategoryActionSequencer,
     private val menuActionSequencer: MenuActionSequencer,
-    private val paymentActionSequencer: PaymentActionSequencer
+    private val paymentActionSequencer: PaymentActionSequencer,
+    private val uiDetectorManager: UiDetectorManager,
+    private val logService: LogService,
 ) {
     fun execute(context: UtgContext, menuList: List<MenuInfoDto>, utgStrategyRequest: UtgStrategyRequest) {
         val actionProfile = utgActionFactory.createProfile(utgStrategyRequest)
@@ -37,7 +39,7 @@ class UtgInitializeOrchestrator @Autowired constructor(
     }
 
     fun navigateMenus(context: UtgContext, menuList: List<MenuInfoDto>, actionProfile: UtgActionProfile) {
-        var uiList: List<UiComponentDto> = listOf()
+        var uiList: List<UiComponentDto> = uiDetectorManager.getUiComponents(context).uiElements
         var categoryScreenId = context.screenNodeId
         for (menuDto in menuList) {
             val categoryNavigationResult = categoryActionSequencer.run(

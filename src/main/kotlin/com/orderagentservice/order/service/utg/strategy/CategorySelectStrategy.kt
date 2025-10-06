@@ -7,7 +7,7 @@ import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.result.NodeCreationResult
 import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.utg.ComparatorManager
-import com.orderagentservice.order.service.utg.menu.MenuNodeIntegrator
+import com.orderagentservice.order.service.utg.menu.UiNodeIntegrator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -19,7 +19,7 @@ interface CategorySelectStrategy {
 class DefaultCategorySelectStrategy @Autowired constructor(
     private val comparatorManager: ComparatorManager,
     private val notificationService: NotificationService,
-    private val menuNodeIntegrator: MenuNodeIntegrator,
+    private val uiNodeIntegrator: UiNodeIntegrator,
 ) : CategorySelectStrategy {
     override fun execute(
         context: UtgContext,
@@ -29,7 +29,7 @@ class DefaultCategorySelectStrategy @Autowired constructor(
         val matchDto = comparatorManager.wordCompare(menuDto.category, uiList)
 
         //노드 생성
-        val nodeCreationResult = menuNodeIntegrator.integrateCategoryNode(matchDto, menuDto.category, context)
+        val nodeCreationResult = uiNodeIntegrator.integrateCategoryNode(matchDto, menuDto.category, context)
         context.lastNodeId = nodeCreationResult.nodeId
 
         //현재 카테고리 좌표 클릭

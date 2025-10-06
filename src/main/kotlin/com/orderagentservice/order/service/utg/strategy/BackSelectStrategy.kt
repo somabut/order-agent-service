@@ -12,13 +12,13 @@ import com.orderagentservice.order.model.type.StrategyType
 import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.utg.ComparatorManager
 import com.orderagentservice.order.service.utg.ScreenNodeIntegrator
-import com.orderagentservice.order.service.utg.menu.MenuNodeIntegrator
+import com.orderagentservice.order.service.utg.menu.UiNodeIntegrator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 abstract class BackSelectStrategy {
     protected abstract val notificationService: NotificationService
-    protected abstract val menuNodeIntegrator: MenuNodeIntegrator
+    protected abstract val uiNodeIntegrator: UiNodeIntegrator
     protected abstract val screenNodeIntegrator: ScreenNodeIntegrator
     protected abstract val comparatorManager: ComparatorManager
     protected abstract val backAgent: BackAgent
@@ -39,7 +39,7 @@ abstract class BackSelectStrategy {
         val backUi = cacheBackUi(context, uiList)
 
         //노드 생성
-        val creationResult = menuNodeIntegrator.integrateBackNode(backUi, menuNodeId, context)
+        val creationResult = uiNodeIntegrator.integrateBackNode(backUi, menuNodeId, context)
 
         //match 노드와 관계, screen 노드와 관계 연결
         screenNodeIntegrator.linkNode(
@@ -92,7 +92,7 @@ abstract class BackSelectStrategy {
 @Component(StrategyType.IN_BACK)
 class IncludeBackSelectStrategy @Autowired constructor(
     override val notificationService: NotificationService,
-    override val menuNodeIntegrator: MenuNodeIntegrator,
+    override val uiNodeIntegrator: UiNodeIntegrator,
     override val screenNodeIntegrator: ScreenNodeIntegrator,
     override val comparatorManager: ComparatorManager,
     override val backAgent: BackAgent,
@@ -113,7 +113,7 @@ class IncludeBackSelectStrategy @Autowired constructor(
 @Component(StrategyType.OP_BACK)
 class OptionalBackSelectStrategy @Autowired constructor(
     override val notificationService: NotificationService,
-    override val menuNodeIntegrator: MenuNodeIntegrator,
+    override val uiNodeIntegrator: UiNodeIntegrator,
     override val screenNodeIntegrator: ScreenNodeIntegrator,
     override val comparatorManager: ComparatorManager,
     override val backAgent: BackAgent,
@@ -137,7 +137,7 @@ class OptionalBackSelectStrategy @Autowired constructor(
 @Component(StrategyType.EX_BACK)
 class NoneBackSelectStrategy @Autowired constructor(
     override val notificationService: NotificationService,
-    override val menuNodeIntegrator: MenuNodeIntegrator,
+    override val uiNodeIntegrator: UiNodeIntegrator,
     override val screenNodeIntegrator: ScreenNodeIntegrator,
     override val comparatorManager: ComparatorManager,
     override val backAgent: BackAgent,
