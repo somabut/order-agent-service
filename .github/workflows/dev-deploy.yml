@@ -65,13 +65,13 @@ jobs:
           key: ${{ secrets.DEV_AWS_KEY }}
           script: |
             # compose 파일 위치로 이동 (예시: /home/ubuntu/deploy)
-            cd /home/alike
+            cd /home/${{ secrets.DEV_AWS_USER }}/order-agent-service
 
             # 서비스 중단 후 재시작
-            docker compose down
+            docker-compose down
             docker rmi moodtrbl/dev-order-agent-service:latest
-            docker compose pull
-            docker compose up -d
+            docker-compose pull
+            docker-compose up -d
 
             # 불필요한 도커 이미지 정리(옵션)
             docker image prune -f
