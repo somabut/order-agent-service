@@ -79,9 +79,12 @@ class UtgControllerV2 @Autowired constructor(
     @PostMapping("/update/payment/{kioskId}")
     fun updatePaymentUtg(
         @PathVariable kioskId: String,
+        @RequestHeader("Authorization", required = false) accessToken: String?
     ): ApiResponse<*> {
+        if (accessToken == null) throw KioskAdminSignInException()
+
         notificationService.sendOverlayCommand(kioskId, OverlayType.UTG_START.title)
-        val history = utgService.updatePayment(kioskId)
+        val history = utgService.updatePayment(kioskId, accessToken)
         notificationService.sendOverlayCommand(kioskId, OverlayType.UTG_END.title)
 
         return ApiResponse.success(history)

@@ -147,8 +147,9 @@ class UtgService @Autowired constructor(
         return context.pushedImages
     }
 
-    fun updatePayment(kioskId: String): List<String> {
+    fun updatePayment(kioskId: String, accessToken: String): List<String> {
         val context = UtgContext.toBasicContext(kioskId, LogicType.UPDATE)
+        val randomMenu = menuService.getMenus(kioskId, accessToken)[0]
 
         val uiDtoList = uiGraphService.findModified(context.kioskId)
         val modifiedPayment = uiDtoList
@@ -156,7 +157,7 @@ class UtgService @Autowired constructor(
             .map { it.title }
             .first()
 
-        utgUpdateOrchestrator.editPayment(context, modifiedPayment)
+        utgUpdateOrchestrator.editPayment(context, modifiedPayment, randomMenu)
         uiGraphService.changeModified(context.kioskId, modifiedPayment)
 
         return context.pushedImages
