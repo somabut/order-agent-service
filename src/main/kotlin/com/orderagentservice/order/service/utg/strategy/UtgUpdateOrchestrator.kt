@@ -96,13 +96,15 @@ class UtgUpdateOrchestrator @Autowired constructor(
         }
     }
 
-    fun editPayment(context: UtgContext, nowUi: String) {
+    fun editPayment(context: UtgContext, nowUi: String, randomMenu: MenuInfoDto) {
         val prepareResult = prepareEdit(context)
         val autoContext = prepareResult.autoContext
         val utgActionProfile = prepareResult.actionProfile
 
         //고친 곳까지 이동
         val actionList = uiGraphService.findPath(context.kioskId, autoContext.nodeId, nowUi)
+        //결제를 위해 아무 메뉴나 클릭
+        autoTaskExecutor.clickMenu(autoContext, randomMenu.toAutoOrderMenu())
         val last = actionList.last()
         for (action in actionList) {
             autoTaskExecutor.clickPayment(autoContext, action)
