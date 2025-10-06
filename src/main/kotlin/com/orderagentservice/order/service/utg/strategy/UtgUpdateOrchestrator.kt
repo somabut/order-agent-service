@@ -84,14 +84,6 @@ class UtgUpdateOrchestrator @Autowired constructor(
             // 처리 후 뒤로가기 및 관계 저장
             nodeId = utgActionProfile.backSelectStrategy.execute(context, nodeId, uiList, menuDto.options.isNotEmpty())
             uiGraphService.saveRel(nodeId, context.lastNodeId!!, NodeRelationType.BACK_TO)
-
-//            menuActionSequencer.run(
-//                context = context,
-//                menuDto = menuDto,
-//                actionProfile = utgActionProfile,
-//                uiList = uiList,
-//                categoryScreenId = context.screenNodeId
-//            )
         }
 
         //완료 된 노드를 파악하고 완료하지 못한 노드를 순회

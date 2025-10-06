@@ -15,7 +15,6 @@ import com.orderagentservice.order.service.graph.ui.UiGraphService
 import com.orderagentservice.order.service.utg.ComparatorManager
 import com.orderagentservice.order.service.utg.ScreenNodeIntegrator
 import com.orderagentservice.order.service.utg.UiDetectorManager
-import com.orderagentservice.order.service.utg.WordSimilarityService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -23,7 +22,7 @@ import org.springframework.stereotype.Component
 class MenuActionExecutorImpl @Autowired constructor(
     private val comparatorManager: ComparatorManager,
     private val notificationService: NotificationService,
-    private val menuNodeIntegrator: MenuNodeIntegrator,
+    private val uiNodeIntegrator: UiNodeIntegrator,
     private val screenNodeIntegrator: ScreenNodeIntegrator,
     private val uiDetectorManager: UiDetectorManager,
     private val backAgent: BackAgent,
@@ -40,7 +39,7 @@ class MenuActionExecutorImpl @Autowired constructor(
         val matchDto = comparatorManager.wordCompare(menuDto.category, uiList)
 
         //노드 생성
-        val nodeCreationResult = menuNodeIntegrator.integrateCategoryNode(matchDto, menuDto.category, context)
+        val nodeCreationResult = uiNodeIntegrator.integrateCategoryNode(matchDto, menuDto.category, context)
         context.lastNodeId = nodeCreationResult.nodeId
 
         //현재 카테고리 좌표 클릭
@@ -58,7 +57,7 @@ class MenuActionExecutorImpl @Autowired constructor(
         val matchDto = comparatorManager.wordCompare(menuDto.title, uiList)
 
         //노드 생성
-        val creationResult = menuNodeIntegrator.integrateMenuNode(matchDto, menuDto.title, context)
+        val creationResult = uiNodeIntegrator.integrateMenuNode(matchDto, menuDto.title, context)
         val nodeId = creationResult.nodeId
 
         //match 노드와 관계, screen 노드와 관계 연결
@@ -85,7 +84,7 @@ class MenuActionExecutorImpl @Autowired constructor(
             val matchDto = comparatorManager.wordCompare(opt, uiList)
 
             //노드 생성
-            val creationResult = menuNodeIntegrator.integrateOptionNode(matchDto, opt, menuNodeId, context)
+            val creationResult = uiNodeIntegrator.integrateOptionNode(matchDto, opt, menuNodeId, context)
 
             //match 노드와 관계, screen 노드와 관계 연결
             screenNodeIntegrator.linkNode(
@@ -107,7 +106,7 @@ class MenuActionExecutorImpl @Autowired constructor(
         val backUi = cacheBackUi(context, uiList)
 
         //노드 생성
-        val creationResult = menuNodeIntegrator.integrateBackNode(backUi, menuNodeId, context)
+        val creationResult = uiNodeIntegrator.integrateBackNode(backUi, menuNodeId, context)
 
         //match 노드와 관계, screen 노드와 관계 연결
         screenNodeIntegrator.linkNode(

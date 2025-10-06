@@ -7,7 +7,7 @@ import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.utg.ComparatorManager
 import com.orderagentservice.order.service.utg.ScreenNodeIntegrator
-import com.orderagentservice.order.service.utg.menu.MenuNodeIntegrator
+import com.orderagentservice.order.service.utg.menu.UiNodeIntegrator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -19,7 +19,7 @@ interface MenuSelectStrategy {
 class DefaultMenuSelectStrategy @Autowired constructor(
     private val comparatorManager: ComparatorManager,
     private val notificationService: NotificationService,
-    private val menuNodeIntegrator: MenuNodeIntegrator,
+    private val uiNodeIntegrator: UiNodeIntegrator,
     private val screenNodeIntegrator: ScreenNodeIntegrator,
 ) : MenuSelectStrategy {
     override fun execute(
@@ -31,7 +31,7 @@ class DefaultMenuSelectStrategy @Autowired constructor(
         val matchDto = comparatorManager.wordCompare(menuDto.title, uiList)
 
         //노드 생성
-        val creationResult = menuNodeIntegrator.integrateMenuNode(matchDto, menuDto.title, context)
+        val creationResult = uiNodeIntegrator.integrateMenuNode(matchDto, menuDto.title, context)
         val nodeId = creationResult.nodeId
 
         //match 노드와 관계, screen 노드와 관계 연결

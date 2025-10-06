@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 @Component
-class MenuNodeIntegrator @Autowired constructor(
+class UiNodeIntegrator @Autowired constructor(
     private val uiGraphService: UiGraphService,
     private val logService: LogService,
 ) {
