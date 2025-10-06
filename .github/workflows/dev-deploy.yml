@@ -2,13 +2,13 @@ name: Deploy with Compose on Server
 
 on:
   push:
-    branches: [ main ]
+    branches: [ dev ]
   pull_request:
-    branches: [ main ]
+    branches: [ dev ]
   workflow_dispatch:
 
 env:
-  IMAGE_NAME: moodtrbl/order-agent-service  # 빌드할 이미지명(수정 가능) 
+  IMAGE_NAME: moodtrbl/dev-order-agent-service  # 빌드할 이미지명(수정 가능) 
 
 jobs:
   build-and-deploy:
@@ -60,16 +60,16 @@ jobs:
       - name: Deploy via Compose (Server)
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.AWS_HOST }}
-          username: ${{ secrets.AWS_USERNAME }}
-          password: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
+          host: ${{ secrets.DEV_AWS_HOST }}
+          username: ${{ secrets.DEV_AWS_USER }}
+          key: ${{ secrets.DEV_AWS_SSH_KEY }}
           script: |
             # compose 파일 위치로 이동 (예시: /home/ubuntu/deploy)
             cd /home/alike
 
             # 서비스 중단 후 재시작
             docker compose down
-            docker rmi moodtrbl/order-agent-service:latest
+            docker rmi moodtrbl/dev-order-agent-service:latest
             docker compose pull
             docker compose up -d
 
