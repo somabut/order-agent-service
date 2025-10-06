@@ -62,7 +62,7 @@ jobs:
         with:
           host: ${{ secrets.DEV_AWS_HOST }}
           username: ${{ secrets.DEV_AWS_USER }}
-          key: ${{ secrets.DEV_AWS_SSH_KEY }}
+          key: ${{ secrets.DEV_AWS_KEY }}
           script: |
             # compose 파일 위치로 이동 (예시: /home/ubuntu/deploy)
             cd /home/alike
