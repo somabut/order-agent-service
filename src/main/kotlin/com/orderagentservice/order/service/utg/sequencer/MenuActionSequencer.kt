@@ -23,7 +23,7 @@ class MenuActionSequencer @Autowired constructor(
         menuDto: MenuInfoDto,
         actionProfile: UtgActionProfile,
         uiList: List<UiComponentDto>,
-        categoryScreenId: String
+        categoryScreenId: String,
     ) {
         // 메뉴 선택
         var nodeId = actionProfile.menuSelectStrategy.execute(context, menuDto, uiList, categoryScreenId)

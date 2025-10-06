@@ -6,6 +6,7 @@ import com.orderagentservice.order.model.UtgActionProfile
 import com.orderagentservice.order.model.UtgContext
 import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.result.UtgEditPrepareResult
+import com.orderagentservice.order.model.type.NodeRelationType
 import com.orderagentservice.order.model.type.NodeType
 import com.orderagentservice.order.service.auto.AutoTaskExecutor
 import com.orderagentservice.order.service.graph.info.InfoGraphService
@@ -67,20 +68,30 @@ class UtgUpdateOrchestrator @Autowired constructor(
         for (menuDto in pendingList) {
             //해당 메뉴로 이동. 카테고리 노드 아이디로 업데이트
             log.info("수정된 메뉴 노드로 이동합니다 -> ${menuDto.title}")
-            val nodeId = autoTaskExecutor.clickMenu(autoContext, menuDto.toAutoOrderMenu()).id
+            var nodeId = autoTaskExecutor.clickMenu(autoContext, menuDto.toAutoOrderMenu()).id
             val categoryNodeId = uiGraphService.findNodeByTitle(context.kioskId, menuDto.category)
             context.lastNodeId = categoryNodeId
 
             //옵션 처리
             log.info("메뉴에 도달 후 옵션 UTG를 초기화합니다. 옵션: ${menuDto.options}")
             val uiList = uiDetectorManager.getUiComponents(context).uiElements
-            menuActionSequencer.run(
-                context = context,
-                menuDto = menuDto,
-                actionProfile = utgActionProfile,
-                uiList = uiList,
-                categoryScreenId = context.screenNodeId
-            )
+
+            // 옵션이 있는 경우 처리
+            if (menuDto.options.isNotEmpty()) {
+                utgActionProfile.optionSelectStrategy.execute(context, menuDto, nodeId, uiList)
+            }
+
+            // 처리 후 뒤로가기 및 관계 저장
+            nodeId = utgActionProfile.backSelectStrategy.execute(context, nodeId, uiList, menuDto.options.isNotEmpty())
+            uiGraphService.saveRel(nodeId, context.lastNodeId!!, NodeRelationType.BACK_TO)
+
+//            menuActionSequencer.run(
+//                context = context,
+//                menuDto = menuDto,
+//                actionProfile = utgActionProfile,
+//                uiList = uiList,
+//                categoryScreenId = context.screenNodeId
+//            )
         }
 
         //완료 된 노드를 파악하고 완료하지 못한 노드를 순회
