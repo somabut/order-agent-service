@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   spring:
-    image: moodtrbl/order-agent-service:latest
+    image: moodtrbl/dev-order-agent-service:latest
     container_name: order-agent-service
     ports:
       - "8081:8081"
