@@ -66,6 +66,9 @@ jobs:
           script: |
             # compose 파일 위치로 이동 (예시: /home/ubuntu/deploy)
             cd /home/${{ secrets.DEV_AWS_USER }}/order-agent-service
+            
+            git checkout dev
+            git pull origin dev
 
             # 서비스 중단 후 재시작
             docker-compose down
