@@ -68,7 +68,7 @@ class GraphSaveServiceImplTest @Autowired constructor(
     @Test
     fun `저장된 노드에서 특정 노드까지 경로를 찾는다`() {
         //when: 경로를 찾는다
-        val kioskId = "kiosk-2303452c-8454-4b9f-add2-47314cfd3911"
+        val kioskId = "kiosk-f9da7dde-16e2-45de-a522-02a6bac85f78"
         val rootId = graphService.findRoot(kioskId)
         println(rootId)
 
