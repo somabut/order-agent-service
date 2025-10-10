@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component
 class MenuActionSequencer @Autowired constructor(
     private val uiDetectorManager: UiDetectorManager,
     private val graphService: UiGraphService,
-    private val logService: LogService
 ){
     fun run(
         context: UtgContext,
@@ -27,11 +26,11 @@ class MenuActionSequencer @Autowired constructor(
     ) {
         // 메뉴 선택
         var nodeId = actionProfile.menuSelectStrategy.execute(context, menuDto, uiList, categoryScreenId)
-        val updatedUiList = uiDetectorManager.getUiComponents(context).uiElements
+        var updatedUiList: List<UiComponentDto> = listOf()
 
         // 옵션이 있는 경우 처리
         if (menuDto.options.isNotEmpty()) {
-            actionProfile.optionSelectStrategy.execute(context, menuDto, nodeId, updatedUiList)
+            updatedUiList = actionProfile.optionSelectStrategy.execute(context, menuDto, nodeId, uiList)
         }
 
         // 처리 후 뒤로가기 및 관계 저장

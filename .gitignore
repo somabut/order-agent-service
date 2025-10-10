@@ -6,6 +6,7 @@ build/
 !**/src/test/**/build/
 
 application.yml
+dev-application.yml
 logback-spring.xml
 
 ### STS ###
