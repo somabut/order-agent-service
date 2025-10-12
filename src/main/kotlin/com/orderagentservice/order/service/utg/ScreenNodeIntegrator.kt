@@ -49,7 +49,7 @@ class ScreenNodeIntegrator @Autowired constructor(
         context.pushedImages.add(screenNodeId)
 
         //screen 노드에 박스 연결
-        connectSom(context, uiComponents)
+//        connectSom(context, uiComponents)
 //        connectOcr(context, ocrComponents)
 //        connectYolo(context, yoloComponents)
     }
@@ -61,15 +61,26 @@ class ScreenNodeIntegrator @Autowired constructor(
         val maxX = uiComponentParams.maxX
         val maxY = uiComponentParams.maxY
         log.info("${screenNodeId}에서 ${uiComponentParams.title} 의 연결을 조회합니다. bbox: [${minX}, ${minY}, ${maxX}, ${maxY}]")
-        val somNodeId = somGraphService.findNode(
-            sourceId = screenNodeId,
-            kioskId = kioskId,
-            minX = minX, minY = minY,
-            maxX = maxX, maxY = maxY,
-            title = uiComponentParams.title
+
+        val somNodeId = somGraphService.saveNode(
+            SomDto(
+                kioskId = kioskId,
+                minX = minX, minY = minY, maxX = maxX, maxY = maxY,
+                content = uiComponentParams.title
+            )
         )
         uiGraphService.saveRel(nodeId, somNodeId, NodeRelationType.MATCH_TO)
         uiGraphService.saveRel(nodeId, screenNodeId, NodeRelationType.IMAGE_TO)
+
+//        val somNodeId = somGraphService.findNode(
+//            sourceId = screenNodeId,
+//            kioskId = kioskId,
+//            minX = minX, minY = minY,
+//            maxX = maxX, maxY = maxY,
+//            title = uiComponentParams.title
+//        )
+//        uiGraphService.saveRel(nodeId, somNodeId, NodeRelationType.MATCH_TO)
+//        uiGraphService.saveRel(nodeId, screenNodeId, NodeRelationType.IMAGE_TO)
     }
 
     private fun connectSom(context: UtgContext, uiComponents: List<DetectorUiComponentDto>) {
