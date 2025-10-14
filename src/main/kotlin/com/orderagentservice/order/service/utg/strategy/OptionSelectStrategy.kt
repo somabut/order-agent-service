@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component
 
 abstract class OptionSelectStrategy {
     protected abstract val comparatorManager: ComparatorManager
-    protected abstract  val screenNodeIntegrator: ScreenNodeIntegrator
-    protected abstract  val uiNodeIntegrator: UiNodeIntegrator
+    protected abstract val screenNodeIntegrator: ScreenNodeIntegrator
+    protected abstract val uiNodeIntegrator: UiNodeIntegrator
 
     abstract fun execute(context: UtgContext, menuDto: MenuInfoDto, menuNodeId: String, uiList: List<UiComponentDto>): List<UiComponentDto>
 
@@ -48,7 +48,6 @@ class DefaultOptionSelectStrategy @Autowired constructor(
     override val comparatorManager: ComparatorManager,
     override val screenNodeIntegrator: ScreenNodeIntegrator,
     override val uiNodeIntegrator: UiNodeIntegrator,
-
 ) : OptionSelectStrategy() {
     override fun execute(
         context: UtgContext,

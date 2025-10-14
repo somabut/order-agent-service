@@ -147,7 +147,6 @@ class NotificationService @Autowired constructor(
     }
 
     fun sendCheckCommand(kioskId: String) {
-        log.info("클라이언틍게 체크 메시지를 보냅니다.")
         val commandId = UUID.randomUUID().toString()
         val request = jsonMapper.writeValueAsString(
             CommandRequest(
