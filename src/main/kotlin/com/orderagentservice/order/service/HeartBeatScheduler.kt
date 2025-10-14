@@ -34,7 +34,11 @@ class HeartBeatScheduler @Autowired constructor(
         val kiosks = notificationRepository.getAllEmitter()
         for ((kioskId, emitter) in kiosks) {
             // 키오스크에게 확인 메시지
-            notificationService.sendCheckCommand(kioskId)
+            try {
+                notificationService.sendCheckCommand(kioskId)
+            } catch (e: Exception) {
+                notificationRepository.deleteByKioskId(kioskId)
+            }
         }
     }
 }
