@@ -48,4 +48,11 @@ class InfoGraphServiceTest @Autowired constructor(
         println(infoEntity.id)
         infoGraphService.saveRel(kioskId, infoEntity.id)
     }
+
+    @Test
+    fun `info노드를 가져온다`() {
+        val kioskId = "kiosk-85da7a5b-64fa-461f-9039-c6586ba7e048"
+        val request = infoGraphService.findLinkedInfo(kioskId)
+        println(request)
+    }
 }
