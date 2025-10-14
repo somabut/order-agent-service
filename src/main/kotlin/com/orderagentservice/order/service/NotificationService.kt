@@ -23,7 +23,8 @@ class NotificationService @Autowired constructor(
 ) {
     private val log = logger()
 
-    val CONNECT_TIMEOUT: Long = 60L * 1000 * 60
+//    val CONNECT_TIMEOUT: Long = 60L * 1000 * 60
+    val CONNECT_TIMEOUT: Long = Long.MAX_VALUE
     val CAPTURE_WAIT_TIMEOUT: Long = 12_000
     val ACTION_WAIT_TIMEOUT: Long = 10_000
     val OVERLAY_WAIT_TIMEOUT: Long = 9_000
