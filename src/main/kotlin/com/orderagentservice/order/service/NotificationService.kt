@@ -23,7 +23,8 @@ class NotificationService @Autowired constructor(
 ) {
     private val log = logger()
 
-    val CONNECT_TIMEOUT: Long = 60L * 1000 * 60
+//    val CONNECT_TIMEOUT: Long = 60L * 1000 * 60
+    val CONNECT_TIMEOUT: Long = Long.MAX_VALUE
     val CAPTURE_WAIT_TIMEOUT: Long = 12_000
     val ACTION_WAIT_TIMEOUT: Long = 10_000
     val OVERLAY_WAIT_TIMEOUT: Long = 9_000
@@ -143,6 +144,22 @@ class NotificationService @Autowired constructor(
         emitter.send(request)
         val result = waitOverlayCommand(commandId)
         return result
+    }
+
+    fun sendCheckCommand(kioskId: String) {
+        log.info("클라이언틍게 체크 메시지를 보냅니다.")
+        val commandId = UUID.randomUUID().toString()
+        val request = jsonMapper.writeValueAsString(
+            CommandRequest(
+                kioskId = kioskId,
+                commandId = commandId,
+                commandType = CommandType.CHECK,
+                data = null
+            )
+        )
+        val emitter = notificationRepository.getEmitter(kioskId)
+
+        emitter.send(request)
     }
 
     // 캡처 명령 대기

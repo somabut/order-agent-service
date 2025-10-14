@@ -52,6 +52,9 @@ dependencies {
     //feign client
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 
+    //coroutine
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
+
     //metric
     implementation ("org.springframework.boot:spring-boot-starter-actuator")
     implementation ("io.micrometer:micrometer-registry-prometheus")
