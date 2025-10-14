@@ -35,6 +35,8 @@ class NotificationRepository {
     fun getEmitter(kioskId: String): SseEmitter =
         kioskNotification[kioskId] ?: throw NoSuchKioskException()
 
+    fun getAllEmitter() = kioskNotification.toMap()
+
     fun saveCaptureCommand(commandId: String, captureDto: KioskCaptureDto) {
         captureCommandCompleteMap[commandId] = captureDto
     }

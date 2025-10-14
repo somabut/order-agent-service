@@ -146,6 +146,22 @@ class NotificationService @Autowired constructor(
         return result
     }
 
+    fun sendCheckCommand(kioskId: String) {
+        log.info("클라이언틍게 체크 메시지를 보냅니다.")
+        val commandId = UUID.randomUUID().toString()
+        val request = jsonMapper.writeValueAsString(
+            CommandRequest(
+                kioskId = kioskId,
+                commandId = commandId,
+                commandType = CommandType.CHECK,
+                data = null
+            )
+        )
+        val emitter = notificationRepository.getEmitter(kioskId)
+
+        emitter.send(request)
+    }
+
     // 캡처 명령 대기
     private fun waitCaptureCommand(commandId: String): KioskCaptureDto {
         return waitForCommand(commandId, CAPTURE_WAIT_TIMEOUT) { id ->
