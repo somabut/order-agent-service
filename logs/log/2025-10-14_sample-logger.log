@@ -1,0 +1,29 @@
+{"@timestamp":"2025-10-14T21:05:08.677849+09:00","level":"INFO","logger_name":"com.orderagentservice.OrderAgentServiceApplicationKt","message":"Starting OrderAgentServiceApplicationKt using Java 21.0.7 with PID 84300 (/Users/moodtrbl/IdeaProjects/order-agent-service/build/classes/kotlin/main started by moodtrbl in /Users/moodtrbl/IdeaProjects/order-agent-service)"}
+{"@timestamp":"2025-10-14T21:05:08.682535+09:00","level":"INFO","logger_name":"com.orderagentservice.OrderAgentServiceApplicationKt","message":"The following 1 profile is active: \"deploy\""}
+{"@timestamp":"2025-10-14T21:05:09.227317+09:00","level":"INFO","logger_name":"org.springframework.data.repository.config.RepositoryConfigurationDelegate","message":"Bootstrapping Spring Data Neo4j repositories in DEFAULT mode."}
+{"@timestamp":"2025-10-14T21:05:09.290145+09:00","level":"INFO","logger_name":"org.springframework.data.repository.config.RepositoryConfigurationDelegate","message":"Finished Spring Data repository scanning in 58 ms. Found 0 Neo4j repository interfaces."}
+{"@timestamp":"2025-10-14T21:05:09.292728+09:00","level":"INFO","logger_name":"org.springframework.data.repository.config.RepositoryConfigurationDelegate","message":"Bootstrapping Spring Data Neo4j repositories in DEFAULT mode."}
+{"@timestamp":"2025-10-14T21:05:09.306998+09:00","level":"INFO","logger_name":"org.springframework.data.repository.config.RepositoryConfigurationDelegate","message":"Finished Spring Data repository scanning in 13 ms. Found 6 Neo4j repository interfaces."}
+{"@timestamp":"2025-10-14T21:05:09.358558+09:00","level":"INFO","logger_name":"org.springframework.cloud.context.scope.GenericScope","message":"BeanFactory id=304953e6-0717-3fe5-a34c-8b55d6b5bea7"}
+{"@timestamp":"2025-10-14T21:05:09.465768+09:00","level":"INFO","logger_name":"org.springframework.boot.web.embedded.tomcat.TomcatWebServer","message":"Tomcat initialized with port 8081 (http)"}
+{"@timestamp":"2025-10-14T21:05:09.471635+09:00","level":"INFO","logger_name":"org.apache.coyote.http11.Http11NioProtocol","message":"Initializing ProtocolHandler [\"http-nio-8081\"]"}
+{"@timestamp":"2025-10-14T21:05:09.472586+09:00","level":"INFO","logger_name":"org.apache.catalina.core.StandardService","message":"Starting service [Tomcat]"}
+{"@timestamp":"2025-10-14T21:05:09.472732+09:00","level":"INFO","logger_name":"org.apache.catalina.core.StandardEngine","message":"Starting Servlet engine: [Apache Tomcat/10.1.42]"}
+{"@timestamp":"2025-10-14T21:05:09.491581+09:00","level":"INFO","logger_name":"org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]","message":"Initializing Spring embedded WebApplicationContext"}
+{"@timestamp":"2025-10-14T21:05:09.491814+09:00","level":"INFO","logger_name":"org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext","message":"Root WebApplicationContext: initialization completed in 790 ms"}
+{"@timestamp":"2025-10-14T21:05:09.724757+09:00","level":"INFO","logger_name":"org.neo4j.driver.internal.DriverFactory","message":"Direct driver instance 1756332680 created for server address 3.106.253.59:7687"}
+{"@timestamp":"2025-10-14T21:05:10.128627+09:00","level":"INFO","logger_name":"org.springframework.boot.actuate.endpoint.web.EndpointLinksResolver","message":"Exposing 4 endpoints beneath base path '/actuator'"}
+{"@timestamp":"2025-10-14T21:05:10.151541+09:00","level":"INFO","logger_name":"org.apache.coyote.http11.Http11NioProtocol","message":"Starting ProtocolHandler [\"http-nio-8081\"]"}
+{"@timestamp":"2025-10-14T21:05:10.155015+09:00","level":"INFO","logger_name":"org.springframework.boot.web.embedded.tomcat.TomcatWebServer","message":"Tomcat started on port 8081 (http) with context path '/'"}
+{"@timestamp":"2025-10-14T21:05:10.16259+09:00","level":"INFO","logger_name":"com.orderagentservice.OrderAgentServiceApplicationKt","message":"Started OrderAgentServiceApplicationKt in 1.905 seconds (process running for 2.465)"}
+{"@timestamp":"2025-10-14T21:05:10.542527+09:00","level":"INFO","logger_name":"org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]","message":"Initializing Spring DispatcherServlet 'dispatcherServlet'"}
+{"@timestamp":"2025-10-14T21:05:10.542797+09:00","level":"INFO","logger_name":"org.springframework.web.servlet.DispatcherServlet","message":"Initializing Servlet 'dispatcherServlet'"}
+{"@timestamp":"2025-10-14T21:05:10.543456+09:00","level":"INFO","logger_name":"org.springframework.web.servlet.DispatcherServlet","message":"Completed initialization in 1 ms"}
+{"@timestamp":"2025-10-14T21:05:18.436712+09:00","level":"INFO","logger_name":"com.orderagentservice.order.service.NotificationService","message":"액션 SSE 연결성공: 1234"}
+{"@timestamp":"2025-10-14T21:05:20.178466+09:00","level":"INFO","logger_name":"com.orderagentservice.order.service.NotificationService","message":"클라이언틍게 체크 메시지를 보냅니다."}
+{"@timestamp":"2025-10-14T21:05:30.18753+09:00","level":"INFO","logger_name":"com.orderagentservice.order.service.NotificationService","message":"클라이언틍게 체크 메시지를 보냅니다."}
+{"@timestamp":"2025-10-14T21:05:40.195709+09:00","level":"INFO","logger_name":"com.orderagentservice.order.service.NotificationService","message":"클라이언틍게 체크 메시지를 보냅니다."}
+{"@timestamp":"2025-10-14T21:05:50.201285+09:00","level":"INFO","logger_name":"com.orderagentservice.order.service.NotificationService","message":"클라이언틍게 체크 메시지를 보냅니다."}
+{"@timestamp":"2025-10-14T21:06:00.208885+09:00","level":"INFO","logger_name":"com.orderagentservice.order.service.NotificationService","message":"클라이언틍게 체크 메시지를 보냅니다."}
+{"@timestamp":"2025-10-14T21:06:10.21388+09:00","level":"INFO","logger_name":"com.orderagentservice.order.service.NotificationService","message":"클라이언틍게 체크 메시지를 보냅니다."}
+{"@timestamp":"2025-10-14T21:06:13.400333+09:00","level":"INFO","logger_name":"org.springframework.boot.web.embedded.tomcat.GracefulShutdown","message":"Commencing graceful shutdown. Waiting for active requests to complete"}
