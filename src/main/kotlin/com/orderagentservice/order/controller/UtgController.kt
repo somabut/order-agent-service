@@ -6,37 +6,37 @@ import com.orderagentservice.logger
 import com.orderagentservice.order.exception.KioskAdminSignInException
 import com.orderagentservice.order.model.request.CategoryUtgUpdateRequest
 import com.orderagentservice.order.model.request.MenuUtgUpdateRequest
+import com.orderagentservice.order.model.request.UtgStrategyRequest
 import com.orderagentservice.order.model.type.OverlayType
 import com.orderagentservice.order.service.NotificationService
-import com.orderagentservice.order.service.auto.RandomTaskService
 import com.orderagentservice.order.service.utg.UtgService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/v1/utg")
+@RequestMapping("/v2/utg")
 class UtgController @Autowired constructor(
-    private val utgService: UtgService,
-    private val randomTaskService: RandomTaskService,
+    private val notificationService: NotificationService,
     private val usageTracker: UsageTracker,
-    private val notificationService: NotificationService
+    private val utgService: UtgService
 ) {
     private val log = logger()
 
-//    @GetMapping("/init/{kioskId}")
-//    fun initializeUtg(
-//        @PathVariable kioskId: String,
-//        @RequestHeader("Authorization", required = false) accessToken: String?
-//    ): ApiResponse<*> {
-//        if (accessToken == null) throw KioskAdminSignInException()
-//
-//        notificationService.sendOverlayCommand(kioskId, OverlayType.UTG_START.title)
-//        val history = utgService.initializeGraph(kioskId, accessToken)
-//        notificationService.sendOverlayCommand(kioskId, OverlayType.UTG_END.title)
-//
-//        log.info("전체 토큰 사용량: ${usageTracker.totalUsage}")
-//        return ApiResponse.success(history)
-//    }
+    @PostMapping("/init/{kioskId}")
+    fun initializeUtg(
+        @PathVariable kioskId: String,
+        @RequestBody utgStrategyRequest: UtgStrategyRequest,
+        @RequestHeader("Authorization", required = false) accessToken: String?
+    ): ApiResponse<*> {
+        if (accessToken == null) throw KioskAdminSignInException()
+
+        notificationService.sendOverlayCommand(kioskId, OverlayType.UTG_START.title)
+        val history = utgService.init(kioskId, accessToken, utgStrategyRequest)
+        notificationService.sendOverlayCommand(kioskId, OverlayType.UTG_END.title)
+
+        log.info("전체 토큰 사용량: ${usageTracker.totalUsage}")
+        return ApiResponse.success(history)
+    }
 
     @PostMapping("/update/category/{kioskId}")
     fun updateCategoryUtg(
@@ -47,7 +47,7 @@ class UtgController @Autowired constructor(
         if (accessToken == null) throw KioskAdminSignInException()
 
         notificationService.sendOverlayCommand(kioskId, OverlayType.UTG_START.title)
-        val history = utgService.updateCategoryGraph(
+        val history = utgService.updateCategory(
             kioskId = kioskId, accessToken = accessToken,
             isInitPayment = categoryUtgUpdateRequest.initPayment
         )
@@ -65,7 +65,7 @@ class UtgController @Autowired constructor(
         if (accessToken == null) throw KioskAdminSignInException()
 
         notificationService.sendOverlayCommand(kioskId, OverlayType.UTG_START.title)
-        val history = utgService.updateMenuGraph(
+        val history = utgService.updateMenu(
             kioskId = kioskId, accessToken = accessToken,
             isInitPayment = menuUtgUpdateRequest.initPayment
         )
@@ -77,23 +77,14 @@ class UtgController @Autowired constructor(
     @PostMapping("/update/payment/{kioskId}")
     fun updatePaymentUtg(
         @PathVariable kioskId: String,
-    ): ApiResponse<*> {
-        notificationService.sendOverlayCommand(kioskId, OverlayType.UTG_START.title)
-        val history = utgService.updatePaymentGraph(kioskId)
-        notificationService.sendOverlayCommand(kioskId, OverlayType.UTG_END.title)
-
-        return ApiResponse.success(history)
-    }
-
-    @GetMapping("/benchmark/{kioskId}")
-    fun benchmarkUtg(
-        @PathVariable kioskId: String,
         @RequestHeader("Authorization", required = false) accessToken: String?
     ): ApiResponse<*> {
         if (accessToken == null) throw KioskAdminSignInException()
 
-        val result = randomTaskService.proceedUtg(kioskId, accessToken)
-        log.info("전체 토큰 사용량: ${usageTracker.totalUsage}")
-        return ApiResponse.success(result)
+        notificationService.sendOverlayCommand(kioskId, OverlayType.UTG_START.title)
+        val history = utgService.updatePayment(kioskId, accessToken)
+        notificationService.sendOverlayCommand(kioskId, OverlayType.UTG_END.title)
+
+        return ApiResponse.success(history)
     }
 }
