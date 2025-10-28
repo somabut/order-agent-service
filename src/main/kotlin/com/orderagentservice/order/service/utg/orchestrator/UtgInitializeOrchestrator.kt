@@ -1,4 +1,4 @@
-package com.orderagentservice.order.service.utg.strategy
+package com.orderagentservice.order.service.utg.orchestrator
 
 import com.orderagentservice.agent.model.dto.UiComponentDto
 import com.orderagentservice.global.service.LogService
@@ -12,6 +12,7 @@ import com.orderagentservice.order.service.utg.UiDetectorManager
 import com.orderagentservice.order.service.utg.sequencer.CategoryActionSequencer
 import com.orderagentservice.order.service.utg.sequencer.MenuActionSequencer
 import com.orderagentservice.order.service.utg.sequencer.PaymentActionSequencer
+import com.orderagentservice.order.service.utg.UtgActionFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 

@@ -4,9 +4,7 @@ import com.orderagentservice.agent.model.UsageTracker
 import com.orderagentservice.agent.model.dto.AgentActionDto
 import com.orderagentservice.global.service.LogService
 import com.orderagentservice.logger
-import com.orderagentservice.order.model.UtgActionProfile
 import com.orderagentservice.order.model.UtgContext
-import com.orderagentservice.order.model.dto.MenuInfoDto
 import com.orderagentservice.order.model.log.UtgEndLog
 import com.orderagentservice.order.model.log.UtgStartLog
 import com.orderagentservice.order.model.request.UtgStrategyRequest
@@ -17,8 +15,8 @@ import com.orderagentservice.order.service.MenuService
 import com.orderagentservice.order.service.graph.ui.UiGraphService
 import com.orderagentservice.order.service.utg.menu.MenuUtgService
 import com.orderagentservice.order.service.utg.payment.PaymentUtgService
-import com.orderagentservice.order.service.utg.strategy.UtgInitializeOrchestrator
-import com.orderagentservice.order.service.utg.strategy.UtgUpdateOrchestrator
+import com.orderagentservice.order.service.utg.orchestrator.UtgInitializeOrchestrator
+import com.orderagentservice.order.service.utg.orchestrator.UtgUpdateOrchestrator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 

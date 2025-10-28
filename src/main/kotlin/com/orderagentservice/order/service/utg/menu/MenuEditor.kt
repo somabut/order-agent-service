@@ -4,15 +4,14 @@ import com.orderagentservice.logger
 import com.orderagentservice.order.model.AutoOrderContext
 import com.orderagentservice.order.model.UtgContext
 import com.orderagentservice.order.model.dto.MenuInfoDto
-import com.orderagentservice.order.model.result.UtgEditPrepareResult
 import com.orderagentservice.order.service.NotificationService
 import com.orderagentservice.order.service.auto.AutoTaskExecutor
 import com.orderagentservice.order.service.graph.info.InfoGraphService
 import com.orderagentservice.order.service.graph.ui.UiGraphService
 import com.orderagentservice.order.service.utg.UiDetectorManager
 import com.orderagentservice.order.service.utg.sequencer.MenuActionSequencer
-import com.orderagentservice.order.service.utg.strategy.UtgActionFactory
-import com.orderagentservice.order.service.utg.strategy.UtgInitializeOrchestrator
+import com.orderagentservice.order.service.utg.UtgActionFactory
+import com.orderagentservice.order.service.utg.orchestrator.UtgInitializeOrchestrator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
