@@ -1,5 +1,6 @@
 package com.orderagentservice.order.service
 
+import com.orderagentservice.logger
 import com.orderagentservice.order.repository.NotificationRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -18,6 +19,8 @@ class HeartBeatScheduler @Autowired constructor(
     private val notificationService: NotificationService,
     private val notificationRepository: NotificationRepository
 ) : ApplicationRunner {
+    private val log = logger()
+
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private val CHECK_INTERVAL: Long = 10_000
 
@@ -37,6 +40,12 @@ class HeartBeatScheduler @Autowired constructor(
             try {
                 notificationService.sendCheckCommand(kioskId)
             } catch (e: Exception) {
+                try {
+                    notificationRepository.getEmitter(kioskId)
+                    log.info("삭제합니다")
+                } catch (e: Exception) {
+                    continue
+                }
                 notificationRepository.deleteByKioskId(kioskId)
             }
         }

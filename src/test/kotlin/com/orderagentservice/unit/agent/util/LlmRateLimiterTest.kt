@@ -2,17 +2,15 @@ package com.orderagentservice.unit.agent.util
 
 import com.orderagentservice.agent.model.LlmProvider
 import com.orderagentservice.agent.util.LlmRateLimiter
+import com.orderagentservice.global.util.Sleeper
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.just
 import io.mockk.mockk
-import io.mockk.mockkStatic
-import io.mockk.unmockkStatic
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -28,6 +26,9 @@ import java.util.concurrent.atomic.AtomicInteger
 class LlmRateLimiterTest {
     @MockK
     private lateinit var env: Environment
+
+    @MockK
+    private lateinit var sleeper: Sleeper
 
     private lateinit var llmRateLimiter: LlmRateLimiter
 
@@ -45,12 +46,7 @@ class LlmRateLimiterTest {
     @BeforeEach
     fun setUp() {
         every { env.getProperty("agent.claud.api-key") } returns MOCK_API_KEY
-        llmRateLimiter = LlmRateLimiter(env)
-    }
-
-    @AfterEach
-    fun tearDown() {
-        unmockkStatic(Thread::class)
+        llmRateLimiter = LlmRateLimiter(env, sleeper)
     }
 
     @Test
@@ -101,18 +97,13 @@ class LlmRateLimiterTest {
         }
 
         // when & then
-        mockkStatic(Thread::class) {
-            every { Thread.sleep(any<Long>()) } just Runs
+        every { sleeper.sleep(any<Long>()) } just Runs
+        val actualResult = llmRateLimiter.executeWithLimit(LlmProvider.CLAUD, block)
 
-            val actualResult = llmRateLimiter.executeWithLimit(LlmProvider.CLAUD, block)
-
-            assertThat(actualResult).isEqualTo(LLM_JSON)
-
-            verify(exactly = 4) { block.invoke(MOCK_API_KEY) }
-
-            verify(exactly = 1) { Thread.sleep(2000L) }
-            verify(exactly = 1) { Thread.sleep(4000L) }
-            verify(exactly = 1) { Thread.sleep(8000L) }
-        }
+        assertThat(actualResult).isEqualTo(LLM_JSON)
+        verify(exactly = 4) { block.invoke(MOCK_API_KEY) }
+        verify(exactly = 1) { sleeper.sleep(2000L) }
+        verify(exactly = 1) { sleeper.sleep(4000L) }
+        verify(exactly = 1) { sleeper.sleep(8000L) }
     }
 }

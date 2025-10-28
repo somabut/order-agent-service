@@ -1,9 +1,16 @@
-package com.orderagentservice.order.service.utg.strategy
+package com.orderagentservice.order.service.utg
 
 import com.orderagentservice.logger
 import com.orderagentservice.order.model.UtgActionProfile
 import com.orderagentservice.order.model.request.UtgStrategyRequest
 import com.orderagentservice.order.model.type.StrategyType
+import com.orderagentservice.order.service.utg.strategy.BackSelectStrategy
+import com.orderagentservice.order.service.utg.strategy.CategorySelectStrategy
+import com.orderagentservice.order.service.utg.strategy.MenuSelectStrategy
+import com.orderagentservice.order.service.utg.strategy.OptionSelectStrategy
+import com.orderagentservice.order.service.utg.strategy.PaymentSelectStrategy
+import com.orderagentservice.order.service.utg.strategy.PlacePaymentSelectStrategy
+import com.orderagentservice.order.service.utg.strategy.StartSelectStrategy
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component

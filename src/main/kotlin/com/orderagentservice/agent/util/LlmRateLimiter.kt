@@ -2,22 +2,17 @@ package com.orderagentservice.agent.util
 
 import com.orderagentservice.agent.exception.LlmServerOverLoadException
 import com.orderagentservice.agent.model.LlmProvider
-import com.orderagentservice.agent.model.response.ClaudResponse
-import com.orderagentservice.agent.model.response.GptErrorResponse
-import com.orderagentservice.jsonMapper
+import com.orderagentservice.global.util.Sleeper
 import com.orderagentservice.logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.env.Environment
 import org.springframework.stereotype.Component
-import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.HttpServerErrorException
-import java.util.*
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.atomic.AtomicInteger
 
 @Component
 class LlmRateLimiter @Autowired constructor(
-    private val env: Environment
+    private val env: Environment,
+    private val sleeper: Sleeper
 ) {
     private val log = logger()
 
@@ -47,7 +42,8 @@ class LlmRateLimiter @Autowired constructor(
                 }
 
                 log.info("엔트로픽 서버 과부화로 인해 ${waitTime}초 대기합니다.")
-                Thread.sleep(waitTime * 1000)
+                sleeper.sleep(waitTime * 1000L)
+//                Thread.sleep(waitTime * 1000)
                 waitTime *= 2
                 continue
             }
