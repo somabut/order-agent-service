@@ -1,0 +1,31 @@
+name: JaCoCo Coverage Report
+
+on:
+  pull_request: 
+
+jobs:
+  build-and-report:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write 
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Run test & JaCoCo report with Gradle
+        run: ./gradlew test jacocoTestReport
+
+      - name: JaCoCo Report to PR
+        uses: madrapps/jacoco-report@v1.6.1
+        with:
+          paths: ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
