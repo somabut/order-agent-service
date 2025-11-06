@@ -89,7 +89,7 @@ tasks.withType<Test> {
     useJUnitPlatform()
     finalizedBy(tasks.jacocoTestReport)
 
-//    include("**/unit/**")
+    include("**/unit/**")
 }
 
 tasks.jar {
