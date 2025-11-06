@@ -13,8 +13,6 @@ import com.orderagentservice.order.model.type.NodeType
 import com.orderagentservice.order.model.type.UtgForLogType
 import com.orderagentservice.order.service.MenuService
 import com.orderagentservice.order.service.graph.ui.UiGraphService
-import com.orderagentservice.order.service.utg.menu.MenuUtgService
-import com.orderagentservice.order.service.utg.payment.PaymentUtgService
 import com.orderagentservice.order.service.utg.orchestrator.UtgInitializeOrchestrator
 import com.orderagentservice.order.service.utg.orchestrator.UtgUpdateOrchestrator
 import org.springframework.beans.factory.annotation.Autowired
@@ -23,8 +21,6 @@ import org.springframework.stereotype.Service
 @Service
 class UtgService @Autowired constructor(
     private val menuService: MenuService,
-    private val menuUtgService: MenuUtgService,
-    private val paymentUtgService: PaymentUtgService,
     private val uiGraphService: UiGraphService,
     private val logService: LogService,
     private val usageTracker: UsageTracker,

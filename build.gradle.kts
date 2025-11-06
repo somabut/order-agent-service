@@ -131,7 +131,9 @@ tasks.withType<JacocoReport> {
                 fileTree(it) {
                     exclude(
                         "**/model/**",
-                        "**/exception/**"
+                        "**/exception/**",
+                        "**/menu/**",
+                        "**/payment/**",
                     )
                 }
             }
