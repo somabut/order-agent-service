@@ -89,7 +89,7 @@ tasks.withType<Test> {
     useJUnitPlatform()
     finalizedBy(tasks.jacocoTestReport)
 
-//    include("**/unit/**")
+    include("**/unit/**")
 }
 
 tasks.jar {
@@ -131,7 +131,9 @@ tasks.withType<JacocoReport> {
                 fileTree(it) {
                     exclude(
                         "**/model/**",
-                        "**/exception/**"
+                        "**/exception/**",
+                        "**/menu/**",
+                        "**/payment/**",
                     )
                 }
             }

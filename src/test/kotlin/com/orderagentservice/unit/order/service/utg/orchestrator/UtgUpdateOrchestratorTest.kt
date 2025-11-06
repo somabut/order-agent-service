@@ -49,10 +49,8 @@ class UtgUpdateOrchestratorTest {
     @MockK
     private lateinit var uiDetectorManager: UiDetectorManager
 
-    // 2. 테스트 대상
     private lateinit var orchestrator: UtgUpdateOrchestrator
 
-    // 3. 테스트 상수 및 Mock 데이터
     private val MOCK_KIOSK_ID = "k-123"
     private val MOCK_ROOT_NODE_ID = "root-id"
     private val MOCK_STATION_NODE_ID = "station-id"

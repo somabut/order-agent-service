@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class OcrNodeGenerator @Autowired constructor(
+class OcrNodeIntegrator @Autowired constructor(
     private val uiGraphService: UiGraphService,
     private val ocrGraphService: OcrGraphService
 ) {
