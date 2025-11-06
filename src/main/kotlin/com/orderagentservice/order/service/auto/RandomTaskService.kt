@@ -20,7 +20,6 @@ class RandomTaskService @Autowired constructor(
     private val menuUtgService: MenuUtgService,
     private val menuService: MenuService,
 ) {
-    //    private val TEST_TASK_ID = "test-session-bag-coffee-1"
     private val TEST_TASK_ID = "test-session-bugger-king-1"
 
     fun proceedAutoOrder(count: Int, kioskId: String, accessToken: String): List<AutoOrderBenchMarkDto> {

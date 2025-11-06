@@ -1,5 +1,6 @@
 package com.orderagentservice.order.service
 
+import com.orderagentservice.global.util.Sleeper
 import com.orderagentservice.global.service.AmazonS3Service
 import com.orderagentservice.jsonMapper
 import com.orderagentservice.logger
@@ -9,6 +10,7 @@ import com.orderagentservice.order.model.dto.CoordinateDto
 import com.orderagentservice.order.model.request.CommandRequest
 import com.orderagentservice.order.repository.NotificationRepository
 import com.orderagentservice.global.util.GlobalLogger
+import com.orderagentservice.global.util.Timer
 import com.orderagentservice.order.model.dto.KioskCaptureDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -20,6 +22,8 @@ class NotificationService @Autowired constructor(
     private val notificationRepository: NotificationRepository,
     private val amazonS3Service: AmazonS3Service,
     private val globalLogger: GlobalLogger,
+    private val sleeper: Sleeper,
+    private val timer: Timer,
 ) {
     private val log = logger()
 
@@ -60,20 +64,6 @@ class NotificationService @Autowired constructor(
 
     fun registerOverlayCommand(commandId: String, overlay: String) {
         notificationRepository.saveOverLayCommand(commandId, overlay)
-    }
-
-    fun broadcastMessage(message: String) {
-        val logChannel = notificationRepository.getLogEmitters()
-        for (emitter in logChannel) {
-            try {
-                emitter.send(message)
-            } catch (e: Exception) {
-                log.info("클라이언트 연결 끊김")
-                notificationRepository.deleteLogEmitter(emitter)
-            }
-        }
-
-        log.info("로그 메시지 전송. 클라이언트 수: ${logChannel.size}")
     }
 
     fun sendMessage(kioskId: String, message: String) {
@@ -123,7 +113,7 @@ class NotificationService @Autowired constructor(
         }
 
         //페이지 이동 시간을 고려해 잠시 대기
-        Thread.sleep(500)
+        sleeper.sleep(500)
 
         globalLogger.loggingActionResult(kioskId, commandId, "CLICK", true, coordinate)
         return coordinatePair
@@ -186,13 +176,13 @@ class NotificationService @Autowired constructor(
         timeout: Long,
         commandRemover: (String) -> T?
     ): T {
-        val startTime = System.currentTimeMillis()
-        while (System.currentTimeMillis() - startTime < timeout) {
+        val startTime = timer.getCurrentTimeMillis()
+        while (timer.getCurrentTimeMillis() - startTime < timeout) {
             val result = commandRemover(commandId)
             if (result != null) {
                 return result
             }
-            Thread.sleep(200)
+            sleeper.sleep(200)
         }
         throw CommandTimeoutException()
     }

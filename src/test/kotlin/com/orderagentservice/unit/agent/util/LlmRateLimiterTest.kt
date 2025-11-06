@@ -2,18 +2,15 @@ package com.orderagentservice.unit.agent.util
 
 import com.orderagentservice.agent.model.LlmProvider
 import com.orderagentservice.agent.util.LlmRateLimiter
-import com.orderagentservice.agent.util.Sleeper
+import com.orderagentservice.global.util.Sleeper
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.just
 import io.mockk.mockk
-import io.mockk.mockkStatic
-import io.mockk.unmockkStatic
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test

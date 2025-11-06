@@ -2,19 +2,12 @@ package com.orderagentservice.agent.util
 
 import com.orderagentservice.agent.exception.LlmServerOverLoadException
 import com.orderagentservice.agent.model.LlmProvider
-import com.orderagentservice.agent.model.response.ClaudResponse
-import com.orderagentservice.agent.model.response.GptErrorResponse
-import com.orderagentservice.jsonMapper
+import com.orderagentservice.global.util.Sleeper
 import com.orderagentservice.logger
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.core.env.Environment
 import org.springframework.stereotype.Component
-import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.HttpServerErrorException
-import java.util.*
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.atomic.AtomicInteger
 
 @Component
 class LlmRateLimiter @Autowired constructor(

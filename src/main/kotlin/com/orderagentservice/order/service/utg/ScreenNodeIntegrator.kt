@@ -71,16 +71,6 @@ class ScreenNodeIntegrator @Autowired constructor(
         )
         uiGraphService.saveRel(nodeId, somNodeId, NodeRelationType.MATCH_TO)
         uiGraphService.saveRel(nodeId, screenNodeId, NodeRelationType.IMAGE_TO)
-
-//        val somNodeId = somGraphService.findNode(
-//            sourceId = screenNodeId,
-//            kioskId = kioskId,
-//            minX = minX, minY = minY,
-//            maxX = maxX, maxY = maxY,
-//            title = uiComponentParams.title
-//        )
-//        uiGraphService.saveRel(nodeId, somNodeId, NodeRelationType.MATCH_TO)
-//        uiGraphService.saveRel(nodeId, screenNodeId, NodeRelationType.IMAGE_TO)
     }
 
     private fun connectSom(context: UtgContext, uiComponents: List<DetectorUiComponentDto>) {
