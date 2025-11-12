@@ -1,4 +1,4 @@
-FROM openjdk:21-jdk-slim-bookworm
+FROM eclipse-temurin:21-jdk-slim-bookworm
 
 ARG JAR_FILE=build/libs/*.jar
 
