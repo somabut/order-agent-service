@@ -1,4 +1,4 @@
-FROM openjdk:21-jdk-bookworm
+FROM openjdk:21-jdk-slim-bookworm
 
 ARG JAR_FILE=build/libs/*.jar
 
