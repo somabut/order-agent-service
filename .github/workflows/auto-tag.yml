@@ -1,0 +1,113 @@
+name: Auto Tag (Semantic Versioning)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  auto-tag:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Git
+        run: |
+          git config user.name "sehyunsix"
+          git config user.email "sdfg8931@ajou.ac.kr"
+
+      - name: Fetch all tags
+        run: git fetch --tags
+
+      - name: Determine version bump type
+        id: bump
+        run: |
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          echo "📝 Commit message: $COMMIT_MSG"
+
+          BUMP_TYPE="none"
+
+          # BREAKING CHANGE 체크 (major)
+          if echo "$COMMIT_MSG" | grep -i "BREAKING CHANGE: ?"; then
+            BUMP_TYPE="major"
+          # feat: 체크 (minor)
+          elif echo "$COMMIT_MSG" | grep -iE "^feat(\(.*\))?: ?"; then
+            BUMP_TYPE="minor"
+          # fix: 체크 (patch)
+          elif echo "$COMMIT_MSG" | grep -iE "^fix(\(.*\))?: ?"; then
+            BUMP_TYPE="patch"
+          fi
+
+          echo "📈 Detected bump type: $BUMP_TYPE"
+          echo "bump=$BUMP_TYPE" >> $GITHUB_OUTPUT
+
+      - name: Determine next version
+        if: steps.bump.outputs.bump != 'none'
+        id: version
+        run: |
+          # 마지막 태그 가져오기 (v 접두사 제거)
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          LAST_TAG=${LAST_TAG#v}  # v 접두사 제거
+          echo "🔖 Last tag: $LAST_TAG"
+
+          # 버전이 올바른 형식인지 확인
+          if ! [[ "$LAST_TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "⚠️ Invalid tag format, starting from 0.0.0"
+            LAST_TAG="0.0.0"
+          fi
+
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$LAST_TAG"
+
+          # 버전 증가
+          case "${{ steps.bump.outputs.bump }}" in
+            major)
+              MAJOR=$((MAJOR + 1))
+              MINOR=0
+              PATCH=0
+              ;;
+            minor)
+              MINOR=$((MINOR + 1))
+              PATCH=0
+              ;;
+            patch)
+              PATCH=$((PATCH + 1))
+              ;;
+          esac
+
+          NEW_TAG="v${MAJOR}.${MINOR}.${PATCH}"
+          echo "✨ New tag: $NEW_TAG"
+          echo "tag=$NEW_TAG" >> $GITHUB_OUTPUT
+
+      - name: Check if tag exists
+        if: steps.bump.outputs.bump != 'none'
+        id: check_tag
+        run: |
+          if git rev-parse "${{ steps.version.outputs.tag }}" >/dev/null 2>&1; then
+            echo "⚠️ Tag ${{ steps.version.outputs.tag }} already exists"
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "✅ Tag ${{ steps.version.outputs.tag }} is new"
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create and push new tag
+        if: steps.bump.outputs.bump != 'none' && steps.check_tag.outputs.exists == 'false'
+        run: |
+          git tag ${{ steps.version.outputs.tag }}
+          git push origin ${{ steps.version.outputs.tag }}
+          echo "🎉 Successfully created and pushed tag ${{ steps.version.outputs.tag }}"
+
+      - name: Skip tag creation
+        if: steps.bump.outputs.bump == 'none' || steps.check_tag.outputs.exists == 'true'
+        run: |
+          if [ "${{ steps.bump.outputs.bump }}" == "none" ]; then
+            echo "⏭️ No version bump detected in commit message"
+          else
+            echo "⏭️ Tag already exists, skipping creation"
+          fi
