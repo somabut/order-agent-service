@@ -9,7 +9,7 @@ on:
 
 env:
   IMAGE_NAME: moodtrbl/order-agent-service  # 빌드할 이미지명(수정 가능) 
-
+ 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
