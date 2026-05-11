@@ -1,5 +1,5 @@
 # Order Agent Service (ALKE 자동 주문 엔진)
-Order Agent Service는 하드웨어 교체 없이 소프트웨어 설치만으로 키오스크에 배리어프리 주문 기능을 제공하는 ALIKE 서비스의 자동 주문 엔진입니다.
+Order Agent Service는 하드웨어 교체 없이 소프트웨어 설치만으로 키오스크에 배리어프리 주문 기능을 제공하는 ALIKE 서비스의 Spring기반 자동 주문 엔진입니다.
 
 <img width="1704" height="916" alt="readme_전체 흐름도" src="https://github.com/user-attachments/assets/2417de24-9ab3-4722-b497-8cd630c3aa00" />
 
